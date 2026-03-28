@@ -1,0 +1,14 @@
+{
+  "name": "be-candid",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "web": "yarn workspace @be-candid/web dev",
+    "build": "yarn workspace @be-candid/web build",
+    "lint": "yarn workspace @be-candid/web lint",
+    "db:types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > apps/web/types/supabase.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

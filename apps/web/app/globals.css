@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Font Variables (loaded in layout.tsx) ──────────────── */
+:root {
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+/* ─── Base Styles ────────────────────────────────────────── */
+body {
+  @apply bg-surface text-ink antialiased;
+  font-family: var(--font-body);
+}
+
+/* ─── Card ───────────────────────────────────────────────── */
+.card {
+  @apply bg-white rounded-2xl border border-surface-border;
+}
+
+/* ─── Buttons ────────────────────────────────────────────── */
+.btn-primary {
+  @apply inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 text-white text-sm font-semibold rounded-xl
+         hover:bg-brand-700 active:bg-brand-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-ink-muted rounded-xl
+         hover:bg-surface-muted active:bg-gray-200 transition-colors;
+}
+
+.btn-danger {
+  @apply inline-flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-xl
+         hover:bg-red-700 active:bg-red-800 transition-colors disabled:opacity-50;
+}
+
+/* ─── Badge Styles ───────────────────────────────────────── */
+.badge-low {
+  @apply inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800;
+}
+.badge-medium {
+  @apply inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-orange-100 text-orange-800;
+}
+.badge-high {
+  @apply inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-100 text-red-800;
+}
+
+/* ─── Stagger Animation ─────────────────────────────────── */
+.stagger > * {
+  animation: fade-up 0.3s ease-out both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 60ms; }
+.stagger > *:nth-child(3) { animation-delay: 120ms; }
+.stagger > *:nth-child(4) { animation-delay: 180ms; }
+.stagger > *:nth-child(5) { animation-delay: 240ms; }
+.stagger > *:nth-child(6) { animation-delay: 300ms; }
+.stagger > *:nth-child(7) { animation-delay: 360ms; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Focus ring ─────────────────────────────────────────── */
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  @apply outline-none ring-2 ring-brand-500 ring-offset-1;
+}
+
+/* ─── Scrollbar (subtle) ─────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }

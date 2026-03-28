@@ -1,0 +1,93 @@
+export const dynamic = 'force-dynamic';
+// GET   /api/auth/profile — fetch profile
+// PATCH /api/auth/profile — update profile
+// POST  /api/auth/profile — create profile (signup)
+
+import { NextRequest, NextResponse } from 'next/server';
+import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { UpdateProfileSchema } from '@be-candid/shared';
+import { safeError, sanitizeName, sanitizePhone, auditLog } from '@/lib/security';
+
+export async function GET(req: NextRequest) {
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return safeError('GET /api/auth/profile', 'Unauthorized', 401);
+
+    const db = createServiceClient();
+    const { data: profile } = await db.from('users').select('*').eq('id', user.id).single();
+    if (!profile) return safeError('GET /api/auth/profile', 'Not found', 404);
+
+    return NextResponse.json({ profile });
+  } catch (err) {
+    return safeError('GET /api/auth/profile', err);
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return safeError('PATCH /api/auth/profile', 'Unauthorized', 401);
+
+    const body = await req.json().catch(() => null);
+    if (!body) return safeError('PATCH /api/auth/profile', 'Invalid JSON', 400);
+
+    const parsed = UpdateProfileSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid data', details: parsed.error.flatten() }, { status: 400 });
+    }
+
+    // Sanitize text fields
+    const updateData: Record<string, any> = { ...parsed.data, updated_at: new Date().toISOString() };
+    if (updateData.name) updateData.name = sanitizeName(updateData.name);
+    if (updateData.phone) {
+      const cleanPhone = sanitizePhone(updateData.phone);
+      if (!cleanPhone) {
+        return NextResponse.json({ error: 'Invalid phone number' }, { status: 400 });
+      }
+      updateData.phone = cleanPhone;
+    }
+
+    const db = createServiceClient();
+    const { error } = await db.from('users').update(updateData).eq('id', user.id);
+    if (error) return safeError('PATCH /api/auth/profile', error);
+
+    auditLog({ action: 'profile.update', userId: user.id, metadata: { fields: Object.keys(parsed.data) } });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return safeError('PATCH /api/auth/profile', err);
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return safeError('POST /api/auth/profile', 'Unauthorized', 401);
+
+    const body = await req.json().catch(() => null);
+    if (!body?.name) return safeError('POST /api/auth/profile', 'Name required', 400);
+
+    const db = createServiceClient();
+
+    // Check if profile already exists
+    const { data: existing } = await db.from('users').select('id').eq('id', user.id).maybeSingle();
+    if (existing) return NextResponse.json({ success: true }); // Already exists
+
+    const { error } = await db.from('users').insert({
+      id: user.id,
+      email: user.email!,
+      name: sanitizeName(body.name),
+    });
+
+    if (error) return safeError('POST /api/auth/profile', error);
+
+    auditLog({ action: 'auth.signup', userId: user.id });
+
+    return NextResponse.json({ success: true }, { status: 201 });
+  } catch (err) {
+    return safeError('POST /api/auth/profile', err);
+  }
+}
