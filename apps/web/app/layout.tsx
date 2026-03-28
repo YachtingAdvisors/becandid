@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { DM_Sans, DM_Serif_Display } from 'next/font/google';
 import './globals.css';
+import LegalFooter from '@/components/LegalFooter';
 
 const fontBody = DM_Sans({
   subsets: ['latin'],
@@ -54,6 +55,7 @@ export default function RootLayout({
     <html lang="en" className={`${fontBody.variable} ${fontDisplay.variable}`}>
       <body className="font-body">
         {children}
+        <LegalFooter />
       </body>
     </html>
   );

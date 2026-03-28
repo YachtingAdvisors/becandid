@@ -1,160 +1,131 @@
 export const dynamic = 'force-dynamic';
-// POST /api/billing — create Stripe checkout session
-// GET  /api/billing — get current plan status
-// PUT  /api/billing — create Stripe portal session
+
+// ============================================================
+// app/api/billing/route.ts
+//
+// POST  -> create Stripe Checkout session (upgrade/subscribe)
+// GET   -> get current subscription status
+// PATCH -> create Stripe Customer Portal session (manage billing)
+// PUT   -> (legacy) alias for PATCH — kept for backward compat
+// ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { safeError, auditLog } from '@/lib/security';
+import { createCheckoutSession, createPortalSession } from '@/lib/stripe/server';
+import { STRIPE_CONFIG, getPlanLimits } from '@/lib/stripe/config';
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io';
 
-export async function GET(req: NextRequest) {
-  try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return safeError('GET /api/billing', 'Unauthorized', 401);
-
-    const db = createServiceClient();
-    const { data: profile } = await db
-      .from('users')
-      .select('plan, stripe_customer_id, plan_expires_at')
-      .eq('id', user.id)
-      .single();
-
-    const isActive = profile?.plan === 'pro' || profile?.plan === 'team';
-    const expired = profile?.plan_expires_at && new Date(profile.plan_expires_at) < new Date();
-
-    return NextResponse.json({
-      plan: expired ? 'free' : (profile?.plan ?? 'free'),
-      hasStripe: !!profile?.stripe_customer_id,
-      expiresAt: profile?.plan_expires_at,
-      limits: getPlanLimits(expired ? 'free' : (profile?.plan ?? 'free')),
-    });
-  } catch (err) {
-    return safeError('GET /api/billing', err);
-  }
-}
+// -- POST: Create checkout session --------------------------------
 
 export async function POST(req: NextRequest) {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const body = await req.json();
+  let { price_id } = body;
+
+  // Accept both raw Stripe price IDs and key names (e.g. "pro_monthly")
+  const priceKeys = STRIPE_CONFIG.prices as Record<string, string>;
+  if (price_id && price_id in priceKeys) {
+    price_id = priceKeys[price_id];
+  }
+
+  // Validate price ID
+  const validPrices = Object.values(STRIPE_CONFIG.prices);
+  if (!price_id || !validPrices.includes(price_id)) {
+    return NextResponse.json({ error: 'Invalid price' }, { status: 400 });
+  }
+
   try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return safeError('POST /api/billing', 'Unauthorized', 401);
-
-    // Dynamic import to avoid errors when Stripe isn't configured
-    let Stripe: any;
-    try {
-      Stripe = (await import('stripe')).default;
-    } catch {
-      return NextResponse.json({
-        error: 'Billing not configured. Set STRIPE_SECRET_KEY.',
-        fallback: true,
-      }, { status: 503 });
-    }
-
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-04-10' });
-    const db = createServiceClient();
-
-    const { data: profile } = await db
-      .from('users')
-      .select('email, stripe_customer_id')
-      .eq('id', user.id)
-      .single();
-
-    // Get or create Stripe customer
-    let customerId = profile?.stripe_customer_id;
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: profile?.email ?? user.email!,
-        metadata: { userId: user.id },
-      });
-      customerId = customer.id;
-      await db.from('users').update({ stripe_customer_id: customerId }).eq('id', user.id);
-    }
-
-    const priceId = process.env.STRIPE_PRO_PRICE_ID;
-    if (!priceId) {
-      return NextResponse.json({ error: 'Pro plan price not configured' }, { status: 503 });
-    }
-
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      mode: 'subscription',
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${APP_URL}/dashboard/settings?billing=success`,
-      cancel_url: `${APP_URL}/dashboard/settings?billing=cancelled`,
-      metadata: { userId: user.id },
-    });
+    const session = await createCheckoutSession(
+      user.id,
+      price_id,
+      `${APP_URL}/dashboard/settings?checkout=success`,
+      `${APP_URL}/dashboard/settings?checkout=canceled`
+    );
 
     return NextResponse.json({ url: session.url });
-  } catch (err) {
-    return safeError('POST /api/billing', err);
+  } catch (error: any) {
+    console.error('Checkout session creation failed:', error);
+    return NextResponse.json({ error: 'Failed to create checkout' }, { status: 500 });
   }
 }
 
-// Create billing portal session
+// -- GET: Current subscription status -----------------------------
+
+export async function GET(req: NextRequest) {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const db = createServiceClient();
+  const { data: profile } = await db.from('users')
+    .select('subscription_plan, subscription_status, trial_ends_at, stripe_customer_id')
+    .eq('id', user.id)
+    .single();
+
+  const plan = profile?.subscription_plan || 'free';
+  const limits = getPlanLimits(plan);
+
+  // Count AI guides used this month
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+
+  const { count: guidesUsed } = await db.from('alerts')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .gte('created_at', monthStart.toISOString())
+    .not('user_guide', 'is', null);
+
+  const isTrialing = profile?.subscription_status === 'trialing';
+  const trialEndsAt = profile?.trial_ends_at;
+  const trialDaysLeft = trialEndsAt
+    ? Math.max(0, Math.ceil((new Date(trialEndsAt).getTime() - Date.now()) / 86400000))
+    : 0;
+
+  return NextResponse.json({
+    plan,
+    status: profile?.subscription_status || 'active',
+    limits,
+    usage: {
+      ai_guides_used: guidesUsed ?? 0,
+      ai_guides_limit: limits.aiGuidesPerMonth === Infinity ? null : limits.aiGuidesPerMonth,
+    },
+    trial: isTrialing ? {
+      active: true,
+      days_left: trialDaysLeft,
+      ends_at: trialEndsAt,
+    } : null,
+    has_payment_method: !!profile?.stripe_customer_id,
+    prices: STRIPE_CONFIG.prices,
+  });
+}
+
+// -- PATCH: Open customer portal ----------------------------------
+
+export async function PATCH(req: NextRequest) {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const session = await createPortalSession(
+      user.id,
+      `${APP_URL}/dashboard/settings`
+    );
+
+    return NextResponse.json({ url: session.url });
+  } catch (error: any) {
+    console.error('Portal session creation failed:', error);
+    return NextResponse.json({ error: 'Failed to open billing portal' }, { status: 500 });
+  }
+}
+
+// -- PUT: Legacy alias for PATCH (BillingSection uses PUT) --------
+
 export async function PUT(req: NextRequest) {
-  try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return safeError('PUT /api/billing', 'Unauthorized', 401);
-
-    let Stripe: any;
-    try { Stripe = (await import('stripe')).default; } catch {
-      return NextResponse.json({ error: 'Billing not configured' }, { status: 503 });
-    }
-
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-04-10' });
-    const db = createServiceClient();
-
-    const { data: profile } = await db
-      .from('users')
-      .select('stripe_customer_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile?.stripe_customer_id) {
-      return NextResponse.json({ error: 'No billing account found' }, { status: 404 });
-    }
-
-    const session = await stripe.billingPortal.sessions.create({
-      customer: profile.stripe_customer_id,
-      return_url: `${APP_URL}/dashboard/settings`,
-    });
-
-    return NextResponse.json({ url: session.url });
-  } catch (err) {
-    return safeError('PUT /api/billing', err);
-  }
-}
-
-function getPlanLimits(plan: string) {
-  const limits = {
-    free: {
-      aiGuidesPerMonth: 3,
-      regenerationsPerMonth: 3,
-      maxPartners: 1,
-      vulnerabilityWindows: 3,
-      weeklyDigest: true,
-      patternDetection: false,
-    },
-    pro: {
-      aiGuidesPerMonth: -1, // unlimited
-      regenerationsPerMonth: -1,
-      maxPartners: 3,
-      vulnerabilityWindows: 10,
-      weeklyDigest: true,
-      patternDetection: true,
-    },
-    team: {
-      aiGuidesPerMonth: -1,
-      regenerationsPerMonth: -1,
-      maxPartners: 10,
-      vulnerabilityWindows: 20,
-      weeklyDigest: true,
-      patternDetection: true,
-    },
-  };
-  return limits[plan as keyof typeof limits] ?? limits.free;
+  return PATCH(req);
 }

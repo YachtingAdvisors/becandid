@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
+import AgeGate from '@/components/auth/AgeGate';
+import SignupConsent from '@/components/auth/SignupConsent';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -14,6 +16,8 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [ageVerified, setAgeVerified] = useState(false);
+  const [consented, setConsented] = useState(false);
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
@@ -57,42 +61,52 @@ export default function SignUpPage() {
           <p className="text-sm text-ink-muted mt-1">Start your accountability journey</p>
         </div>
 
-        <form onSubmit={handleSignUp} className="card p-6 space-y-4">
-          {error && (
-            <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-ink mb-1.5">Your name</label>
-            <input type="text" value={name} onChange={e => setName(e.target.value)} required
-              className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-              placeholder="e.g. Alex" />
+        {!ageVerified ? (
+          <div className="card p-6">
+            <AgeGate onVerified={() => setAgeVerified(true)} />
           </div>
+        ) : (
+          <>
+            <form onSubmit={handleSignUp} className="card p-6 space-y-4">
+              {error && (
+                <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>
+              )}
 
-          <div>
-            <label className="block text-sm font-medium text-ink mb-1.5">Email</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-              className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-              placeholder="you@example.com" />
-          </div>
+              <div>
+                <label className="block text-sm font-medium text-ink mb-1.5">Your name</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} required
+                  className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  placeholder="e.g. Alex" />
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-ink mb-1.5">Password</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
-              className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-              placeholder="At least 8 characters" />
-          </div>
+              <div>
+                <label className="block text-sm font-medium text-ink mb-1.5">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                  className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  placeholder="you@example.com" />
+              </div>
 
-          <button type="submit" disabled={loading}
-            className="w-full py-3 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 transition-colors disabled:opacity-50">
-            {loading ? 'Creating account…' : 'Create Account'}
-          </button>
-        </form>
+              <div>
+                <label className="block text-sm font-medium text-ink mb-1.5">Password</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
+                  className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  placeholder="At least 8 characters" />
+              </div>
 
-        <p className="text-center text-sm text-ink-muted mt-6">
-          Already have an account?{' '}
-          <Link href="/auth/signin" className="text-brand-600 font-medium hover:underline">Sign in</Link>
-        </p>
+              <SignupConsent checked={consented} onChange={setConsented} />
+
+              <button type="submit" disabled={!consented || loading}
+                className="w-full py-3 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 transition-colors disabled:opacity-50">
+                {loading ? 'Creating account...' : 'Create Account'}
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-ink-muted mt-6">
+              Already have an account?{' '}
+              <Link href="/auth/signin" className="text-brand-600 font-medium hover:underline">Sign in</Link>
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import SettingsForm from '@/components/dashboard/SettingsForm';
 import VulnerabilityWindows from '@/components/dashboard/VulnerabilityWindows';
 import BillingSection from '@/components/dashboard/BillingSection';
+import SubscriptionCard from '@/components/dashboard/SubscriptionCard';
 import JournalSettings from '@/components/dashboard/JournalSettings';
 import PrivacySettings from '@/components/dashboard/PrivacySettings';
 import SoloModeToggle from '@/components/dashboard/SoloModeToggle';
@@ -59,6 +60,9 @@ export default async function SettingsPage() {
 
       {/* Plan & Billing */}
       <BillingSection />
+
+      {/* Subscription Details */}
+      <SubscriptionCard />
 
       {/* Privacy & Security */}
       <PrivacySettings />
