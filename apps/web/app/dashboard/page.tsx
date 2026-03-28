@@ -1,9 +1,12 @@
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { GOAL_LABELS, getCategoryEmoji, timeAgo } from '@be-candid/shared';
 import type { GoalCategory, Severity } from '@be-candid/shared';
+import { Suspense } from 'react';
 import FocusBoardMini from '@/components/dashboard/FocusBoardMini';
 import CheckInMini from '@/components/dashboard/CheckInMini';
 import NudgeBanner from '@/components/dashboard/NudgeBanner';
+import RelationshipMini from '@/components/dashboard/RelationshipMini';
+import SpouseImpactAwareness from '@/components/dashboard/SpouseImpactAwareness';
 import Link from 'next/link';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
@@ -56,6 +59,16 @@ export default async function DashboardPage() {
 
       {/* ── Check-in Status ─────────────────────────────────── */}
       <CheckInMini />
+
+      {/* ── Relationship Level ────────────────────────────────── */}
+      <Suspense fallback={null}>
+        <RelationshipMini />
+      </Suspense>
+
+      {/* ── Spouse Impact Awareness ───────────────────────────── */}
+      <Suspense fallback={null}>
+        <SpouseImpactAwareness />
+      </Suspense>
 
       {/* ── Quick Stats Row ─────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

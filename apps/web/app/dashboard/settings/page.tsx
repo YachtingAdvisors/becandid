@@ -2,6 +2,10 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import SettingsForm from '@/components/dashboard/SettingsForm';
 import VulnerabilityWindows from '@/components/dashboard/VulnerabilityWindows';
 import BillingSection from '@/components/dashboard/BillingSection';
+import JournalSettings from '@/components/dashboard/JournalSettings';
+import PrivacySettings from '@/components/dashboard/PrivacySettings';
+import SoloModeToggle from '@/components/dashboard/SoloModeToggle';
+import TherapistSettings from '@/components/dashboard/TherapistSettings';
 
 export default async function SettingsPage() {
   const supabase = await createServerSupabaseClient();
@@ -41,11 +45,23 @@ export default async function SettingsPage() {
         }}
       />
 
+      {/* Solo Mode */}
+      <SoloModeToggle />
+
+      {/* Journal Settings */}
+      <JournalSettings />
+
+      {/* Therapist Portal */}
+      <TherapistSettings />
+
       {/* Vulnerability Windows */}
       <VulnerabilityWindows />
 
       {/* Plan & Billing */}
       <BillingSection />
+
+      {/* Privacy & Security */}
+      <PrivacySettings />
 
       {/* Data & Account */}
       <section className="card p-5 space-y-3">

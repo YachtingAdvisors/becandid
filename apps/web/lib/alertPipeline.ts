@@ -28,6 +28,8 @@ import { sanitizePushPayload, sanitizePartnerAlert } from './push/pushPrivacy';
 import { sendPush } from './push/pushService';
 import { buildCategoryPromptAddition } from './categoryGuidance';
 import { generateSelfNotificationEmail } from './email/stringerSelfNotification';
+import { SPOUSE_GUIDE_ADDITION } from './spouseExperience';
+import { generateSpouseAlertEmail } from './email/spouseAlertEmail';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
@@ -142,10 +144,22 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
       alertRecord = alert;
     } else {
       // Partner mode: generate both guides
+      // Check if partner is a spouse (for Stringer spouse-specific guidance)
+      const { data: partnerCheck } = await db.from('partners')
+        .select('relationship')
+        .eq('user_id', userId)
+        .eq('status', 'accepted')
+        .maybeSingle();
+      const isSpouse = partnerCheck?.relationship === 'spouse';
+      let systemPrompt = PARTNER_SYSTEM_PROMPT + (categoryGuidance ? `\n\n${categoryGuidance}` : '');
+      if (isSpouse) {
+        systemPrompt += SPOUSE_GUIDE_ADDITION;
+      }
+
       const response = await getAnthropic().messages.create({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1200,
-        system: PARTNER_SYSTEM_PROMPT + (categoryGuidance ? `\n\n${categoryGuidance}` : ''),
+        system: systemPrompt,
         messages: [{
           role: 'user',
           content: `Generate conversation guides for: Category: ${categoryLabel}, Severity: ${event.severity}, Time: ${new Date(event.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}, Day: ${new Date(event.timestamp).toLocaleDateString('en-US', { weekday: 'long' })}, User's goals: ${(user.goals || []).map((g: string) => GOAL_LABELS[g as GoalCategory] || g).join(', ')}`,
@@ -206,14 +220,31 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
           );
         }
 
-        // Partner email
+        // Partner email (spouse-specific if applicable)
         if (partner.partner_email) {
           const partnerName = partner.partner_name || 'Partner';
+          let emailSubject = `Be Candid — ${userName} could use your support`;
+          let emailHtml = buildPartnerEmailHTML(userName, categoryLabel, event.severity, alertRecord.id, partnerName);
+
+          if (partner.relationship === 'spouse') {
+            const spouseEmail = generateSpouseAlertEmail({
+              spouseName: partnerName,
+              userName,
+              categoryLabel,
+              severity: event.severity,
+              alertId: alertRecord.id,
+              appUrl: APP_URL,
+              contenderLevel: (partner as any).spouse_contender_level || 0,
+            });
+            emailSubject = spouseEmail.subject;
+            emailHtml = spouseEmail.html;
+          }
+
           await getResend().emails.send({
             from: FROM,
             to: partner.partner_email,
-            subject: `Be Candid — ${userName} could use your support`,
-            html: buildPartnerEmailHTML(userName, categoryLabel, event.severity, alertRecord.id, partnerName),
+            subject: emailSubject,
+            html: emailHtml,
           }).catch((e) => console.error('Partner email failed:', e));
         }
       }

@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { onJournalEntry } from '@/lib/relationshipHooks';
 import {
   STRINGER_PROMPTS, STRINGER_QUOTES, JOURNAL_TAGS,
   type StringerJournalEntry,
@@ -170,6 +171,10 @@ export async function POST(req: NextRequest) {
     p_user_id: user.id, p_points: 10,
     p_reason: 'stringer_journal', p_reference_id: entry.id,
   });
+
+  // Relationship XP for journaling
+  const allPrompts = !!(entry.tributaries && entry.longing && entry.roadmap);
+  await onJournalEntry(user.id, allPrompts).catch(() => {});
 
   return NextResponse.json({ entry, points_earned: 10 }, { status: 201 });
 }

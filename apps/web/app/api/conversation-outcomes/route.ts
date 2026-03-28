@@ -13,6 +13,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { encrypt } from '@/lib/encryption';
+import { onOutcomeRated, onBothCompletedOutcome } from '@/lib/relationshipHooks';
 import Anthropic from '@anthropic-ai/sdk';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
@@ -121,6 +122,12 @@ export async function POST(req: NextRequest) {
       p_reason: `outcome_${role}`, p_reference_id: outcome.id,
     });
   } catch {}
+
+  // Relationship XP
+  await onOutcomeRated(user.id, role).catch(() => {});
+  if (outcome.user_completed_at && outcome.partner_completed_at) {
+    await onBothCompletedOutcome(alertUserId).catch(() => {});
+  }
 
   return NextResponse.json({ outcome, points_earned: 10 });
 }

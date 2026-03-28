@@ -12,6 +12,8 @@ import {
   calculateFocusStreak,
   checkStreakMilestones,
 } from '@/lib/focusSegments';
+import { onFocusedSegment } from '@/lib/relationshipHooks';
+import { updateRelationshipStreaks } from '@/lib/relationshipEngine';
 
 export async function POST(req: NextRequest) {
   // Verify cron secret
@@ -61,6 +63,9 @@ export async function POST(req: NextRequest) {
       const streak = await calculateFocusStreak(db, user.id, tz);
       const milestones = await checkStreakMilestones(db, user.id, streak.streakDays);
 
+      // Relationship XP for focused segment
+      await onFocusedSegment(user.id).catch(() => {});
+
       results.push({
         userId: user.id,
         morning,
@@ -72,6 +77,9 @@ export async function POST(req: NextRequest) {
       console.error(`Focus segment cron error for user ${user.id}:`, err);
     }
   }
+
+  // Update relationship streaks for all users
+  await updateRelationshipStreaks().catch(() => {});
 
   return NextResponse.json({
     processed: results.length,

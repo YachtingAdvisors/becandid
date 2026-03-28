@@ -19,6 +19,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import {
   STRINGER_PROMPTS, STRINGER_QUOTES, JOURNAL_TAGS,
 } from '@be-candid/shared';
+import { checkForCrisisLanguage } from '@/lib/crisisDetection';
+import CrisisResourceBanner from '@/components/dashboard/CrisisResourceBanner';
 
 const MOODS = [
   { v: 1, label: 'Heavy', emoji: '😔' },
@@ -71,6 +73,9 @@ export default function StringerJournalPage() {
   const [expandedPrompts, setExpandedPrompts] = useState<Record<string, boolean>>({});
   const [mood, setMood] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  // Crisis detection
+  const crisisCheck = useMemo(() => checkForCrisisLanguage(freewrite), [freewrite]);
 
   // If opened from a relapse notification, pre-populate context
   useEffect(() => {
@@ -239,6 +244,7 @@ export default function StringerJournalPage() {
         <textarea value={freewrite} onChange={(e) => setFreewrite(e.target.value)}
           placeholder="Write freely. What happened? What are you feeling right now?"
           className="w-full h-28 px-4 py-3 rounded-xl border border-surface-border bg-white text-ink text-sm leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand placeholder:text-ink-muted/50" />
+        {crisisCheck.detected && <CrisisResourceBanner result={crisisCheck} />}
       </div>
 
       {/* Guided prompts */}
