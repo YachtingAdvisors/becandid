@@ -51,6 +51,10 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
         const isExpanded = expandedGroup === group.label;
         const hasAnySelected = selectedCount > 0;
 
+        const isSingleCategory = totalCount === 1;
+        const singleCat = isSingleCategory ? group.categories[0] : null;
+        const singleSelected = singleCat ? selected.includes(singleCat) : false;
+
         return (
           <div
             key={group.label}
@@ -63,7 +67,13 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
             {/* Group header */}
             <button
               type="button"
-              onClick={() => setExpandedGroup(isExpanded ? null : group.label)}
+              onClick={() => {
+                if (isSingleCategory && singleCat) {
+                  toggleGoal(singleCat);
+                } else {
+                  setExpandedGroup(isExpanded ? null : group.label);
+                }
+              }}
               disabled={disabled}
               className="w-full flex items-center gap-3 px-4 py-3.5 text-left disabled:opacity-50"
             >
@@ -71,7 +81,7 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-on-surface font-label">{group.label}</span>
-                  {selectedCount > 0 && (
+                  {selectedCount > 0 && !isSingleCategory && (
                     <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-on-primary text-[10px] font-bold">
                       {selectedCount}
                     </span>
@@ -80,34 +90,46 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
                 <p className="text-xs text-on-surface-variant mt-0.5 leading-snug font-body">{group.description}</p>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                {totalCount > 1 && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleGroup(group);
-                    }}
-                    disabled={disabled}
-                    className={`text-[10px] font-semibold px-2 py-1 rounded-lg font-label transition-colors ${
-                      selectedCount === totalCount
-                        ? 'bg-primary text-on-primary'
-                        : 'bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-primary'
-                    }`}
-                  >
-                    {selectedCount === totalCount ? 'All ✓' : 'All'}
-                  </button>
+                {isSingleCategory ? (
+                  singleSelected ? (
+                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                      <svg className="w-3.5 h-3.5 text-on-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6 rounded-full border-2 border-outline-variant" />
+                  )
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleGroup(group);
+                      }}
+                      disabled={disabled}
+                      className={`text-[10px] font-semibold px-2 py-1 rounded-lg font-label transition-colors ${
+                        selectedCount === totalCount
+                          ? 'bg-primary text-on-primary'
+                          : 'bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-primary'
+                      }`}
+                    >
+                      {selectedCount === totalCount ? 'All \u2713' : 'All'}
+                    </button>
+                    <svg
+                      className={`w-4 h-4 text-on-surface-variant transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </>
                 )}
-                <svg
-                  className={`w-4 h-4 text-on-surface-variant transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
               </div>
             </button>
 
-            {/* Expanded category list */}
-            {isExpanded && (
+            {/* Expanded category list (only for multi-category groups) */}
+            {isExpanded && !isSingleCategory && (
               <div className="px-3 pb-3 space-y-1.5 border-t border-outline-variant/50 pt-2">
                 {group.categories.map((cat) => {
                   const isSelected = selected.includes(cat);
