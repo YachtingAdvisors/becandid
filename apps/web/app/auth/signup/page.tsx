@@ -133,16 +133,6 @@ export default function SignUpPage() {
         )}
       </div>
 
-      {/* Side Image (desktop only) */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <div className="fixed bottom-12 right-12 hidden lg:block w-64 h-80 rounded-3xl overflow-hidden shadow-2xl rotate-3 border-8 border-white group">
-        <img
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY90xEQO9NELBIOl00lEgpRdEnVz37dUYzWjvXZB1TkQOJ5axfuYfSF6mp9bPRr2msjc7A1HoAKwY1QpOavXs00p9uG58eH6DC4OQzHUtG_CA83PbemOKfeFdNKgOGgwpnHnMiQqz_8Ze7C544Gk-ZyX_eVS3TicHgJguseCmscixAAxfggQc3kauVJ5DzLbZzrHZ8E4h9SDzG9gqSzYDQZUa0RIFmmRhhf1FgQJrVkEo8raZ-gZHdKaZcqaCee5fO6rm_3cQGzTED"
-          alt="Calm atmosphere"
-          className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
-      </div>
     </main>
   );
 }
