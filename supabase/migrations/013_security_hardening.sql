@@ -7,40 +7,42 @@
 -- 4. Indexes for session security queries
 -- ============================================================
 
--- ── Active sessions ─────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS user_sessions (
-  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  device_hash     TEXT NOT NULL,           -- HMAC of user_agent + IP
-  ip_address      TEXT,                    -- Masked in API responses
-  user_agent      TEXT,                    -- Truncated to 256 chars
-  platform        TEXT DEFAULT 'web' CHECK (platform IN ('web', 'ios', 'android')),
-  last_active_at  TIMESTAMPTZ DEFAULT now(),
-  created_at      TIMESTAMPTZ DEFAULT now(),
+-- ── Active sessions (upgrade from 011) ──────────────────────
+-- Migration 011 created user_sessions with last_seen.
+-- Add missing columns from the security-hardened schema.
+ALTER TABLE public.user_sessions
+  ADD COLUMN IF NOT EXISTS device_hash TEXT,
+  ADD COLUMN IF NOT EXISTS platform TEXT DEFAULT 'web',
+  ADD COLUMN IF NOT EXISTS last_active_at TIMESTAMPTZ DEFAULT now();
 
-  UNIQUE (user_id, device_hash)
-);
+-- Backfill last_active_at from last_seen if it exists
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.columns
+             WHERE table_name = 'user_sessions' AND column_name = 'last_seen') THEN
+    UPDATE public.user_sessions SET last_active_at = last_seen WHERE last_active_at IS NULL;
+  END IF;
+END $$;
 
-CREATE INDEX idx_sessions_user ON user_sessions(user_id, last_active_at DESC);
+-- Create index using whichever column exists
+DROP INDEX IF EXISTS idx_sessions_user;
+CREATE INDEX idx_sessions_user ON public.user_sessions(user_id, last_active_at DESC);
 
 -- Auto-expire sessions after 30 days of inactivity
--- (run via pg_cron or a scheduled function)
 CREATE OR REPLACE FUNCTION cleanup_stale_sessions()
 RETURNS void AS $$
 BEGIN
-  DELETE FROM user_sessions
+  DELETE FROM public.user_sessions
   WHERE last_active_at < now() - interval '30 days';
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- ── RLS for sessions ────────────────────────────────────────
-ALTER TABLE user_sessions ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users read own sessions" ON user_sessions
-  FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Users delete own sessions" ON user_sessions
-  FOR DELETE USING (auth.uid() = user_id);
--- Insert/update handled by service client only (no direct user writes)
+-- ── RLS for sessions (add delete policy if missing) ─────────
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Users delete own sessions') THEN
+    CREATE POLICY "Users delete own sessions" ON public.user_sessions
+      FOR DELETE USING (auth.uid() = user_id);
+  END IF;
+END $$;
 
 -- ── Data retention ──────────────────────────────────────────
 -- Add retention_days to user preferences.
