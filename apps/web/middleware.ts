@@ -7,7 +7,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const PUBLIC_PATHS = ['/auth/signin', '/auth/signup', '/invite', '/_next', '/favicon'];
+const PUBLIC_PATHS = ['/auth/', '/invite', '/_next', '/favicon', '/legal/', '/families', '/pricing', '/guardian'];
 const CRON_PATHS = ['/api/cron'];
 const PUBLIC_API_PATHS = ['/api/partners/invite'];
 
@@ -53,13 +53,15 @@ function checkIpRate(ip: string): boolean {
   return true;
 }
 
-// Periodically clean stale entries (prevent memory leak)
-setInterval(() => {
+// Clean stale entries on each invocation (Edge Runtime doesn't support setInterval)
+function cleanStaleEntries() {
   const now = Date.now();
-  for (const [key, val] of IP_STORE) {
-    if (now > val.resetAt) IP_STORE.delete(key);
+  if (IP_STORE.size > 1000) {
+    for (const [key, val] of IP_STORE) {
+      if (now > val.resetAt) IP_STORE.delete(key);
+    }
   }
-}, 300_000); // every 5 min
+}
 
 // ─── Timing-Safe Comparison ──────────────────────────────────
 function timingSafeEqual(a: string, b: string): boolean {
@@ -89,6 +91,16 @@ function jsonError(msg: string, status: number) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Clean IP store periodically
+  cleanStaleEntries();
+
+  // Root landing page is always public
+  if (pathname === '/') {
+    const response = NextResponse.next();
+    applyHeaders(response, SECURITY_HEADERS);
+    return response;
+  }
+
   // ── 1. IP rate limit on all API requests ────────────────
   if (pathname.startsWith('/api/')) {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
@@ -114,7 +126,8 @@ export async function middleware(request: NextRequest) {
         const origin = request.headers.get('origin');
         const referer = request.headers.get('referer');
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
-        const appHost = appUrl ? new URL(appUrl).host : '';
+        let appHost = '';
+        try { if (appUrl) appHost = new URL(appUrl).host; } catch { /* ignore invalid URL */ }
 
         // Allow requests with matching origin, matching referer, or same-origin (no origin header for same-origin in some browsers)
         const originHost = origin ? new URL(origin).host : null;
