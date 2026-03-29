@@ -1,11 +1,3 @@
-// ============================================================
-// app/auth/reset/page.tsx
-//
-// Password reset request page.
-// User enters email → Supabase sends reset link →
-// Link goes to /auth/update-password with token in URL hash.
-// ============================================================
-
 'use client';
 
 import { useState } from 'react';
@@ -40,54 +32,56 @@ export default function ResetPasswordPage() {
 
   if (sent) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <div className="max-w-sm w-full text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-50 mb-4">
-            <span className="text-2xl">📧</span>
+          <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-8">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-container mb-4">
+              <span className="text-2xl">📧</span>
+            </div>
+            <h1 className="text-xl font-headline font-semibold text-on-surface mb-2">Check your email</h1>
+            <p className="text-sm text-on-surface-variant leading-relaxed mb-6 font-body">
+              If an account exists for <strong>{email}</strong>, we&apos;ve sent a password reset link.
+              It expires in 1 hour.
+            </p>
+            <Link href="/auth/signin"
+              className="block w-full py-3 text-sm font-headline font-bold rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors">
+              Back to sign in
+            </Link>
           </div>
-          <h1 className="text-xl font-display font-semibold text-ink mb-2">Check your email</h1>
-          <p className="text-sm text-ink-muted leading-relaxed mb-6">
-            If an account exists for <strong>{email}</strong>, we've sent a password reset link.
-            It expires in 1 hour.
-          </p>
-          <Link href="/auth/signin"
-            className="block w-full py-3 text-sm font-medium rounded-xl border border-surface-border text-ink-muted hover:bg-gray-50">
-            Back to sign in
-          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="max-w-sm w-full">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand mb-3">
-            <span className="text-white font-bold text-sm">C</span>
-          </div>
-          <h1 className="text-xl font-display font-semibold text-ink">Reset your password</h1>
-          <p className="text-sm text-ink-muted mt-1">We'll send you a link to reset it</p>
+          <h1 className="font-headline text-3xl font-bold text-primary">Be Candid</h1>
+          <p className="text-sm text-on-surface-variant mt-2 font-body">We&apos;ll send you a link to reset your password</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-sm text-red-600">{error}</div>
-          )}
-          <div>
-            <label className="block text-sm font-medium text-ink mb-1.5">Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com" required autoFocus
-              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm text-ink focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand" />
-          </div>
-          <button type="submit" disabled={loading || !email.trim()}
-            className="w-full py-3 text-sm font-medium rounded-xl bg-brand text-white hover:bg-brand-dark disabled:opacity-50 transition-colors">
-            {loading ? 'Sending…' : 'Send reset link'}
-          </button>
-        </form>
+        <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="px-4 py-3 rounded-2xl bg-error/5 border border-error/20 text-error text-sm font-body">{error}</div>
+            )}
+            <div>
+              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Email</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com" required autoFocus
+                className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
+            </div>
+            <button type="submit" disabled={loading || !email.trim()}
+              className="w-full py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 disabled:opacity-50 transition-opacity">
+              {loading ? 'Sending...' : 'Send reset link'}
+            </button>
+          </form>
+        </div>
 
-        <p className="text-center text-sm text-ink-muted mt-6">
-          Remember your password? <Link href="/auth/signin" className="text-brand hover:text-brand-dark font-medium">Sign in</Link>
+        <p className="text-center text-sm text-on-surface-variant mt-6 font-body">
+          Remember your password?{' '}
+          <Link href="/auth/signin" className="text-primary hover:underline font-medium">Sign in</Link>
         </p>
       </div>
     </div>

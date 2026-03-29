@@ -51,59 +51,62 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-brand-600 flex items-center justify-center mx-auto mb-4">
-            <span className="text-white text-xl font-bold">C</span>
-          </div>
-          <h1 className="font-display text-2xl font-bold text-ink">Create your account</h1>
-          <p className="text-sm text-ink-muted mt-1">Start your accountability journey</p>
+          <h1 className="font-headline text-3xl font-bold text-primary">Be Candid</h1>
+          <p className="text-sm text-on-surface-variant mt-2 font-body">Start your accountability journey</p>
         </div>
 
         {!ageVerified ? (
-          <div className="card p-6">
+          <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-8">
             <AgeGate onVerified={() => setAgeVerified(true)} />
           </div>
         ) : (
           <>
-            <form onSubmit={handleSignUp} className="card p-6 space-y-4">
-              {error && (
-                <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>
-              )}
+            <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-8">
+              <form onSubmit={handleSignUp} className="space-y-5">
+                {error && (
+                  <div className="px-4 py-3 rounded-2xl bg-error/5 border border-error/20 text-error text-sm font-body">{error}</div>
+                )}
 
-              <div>
-                <label className="block text-sm font-medium text-ink mb-1.5">Your name</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                  className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  placeholder="e.g. Alex" />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Your name</label>
+                  <input type="text" value={name} onChange={e => setName(e.target.value)} required
+                    className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="e.g. Alex" />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-ink mb-1.5">Email</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                  className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  placeholder="you@example.com" />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Email</label>
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                    className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="you@example.com" />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-ink mb-1.5">Password</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
-                  className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  placeholder="At least 8 characters" />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Password</label>
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
+                    className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="At least 8 characters" />
+                </div>
 
-              <SignupConsent checked={consented} onChange={setConsented} />
+                <SignupConsent checked={consented} onChange={setConsented} />
 
-              <button type="submit" disabled={!consented || loading}
-                className="w-full py-3 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 transition-colors disabled:opacity-50">
-                {loading ? 'Creating account...' : 'Create Account'}
-              </button>
-            </form>
+                <button type="submit" disabled={!consented || loading}
+                  className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold rounded-full hover:opacity-90 transition-opacity disabled:opacity-50">
+                  {loading ? 'Creating account...' : 'Create Account'}
+                </button>
+              </form>
 
-            <p className="text-center text-sm text-ink-muted mt-6">
+              <p className="text-xs text-on-surface-variant text-center mt-4 font-body">
+                Developed in partnership with board-certified neurologists and licensed mental health professionals
+              </p>
+            </div>
+
+            <p className="text-center text-sm text-on-surface-variant mt-6 font-body">
               Already have an account?{' '}
-              <Link href="/auth/signin" className="text-brand-600 font-medium hover:underline">Sign in</Link>
+              <Link href="/auth/signin" className="text-primary font-medium hover:underline">Sign in</Link>
             </p>
           </>
         )}

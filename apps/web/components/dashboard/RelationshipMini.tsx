@@ -27,8 +27,8 @@ export default function RelationshipMini() {
   }, []);
 
   if (loading) return (
-    <div className="card p-4">
-      <div className="h-20 animate-pulse bg-gray-50 rounded-lg" />
+    <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-4">
+      <div className="h-20 animate-pulse bg-surface-container-low rounded-2xl" />
     </div>
   );
 
@@ -41,12 +41,12 @@ export default function RelationshipMini() {
   const dashOffset = circumference * (1 - progress);
 
   return (
-    <Link href="/dashboard/partner" className="card p-4 hover:border-brand/30 transition-colors block">
+    <Link href="/dashboard/partner" className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-4 hover:border-primary/30 transition-colors block">
       <div className="flex items-center gap-4">
         {/* Progress ring with level emoji */}
         <div className="relative w-16 h-16 shrink-0">
           <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
-            <circle cx="32" cy="32" r={radius} fill="none" stroke="#f3f4f6" strokeWidth="3" />
+            <circle cx="32" cy="32" r={radius} fill="none" stroke="currentColor" className="text-surface-container" strokeWidth="3" />
             <circle
               cx="32" cy="32" r={radius} fill="none"
               stroke="url(#grad)" strokeWidth="3"
@@ -57,8 +57,8 @@ export default function RelationshipMini() {
             />
             <defs>
               <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#8b5cf6" />
-                <stop offset="100%" stopColor="#6366f1" />
+                <stop offset="0%" stopColor="#226779" />
+                <stop offset="100%" stopColor="#a4e4f8" />
               </linearGradient>
             </defs>
           </svg>
@@ -69,17 +69,17 @@ export default function RelationshipMini() {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="text-xs text-violet-500 font-medium">Level {data.level}</p>
+            <p className="text-xs text-primary font-label font-medium">Level {data.level}</p>
             {data.streakMultiplier > 1 && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-bold">
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full font-label bg-tertiary-container text-on-tertiary-container font-bold">
                 {data.streakMultiplier}x
               </span>
             )}
           </div>
-          <p className="text-sm font-display font-semibold text-ink truncate">{data.levelTitle}</p>
-          <p className="text-[11px] text-ink-muted mt-0.5">
+          <p className="text-sm font-headline font-bold text-on-surface truncate">{data.levelTitle}</p>
+          <p className="text-[11px] text-on-surface-variant font-label mt-0.5">
             {data.totalXP.toLocaleString()} XP
-            {data.streak > 0 && <span className="text-amber-600"> · {data.streak}d streak</span>}
+            {data.streak > 0 && <span className="text-tertiary"> {'\u00B7'} {data.streak}d streak</span>}
           </p>
         </div>
       </div>

@@ -25,8 +25,8 @@ export default async function SettingsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">Settings</h1>
-        <p className="text-sm text-ink-muted">
+        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">Settings</h1>
+        <p className="text-sm text-on-surface-variant font-body">
           Manage your profile, rivals, monitoring preferences, and check-in schedule.
         </p>
       </div>
@@ -68,17 +68,17 @@ export default async function SettingsPage() {
       <PrivacySettings />
 
       {/* Data & Account */}
-      <section className="card p-5 space-y-3">
-        <h2 className="font-display text-lg font-semibold text-ink">Your Data</h2>
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 border border-outline-variant shadow-sm">
+        <h2 className="font-headline text-lg font-bold text-on-surface">Your Data</h2>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-sm font-medium text-ink">Export all data</div>
-            <div className="text-xs text-ink-muted">Download everything as a JSON file</div>
+            <div className="text-sm font-label font-medium text-on-surface">Export all data</div>
+            <div className="text-xs text-on-surface-variant font-body">Download everything as a JSON file</div>
           </div>
           <a
             href="/api/account"
             download
-            className="px-3 py-1.5 text-xs font-medium text-brand-600 border border-brand-300 rounded-lg hover:bg-brand-50 transition-colors"
+            className="px-3 py-1.5 text-xs font-label font-medium text-primary border border-primary-container rounded-2xl hover:bg-primary-container/20 transition-colors"
           >
             Export
           </a>
@@ -86,14 +86,14 @@ export default async function SettingsPage() {
       </section>
 
       {/* Danger zone */}
-      <section className="card p-5 border-red-200">
-        <h2 className="font-display text-lg font-semibold text-red-600 mb-3">Danger Zone</h2>
+      <section className="bg-surface-container-lowest rounded-3xl p-5 border border-error/30 shadow-sm">
+        <h2 className="font-headline text-lg font-bold text-error mb-3">Danger Zone</h2>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-sm font-medium text-ink">Delete account</div>
-            <div className="text-xs text-ink-muted">Permanently delete your account and all data. This cannot be undone.</div>
+            <div className="text-sm font-label font-medium text-on-surface">Delete account</div>
+            <div className="text-xs text-on-surface-variant font-body">Permanently delete your account and all data. This cannot be undone.</div>
           </div>
-          <button className="px-3 py-1.5 text-xs font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors">
+          <button className="px-3 py-1.5 text-xs font-label font-medium text-error border border-error/30 rounded-2xl hover:bg-error/5 transition-colors">
             Delete Account
           </button>
         </div>

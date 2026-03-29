@@ -16,20 +16,21 @@ export const metadata = {
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="mb-12">
-          <p className="text-sm text-brand font-medium uppercase tracking-wider mb-2">Legal</p>
-          <h1 className="text-3xl font-display font-bold text-ink mb-2">Privacy Policy</h1>
-          <p className="text-sm text-ink-muted">Last updated: March 28, 2026 &middot; Effective: March 28, 2026</p>
+          <p className="text-sm text-primary font-label font-medium uppercase tracking-wider mb-2">Legal</p>
+          <h1 className="text-3xl font-headline font-bold text-on-surface mb-2">Privacy Policy</h1>
+          <p className="text-sm text-on-surface-variant font-body">Last updated: March 28, 2026 &middot; Effective: March 28, 2026</p>
         </div>
 
-        <div className="prose prose-sm prose-gray max-w-none text-ink leading-relaxed
-          prose-headings:font-display prose-headings:text-ink prose-headings:font-semibold
-          prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4
+        <div className="prose prose-sm max-w-none text-on-surface leading-relaxed font-body
+          prose-headings:font-headline prose-headings:text-on-surface prose-headings:font-semibold
+          prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pt-6 prose-h2:border-t prose-h2:border-outline-variant/50
           prose-h3:text-base prose-h3:mt-6 prose-h3:mb-3
           prose-p:mb-4 prose-li:mb-1
-          prose-a:text-brand prose-a:no-underline hover:prose-a:underline">
+          prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+          prose-strong:text-on-surface">
 
           <p>
             Be Candid (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) operates the Be Candid mobile application and website

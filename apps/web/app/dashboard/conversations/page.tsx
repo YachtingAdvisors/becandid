@@ -14,9 +14,9 @@ interface AlertRow {
 }
 
 const SEVERITY_STYLES: Record<Severity, string> = {
-  low: 'bg-amber-100 text-amber-800',
-  medium: 'bg-orange-100 text-orange-800',
-  high: 'bg-red-100 text-red-800',
+  low: 'bg-tertiary-container text-on-tertiary-container',
+  medium: 'bg-tertiary-container text-on-tertiary-container',
+  high: 'bg-error/10 text-error',
 };
 
 export default function ConversationsPage() {
@@ -71,47 +71,47 @@ export default function ConversationsPage() {
       <ToastContainer />
 
       <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">Conversations</h1>
-        <p className="text-sm text-ink-muted">Alerts, AI guides, and accountability conversations.</p>
+        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">Conversations</h1>
+        <p className="text-sm text-on-surface-variant font-body">Alerts, AI guides, and accountability conversations.</p>
       </div>
 
       {/* Pending conversations */}
       {pending.length > 0 && (
         <div className="space-y-3">
-          <h2 className="font-display text-sm font-semibold text-ink uppercase tracking-wider">Needs Conversation ({pending.length})</h2>
+          <h2 className="font-headline text-sm font-bold text-on-surface uppercase tracking-wider">Needs Conversation ({pending.length})</h2>
           {pending.map(alert => (
-            <div key={alert.id} className="card p-4">
+            <div key={alert.id} className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-4">
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-xl">{getCategoryEmoji(alert.events?.category as GoalCategory)}</span>
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-ink">
+                  <div className="text-sm font-label font-medium text-on-surface">
                     {GOAL_LABELS[alert.events?.category as GoalCategory] ?? 'Alert'}
                   </div>
-                  <div className="text-xs text-ink-muted">{timeAgo(alert.sent_at)}</div>
+                  <div className="text-xs text-on-surface-variant font-label">{timeAgo(alert.sent_at)}</div>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${SEVERITY_STYLES[alert.events?.severity as Severity ?? 'medium']}`}>
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold ${SEVERITY_STYLES[alert.events?.severity as Severity ?? 'medium']}`}>
                   {alert.events?.severity}
                 </span>
               </div>
 
               {alert.ai_guide_user && (
-                <div className="mb-3 px-3 py-2 rounded-xl bg-brand-50 border border-brand-200 text-xs text-brand-700">
-                  AI conversation guide available — <Link href={`/conversation/${alert.id}`} className="font-semibold underline">view full guide</Link>
+                <div className="mb-3 px-3 py-2 rounded-2xl bg-primary-container/30 border border-primary-container text-xs text-primary font-body">
+                  AI conversation guide available &mdash; <Link href={`/conversation/${alert.id}`} className="font-label font-semibold underline">view full guide</Link>
                 </div>
               )}
 
               <div className="flex gap-2">
                 <button onClick={() => markComplete(alert.id, 'positive')}
-                  className="flex-1 py-2 text-xs font-medium rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors">
-                  ✅ Positive
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-2xl bg-primary-container/30 text-primary border border-primary-container hover:bg-primary-container/50 transition-colors">
+                  {'\u2705'} Positive
                 </button>
                 <button onClick={() => markComplete(alert.id, 'neutral')}
-                  className="flex-1 py-2 text-xs font-medium rounded-xl bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors">
-                  😐 Neutral
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-2xl bg-surface-container text-on-surface-variant border border-outline-variant hover:bg-surface-container-low transition-colors">
+                  {'\uD83D\uDE10'} Neutral
                 </button>
                 <button onClick={() => markComplete(alert.id, 'difficult')}
-                  className="flex-1 py-2 text-xs font-medium rounded-xl bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors">
-                  💪 Difficult
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-2xl bg-error/5 text-error border border-error/20 hover:bg-error/10 transition-colors">
+                  {'\uD83D\uDCAA'} Difficult
                 </button>
               </div>
             </div>
@@ -122,26 +122,26 @@ export default function ConversationsPage() {
       {/* Completed */}
       {completed.length > 0 && (
         <div className="space-y-3">
-          <h2 className="font-display text-sm font-semibold text-ink uppercase tracking-wider">Completed ({completed.length})</h2>
-          <div className="card divide-y divide-surface-border/50">
+          <h2 className="font-headline text-sm font-bold text-on-surface uppercase tracking-wider">Completed ({completed.length})</h2>
+          <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant divide-y divide-outline-variant/50">
             {completed.map(alert => {
               const conv = alert.conversations[0];
               const OUTCOME_STYLE: Record<string, string> = {
-                positive: 'bg-emerald-50 text-emerald-700',
-                neutral: 'bg-gray-50 text-gray-600',
-                difficult: 'bg-red-50 text-red-700',
+                positive: 'bg-primary-container/30 text-primary',
+                neutral: 'bg-surface-container text-on-surface-variant',
+                difficult: 'bg-error/5 text-error',
               };
               return (
-                <div key={alert.id} className="flex items-center gap-3 px-4 py-3">
+                <div key={alert.id} className="flex items-center gap-3 px-5 py-3">
                   <span className="text-lg">{getCategoryEmoji(alert.events?.category as GoalCategory)}</span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-ink">
+                    <div className="text-sm font-label font-medium text-on-surface">
                       {GOAL_LABELS[alert.events?.category as GoalCategory] ?? 'Alert'}
                     </div>
-                    <div className="text-xs text-ink-muted">{timeAgo(alert.sent_at)}</div>
+                    <div className="text-xs text-on-surface-variant font-label">{timeAgo(alert.sent_at)}</div>
                   </div>
                   {conv?.outcome && (
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${OUTCOME_STYLE[conv.outcome] ?? ''}`}>
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold ${OUTCOME_STYLE[conv.outcome] ?? ''}`}>
                       {conv.outcome}
                     </span>
                   )}
@@ -153,10 +153,10 @@ export default function ConversationsPage() {
       )}
 
       {alerts.length === 0 && !loading && (
-        <div className="card p-12 text-center">
-          <div className="text-4xl mb-4">💬</div>
-          <h3 className="font-display text-xl font-semibold text-ink mb-2">No conversations yet</h3>
-          <p className="text-sm text-ink-muted">When alerts are triggered, your conversation guides will appear here.</p>
+        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-12 text-center">
+          <div className="text-4xl mb-4">{'\uD83D\uDCAC'}</div>
+          <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No conversations yet</h3>
+          <p className="text-sm text-on-surface-variant font-body">When alerts are triggered, your conversation guides will appear here.</p>
         </div>
       )}
     </div>

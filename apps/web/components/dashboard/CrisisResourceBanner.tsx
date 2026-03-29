@@ -22,18 +22,18 @@ export default function CrisisResourceBanner({ result }: { result: CrisisDetecti
   const isUrgent = result.severity === 'urgent';
 
   return (
-    <div className={`rounded-xl border p-5 ${
+    <div className={`rounded-2xl border p-5 mt-3 ${
       isUrgent
-        ? 'bg-red-50 border-red-200'
-        : 'bg-amber-50 border-amber-200'
+        ? 'bg-error/5 border-error/30'
+        : 'bg-tertiary-container/30 border-tertiary-container'
     }`}>
       <div className="flex items-start gap-3">
-        <span className="text-xl mt-0.5">{isUrgent ? '❤️' : '💛'}</span>
+        <span className="text-xl mt-0.5">{isUrgent ? '\u2764\uFE0F' : '\uD83D\uDC9B'}</span>
         <div className="flex-1">
-          <h3 className={`text-sm font-semibold ${isUrgent ? 'text-red-800' : 'text-amber-800'}`}>
+          <h3 className={`text-sm font-headline font-bold ${isUrgent ? 'text-error' : 'text-tertiary'}`}>
             {isUrgent ? 'It sounds like you\'re going through something heavy' : 'You\'re not alone in this'}
           </h3>
-          <p className={`text-sm mt-1 leading-relaxed ${isUrgent ? 'text-red-700' : 'text-amber-700'}`}>
+          <p className={`text-sm font-body mt-1 leading-relaxed ${isUrgent ? 'text-error/80' : 'text-on-tertiary-container/80'}`}>
             {isUrgent
               ? 'What you\'re feeling matters. You don\'t have to carry this alone. These resources are confidential and free.'
               : 'If you\'re struggling, talking to someone can help. These resources are available anytime.'}
@@ -46,27 +46,27 @@ export default function CrisisResourceBanner({ result }: { result: CrisisDetecti
                 href={r.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`block p-3 rounded-lg border ${
-                  isUrgent ? 'bg-white border-red-100 hover:border-red-300' : 'bg-white border-amber-100 hover:border-amber-300'
+                className={`block p-3 rounded-2xl border ${
+                  isUrgent ? 'bg-surface-container-lowest border-error/20 hover:border-error/40' : 'bg-surface-container-lowest border-tertiary-container/50 hover:border-tertiary-container'
                 } transition-colors`}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-ink">{r.name}</p>
-                    <p className="text-xs text-ink-muted mt-0.5">{r.description}</p>
+                    <p className="text-sm font-label font-semibold text-on-surface">{r.name}</p>
+                    <p className="text-xs text-on-surface-variant font-body mt-0.5">{r.description}</p>
                   </div>
                   <div className="text-right shrink-0 ml-3">
-                    <p className={`text-sm font-bold ${isUrgent ? 'text-red-600' : 'text-amber-600'}`}>
+                    <p className={`text-sm font-headline font-bold ${isUrgent ? 'text-error' : 'text-tertiary'}`}>
                       {r.contact}
                     </p>
-                    <p className="text-[10px] text-ink-muted">{r.available}</p>
+                    <p className="text-[10px] text-on-surface-variant font-label">{r.available}</p>
                   </div>
                 </div>
               </a>
             ))}
           </div>
 
-          <p className="text-[11px] mt-3 text-ink-muted/70 italic">
+          <p className="text-[11px] mt-3 text-on-surface-variant/60 italic font-body">
             This is shown privately to you. It&apos;s not shared with your partner or stored anywhere.
           </p>
         </div>

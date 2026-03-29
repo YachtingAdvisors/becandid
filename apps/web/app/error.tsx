@@ -10,13 +10,13 @@ export default function RootError({
   reset: () => void;
 }) {
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="text-center max-w-sm">
-        <div className="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center mx-auto mb-6">
-          <span className="text-2xl">!</span>
+        <div className="w-16 h-16 rounded-2xl bg-error-container/20 flex items-center justify-center mx-auto mb-6">
+          <span className="text-2xl text-error">!</span>
         </div>
-        <h1 className="font-display text-3xl text-ink mb-3">Something went wrong</h1>
-        <p className="text-sm text-ink-muted mb-8 leading-relaxed">
+        <h1 className="font-headline text-3xl font-extrabold text-on-surface mb-3">Something went wrong</h1>
+        <p className="text-sm text-on-surface-variant mb-8 leading-relaxed">
           An unexpected error occurred. Please try again or head back to the home page.
         </p>
         <div className="flex items-center justify-center gap-3">

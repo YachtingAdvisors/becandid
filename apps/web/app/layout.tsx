@@ -1,18 +1,23 @@
 import type { Metadata, Viewport } from 'next';
-import { DM_Sans, DM_Serif_Display } from 'next/font/google';
+import { Manrope, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import LegalFooter from '@/components/LegalFooter';
 
-const fontBody = DM_Sans({
+const fontHeadline = Manrope({
+  subsets: ['latin'],
+  variable: '--font-headline',
+  display: 'swap',
+});
+
+const fontBody = Manrope({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
 });
 
-const fontDisplay = DM_Serif_Display({
+const fontLabel = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  weight: '400',
-  variable: '--font-display',
+  variable: '--font-label',
   display: 'swap',
 });
 
@@ -43,7 +48,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#7c3aed',
+  themeColor: '#226779',
 };
 
 export default function RootLayout({
@@ -52,8 +57,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${fontBody.variable} ${fontDisplay.variable}`}>
-      <body className="font-body">
+    <html lang="en" className={`${fontHeadline.variable} ${fontBody.variable} ${fontLabel.variable}`}>
+      <body className="font-body bg-background text-on-surface">
         {children}
         <LegalFooter />
       </body>

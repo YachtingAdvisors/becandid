@@ -10,9 +10,9 @@ import SpouseImpactAwareness from '@/components/dashboard/SpouseImpactAwareness'
 import Link from 'next/link';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
-  low: 'bg-amber-100 text-amber-800',
-  medium: 'bg-orange-100 text-orange-800',
-  high: 'bg-red-100 text-red-800',
+  low: 'bg-tertiary-container text-on-tertiary-container',
+  medium: 'bg-tertiary-container text-on-tertiary-container',
+  high: 'bg-error/10 text-error',
 };
 
 export default async function DashboardPage() {
@@ -39,82 +39,115 @@ export default async function DashboardPage() {
   const totalEvents = events.length;
   const pendingConversations = alerts.filter((a: any) => !a.conversations?.[0]?.completed_at).length;
 
+  // Calculate streak days from created_at
+  const daysSinceJoin = profile?.created_at
+    ? Math.floor((Date.now() - new Date(profile.created_at).getTime()) / 86400000)
+    : 0;
+
   return (
     <div className="max-w-4xl mx-auto space-y-6 stagger">
-      {/* ── Header ──────────────────────────────────────────── */}
-      <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">
-          Hey {profile?.name?.split(' ')[0] ?? 'there'} 👋
-        </h1>
-        <p className="text-sm text-ink-muted">
-          Here's your focus overview.
-        </p>
+      {/* -- Hero Streak Section -- */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary-container p-6 sm:p-8">
+        <div className="relative z-10">
+          <p className="text-on-primary/70 text-sm font-label font-medium mb-1">
+            Hey {profile?.name?.split(' ')[0] ?? 'there'}
+          </p>
+          <h1 className="font-headline text-3xl sm:text-4xl font-extrabold text-on-primary mb-2">
+            {daysSinceJoin}
+            <span className="text-lg font-body font-normal ml-2 text-on-primary/70">day streak</span>
+          </h1>
+          <p className="text-sm text-on-primary/60 font-body">
+            Here&apos;s your focus overview. Keep going.
+          </p>
+        </div>
+        {/* Decorative circles */}
+        <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-on-primary/5" />
+        <div className="absolute -bottom-8 -right-4 w-32 h-32 rounded-full bg-on-primary/5" />
       </div>
 
-      {/* ── Nudges ──────────────────────────────────────────── */}
+      {/* -- Nudges -- */}
       <NudgeBanner />
 
-      {/* ── Focus Board Mini ────────────────────────────────── */}
+      {/* -- Today's Pulse -- */}
+      <div className="space-y-3">
+        <h2 className="font-headline font-bold text-on-surface text-lg">Today&apos;s Pulse</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="bg-surface-container-low rounded-2xl px-4 py-4 text-center">
+            <div className="text-2xl font-headline font-bold text-on-surface">
+              {(profile?.goals ?? []).length}
+            </div>
+            <div className="text-xs text-on-surface-variant font-label mt-1">Rivals Tracked</div>
+          </div>
+
+          <div className="bg-surface-container-low rounded-2xl px-4 py-4 text-center">
+            <div className="text-2xl font-headline font-bold text-on-surface">
+              {partner ? '\u2713' : '\u2014'}
+            </div>
+            <div className="text-xs text-on-surface-variant font-label mt-1">
+              {partner ? partner.partner_name : 'No partner'}
+            </div>
+          </div>
+
+          <div className="bg-surface-container-low rounded-2xl px-4 py-4 text-center">
+            <div className={`text-2xl font-headline font-bold ${pendingConversations > 0 ? 'text-tertiary' : 'text-primary'}`}>
+              {pendingConversations}
+            </div>
+            <div className="text-xs text-on-surface-variant font-label mt-1">Pending Convos</div>
+          </div>
+
+          <div className="bg-surface-container-low rounded-2xl px-4 py-4 text-center">
+            <div className={`text-2xl font-headline font-bold ${profile?.monitoring_enabled ? 'text-primary' : 'text-outline'}`}>
+              {profile?.monitoring_enabled ? 'ON' : 'OFF'}
+            </div>
+            <div className="text-xs text-on-surface-variant font-label mt-1">Monitoring</div>
+          </div>
+        </div>
+      </div>
+
+      {/* -- Quick Actions Bento -- */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <Link href="/dashboard/checkins"
+          className="bg-secondary-container rounded-3xl p-5 hover:shadow-md transition-all group">
+          <div className="text-2xl mb-2">{'\u2713'}</div>
+          <h3 className="font-headline font-bold text-on-secondary-container text-base">Quick Check-in</h3>
+          <p className="text-xs text-on-secondary-container/70 font-body mt-1">Log how you&apos;re doing right now</p>
+        </Link>
+        <Link href="/dashboard/stringer-journal?action=write"
+          className="bg-tertiary-container rounded-3xl p-5 hover:shadow-md transition-all group">
+          <div className="text-2xl mb-2">{'\uD83D\uDCD3'}</div>
+          <h3 className="font-headline font-bold text-on-tertiary-container text-base">I need support</h3>
+          <p className="text-xs text-on-tertiary-container/70 font-body mt-1">Write in your Stringer Journal</p>
+        </Link>
+      </div>
+
+      {/* -- Focus Board Mini -- */}
       <FocusBoardMini />
 
-      {/* ── Check-in Status ─────────────────────────────────── */}
+      {/* -- Check-in Status -- */}
       <CheckInMini />
 
-      {/* ── Relationship Level ────────────────────────────────── */}
+      {/* -- Relationship Level -- */}
       <Suspense fallback={null}>
         <RelationshipMini />
       </Suspense>
 
-      {/* ── Spouse Impact Awareness ───────────────────────────── */}
+      {/* -- Spouse Impact Awareness -- */}
       <Suspense fallback={null}>
         <SpouseImpactAwareness />
       </Suspense>
 
-      {/* ── Quick Stats Row ─────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold text-ink">
-            {(profile?.goals ?? []).length}
-          </div>
-          <div className="text-xs text-ink-muted mt-0.5">Rivals Tracked</div>
-        </div>
-
-        <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold text-ink">
-            {partner ? '✓' : '—'}
-          </div>
-          <div className="text-xs text-ink-muted mt-0.5">
-            {partner ? partner.partner_name : 'No partner'}
-          </div>
-        </div>
-
-        <div className="card px-4 py-3 text-center">
-          <div className={`text-2xl font-display font-bold ${pendingConversations > 0 ? 'text-orange-500' : 'text-emerald-600'}`}>
-            {pendingConversations}
-          </div>
-          <div className="text-xs text-ink-muted mt-0.5">Pending Convos</div>
-        </div>
-
-        <div className="card px-4 py-3 text-center">
-          <div className={`text-2xl font-display font-bold ${profile?.monitoring_enabled ? 'text-emerald-600' : 'text-gray-400'}`}>
-            {profile?.monitoring_enabled ? 'ON' : 'OFF'}
-          </div>
-          <div className="text-xs text-ink-muted mt-0.5">Monitoring</div>
-        </div>
-      </div>
-
-      {/* ── Your Rivals ─────────────────────────────────────── */}
+      {/* -- Your Rivals -- */}
       {(profile?.goals ?? []).length > 0 && (
-        <div className="card p-4">
+        <div className="bg-surface-container-lowest rounded-3xl p-5 border border-outline-variant">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display text-sm font-semibold text-ink">Your Rivals</h3>
-            <Link href="/dashboard/settings" className="text-xs text-brand-600 font-medium hover:underline">
+            <h3 className="font-headline text-sm font-bold text-on-surface">Your Rivals</h3>
+            <Link href="/dashboard/settings" className="text-xs text-primary font-label font-medium hover:underline">
               Edit
             </Link>
           </div>
           <div className="flex flex-wrap gap-2">
             {(profile?.goals ?? []).map((g: string) => (
-              <span key={g} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-xs font-medium text-brand-700">
+              <span key={g} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-container/40 text-xs font-label font-medium text-primary">
                 {getCategoryEmoji(g as GoalCategory)} {GOAL_LABELS[g as GoalCategory] ?? g}
               </span>
             ))}
@@ -122,36 +155,36 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* ── Recent Events ───────────────────────────────────── */}
-      <div className="card">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-surface-border">
-          <h3 className="font-display text-sm font-semibold text-ink">Recent Events</h3>
-          <Link href="/dashboard/activity" className="text-xs text-brand-600 font-medium hover:underline">
+      {/* -- Recent Events -- */}
+      <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant">
+          <h3 className="font-headline text-sm font-bold text-on-surface">Recent Events</h3>
+          <Link href="/dashboard/activity" className="text-xs text-primary font-label font-medium hover:underline">
             View all
           </Link>
         </div>
 
         {events.length === 0 ? (
-          <div className="px-4 py-8 text-center text-sm text-ink-muted">
-            No events yet. Stay focused! 🎯
+          <div className="px-5 py-10 text-center text-sm text-on-surface-variant font-body">
+            No events yet. Stay focused!
           </div>
         ) : (
-          <div className="divide-y divide-surface-border/50">
+          <div className="divide-y divide-outline-variant/50">
             {events.map((event: any) => (
-              <div key={event.id} className="flex items-center gap-3 px-4 py-3">
+              <div key={event.id} className="flex items-center gap-3 px-5 py-3.5">
                 <span className="text-xl flex-shrink-0">
                   {getCategoryEmoji(event.category as GoalCategory)}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-ink">
+                  <div className="text-sm font-medium text-on-surface font-body">
                     {GOAL_LABELS[event.category as GoalCategory] ?? event.category}
                   </div>
-                  <div className="text-xs text-ink-muted">
-                    {event.app_name && `${event.app_name} · `}
-                    {event.platform === 'android' ? '📱' : event.platform === 'ios' ? '📱' : '💻'} {event.platform} · {timeAgo(event.timestamp)}
+                  <div className="text-xs text-on-surface-variant font-label">
+                    {event.app_name && `${event.app_name} \u00B7 `}
+                    {event.platform} \u00B7 {timeAgo(event.timestamp)}
                   </div>
                 </div>
-                <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${SEVERITY_STYLES[event.severity as Severity]}`}>
+                <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold ${SEVERITY_STYLES[event.severity as Severity]}`}>
                   {event.severity}
                 </span>
               </div>
@@ -160,22 +193,22 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      {/* ── Pending Conversations ───────────────────────────── */}
+      {/* -- Pending Conversations -- */}
       {pendingConversations > 0 && (
-        <div className="card p-4 bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200">
+        <div className="bg-tertiary-container rounded-3xl p-5">
           <div className="flex items-center gap-4">
-            <div className="text-3xl">💬</div>
+            <div className="text-3xl">{'\uD83D\uDCAC'}</div>
             <div className="flex-1">
-              <h3 className="font-display text-sm font-semibold text-ink mb-0.5">
+              <h3 className="font-headline text-sm font-bold text-on-tertiary-container mb-0.5">
                 {pendingConversations} conversation{pendingConversations !== 1 ? 's' : ''} waiting
               </h3>
-              <p className="text-xs text-ink-muted">
+              <p className="text-xs text-on-tertiary-container/70 font-body">
                 Complete your accountability conversations to earn trust points and keep your streak alive.
               </p>
             </div>
             <Link
               href="/dashboard/conversations"
-              className="px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-xl hover:bg-orange-700 transition-colors flex-shrink-0"
+              className="px-4 py-2 bg-tertiary text-on-primary text-sm font-label font-medium rounded-2xl hover:opacity-90 transition-opacity flex-shrink-0"
             >
               View
             </Link>
