@@ -131,18 +131,40 @@ export default function OnboardingPage() {
 
       {/* ═══════ STEP 1: Goals ═══════ */}
       {step === 'goals' && (
-        <div className="max-w-lg w-full animate-fade-in">
-          <div className="text-center mb-6">
-            <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Step 1 of 4</p>
-            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Choose your rivals</h1>
-            <p className="text-sm text-on-surface-variant font-body">What do you want accountability for? Select one or many.</p>
+        <div className="max-w-4xl w-full animate-fade-in pb-24">
+          {/* Header */}
+          <div className="mb-12">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <div className="flex flex-col gap-2">
+                <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold">Step 1 of 4</span>
+                <h1 className="font-headline text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight leading-tight">
+                  Choose your rivals
+                </h1>
+              </div>
+              <p className="max-w-xs text-on-surface-variant text-lg leading-relaxed md:text-right font-body">
+                Identify the habits or behaviors you want to master. We&apos;ll help you build the resilience to face them.
+              </p>
+            </div>
           </div>
+
           <GoalSelector selected={goals} onChange={setGoals} />
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
-          <button onClick={saveGoals} disabled={goals.length === 0 || loading}
-            className="w-full mt-6 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 disabled:opacity-50 transition-opacity">
-            {loading ? 'Saving...' : `Continue with ${goals.length} rival${goals.length !== 1 ? 's' : ''} →`}
-          </button>
+
+          {/* Fixed Footer CTA */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/70 backdrop-blur-xl px-6 py-6 border-t border-outline-variant/15 z-40">
+            <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+              <div className="hidden md:block">
+                <p className="text-on-surface-variant text-sm font-label font-bold uppercase tracking-widest">Selection Active</p>
+                <p className="text-primary font-headline font-bold">
+                  {goals.length === 0 ? 'No rivals selected' : `${goals.length} Rival${goals.length !== 1 ? 's' : ''} Identified`}
+                </p>
+              </div>
+              <button onClick={saveGoals} disabled={goals.length === 0 || loading}
+                className="w-full md:w-auto px-12 py-4 bg-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-50">
+                {loading ? 'Saving...' : `Continue with ${goals.length} rival${goals.length !== 1 ? 's' : ''}`}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

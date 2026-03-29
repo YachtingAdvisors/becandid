@@ -1,11 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import {
   CATEGORY_GROUPS,
-  GOAL_LABELS,
-  GOAL_DESCRIPTIONS,
-  getCategoryEmoji,
   type GoalCategory,
   type CategoryGroup,
 } from '@be-candid/shared';
@@ -16,18 +12,31 @@ interface GoalSelectorProps {
   disabled?: boolean;
 }
 
+/* Material icon for each group label */
+const GROUP_ICONS: Record<string, string> = {
+  'Sexual Content': 'volcano',
+  'Compulsive Consumption': 'shopping_basket',
+  'Substances & Recovery': 'pill',
+  'Body Image & Eating Disorders': 'accessibility_new',
+  'Gambling & Financial': 'account_balance_wallet',
+  'Dating & Relationships': 'favorite',
+  'Gaming': 'sports_esports',
+  'Rage & Outrage': 'mode_comment',
+};
+
+/* Short user-facing descriptions for the bento cards */
+const GROUP_SHORT_DESC: Record<string, string> = {
+  'Sexual Content': 'Navigating digital consumption and boundaries.',
+  'Compulsive Consumption': 'Managing the urge for excessive buying or scrolling.',
+  'Substances & Recovery': 'Staying clean and maintaining sobriety goals.',
+  'Body Image & Eating Disorders': 'Developing a healthy relationship with yourself.',
+  'Gambling & Financial': 'Restoring balance to your finances and risk-taking.',
+  'Dating & Relationships': 'Cultivating meaningful connections, not just clicks.',
+  'Gaming': 'Reclaiming time from virtual worlds and loops.',
+  'Rage & Outrage': 'Breaking the cycle of reactionary digital behavior.',
+};
+
 export default function GoalSelector({ selected, onChange, disabled }: GoalSelectorProps) {
-  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-
-  function toggleGoal(goal: GoalCategory) {
-    if (disabled) return;
-    if (selected.includes(goal)) {
-      onChange(selected.filter(g => g !== goal));
-    } else {
-      onChange([...selected, goal]);
-    }
-  }
-
   function toggleGroup(group: CategoryGroup) {
     if (disabled) return;
     const allSelected = group.categories.every(c => selected.includes(c));
@@ -39,178 +48,98 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
     }
   }
 
-  function getGroupSelectionCount(group: CategoryGroup): number {
-    return group.categories.filter(c => selected.includes(c)).length;
+  function isGroupSelected(group: CategoryGroup): boolean {
+    return group.categories.some(c => selected.includes(c));
   }
 
   return (
-    <div className="space-y-3">
-      {CATEGORY_GROUPS.map((group) => {
-        const selectedCount = getGroupSelectionCount(group);
-        const totalCount = group.categories.length;
-        const isExpanded = expandedGroup === group.label;
-        const hasAnySelected = selectedCount > 0;
+    <div>
+      {/* Bento Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {CATEGORY_GROUPS.map((group) => {
+          const isSelected = isGroupSelected(group);
+          const materialIcon = GROUP_ICONS[group.label] ?? 'category';
+          const shortDesc = GROUP_SHORT_DESC[group.label] ?? group.description;
 
-        const isSingleCategory = totalCount === 1;
-        const singleCat = isSingleCategory ? group.categories[0] : null;
-        const singleSelected = singleCat ? selected.includes(singleCat) : false;
-
-        return (
-          <div
-            key={group.label}
-            className={`rounded-2xl border-2 transition-all duration-200 overflow-hidden ${
-              hasAnySelected
-                ? 'border-primary bg-primary-container/20'
-                : 'border-outline-variant bg-surface-container-lowest hover:border-primary/30'
-            }`}
-          >
-            {/* Group header */}
+          return (
             <button
+              key={group.label}
               type="button"
-              onClick={() => {
-                if (isSingleCategory && singleCat) {
-                  toggleGoal(singleCat);
-                } else {
-                  setExpandedGroup(isExpanded ? null : group.label);
-                }
-              }}
+              onClick={() => toggleGroup(group)}
               disabled={disabled}
-              className="w-full flex items-center gap-3 px-4 py-3.5 text-left disabled:opacity-50"
+              className={`group relative flex flex-col p-6 rounded-xl text-left transition-all hover:bg-surface-container-low active:scale-[0.98] outline-none disabled:opacity-50 ${
+                isSelected
+                  ? 'bg-primary-container/20 shadow-[0_0_0_2px_#226779]'
+                  : 'bg-surface-container-lowest'
+              }`}
             >
-              <span className="text-2xl flex-shrink-0">{group.icon}</span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-on-surface font-label">{group.label}</span>
-                  {selectedCount > 0 && !isSingleCategory && (
-                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-on-primary text-[10px] font-bold">
-                      {selectedCount}
-                    </span>
-                  )}
+              <div className="mb-6 flex justify-between items-start">
+                <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+                  <span className="material-symbols-outlined text-2xl">{materialIcon}</span>
                 </div>
-                <p className="text-xs text-on-surface-variant mt-0.5 leading-snug font-body">{group.description}</p>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                  isSelected ? 'border-primary' : 'border-outline-variant'
+                }`}>
+                  <div className={`w-3 h-3 rounded-full bg-primary transition-opacity ${
+                    isSelected ? 'opacity-100' : 'opacity-0'
+                  }`} />
+                </div>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                {isSingleCategory ? (
-                  singleSelected ? (
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                      <svg className="w-3.5 h-3.5 text-on-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                  ) : (
-                    <div className="w-6 h-6 rounded-full border-2 border-outline-variant" />
-                  )
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleGroup(group);
-                      }}
-                      disabled={disabled}
-                      className={`text-[10px] font-semibold px-2 py-1 rounded-lg font-label transition-colors ${
-                        selectedCount === totalCount
-                          ? 'bg-primary text-on-primary'
-                          : 'bg-surface-container text-on-surface-variant hover:bg-primary-container hover:text-primary'
-                      }`}
-                    >
-                      {selectedCount === totalCount ? 'All \u2713' : 'All'}
-                    </button>
-                    <svg
-                      className={`w-4 h-4 text-on-surface-variant transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </>
-                )}
-              </div>
+              <h3 className="font-headline font-bold text-lg text-on-surface mb-1">{group.label}</h3>
+              <p className="font-body text-sm text-on-surface-variant">{shortDesc}</p>
             </button>
+          );
+        })}
+      </div>
 
-            {/* Expanded category list (only for multi-category groups) */}
-            {isExpanded && !isSingleCategory && (
-              <div className="px-3 pb-3 space-y-1.5 border-t border-outline-variant/50 pt-2">
-                {group.categories.map((cat) => {
-                  const isSelected = selected.includes(cat);
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => toggleGoal(cat)}
-                      disabled={disabled}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-150 ${
-                        isSelected
-                          ? 'bg-primary-container border-2 border-primary'
-                          : 'bg-surface-container-lowest border-2 border-outline-variant hover:border-primary/30'
-                      } disabled:opacity-50`}
-                    >
-                      <span className="text-lg flex-shrink-0">{getCategoryEmoji(cat)}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-on-surface font-label">{GOAL_LABELS[cat]}</div>
-                        <div className="text-[11px] text-on-surface-variant leading-snug mt-0.5 font-body">
-                          {GOAL_DESCRIPTIONS[cat]}
-                        </div>
-                      </div>
-                      {isSelected && (
-                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                          <svg className="w-3 h-3 text-on-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Collapsed but has selections — show selected pills */}
-            {!isExpanded && hasAnySelected && (
-              <div className="px-4 pb-3 flex flex-wrap gap-1.5">
-                {group.categories
-                  .filter(c => selected.includes(c))
-                  .map(cat => (
-                    <span
-                      key={cat}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-container text-primary text-[11px] font-medium font-label"
-                    >
-                      {getCategoryEmoji(cat)} {GOAL_LABELS[cat]}
-                    </span>
-                  ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
-
-      {/* Custom option — always visible at bottom */}
+      {/* Custom option */}
       <button
         type="button"
-        onClick={() => toggleGoal('custom')}
+        onClick={() => {
+          if (disabled) return;
+          if (selected.includes('custom')) {
+            onChange(selected.filter(g => g !== 'custom'));
+          } else {
+            onChange([...selected, 'custom']);
+          }
+        }}
         disabled={disabled}
-        className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 text-left transition-all duration-200 ${
+        className={`w-full mt-4 flex items-center gap-4 p-6 rounded-xl text-left transition-all hover:bg-surface-container-low active:scale-[0.98] outline-none disabled:opacity-50 ${
           selected.includes('custom')
-            ? 'border-primary bg-primary-container/20'
-            : 'border-dashed border-outline-variant hover:border-primary/30'
-        } disabled:opacity-50`}
+            ? 'bg-primary-container/20 shadow-[0_0_0_2px_#226779]'
+            : 'bg-surface-container-lowest border-2 border-dashed border-outline-variant'
+        }`}
       >
-        <span className="text-2xl">⚙️</span>
-        <div className="flex-1">
-          <div className="text-sm font-semibold text-on-surface font-label">Custom</div>
-          <p className="text-xs text-on-surface-variant mt-0.5 font-body">Define your own category to monitor</p>
+        <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+          <span className="material-symbols-outlined text-2xl">tune</span>
         </div>
-        {selected.includes('custom') && (
-          <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-            <svg className="w-3 h-3 text-on-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-        )}
+        <div className="flex-1">
+          <h3 className="font-headline font-bold text-lg text-on-surface">Custom</h3>
+          <p className="font-body text-sm text-on-surface-variant">Define your own category to monitor</p>
+        </div>
+        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+          selected.includes('custom') ? 'border-primary' : 'border-outline-variant'
+        }`}>
+          <div className={`w-3 h-3 rounded-full bg-primary transition-opacity ${
+            selected.includes('custom') ? 'opacity-100' : 'opacity-0'
+          }`} />
+        </div>
       </button>
 
+      {/* Informational prompt */}
+      <div className="mt-8 p-6 rounded-2xl bg-surface-container-low flex flex-col md:flex-row items-center gap-6">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-primary text-2xl">lightbulb</span>
+        </div>
+        <div>
+          <p className="font-headline font-bold text-on-surface mb-1">Not sure where to start?</p>
+          <p className="text-on-surface-variant text-sm">Most members start with one or two rivals to build focus before expanding their journey. You can always add more later.</p>
+        </div>
+      </div>
+
       {/* Selection summary */}
-      <div className="text-center pt-1">
+      <div className="text-center pt-4">
         <span className={`text-sm font-medium font-label ${selected.length > 0 ? 'text-primary' : 'text-on-surface-variant'}`}>
           {selected.length === 0
             ? 'Select at least one area to monitor'
