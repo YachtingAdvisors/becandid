@@ -55,10 +55,10 @@ export default function PartnerCheckInsPage() {
       <ToastContainer />
 
       <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">
-          {monitoredName}'s Check-ins
+        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">
+          📋 {monitoredName}'s Check-ins
         </h1>
-        <p className="text-sm text-ink-muted">
+        <p className="text-sm font-body text-on-surface-variant">
           Confirm your side of each check-in. Both of you need to respond for it to count.
         </p>
       </div>
@@ -69,10 +69,10 @@ export default function PartnerCheckInsPage() {
           <div className="flex items-center gap-3">
             <span className="text-2xl">📋</span>
             <div>
-              <div className="text-sm font-semibold text-ink">
+              <div className="text-sm font-bold text-on-surface">
                 {actionNeeded} check-in{actionNeeded !== 1 ? 's' : ''} waiting for your confirmation
               </div>
-              <p className="text-xs text-ink-muted mt-0.5">
+              <p className="text-xs text-on-surface-variant mt-0.5">
                 Your response matters — it shows {monitoredName} you're engaged.
               </p>
             </div>
@@ -93,8 +93,8 @@ export default function PartnerCheckInsPage() {
       ) : checkIns.length === 0 ? (
         <div className="card p-12 text-center">
           <div className="text-4xl mb-4">📋</div>
-          <h3 className="font-display text-xl font-semibold text-ink mb-2">No check-ins yet</h3>
-          <p className="text-sm text-ink-muted">
+          <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No check-ins yet</h3>
+          <p className="text-sm text-on-surface-variant">
             When {monitoredName} has check-ins scheduled, they'll appear here for your confirmation.
           </p>
         </div>

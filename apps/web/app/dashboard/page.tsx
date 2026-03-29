@@ -220,7 +220,7 @@ export default async function DashboardPage() {
             </div>
             <Link
               href="/dashboard/conversations"
-              className="px-4 py-2 bg-tertiary text-on-primary text-sm font-label font-medium rounded-2xl hover:opacity-90 transition-opacity flex-shrink-0"
+              className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-bold rounded-full hover:opacity-90 transition-opacity flex-shrink-0 uppercase tracking-wider"
             >
               View
             </Link>

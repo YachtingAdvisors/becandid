@@ -40,7 +40,7 @@ export default function SignInPage() {
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <img src="/logo.png" alt="Be Candid" className="h-8 w-auto mx-auto" />
+          <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto" />
           <p className="text-sm text-on-surface-variant mt-2 font-body">Sign in to your account</p>
         </div>
 

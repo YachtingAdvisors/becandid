@@ -86,8 +86,8 @@ export default function NotificationsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">Notifications</h1>
-        <p className="text-sm text-ink-muted">Choose how and when Be Candid reaches out to you.</p>
+        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">🔔 Notifications</h1>
+        <p className="text-sm text-on-surface-variant font-body">Choose how and when Be Candid reaches out to you.</p>
       </div>
 
       {saved && (
@@ -99,20 +99,20 @@ export default function NotificationsPage() {
       {SECTIONS.map(section => (
         <div key={section.title} className="card p-5 space-y-4">
           <div>
-            <h2 className="font-display text-lg font-semibold text-ink">{section.title}</h2>
-            <p className="text-xs text-ink-muted">{section.desc}</p>
+            <h2 className="font-headline text-lg font-bold text-on-surface">{section.title}</h2>
+            <p className="text-xs text-on-surface-variant font-body">{section.desc}</p>
           </div>
 
           {section.items.map(item => (
             <div key={item.key} className="flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-ink">{item.label}</div>
-                <div className="text-xs text-ink-muted">{item.desc}</div>
+                <div className="text-sm font-medium text-on-surface">{item.label}</div>
+                <div className="text-xs text-on-surface-variant font-body">{item.desc}</div>
               </div>
               <button
                 onClick={() => toggle(item.key)}
                 className={`relative w-11 h-6 rounded-full transition-colors ${
-                  prefs[item.key as keyof NotifPrefs] ? 'bg-brand-600' : 'bg-gray-300'
+                  prefs[item.key as keyof NotifPrefs] ? 'bg-primary' : 'bg-gray-300'
                 }`}
               >
                 <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${

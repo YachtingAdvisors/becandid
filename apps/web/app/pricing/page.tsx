@@ -83,7 +83,7 @@ export default function PricingPage() {
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-headline font-bold text-on-surface mb-3">Simple, honest pricing</h1>
+          <h1 className="text-3xl font-headline font-bold text-on-surface mb-3">Candid Pricing</h1>
           <p className="text-base text-on-surface-variant max-w-lg mx-auto font-body">
             Start free. Upgrade when you&apos;re ready. Cancel anytime.
           </p>

@@ -84,7 +84,7 @@ export default function GuardianPage() {
             No teens connected yet
           </h3>
           <p className="text-sm text-on-surface-variant font-body mb-4 max-w-md mx-auto">
-            Invite your teen to Be Candid to help them align their screen time with who they want to be \u2014 with care and transparency.
+            Invite your teen to Be Candid to help them align their screen time with who they want to be &mdash; with care and transparency.
           </p>
           <Link
             href="/dashboard/partner"

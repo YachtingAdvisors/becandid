@@ -65,8 +65,8 @@ export default function BadgesPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6 stagger">
       <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">Badges</h1>
-        <p className="text-sm text-ink-muted">
+        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">🏅 Badges</h1>
+        <p className="text-sm text-on-surface-variant font-body">
           {earnedCount} of {ALL_BADGES.length} earned. Keep going!
         </p>
       </div>
@@ -74,8 +74,8 @@ export default function BadgesPage() {
       {/* Progress bar */}
       <div className="card p-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-ink">{earnedCount}/{ALL_BADGES.length}</span>
-          <span className="text-xs text-ink-muted">{Math.round((earnedCount / ALL_BADGES.length) * 100)}% complete</span>
+          <span className="text-sm font-medium text-on-surface">{earnedCount}/{ALL_BADGES.length}</span>
+          <span className="text-xs text-on-surface-variant">{Math.round((earnedCount / ALL_BADGES.length) * 100)}% complete</span>
         </div>
         <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 rounded-full transition-all"
@@ -105,7 +105,7 @@ export default function BadgesPage() {
                 {badge.label}
               </div>
               {isEarned && milestone && (
-                <div className="text-[10px] text-ink-muted mt-1">
+                <div className="text-[10px] text-on-surface-variant mt-1">
                   {new Date(milestone.unlocked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </div>
               )}

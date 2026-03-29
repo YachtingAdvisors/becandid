@@ -102,15 +102,15 @@ export default function ConversationsPage() {
 
               <div className="flex gap-2">
                 <button onClick={() => markComplete(alert.id, 'positive')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-2xl bg-primary-container/30 text-primary border border-primary-container hover:bg-primary-container/50 transition-colors">
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-primary-container/30 text-primary border border-primary-container hover:bg-primary-container/50 transition-colors">
                   {'\u2705'} Positive
                 </button>
                 <button onClick={() => markComplete(alert.id, 'neutral')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-2xl bg-surface-container text-on-surface-variant border border-outline-variant hover:bg-surface-container-low transition-colors">
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-surface-container text-on-surface-variant border border-outline-variant hover:bg-surface-container-low transition-colors">
                   {'\uD83D\uDE10'} Neutral
                 </button>
                 <button onClick={() => markComplete(alert.id, 'difficult')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-2xl bg-error/5 text-error border border-error/20 hover:bg-error/10 transition-colors">
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-error/5 text-error border border-error/20 hover:bg-error/10 transition-colors">
                   {'\uD83D\uDCAA'} Difficult
                 </button>
               </div>

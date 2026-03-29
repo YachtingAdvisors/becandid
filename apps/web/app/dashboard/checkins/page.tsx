@@ -68,8 +68,8 @@ export default function CheckInsPage() {
       <ToastContainer />
 
       <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">Check-ins</h1>
-        <p className="text-sm text-ink-muted">
+        <h1 className="font-headline font-bold text-on-surface text-3xl mb-1">Check-ins</h1>
+        <p className="text-sm text-on-surface-variant font-body">
           Both you and your partner confirm each check-in for it to count.
         </p>
       </div>
@@ -78,22 +78,22 @@ export default function CheckInsPage() {
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="card px-4 py-3 text-center">
-            <div className="text-2xl font-display font-bold text-brand-600">{stats.completionRate}%</div>
-            <div className="text-xs text-ink-muted mt-0.5">Completion Rate</div>
+            <div className="text-2xl font-headline font-bold text-primary">{stats.completionRate}%</div>
+            <div className="text-xs text-on-surface-variant font-label mt-0.5">Completion Rate</div>
           </div>
           <div className="card px-4 py-3 text-center">
-            <div className="text-2xl font-display font-bold text-emerald-600">{stats.currentStreak}</div>
-            <div className="text-xs text-ink-muted mt-0.5">Check-in Streak</div>
+            <div className="text-2xl font-headline font-bold text-primary">{stats.currentStreak}</div>
+            <div className="text-xs text-on-surface-variant font-label mt-0.5">Check-in Streak</div>
           </div>
           <div className="card px-4 py-3 text-center">
-            <div className="text-2xl font-display font-bold text-ink">{stats.completed}</div>
-            <div className="text-xs text-ink-muted mt-0.5">Completed</div>
+            <div className="text-2xl font-headline font-bold text-on-surface">{stats.completed}</div>
+            <div className="text-xs text-on-surface-variant font-label mt-0.5">Completed</div>
           </div>
           <div className="card px-4 py-3 text-center">
-            <div className={`text-2xl font-display font-bold ${actionNeeded > 0 ? 'text-amber-500' : 'text-gray-400'}`}>
+            <div className={`text-2xl font-headline font-bold ${actionNeeded > 0 ? 'text-tertiary' : 'text-outline'}`}>
               {actionNeeded}
             </div>
-            <div className="text-xs text-ink-muted mt-0.5">Need Action</div>
+            <div className="text-xs text-on-surface-variant font-label mt-0.5">Need Action</div>
           </div>
         </div>
       )}
@@ -104,10 +104,10 @@ export default function CheckInsPage() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-full text-xs font-label font-medium transition-colors ${
               filter === f
-                ? 'bg-brand-600 text-white'
-                : 'bg-surface-muted text-ink-muted hover:bg-brand-100'
+                ? 'bg-primary text-on-primary'
+                : 'bg-surface-container text-on-surface-variant hover:bg-primary-container/30 hover:text-primary'
             }`}
           >
             {f === 'all' ? 'All' : f.charAt(0).toUpperCase() + f.slice(1)}
@@ -123,18 +123,18 @@ export default function CheckInsPage() {
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
             <div key={i} className="card p-6 animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-3" />
-              <div className="h-3 bg-gray-100 rounded w-1/2" />
+              <div className="h-4 bg-surface-container rounded w-3/4 mb-3" />
+              <div className="h-3 bg-surface-container-low rounded w-1/2" />
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="card p-12 text-center">
           <div className="text-4xl mb-4">📋</div>
-          <h3 className="font-display text-xl font-semibold text-ink mb-2">
+          <h3 className="font-headline font-bold text-on-surface text-xl mb-2">
             {filter === 'all' ? 'No check-ins yet' : `No ${filter} check-ins`}
           </h3>
-          <p className="text-sm text-ink-muted">
+          <p className="text-sm text-on-surface-variant font-body">
             {filter === 'all'
               ? 'Check-ins will appear here based on your frequency setting.'
               : 'Try a different filter.'}

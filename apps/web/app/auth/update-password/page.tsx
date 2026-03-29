@@ -60,6 +60,9 @@ export default function UpdatePasswordPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <div className="max-w-sm w-full text-center">
+          <div className="mb-8">
+            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto" />
+          </div>
           <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-8">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-container mb-4">
               <span className="text-2xl text-primary">✓</span>
@@ -76,7 +79,7 @@ export default function UpdatePasswordPage() {
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="max-w-sm w-full">
         <div className="text-center mb-8">
-          <h1 className="font-headline text-3xl font-bold text-primary">Be Candid</h1>
+          <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto" />
           <p className="text-sm text-on-surface-variant mt-2 font-body">Choose a strong password you haven&apos;t used before</p>
         </div>
 

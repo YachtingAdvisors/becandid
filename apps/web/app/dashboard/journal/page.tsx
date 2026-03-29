@@ -90,14 +90,14 @@ export default function GrowthJournalPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6 stagger">
       <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">Growth Journal</h1>
-        <p className="text-sm text-ink-muted">Your accountability story, told in data and reflections.</p>
+        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">📓 Growth Journal</h1>
+        <p className="text-sm text-on-surface-variant font-body">Your accountability story, told in data and reflections.</p>
       </div>
 
       {/* ── Narrative Summary ──────────────────────────────── */}
-      <div className="card p-5 bg-gradient-to-br from-brand-50 to-emerald-50 border-brand-200">
-        <h3 className="font-display text-sm font-semibold text-brand-700 mb-2">21-Day Summary</h3>
-        <p className="text-sm text-ink leading-relaxed">
+      <div className="card p-5 bg-gradient-to-br from-primary-container/30 to-emerald-50 border-outline-variant">
+        <h3 className="font-headline text-sm font-bold text-on-primary-container mb-2">21-Day Summary</h3>
+        <p className="text-sm text-on-surface leading-relaxed font-body">
           Over the last 3 weeks, you've been focused for <strong>{focusRate}%</strong> of your tracked segments.
           {' '}Your current streak is <strong>{journal.streak.streakDays} days</strong>.
           {morningTotal > 0 && eveningTotal > 0 && (
@@ -121,32 +121,32 @@ export default function GrowthJournalPage() {
       {/* ── Key Metrics ────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold text-brand-600">{focusRate}%</div>
-          <div className="text-xs text-ink-muted mt-0.5">Focus Rate</div>
+          <div className="text-2xl font-headline font-bold text-primary">{focusRate}%</div>
+          <div className="text-xs text-on-surface-variant mt-0.5">Focus Rate</div>
         </div>
         <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold text-emerald-600">{journal.streak.streakDays}d</div>
-          <div className="text-xs text-ink-muted mt-0.5">Current Streak</div>
+          <div className="text-2xl font-headline font-bold text-emerald-600">🔥 {journal.streak.streakDays}d</div>
+          <div className="text-xs text-on-surface-variant mt-0.5">Current Streak</div>
         </div>
         <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold text-brand-600">{journal.balance.toLocaleString()}</div>
-          <div className="text-xs text-ink-muted mt-0.5">Trust Points</div>
+          <div className="text-2xl font-headline font-bold text-primary">{journal.balance.toLocaleString()}</div>
+          <div className="text-xs text-on-surface-variant mt-0.5">Trust Points</div>
         </div>
         <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold text-amber-600">{journal.milestones.length}</div>
-          <div className="text-xs text-ink-muted mt-0.5">Milestones</div>
+          <div className="text-2xl font-headline font-bold text-amber-600">🏅 {journal.milestones.length}</div>
+          <div className="text-xs text-on-surface-variant mt-0.5">Milestones</div>
         </div>
       </div>
 
       {/* ── Morning vs Evening ─────────────────────────────── */}
       {morningTotal > 0 && eveningTotal > 0 && (
         <div className="card p-5">
-          <h3 className="font-display text-sm font-semibold text-ink mb-3">Morning vs Evening</h3>
+          <h3 className="font-headline text-sm font-bold text-on-surface mb-3">Morning vs Evening</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-medium text-ink">Morning</span>
-                <span className="text-xs text-ink-muted">{Math.round((morningFocused / morningTotal) * 100)}%</span>
+                <span className="text-xs font-medium text-on-surface">Morning</span>
+                <span className="text-xs text-on-surface-variant">{Math.round((morningFocused / morningTotal) * 100)}%</span>
               </div>
               <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div
@@ -157,8 +157,8 @@ export default function GrowthJournalPage() {
             </div>
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-medium text-ink">Evening</span>
-                <span className="text-xs text-ink-muted">{Math.round((eveningFocused / eveningTotal) * 100)}%</span>
+                <span className="text-xs font-medium text-on-surface">Evening</span>
+                <span className="text-xs text-on-surface-variant">{Math.round((eveningFocused / eveningTotal) * 100)}%</span>
               </div>
               <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div
@@ -174,7 +174,7 @@ export default function GrowthJournalPage() {
       {/* ── Mood Timeline ──────────────────────────────────── */}
       {moods.length > 0 && (
         <div className="card p-5">
-          <h3 className="font-display text-sm font-semibold text-ink mb-3">Mood Timeline</h3>
+          <h3 className="font-headline text-sm font-bold text-on-surface mb-3">Mood Timeline</h3>
           <div className="flex items-end gap-1 h-20">
             {moods.slice(-21).map((m, i) => (
               <div
@@ -193,7 +193,7 @@ export default function GrowthJournalPage() {
               </div>
             ))}
           </div>
-          <div className="flex justify-between mt-1 text-[9px] text-ink-muted">
+          <div className="flex justify-between mt-1 text-[9px] text-on-surface-variant">
             <span>Oldest</span>
             <span>Most recent</span>
           </div>
@@ -203,7 +203,7 @@ export default function GrowthJournalPage() {
       {/* ── Recent Reflections ─────────────────────────────── */}
       {completedCheckIns.some(ci => ci.user_response) && (
         <div className="card p-5">
-          <h3 className="font-display text-sm font-semibold text-ink mb-3">Your Reflections</h3>
+          <h3 className="font-headline text-sm font-bold text-on-surface mb-3">Your Reflections</h3>
           <div className="space-y-3">
             {completedCheckIns
               .filter(ci => ci.user_response)
@@ -214,8 +214,8 @@ export default function GrowthJournalPage() {
                     {MOOD_EMOJIS[ci.user_mood ?? 'okay']}
                   </span>
                   <div className="flex-1">
-                    <p className="text-sm text-ink leading-relaxed italic">"{ci.user_response}"</p>
-                    <p className="text-xs text-ink-muted mt-1">
+                    <p className="text-sm text-on-surface leading-relaxed italic font-body">"{ci.user_response}"</p>
+                    <p className="text-xs text-on-surface-variant mt-1">
                       {new Date(ci.sent_at).toLocaleDateString('en-US', {
                         weekday: 'short', month: 'short', day: 'numeric',
                       })}
@@ -233,13 +233,13 @@ export default function GrowthJournalPage() {
       {/* ── Milestones Timeline ────────────────────────────── */}
       {journal.milestones.length > 0 && (
         <div className="card p-5">
-          <h3 className="font-display text-sm font-semibold text-ink mb-3">Milestone Timeline</h3>
+          <h3 className="font-headline text-sm font-bold text-on-surface mb-3">🏅 Milestone Timeline</h3>
           <div className="space-y-2">
             {journal.milestones.map(m => (
               <div key={m.milestone} className="flex items-center gap-3 text-sm">
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
-                <span className="text-ink font-medium">{m.milestone.replace(/_/g, ' ')}</span>
-                <span className="text-xs text-ink-muted ml-auto">
+                <span className="text-on-surface font-medium">{m.milestone.replace(/_/g, ' ')}</span>
+                <span className="text-xs text-on-surface-variant ml-auto">
                   {new Date(m.unlocked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </span>
               </div>

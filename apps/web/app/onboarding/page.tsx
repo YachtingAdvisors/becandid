@@ -117,6 +117,11 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12">
+      {/* Logo */}
+      <div className="mb-6">
+        <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto" />
+      </div>
+
       {/* Progress bar */}
       <div className="w-full max-w-md mb-8">
         <div className="h-1.5 bg-surface-container rounded-full overflow-hidden">

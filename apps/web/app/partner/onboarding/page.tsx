@@ -50,13 +50,13 @@ export default function PartnerOnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md space-y-6 stagger">
         {/* Progress */}
         <div className="flex gap-1.5">
           {STEPS.map((_, i) => (
             <div key={i} className={`flex-1 h-1.5 rounded-full transition-colors ${
-              i <= step ? 'bg-brand-600' : 'bg-surface-border'
+              i <= step ? 'bg-primary' : 'bg-outline-variant'
             }`} />
           ))}
         </div>
@@ -64,10 +64,10 @@ export default function PartnerOnboardingPage() {
         {/* Card */}
         <div className="card p-8 text-center">
           <div className="text-5xl mb-4">{current.icon}</div>
-          <h2 className="font-display text-2xl font-bold text-ink mb-4">{current.title}</h2>
-          <p className="text-sm text-ink-muted leading-relaxed mb-4">{current.body}</p>
-          <div className="px-4 py-3 rounded-xl bg-brand-50 border border-brand-200">
-            <p className="text-sm text-brand-700 font-medium">{current.highlight}</p>
+          <h2 className="font-headline text-2xl font-bold text-on-surface mb-4">{current.title}</h2>
+          <p className="text-sm text-on-surface-variant leading-relaxed mb-4">{current.body}</p>
+          <div className="px-4 py-3 rounded-2xl bg-primary-container/30 border border-primary/20">
+            <p className="text-sm text-primary font-medium">{current.highlight}</p>
           </div>
         </div>
 
@@ -77,18 +77,18 @@ export default function PartnerOnboardingPage() {
             <button
               onClick={() => setEnableMutual(!enableMutual)}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 text-left transition-all ${
-                enableMutual ? 'border-brand-500 bg-brand-50' : 'border-surface-border hover:border-brand-300'
+                enableMutual ? 'border-primary bg-primary-container/30' : 'border-outline-variant hover:border-primary/40'
               }`}
             >
               <span className="text-2xl">🔄</span>
               <div className="flex-1">
-                <div className="text-sm font-semibold text-ink">Enable mutual accountability</div>
-                <p className="text-xs text-ink-muted mt-0.5">
+                <div className="text-sm font-semibold text-on-surface">Enable mutual accountability</div>
+                <p className="text-xs text-on-surface-variant mt-0.5">
                   Both of you monitor each other. You'll set up your own rivals and get the same features.
                 </p>
               </div>
               <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                enableMutual ? 'bg-brand-600 border-brand-600' : 'border-gray-300'
+                enableMutual ? 'bg-primary border-primary' : 'border-outline-variant'
               }`}>
                 {enableMutual && (
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

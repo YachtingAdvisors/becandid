@@ -47,10 +47,10 @@ export default function PartnerConversationsPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-semibold text-ink mb-1">
-          {monitoredName}'s Conversations
+        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">
+          💬 {monitoredName}'s Conversations
         </h1>
-        <p className="text-sm text-ink-muted">
+        <p className="text-sm font-body text-on-surface-variant">
           View alerts and conversation history. Use the guides to have better conversations.
         </p>
       </div>
@@ -67,8 +67,8 @@ export default function PartnerConversationsPage() {
       ) : alerts.length === 0 ? (
         <div className="card p-12 text-center">
           <div className="text-4xl mb-4">💬</div>
-          <h3 className="font-display text-xl font-semibold text-ink mb-2">No alerts yet</h3>
-          <p className="text-sm text-ink-muted">
+          <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No alerts yet</h3>
+          <p className="text-sm text-on-surface-variant">
             When {monitoredName} triggers an alert, conversation guides will appear here.
           </p>
         </div>
@@ -77,7 +77,7 @@ export default function PartnerConversationsPage() {
           {/* Pending */}
           {pending.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
+              <h2 className="text-xs font-bold text-on-surface-muted uppercase tracking-wider">
                 Needs Conversation ({pending.length})
               </h2>
               {pending.map(a => (
@@ -85,15 +85,15 @@ export default function PartnerConversationsPage() {
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-xl">{getCategoryEmoji(a.events?.category as GoalCategory)}</span>
                     <div className="flex-1">
-                      <div className="text-sm font-medium text-ink">
+                      <div className="text-sm font-medium text-on-surface">
                         {GOAL_LABELS[a.events?.category as GoalCategory] ?? 'Alert'}
                       </div>
-                      <div className="text-xs text-ink-muted">{timeAgo(a.sent_at)}</div>
+                      <div className="text-xs text-on-surface-variant">{timeAgo(a.sent_at)}</div>
                     </div>
                   </div>
                   {a.ai_guide_partner && (
                     <Link href={`/conversation/${a.id}`}
-                      className="block w-full py-2.5 text-center text-sm font-medium bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors">
+                      className="block w-full py-2.5 text-center text-sm font-label font-bold bg-primary text-on-primary rounded-full hover:bg-primary/90 transition-colors">
                       View Your Conversation Guide →
                     </Link>
                   )}
@@ -105,7 +105,7 @@ export default function PartnerConversationsPage() {
           {/* Completed */}
           {completed.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
+              <h2 className="text-xs font-bold text-on-surface-muted uppercase tracking-wider">
                 Completed ({completed.length})
               </h2>
               <div className="card divide-y divide-surface-border/50">
@@ -115,17 +115,17 @@ export default function PartnerConversationsPage() {
                     <div key={a.id} className="flex items-center gap-3 px-4 py-3">
                       <span className="text-lg">{getCategoryEmoji(a.events?.category as GoalCategory)}</span>
                       <div className="flex-1">
-                        <div className="text-sm font-medium text-ink">
+                        <div className="text-sm font-medium text-on-surface">
                           {GOAL_LABELS[a.events?.category as GoalCategory] ?? 'Alert'}
                         </div>
-                        <div className="text-xs text-ink-muted">{timeAgo(a.sent_at)}</div>
+                        <div className="text-xs text-on-surface-variant">{timeAgo(a.sent_at)}</div>
                       </div>
                       {conv?.outcome && (
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${OUTCOME_STYLES[conv.outcome] ?? ''}`}>
                           {conv.outcome}
                         </span>
                       )}
-                      <Link href={`/conversation/${a.id}`} className="text-xs text-brand-600 font-medium hover:underline">
+                      <Link href={`/conversation/${a.id}`} className="text-xs text-primary font-medium hover:underline">
                         Guide
                       </Link>
                     </div>

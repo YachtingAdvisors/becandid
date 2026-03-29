@@ -48,21 +48,21 @@ export default async function ConversationPage({ params }: Props) {
         {/* Header */}
         <div className="flex items-center gap-3">
           <Link href={isOwner ? '/dashboard/conversations' : '/partner/conversations'}
-            className="text-sm text-brand-600 hover:underline">← Back</Link>
+            className="text-sm text-primary hover:underline font-label">← Back</Link>
         </div>
 
         <div className="flex items-center gap-3">
           <span className="text-3xl">{getCategoryEmoji(event?.category as GoalCategory)}</span>
           <div>
-            <h1 className="font-display text-2xl font-bold text-ink">{categoryLabel} — Conversation Guide</h1>
-            <p className="text-sm text-ink-muted">
+            <h1 className="font-headline text-2xl font-bold text-on-surface">{categoryLabel} — Conversation Guide</h1>
+            <p className="text-sm text-on-surface-variant font-body">
               {event?.severity} severity · {event?.platform} · {new Date(event?.timestamp).toLocaleString()}
             </p>
           </div>
         </div>
 
         {!isOwner && (
-          <div className="px-3 py-2 rounded-xl bg-brand-50 border border-brand-200 text-xs text-brand-700 font-medium">
+          <div className="px-3 py-2 rounded-xl bg-primary-container/30 border border-outline-variant text-xs text-on-primary-container font-medium">
             👁 Partner view — showing the guide prepared for you
           </div>
         )}
@@ -72,7 +72,7 @@ export default async function ConversationPage({ params }: Props) {
           <div className="space-y-4">
             {role === 'user' ? (
               <>
-                <GuideSection title="How to Open the Conversation" icon="💬" color="brand">
+                <GuideSection title="How to Open the Conversation" icon="💬" color="primary">
                   {guide.opening}
                 </GuideSection>
                 <GuideSection title="How to Be Honest" icon="🤝" color="violet">
@@ -82,7 +82,7 @@ export default async function ConversationPage({ params }: Props) {
                   {guide.what_to_ask_for}
                 </GuideSection>
                 <div className="card p-5 bg-amber-50 border-amber-200 text-center">
-                  <p className="text-sm italic text-amber-800 leading-relaxed">"{guide.affirmation}"</p>
+                  <p className="text-sm italic text-amber-800 leading-relaxed font-body">"{guide.affirmation}"</p>
                 </div>
                 {guide.professional_resources && (
                   <GuideSection title="Additional Support" icon="💙" color="blue">
@@ -92,7 +92,7 @@ export default async function ConversationPage({ params }: Props) {
               </>
             ) : (
               <>
-                <GuideSection title="How to Open" icon="💬" color="brand">
+                <GuideSection title="How to Open" icon="💬" color="primary">
                   {guide.opening}
                 </GuideSection>
                 <GuideSection title="What NOT to Say or Do" icon="🚫" color="red">
@@ -115,7 +115,7 @@ export default async function ConversationPage({ params }: Props) {
           {/* Regenerate button */}
           <div className="pt-2">
             <RegenerateGuide alertId={params.alertId} />
-            <p className="text-xs text-ink-muted mt-2">
+            <p className="text-xs text-on-surface-variant mt-2 font-body">
               Not quite right? Generate a fresh guide with updated context.
             </p>
           </div>
@@ -123,8 +123,8 @@ export default async function ConversationPage({ params }: Props) {
         ) : (
           <div className="card p-8 text-center">
             <div className="text-4xl mb-4">📝</div>
-            <h3 className="font-display text-lg font-semibold text-ink mb-2">No guide available</h3>
-            <p className="text-sm text-ink-muted">The AI guide wasn't generated for this alert. Use your own judgment and the principles of honest, non-judgmental conversation.</p>
+            <h3 className="font-headline text-lg font-bold text-on-surface mb-2">No guide available</h3>
+            <p className="text-sm text-on-surface-variant font-body">The AI guide wasn't generated for this alert. Use your own judgment and the principles of honest, non-judgmental conversation.</p>
           </div>
         )}
       </div>
@@ -134,7 +134,7 @@ export default async function ConversationPage({ params }: Props) {
 
 function GuideSection({ title, icon, color, children }: { title: string; icon: string; color: string; children: React.ReactNode }) {
   const colors: Record<string, string> = {
-    brand: 'border-brand-300 bg-brand-50/50',
+    primary: 'border-primary/30 bg-primary-container/20',
     violet: 'border-violet-300 bg-violet-50/50',
     emerald: 'border-emerald-300 bg-emerald-50/50',
     red: 'border-red-300 bg-red-50/50',
@@ -142,12 +142,12 @@ function GuideSection({ title, icon, color, children }: { title: string; icon: s
   };
 
   return (
-    <div className={`card p-5 border-l-4 ${colors[color] ?? colors.brand}`}>
+    <div className={`card p-5 border-l-4 ${colors[color] ?? colors.primary}`}>
       <div className="flex items-center gap-2 mb-2">
         <span className="text-lg">{icon}</span>
-        <h3 className="text-xs font-semibold text-ink uppercase tracking-wider">{title}</h3>
+        <h3 className="text-xs font-semibold text-on-surface uppercase tracking-wider font-label">{title}</h3>
       </div>
-      <div className="text-sm text-ink leading-relaxed">{children}</div>
+      <div className="text-sm text-on-surface leading-relaxed font-body">{children}</div>
     </div>
   );
 }

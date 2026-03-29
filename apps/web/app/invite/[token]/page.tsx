@@ -100,7 +100,7 @@ export default function InvitePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="card p-8 animate-pulse w-80">
           <div className="h-6 bg-gray-200 rounded w-48 mx-auto mb-4" />
           <div className="h-4 bg-gray-100 rounded w-64 mx-auto" />
@@ -111,25 +111,24 @@ export default function InvitePage() {
 
   if (error && !invite) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <div className="card p-8 text-center max-w-sm">
           <div className="text-4xl mb-4">😕</div>
-          <h2 className="font-display text-xl font-semibold text-ink mb-2">Invalid Invite</h2>
-          <p className="text-sm text-ink-muted">{error}</p>
+          <h2 className="font-headline text-xl font-semibold text-on-surface mb-2">Invalid Invite</h2>
+          <p className="text-sm text-on-surface-variant">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-brand-600 flex items-center justify-center mx-auto mb-4">
-            <span className="text-white text-xl font-bold">C</span>
-          </div>
-          <h1 className="font-display text-2xl font-bold text-ink">You're Invited</h1>
-          <p className="text-sm text-ink-muted mt-1">
+          <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto mb-4" />
+          <div className="text-4xl mb-3">🤝</div>
+          <h1 className="font-headline text-2xl font-bold text-on-surface">You're Invited</h1>
+          <p className="text-sm font-body text-on-surface-variant mt-1">
             <strong>{invite?.inviter_name}</strong> wants you to be their accountability partner on Be Candid.
           </p>
         </div>
@@ -139,38 +138,38 @@ export default function InvitePage() {
         )}
 
         {!needsAccount ? (
-          <div className="card p-6 space-y-4">
-            <div className="px-4 py-3 rounded-xl bg-brand-50 border border-brand-200">
-              <p className="text-sm text-brand-700 leading-relaxed">
+          <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant/30 p-6 space-y-4">
+            <div className="px-4 py-3 rounded-2xl bg-primary-container/30 border border-primary/20">
+              <p className="text-sm font-body text-primary leading-relaxed">
                 As an accountability partner, you'll receive alerts when {invite?.inviter_name} flags activity,
                 along with AI-generated conversation guides. You'll also participate in mutual check-ins.
               </p>
             </div>
             <button onClick={handleAccept} disabled={accepting}
-              className="w-full py-3 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 disabled:opacity-50">
+              className="w-full py-3 bg-primary text-on-primary text-sm font-label font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50">
               {accepting ? 'Accepting…' : 'Accept Invitation'}
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSignUpAndAccept} className="card p-6 space-y-4">
-            <p className="text-sm text-ink-muted">Create a free account to accept this invitation.</p>
+          <form onSubmit={handleSignUpAndAccept} className="bg-surface-container-lowest rounded-3xl border border-outline-variant/30 p-6 space-y-4">
+            <p className="text-sm font-body text-on-surface-variant">Create a free account to accept this invitation.</p>
             <div>
-              <label className="block text-sm font-medium text-ink mb-1">Your name</label>
+              <label className="block text-sm font-medium text-on-surface mb-1">Your name</label>
               <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-ink mb-1">Email</label>
+              <label className="block text-sm font-medium text-on-surface mb-1">Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-ink mb-1">Password</label>
+              <label className="block text-sm font-medium text-on-surface mb-1">Password</label>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
-                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <button type="submit" disabled={accepting}
-              className="w-full py-3 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 disabled:opacity-50">
+              className="w-full py-3 bg-primary text-on-primary text-sm font-label font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50">
               {accepting ? 'Creating account…' : 'Create Account & Accept'}
             </button>
           </form>
