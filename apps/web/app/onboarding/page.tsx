@@ -168,59 +168,108 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {/* ═══════ STEP 2: Stringer Intro ═══════ */}
+      {/* ═══════ STEP 2: Philosophy Intro (editorial layout) ═══════ */}
       {step === 'stringer' && (
-        <div className="max-w-md w-full animate-fade-in">
-          <div className="text-center mb-6">
-            <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Our Philosophy</p>
-            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">This is about alignment</h1>
-            {stringerStep === 0 && (
-              <p className="text-sm text-on-surface-variant leading-relaxed font-body">
-                Be Candid is grounded in clinical research with nearly 4,000 people.
-                The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life.
-              </p>
-            )}
-          </div>
-
-          {/* Pillar card */}
-          <div key={stringerStep} className="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant shadow-[0_2px_20px_rgba(0,0,0,0.06)] mb-6" style={{ animation: 'fadeUp 0.4s ease' }}>
-            <div className="text-4xl mb-4 text-center">{STRINGER_PILLARS[stringerStep].icon}</div>
-            <h2 className="text-lg font-headline font-semibold text-on-surface text-center mb-3">{STRINGER_PILLARS[stringerStep].title}</h2>
-            <p className="text-sm text-on-surface-variant leading-relaxed text-center font-body">{STRINGER_PILLARS[stringerStep].body}</p>
-          </div>
-
+        <div className="max-w-5xl w-full animate-fade-in">
           {/* Progress dots */}
-          <div className="flex gap-1.5 mb-6 justify-center">
+          <nav className="flex gap-2 mb-12">
             {STRINGER_PILLARS.map((_, i) => (
-              <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i <= stringerStep ? 'w-8 bg-primary' : 'w-4 bg-surface-container'}`} />
+              <div key={i} className={`h-1.5 w-12 rounded-full transition-all duration-300 ${i === stringerStep ? 'bg-primary' : 'bg-surface-container-high'}`} />
             ))}
+            <div className="h-1.5 w-12 rounded-full bg-surface-container-high" />
+          </nav>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+            {/* Illustration side */}
+            <div className="lg:col-span-5 relative order-2 lg:order-1">
+              <div className="aspect-square w-full bg-surface-container-low rounded-[2.5rem] overflow-hidden relative shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfJWqKMSXlvHw1bjG_NiKk_SezDaQfkh-Ft8kv3_uS-M2F0nwmBdKTe6IeiUOebg8N8n4FCEDAT5gS6Gw_tLLoJZs8dY23N-ehTVHux3ea6lv3gqi0ZpPkZtUMKF8ROMLqYy1afSUghw-DU3z2VQeBebQEgoZKN9bKeGb0K30fnQyWqrlXwoSDG202BkVxrzSWfoqAn_aEq94VXcBo6b5Zgsk65x86EFgcWrLY63eqpGviDwpH1b_HRZ_674L59oriG7fSAIu9Akyb"
+                  alt="Abstract roadmap with intersecting paths"
+                  className="w-full h-full object-cover mix-blend-multiply opacity-90"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent" />
+              </div>
+              {/* Floating icon */}
+              <div className="absolute -bottom-6 -right-6 w-24 h-24 lg:w-32 lg:h-32 bg-secondary-container rounded-full flex items-center justify-center shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
+                <span className="material-symbols-outlined text-on-secondary-container text-3xl lg:text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  {stringerStep === 0 ? 'water_drop' : stringerStep === 1 ? 'favorite' : 'explore'}
+                </span>
+              </div>
+            </div>
+
+            {/* Content side */}
+            <div className="lg:col-span-7 flex flex-col space-y-8 order-1 lg:order-2">
+              <div>
+                <span className="font-label text-xs uppercase tracking-[0.2em] text-outline mb-4 block">Transformation Phase</span>
+                <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-on-surface leading-tight">
+                  This is about <br />
+                  <span className="text-primary italic">alignment</span>
+                </h1>
+              </div>
+
+              {stringerStep === 0 && (
+                <p className="text-base text-on-surface-variant leading-relaxed font-body max-w-lg">
+                  Be Candid is grounded in the clinical research of Dr. Kevin Laser, psychiatrist and author of <em>Everybody Had Wings</em>, and the practical accountability framework developed by Shawn Laser, RMHCI. The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life.
+                </p>
+              )}
+
+              <div className="space-y-6" key={stringerStep} style={{ animation: 'fadeUp 0.4s ease' }}>
+                <h3 className="font-headline text-xl font-bold text-secondary">{STRINGER_PILLARS[stringerStep].title}</h3>
+                <div className="relative pl-8 border-l-2 border-primary-container">
+                  <p className="text-xl md:text-2xl font-medium text-on-surface leading-snug">
+                    &ldquo;{STRINGER_PILLARS[stringerStep].body}&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex flex-wrap items-center gap-6 pt-8">
+                <button
+                  onClick={() => {
+                    if (stringerStep < STRINGER_PILLARS.length - 1) setStringerStep(stringerStep + 1);
+                    else setStep('motivator');
+                  }}
+                  className="bg-primary text-on-primary px-8 py-4 rounded-full font-label font-bold text-sm uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]"
+                >
+                  {stringerStep === STRINGER_PILLARS.length - 1 ? 'Got it \u2014 continue' : 'Next'}
+                </button>
+                {stringerStep > 0 && (
+                  <button
+                    onClick={() => setStringerStep(stringerStep - 1)}
+                    className="text-on-surface/60 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-colors px-4 py-2"
+                  >
+                    Back
+                  </button>
+                )}
+                {stringerStep === 0 && (
+                  <button
+                    onClick={() => setStep('motivator')}
+                    className="text-on-surface/60 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-colors px-4 py-2"
+                  >
+                    Skip introduction
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
+          {/* Quote footer */}
           {stringerStep === STRINGER_PILLARS.length - 1 && (
-            <div className="text-center mb-4">
-              <p className="text-sm text-primary italic font-body">&ldquo;Freedom is found through kindness and curiosity.&rdquo;</p>
+            <div className="mt-24 w-full max-w-2xl self-end ml-auto">
+              <div className="p-8 bg-surface-container-lowest rounded-xl shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] relative overflow-hidden">
+                <div className="absolute top-0 left-0 h-full w-1 bg-tertiary-container" />
+                <p className="font-body text-lg italic text-on-surface-variant leading-relaxed mb-4">
+                  &ldquo;Freedom is found through kindness and curiosity.&rdquo;
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-[1px] w-8 bg-outline-variant/30" />
+                  <span className="font-label text-xs uppercase tracking-widest text-outline">Be Candid</span>
+                </div>
+              </div>
             </div>
           )}
-
-          <div className="flex gap-3">
-            {stringerStep > 0 && (
-              <button onClick={() => setStringerStep(stringerStep - 1)} className="flex-1 py-3 text-sm font-headline font-bold rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors">Back</button>
-            )}
-            <button onClick={() => {
-              if (stringerStep < STRINGER_PILLARS.length - 1) setStringerStep(stringerStep + 1);
-              else setStep('motivator');
-            }} className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 transition-opacity">
-              {stringerStep === STRINGER_PILLARS.length - 1 ? 'Got it — continue' : 'Next'}
-            </button>
-          </div>
-
-          {stringerStep === 0 && (
-            <button onClick={() => setStep('motivator')} className="w-full mt-2 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body">Skip introduction</button>
-          )}
-
-          <p className="text-xs text-on-surface-variant text-center mt-6 font-body leading-relaxed">
-            Our approach is grounded in clinical research and informed by a multidisciplinary team of neurologists and licensed counselors \u2014 designed to help you understand yourself, not restrict yourself.
-          </p>
         </div>
       )}
 
