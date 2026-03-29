@@ -66,36 +66,6 @@ const FEATURES = [
   },
 ];
 
-const TOOL_FEATURES = [
-  {
-    icon: 'auto_awesome',
-    title: 'Stress-Tested Conversation Guides',
-    desc: 'Designed by neurologists and licensed therapists. Evidence-based prompts that help you navigate difficult conversations with clarity.',
-    bg: 'bg-primary-container',
-    text: 'text-on-primary-container',
-  },
-  {
-    icon: 'history_edu',
-    title: 'Stringer Journal',
-    desc: 'A seamless, chronological thread of your daily reflections and milestones of growth.',
-    bg: 'bg-secondary-container',
-    text: 'text-on-secondary-container',
-  },
-  {
-    icon: 'group',
-    title: 'Partner Awareness',
-    desc: 'Stay connected with shared accountability metrics that foster trust without surveillance.',
-    bg: 'bg-tertiary-container',
-    text: 'text-on-tertiary-container',
-  },
-  {
-    icon: 'emergency',
-    title: 'Crisis Detection',
-    desc: 'Proactive alerts and support paths when old patterns emerge, keeping you on track.',
-    bg: 'bg-primary-container',
-    text: 'text-on-primary-container',
-  },
-];
 
 function MaterialIcon({ name, className = '' }: { name: string; className?: string }) {
   return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
@@ -173,28 +143,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── The Tools of Transformation ──────────────────── */}
-        <section className="bg-surface-container-low py-32 px-6 lg:px-12">
-          <div className="max-w-screen-2xl mx-auto">
-            <div className="mb-20 space-y-4">
-              <h2 className="font-headline text-4xl font-bold tracking-tight">The tools of transformation</h2>
-              <p className="font-body text-lg text-on-surface-variant max-w-xl">Intelligent features designed to protect your peace and empower your progress.</p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {TOOL_FEATURES.map((f) => (
-                <div key={f.title} className="bg-surface p-10 rounded-[2rem] space-y-6 hover:translate-y-[-4px] transition-transform duration-300">
-                  <div className={`w-14 h-14 rounded-2xl ${f.bg} flex items-center justify-center ${f.text}`}>
-                    <MaterialIcon name={f.icon} className="text-3xl" />
-                  </div>
-                  <h3 className="font-headline text-xl font-bold">{f.title}</h3>
-                  <p className="font-body text-on-surface-variant leading-relaxed text-sm">{f.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Everything you need for digital integrity (BENTO — UNCHANGED) ── */}
+        {/* ── Everything you need for digital integrity (BENTO) ── */}
         <section id="features" className="py-24 px-6 bg-surface-container-low">
           <div className="max-w-5xl mx-auto">
             <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
