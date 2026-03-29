@@ -20,6 +20,9 @@ export default function LegalFooter() {
           </div>
 
           <div className="flex items-center gap-6 text-sm text-ink-muted">
+            <Link href="/pricing" className="hover:text-ink transition-colors">
+              Pricing
+            </Link>
             <Link href="/legal/privacy" className="hover:text-ink transition-colors">
               Privacy Policy
             </Link>

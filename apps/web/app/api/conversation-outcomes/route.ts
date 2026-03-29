@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { encrypt } from '@/lib/encryption';
 import { onOutcomeRated, onBothCompletedOutcome } from '@/lib/relationshipHooks';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import Anthropic from '@anthropic-ai/sdk';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
@@ -26,7 +27,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { alert_id, role, rating, felt, notes } = body;
 
   if (!alert_id) return NextResponse.json({ error: 'Missing alert_id' }, { status: 400 });

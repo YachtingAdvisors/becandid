@@ -12,6 +12,8 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { onJournalEntry } from '@/lib/relationshipHooks';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { encryptJournalEntry, decryptJournalEntries } from '@/lib/encryption';
 import {
   STRINGER_PROMPTS, STRINGER_QUOTES, JOURNAL_TAGS,
   type StringerJournalEntry,
@@ -131,7 +133,7 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({
-    entries,
+    entries: decryptJournalEntries(entries || [], user.id),
     quote: STRINGER_QUOTES[Math.floor(Math.random() * STRINGER_QUOTES.length)],
   });
 }
@@ -143,7 +145,11 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { freewrite, tributaries, longing, roadmap, mood, tags, alert_id, trigger_type, prompt_shown } = body;
 
   if (!freewrite?.trim() && !tributaries?.trim() && !longing?.trim() && !roadmap?.trim()) {
@@ -151,7 +157,7 @@ export async function POST(req: NextRequest) {
   }
 
   const db = createServiceClient();
-  const { data: entry, error } = await db.from('stringer_journal').insert({
+  const rawEntry = {
     user_id: user.id,
     freewrite: freewrite?.trim() || null,
     tributaries: tributaries?.trim() || null,
@@ -162,7 +168,9 @@ export async function POST(req: NextRequest) {
     alert_id: alert_id || null,
     trigger_type: trigger_type || 'manual',
     prompt_shown: prompt_shown || null,
-  }).select().single();
+  };
+  const encryptedEntry = encryptJournalEntry(rawEntry, user.id);
+  const { data: entry, error } = await db.from('stringer_journal').insert(encryptedEntry).select().single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
@@ -186,12 +194,16 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { id, freewrite, tributaries, longing, roadmap, mood, tags } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
   const db = createServiceClient();
-  const { data, error } = await db.from('stringer_journal').update({
+  const rawUpdate = {
     freewrite: freewrite?.trim() || null,
     tributaries: tributaries?.trim() || null,
     longing: longing?.trim() || null,
@@ -199,7 +211,9 @@ export async function PATCH(req: NextRequest) {
     mood: mood || null,
     tags: tags || [],
     updated_at: new Date().toISOString(),
-  }).eq('id', id).eq('user_id', user.id).select().single();
+  };
+  const encryptedUpdate = encryptJournalEntry(rawUpdate, user.id);
+  const { data, error } = await db.from('stringer_journal').update(encryptedUpdate).eq('id', id).eq('user_id', user.id).select().single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ entry: data });
@@ -211,6 +225,9 @@ export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
 
   const id = new URL(req.url).searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });

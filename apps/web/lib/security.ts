@@ -99,7 +99,15 @@ export type AuditAction =
   | 'account.deleted'
   | 'settings.changed'
   | 'vulnerability_window.created'
-  | 'vulnerability_window.deleted';
+  | 'vulnerability_window.deleted'
+  | 'therapist_invited'
+  | 'therapist_revoked'
+  | 'therapist_consent_updated'
+  | 'data_export'
+  | 'data_purge'
+  | 'retention_updated'
+  | 'payment_failed'
+  | 'solo_mode_toggled';
 
 interface AuditEntry {
   action: AuditAction;

@@ -266,7 +266,7 @@ export default function StringerJournalPage() {
                     <div>
                       <span className={`text-sm font-medium ${hasAnswer ? colors.accent : 'text-ink'}`}>{prompt.label}</span>
                       {hasAnswer && !isOpen && (
-                        <p className="text-xs text-ink-muted mt-0.5 truncate max-w-[240px]">
+                        <p className="text-xs text-ink-muted mt-0.5 truncate max-w-[180px] sm:max-w-[240px]">
                           {answers[prompt.id as keyof typeof answers].slice(0, 60)}…
                         </p>
                       )}
@@ -344,12 +344,12 @@ export default function StringerJournalPage() {
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
           <div>
             <h1 className="text-2xl font-display font-semibold text-ink">Stringer Journal</h1>
             <p className="text-sm text-ink-muted mt-1">Drawing wisdom from the struggle</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 shrink-0">
             {entries.length > 0 && (
               <div className="relative">
                 <button onClick={() => setShowExport(!showExport)}
@@ -388,9 +388,9 @@ export default function StringerJournalPage() {
         <div className="space-y-4 animate-fade-in">
           <button onClick={() => { setSelected(null); setView('list'); }} className="text-sm text-ink-muted hover:text-ink">← Back</button>
           <div className="bg-white rounded-2xl border border-surface-border p-6">
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
               <div>
-                <h2 className="text-lg font-display font-semibold text-ink">
+                <h2 className="text-base sm:text-lg font-display font-semibold text-ink">
                   {new Date(selected.created_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                 </h2>
                 <div className="flex items-center gap-2 mt-1">

@@ -13,6 +13,8 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { decryptJournalEntries, decrypt } from '@/lib/encryption';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { sanitizeEmail, sanitizeName } from '@/lib/security';
 import { Resend } from 'resend';
 import { randomUUID } from 'crypto';
 
@@ -27,10 +29,16 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { therapist_email, therapist_name, can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns } = body;
 
   if (!therapist_email?.trim()) return NextResponse.json({ error: 'Email required' }, { status: 400 });
+  const validatedEmail = sanitizeEmail(therapist_email);
+  if (!validatedEmail) return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
 
   const db = createServiceClient();
 
@@ -38,7 +46,7 @@ export async function POST(req: NextRequest) {
   const { data: existing } = await db.from('therapist_connections')
     .select('id, status')
     .eq('user_id', user.id)
-    .eq('therapist_email', therapist_email.trim().toLowerCase())
+    .eq('therapist_email', validatedEmail)
     .single();
 
   if (existing && existing.status === 'accepted') {
@@ -56,11 +64,12 @@ export async function POST(req: NextRequest) {
   }
 
   const token = randomUUID();
+  const cleanName = therapist_name ? sanitizeName(therapist_name) : null;
 
   const { data: connection, error } = await db.from('therapist_connections').upsert({
     user_id: user.id,
-    therapist_email: therapist_email.trim().toLowerCase(),
-    therapist_name: therapist_name?.trim() || null,
+    therapist_email: validatedEmail,
+    therapist_name: cleanName,
     invite_token: token,
     status: 'pending',
     can_see_journal: can_see_journal ?? true,
@@ -79,7 +88,7 @@ export async function POST(req: NextRequest) {
   // Send invite email
   await getResend().emails.send({
     from: FROM,
-    to: therapist_email.trim(),
+    to: validatedEmail,
     subject: `${userName} has invited you to Be Candid`,
     html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
@@ -112,7 +121,7 @@ export async function POST(req: NextRequest) {
   await db.from('audit_log').insert({
     user_id: user.id,
     action: 'therapist_invited',
-    metadata: { therapist_email: therapist_email.trim() },
+    metadata: { therapist_email: validatedEmail },
   });
 
   return NextResponse.json({ connection }, { status: 201 });
@@ -161,7 +170,11 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { connection_id, action, can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns } = body;
 
   if (!connection_id) return NextResponse.json({ error: 'Missing connection_id' }, { status: 400 });
@@ -199,5 +212,14 @@ export async function PATCH(req: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  try {
+    await db.from('audit_log').insert({
+      user_id: user.id,
+      action: 'therapist_consent_updated',
+      metadata: { connection_id, updates },
+    });
+  } catch { /* audit logging never blocks */ }
+
   return NextResponse.json({ connection: data });
 }

@@ -28,21 +28,31 @@ export default function GlobalError({
   }, [error]);
   return (
     <html>
-      <body className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <body className="min-h-screen bg-surface flex items-center justify-center px-4" style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         <div className="text-center max-w-sm">
-          <div className="text-5xl mb-4">😔</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-3" style={{ fontFamily: 'Georgia, serif' }}>
+          <div className="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl">!</span>
+          </div>
+          <h1 className="text-2xl font-bold text-ink mb-3" style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}>
             Something went wrong
           </h1>
-          <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-            An unexpected error occurred. This has been logged and we'll look into it.
+          <p className="text-sm text-ink-muted mb-8 leading-relaxed">
+            An unexpected error occurred. This has been logged and our team will look into it.
           </p>
-          <button
-            onClick={reset}
-            className="px-6 py-3 bg-violet-600 text-white text-sm font-semibold rounded-xl hover:bg-violet-700 transition-colors"
-          >
-            Try Again
-          </button>
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={reset}
+              className="px-6 py-3 bg-violet-600 text-white text-sm font-semibold rounded-xl hover:bg-violet-700 transition-colors"
+            >
+              Try Again
+            </button>
+            <a
+              href="/"
+              className="px-6 py-3 text-sm font-medium text-ink-muted rounded-xl hover:bg-gray-100 transition-colors"
+            >
+              Go Home
+            </a>
+          </div>
         </div>
       </body>
     </html>

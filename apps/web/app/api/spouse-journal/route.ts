@@ -16,6 +16,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { encrypt, decrypt, encryptJournalEntry, decryptJournalEntries } from '@/lib/encryption';
 import { awardRelationshipXP } from '@/lib/relationshipEngine';
 import { checkContenderMilestones, analyzeTrustTrend } from '@/lib/spouseExperience';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const ENCRYPTED_FIELDS = ['freewrite', 'impact', 'needs', 'boundaries'] as const;
 
@@ -80,6 +81,9 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
   const url = new URL(req.url);
   const db = createServiceClient();
 
@@ -95,7 +99,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Spouse partner relationship not found' }, { status: 403 });
   }
 
-  const body = await req.json();
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
 
   // ── Impact check-in ─────────────────────────────────────
   if (url.searchParams.get('impact') === 'true') {
@@ -169,7 +174,11 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { id, share } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
@@ -220,6 +229,9 @@ export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
 
   const id = new URL(req.url).searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });

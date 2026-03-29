@@ -22,7 +22,9 @@ const NAV_ITEMS = [
   { id: 'journal', href: '/dashboard/journal', label: 'Growth Journal', icon: '📊', solo: true },
   { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: '⚡', solo: true },
   { id: 'zone', href: '/dashboard/zone', label: 'In the Zone', icon: '🔥', solo: true },
+  { id: 'streaks', href: '/dashboard/streaks', label: 'Streaks', icon: '🏆', solo: true },
   { id: 'badges', href: '/dashboard/badges', label: 'Badges', icon: '🏅', solo: true },
+  { id: 'notifications', href: '/dashboard/notifications', label: 'Notifications', icon: '🔔', solo: true },
   { id: 'conversations', href: '/dashboard/conversations', label: 'Conversations', icon: '💬', solo: false },
   { id: 'partner', href: '/dashboard/partner', label: 'Partner', icon: '🤝', solo: false },
   { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: '⚙', solo: true },
@@ -74,7 +76,7 @@ export default async function DashboardLayout({
         navItems={visibleNav}
         soloMode={isSolo}
       />
-      <main className="flex-1 min-w-0">
+      <main className="flex-1 min-w-0 pt-16 lg:pt-0">
         {!isVerified && user.email && (
           <EmailVerificationBanner email={user.email} />
         )}

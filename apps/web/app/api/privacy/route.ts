@@ -15,6 +15,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { decryptJournalEntries, decryptGuide } from '@/lib/encryption';
 import { getActiveSessions, forceLogoutAll } from '@/lib/sessionSecurity';
+import { accountLimiter, actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 // ── GET: Full data export ───────────────────────────────────
 
@@ -25,11 +26,15 @@ export async function GET(req: NextRequest) {
 
   const url = new URL(req.url);
 
-  // Sessions sub-route
+  // Sessions sub-route (lightweight — no extra rate limit)
   if (url.pathname.endsWith('/sessions')) {
     const sessions = await getActiveSessions(user.id);
     return NextResponse.json({ sessions });
   }
+
+  // Data export is expensive — use strict rate limit
+  const blocked = checkUserRate(accountLimiter, user.id);
+  if (blocked) return blocked;
 
   const db = createServiceClient();
 
@@ -115,7 +120,11 @@ export async function PUT(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { event_retention_days } = body;
 
   if (!event_retention_days || event_retention_days < 30 || event_retention_days > 365) {
@@ -145,6 +154,9 @@ export async function DELETE(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const blocked = checkUserRate(accountLimiter, user.id);
+  if (blocked) return blocked;
+
   const url = new URL(req.url);
 
   // Sessions sub-route
@@ -166,7 +178,8 @@ export async function DELETE(req: NextRequest) {
   }
 
   // Data purge
-  const body = await req.json();
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { purge_type } = body;
 
   const db = createServiceClient();
