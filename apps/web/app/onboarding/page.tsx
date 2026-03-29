@@ -301,10 +301,6 @@ export default function OnboardingPage() {
             ))}
           </div>
 
-          <p className="text-xs text-on-surface-variant text-center font-body mb-4 leading-relaxed">
-            Therapeutic insights are always included regardless of your choice. You can change this anytime in Settings.
-          </p>
-
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
 
           <div className="flex gap-3">
