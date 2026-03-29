@@ -3,8 +3,8 @@ import Link from 'next/link';
 const FEATURES = [
   {
     icon: 'chat_bubble',
-    title: 'AI Conversation Guides',
-    desc: 'Empathetic prompts and real-time guidance to facilitate difficult but necessary digital discussions.',
+    title: 'Stress-Tested Conversation Guides',
+    desc: 'Designed by neurologists and mental health therapists. Evidence-based prompts for difficult but necessary digital discussions.',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDK75pW4vwBoIKZKqRfXv5nNixz53H86_XDRAM5lFE_qLDRDA_0EaBcExFNNcW2diDMzW7oHfniK5vT0VoDh8ORn6nDCr0bAoTYjdXoKn1JXHixWNHCN-flYfPlrnxYxeG5Q-eArpggt6kseUMEvlK-J3dB7Rfp0Tns9F2koKnKe904q18HbSiSBZrD9zSh5xQev-Mj2Rmdv4u19VE3ebdtEcecyMf1yeEMgGXxigV2uEAzs-KrJzjcwbLwiRFVLZnLuTzU2HNOJQcX',
     alt: 'Glowing geometric nodes connected by light strands representing AI dialogue',
   },
@@ -69,8 +69,8 @@ const FEATURES = [
 const TOOL_FEATURES = [
   {
     icon: 'auto_awesome',
-    title: 'AI Conversation Guides',
-    desc: 'Context-aware prompts that help you navigate difficult conversations with clarity and honesty.',
+    title: 'Stress-Tested Conversation Guides',
+    desc: 'Designed by neurologists and licensed therapists. Evidence-based prompts that help you navigate difficult conversations with clarity.',
     bg: 'bg-primary-container',
     text: 'text-on-primary-container',
   },

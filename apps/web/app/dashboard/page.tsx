@@ -178,10 +178,10 @@ export default async function DashboardPage() {
           <Link href="/dashboard/conversations" className="flex items-center gap-4 p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.conversation} alt="AI Conversation Guides" className="w-full h-full object-cover" />
+              <img src={IMAGES.conversation} alt="Conversation Guides" className="w-full h-full object-cover" />
             </div>
             <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">AI Conversation Guides</h4>
+              <h4 className="font-headline font-bold text-sm text-on-surface">Conversation Guides</h4>
               <p className="text-[10px] text-on-surface-variant">Empathetic prompts for difficult talks.</p>
             </div>
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
