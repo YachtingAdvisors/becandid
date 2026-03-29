@@ -87,6 +87,9 @@ export default function LandingPage() {
               <Link href="/pricing" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
                 Pricing
               </Link>
+              <a href="#download" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+                Download
+              </a>
               <a href="#cta" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
                 About
               </a>
@@ -208,6 +211,131 @@ export default function LandingPage() {
                 <p className="text-sm text-on-surface-variant leading-relaxed">{step.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Download Section ─────────────────────────────── */}
+      <section id="download" className="py-24 px-6 bg-surface-container-low">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center font-label text-xs font-semibold text-primary uppercase tracking-widest mb-3">
+            Available Everywhere
+          </p>
+          <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
+            Download Be Candid
+          </h2>
+          <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
+            Native apps for mobile and desktop. Your data syncs seamlessly across all devices, end-to-end encrypted.
+          </p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {/* iOS */}
+            <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center text-3xl">
+                📱
+              </div>
+              <div>
+                <h3 className="font-headline font-bold text-lg text-on-surface">iPhone &amp; iPad</h3>
+                <p className="text-sm text-on-surface-variant mt-1">iOS 16+ required</p>
+              </div>
+              <a
+                href="https://apps.apple.com/app/be-candid"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 px-6 bg-primary text-on-primary rounded-full font-label font-bold text-sm uppercase tracking-wider hover:opacity-90 transition-opacity text-center"
+              >
+                App Store
+              </a>
+              <p className="text-xs text-on-surface-variant">Includes Screen Time integration</p>
+            </div>
+
+            {/* Android */}
+            <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 rounded-2xl bg-secondary-container flex items-center justify-center text-3xl">
+                🤖
+              </div>
+              <div>
+                <h3 className="font-headline font-bold text-lg text-on-surface">Android</h3>
+                <p className="text-sm text-on-surface-variant mt-1">Android 10+ required</p>
+              </div>
+              <a
+                href="https://play.google.com/store/apps/details?id=io.becandid.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 px-6 bg-primary text-on-primary rounded-full font-label font-bold text-sm uppercase tracking-wider hover:opacity-90 transition-opacity text-center"
+              >
+                Google Play
+              </a>
+              <p className="text-xs text-on-surface-variant">Includes UsageStats monitoring</p>
+            </div>
+
+            {/* Web App */}
+            <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 rounded-2xl bg-tertiary-container flex items-center justify-center text-3xl">
+                🌐
+              </div>
+              <div>
+                <h3 className="font-headline font-bold text-lg text-on-surface">Web App</h3>
+                <p className="text-sm text-on-surface-variant mt-1">Chrome, Safari, Firefox, Edge</p>
+              </div>
+              <Link
+                href="/auth/signup"
+                className="w-full py-3 px-6 bg-primary text-on-primary rounded-full font-label font-bold text-sm uppercase tracking-wider hover:opacity-90 transition-opacity text-center"
+              >
+                Open in Browser
+              </Link>
+              <p className="text-xs text-on-surface-variant">No download required — works instantly</p>
+            </div>
+          </div>
+
+          {/* Desktop Section */}
+          <div className="card p-8">
+            <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-primary-container/50 flex items-center justify-center text-2xl flex-shrink-0">
+                💻
+              </div>
+              <div className="text-center sm:text-left">
+                <h3 className="font-headline font-bold text-xl text-on-surface">Desktop Apps</h3>
+                <p className="text-sm text-on-surface-variant mt-1">
+                  Full dashboard experience with background monitoring. Coming soon for macOS, Windows, and Linux.
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <a
+                href="#"
+                className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:bg-surface-container transition-colors group"
+              >
+                <span className="text-xl">🍎</span>
+                <div className="text-left">
+                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Download for</p>
+                  <p className="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">macOS</p>
+                </div>
+              </a>
+              <a
+                href="#"
+                className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:bg-surface-container transition-colors group"
+              >
+                <span className="text-xl">🪟</span>
+                <div className="text-left">
+                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Download for</p>
+                  <p className="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">Windows</p>
+                </div>
+              </a>
+              <a
+                href="#"
+                className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:bg-surface-container transition-colors group"
+              >
+                <span className="text-xl">🐧</span>
+                <div className="text-left">
+                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Download for</p>
+                  <p className="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">Linux</p>
+                </div>
+              </a>
+            </div>
+            <p className="text-center text-xs text-on-surface-variant mt-4">
+              Desktop apps are currently in beta. <Link href="/auth/signup" className="text-primary hover:underline">Sign up</Link> to get early access.
+            </p>
           </div>
         </div>
       </section>
