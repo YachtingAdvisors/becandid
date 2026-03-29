@@ -17,7 +17,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
-  STRINGER_PROMPTS, STRINGER_QUOTES, JOURNAL_TAGS,
+  STRINGER_PROMPTS, JOURNAL_TAGS,
+  getRandomQuote, type MotivatorQuote,
 } from '@be-candid/shared';
 import { checkForCrisisLanguage } from '@/lib/crisisDetection';
 import CrisisResourceBanner from '@/components/dashboard/CrisisResourceBanner';
@@ -65,7 +66,7 @@ export default function StringerJournalPage() {
   const [showExport, setShowExport] = useState(false);
   const [search, setSearch] = useState('');
   const [filterTag, setFilterTag] = useState<string | null>(null);
-  const [quote] = useState(() => STRINGER_QUOTES[Math.floor(Math.random() * STRINGER_QUOTES.length)]);
+  const [quote] = useState<MotivatorQuote>(() => getRandomQuote(null));
 
   // Form state
   const [freewrite, setFreewrite] = useState('');
@@ -376,7 +377,7 @@ export default function StringerJournalPage() {
         </div>
         <div className="p-4 rounded-3xl bg-gradient-to-r from-secondary-container/40 to-tertiary-container/40 border border-outline-variant">
           <p className="text-sm text-secondary italic leading-relaxed font-body">&ldquo;{quote.text}&rdquo;</p>
-          <p className="text-xs text-on-surface-variant font-label mt-1">&mdash; Jay Stringer, {quote.ref}</p>
+          <p className="text-xs text-on-surface-variant font-label mt-1">&mdash; {quote.author}, {quote.ref}</p>
         </div>
       </div>
 

@@ -114,7 +114,7 @@ export async function generateWeeklyReflection(userId: string): Promise<any> {
 
   try {
     const response = await getAnthropic().messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
       max_tokens: 1000,
       system: REFLECTION_PROMPT,
       messages: [{

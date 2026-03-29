@@ -107,3 +107,212 @@ export const JOURNAL_TAGS = [
   'boredom', 'rejection', 'shame', 'anger', 'anxiety',
   'travel', 'celebration', 'weekend', 'morning', 'work',
 ] as const;
+
+// ─── Foundational Motivator ─────────────────────────────────
+// Users choose what grounds their accountability journey.
+// Quotes and prompts are tailored to their motivator.
+
+export type FoundationalMotivator = 'spiritual' | 'psychological' | 'relational' | 'general';
+
+export const MOTIVATOR_LABELS: Record<FoundationalMotivator, string> = {
+  spiritual: 'Faith & Spirituality',
+  psychological: 'Psychology & Self-Understanding',
+  relational: 'Relationships & Connection',
+  general: 'General Wisdom',
+};
+
+export const MOTIVATOR_DESCRIPTIONS: Record<FoundationalMotivator, string> = {
+  spiritual: 'Quotes from Tim Keller, C.S. Lewis, Henri Nouwen, and other faith-based thinkers on grace, identity, and redemption.',
+  psychological: 'Insights from Jay Stringer, Brené Brown, and clinical research on shame, vulnerability, and healing.',
+  relational: 'Wisdom about trust, intimacy, and rebuilding connection with those you love.',
+  general: 'A blend of all perspectives — whatever resonates with you.',
+};
+
+export interface MotivatorQuote {
+  text: string;
+  author: string;
+  ref: string;
+  motivator: FoundationalMotivator;
+}
+
+export const SPIRITUAL_QUOTES: MotivatorQuote[] = [
+  {
+    text: 'To be loved but not known is comforting but superficial. To be known and not loved is our greatest fear. But to be fully known and truly loved is, well, a lot like being loved by God. It is what we need more than anything.',
+    author: 'Tim Keller',
+    ref: 'The Meaning of Marriage',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'The gospel is this: We are more sinful and flawed in ourselves than we ever dared believe, yet at the very same time we are more loved and accepted in Jesus Christ than we ever dared hope.',
+    author: 'Tim Keller',
+    ref: 'The Meaning of Marriage',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'Grace does not make us less honest about sin; it makes us more honest because we are no longer afraid of what honesty will cost us.',
+    author: 'Tim Keller',
+    ref: 'The Reason for God',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'To be yourself before God is to strip away every false identity, every mask you have put on, every self you have tried to construct.',
+    author: 'Tim Keller',
+    ref: 'Prayer',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'The Christian gospel is that I am so flawed that Jesus had to die for me, yet I am so loved and valued that Jesus was glad to die for me.',
+    author: 'Tim Keller',
+    ref: 'Timothy Keller Sermons',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'We are not the sum of our weaknesses and failures; we are the sum of the Father\'s love for us.',
+    author: 'St. John Paul II',
+    ref: 'World Youth Day 2002',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'The place God calls you to is the place where your deep gladness and the world\'s deep hunger meet.',
+    author: 'Frederick Buechner',
+    ref: 'Wishful Thinking',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'You are not what you have done. You are what God has given you. You are God\'s child. That is your identity.',
+    author: 'Henri Nouwen',
+    ref: 'Life of the Beloved',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'The spiritual life does not remove us from the world but leads us deeper into it.',
+    author: 'Henri Nouwen',
+    ref: 'Making All Things New',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'No one can be healed in isolation. Healing is found in community, in truth-telling, in the presence of others who know us fully.',
+    author: 'Dietrich Bonhoeffer',
+    ref: 'Life Together',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'We can be sure that God will never give us more than we can handle. But He might give us more than we can handle alone.',
+    author: 'C.S. Lewis',
+    ref: 'Letters',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'Integrity is doing the right thing, even when no one is watching. But accountability is inviting someone to watch.',
+    author: 'Charles Swindoll',
+    ref: 'The Grace Awakening',
+    motivator: 'spiritual',
+  },
+];
+
+export const PSYCHOLOGICAL_QUOTES: MotivatorQuote[] = [
+  {
+    text: 'Vulnerability is not winning or losing; it\'s having the courage to show up and be seen when we have no control over the outcome.',
+    author: 'Brené Brown',
+    ref: 'Rising Strong',
+    motivator: 'psychological',
+  },
+  {
+    text: 'Shame derives its power from being unspeakable. The moment we speak shame, it begins to wither.',
+    author: 'Brené Brown',
+    ref: 'Daring Greatly',
+    motivator: 'psychological',
+  },
+  {
+    text: 'Between stimulus and response there is a space. In that space is our power to choose our response.',
+    author: 'Viktor Frankl',
+    ref: "Man's Search for Meaning",
+    motivator: 'psychological',
+  },
+  {
+    text: 'The curious paradox is that when I accept myself just as I am, then I can change.',
+    author: 'Carl Rogers',
+    ref: 'On Becoming a Person',
+    motivator: 'psychological',
+  },
+  {
+    text: 'What we resist persists. What we look at and name begins to lose its grip on us.',
+    author: 'Gabor Maté',
+    ref: 'In the Realm of Hungry Ghosts',
+    motivator: 'psychological',
+  },
+  {
+    text: 'Healing doesn\'t mean the damage never existed. It means the damage no longer controls our lives.',
+    author: 'Akshay Dubey',
+    ref: 'Attributed',
+    motivator: 'psychological',
+  },
+];
+
+export const RELATIONAL_QUOTES: MotivatorQuote[] = [
+  {
+    text: 'Trust is built in very small moments. It is not a grand gesture — it is turning toward instead of turning away.',
+    author: 'John Gottman',
+    ref: 'The Science of Trust',
+    motivator: 'relational',
+  },
+  {
+    text: 'The quality of your life ultimately depends on the quality of your relationships.',
+    author: 'Esther Perel',
+    ref: 'Mating in Captivity',
+    motivator: 'relational',
+  },
+  {
+    text: 'In every relationship, the only person you can truly change is yourself. But that change can transform everything.',
+    author: 'Harriet Lerner',
+    ref: 'The Dance of Anger',
+    motivator: 'relational',
+  },
+  {
+    text: 'Are you there for me? Can I reach you? Will you respond when I need you? These are the fundamental questions of attachment.',
+    author: 'Sue Johnson',
+    ref: 'Hold Me Tight',
+    motivator: 'relational',
+  },
+  {
+    text: 'Connection is the energy that is created between people when they feel seen, heard, and valued.',
+    author: 'Brené Brown',
+    ref: 'The Gifts of Imperfection',
+    motivator: 'relational',
+  },
+];
+
+// ─── Quote Selector ─────────────────────────────────────────
+// Returns quotes matching the user's motivator, falling back to
+// Stringer quotes (which are always included).
+
+export function getQuotesForMotivator(motivator: FoundationalMotivator | null | undefined): MotivatorQuote[] {
+  // Stringer quotes are always the base (convert to MotivatorQuote format)
+  const stringerConverted: MotivatorQuote[] = STRINGER_QUOTES.map(q => ({
+    text: q.text,
+    author: 'Jay Stringer',
+    ref: q.ref,
+    motivator: 'psychological' as FoundationalMotivator,
+  }));
+
+  if (!motivator || motivator === 'general') {
+    // Mix of everything
+    return [...stringerConverted, ...SPIRITUAL_QUOTES.slice(0, 4), ...PSYCHOLOGICAL_QUOTES.slice(0, 3), ...RELATIONAL_QUOTES.slice(0, 3)];
+  }
+
+  switch (motivator) {
+    case 'spiritual':
+      return [...SPIRITUAL_QUOTES, ...stringerConverted];
+    case 'psychological':
+      return [...PSYCHOLOGICAL_QUOTES, ...stringerConverted];
+    case 'relational':
+      return [...RELATIONAL_QUOTES, ...stringerConverted];
+    default:
+      return stringerConverted;
+  }
+}
+
+export function getRandomQuote(motivator: FoundationalMotivator | null | undefined): MotivatorQuote {
+  const quotes = getQuotesForMotivator(motivator);
+  return quotes[Math.floor(Math.random() * quotes.length)];
+}

@@ -16,7 +16,7 @@ export default async function SettingsPage() {
   const db = createServiceClient();
   const { data: profile } = await db
     .from('users')
-    .select('name, phone, goals, monitoring_enabled, streak_mode, timezone, nudge_enabled, check_in_enabled, check_in_hour, check_in_frequency')
+    .select('name, phone, goals, monitoring_enabled, streak_mode, timezone, nudge_enabled, check_in_enabled, check_in_hour, check_in_frequency, foundational_motivator')
     .eq('id', user.id)
     .single();
 
@@ -43,6 +43,7 @@ export default async function SettingsPage() {
           check_in_enabled: profile.check_in_enabled ?? true,
           check_in_hour: profile.check_in_hour ?? 21,
           check_in_frequency: profile.check_in_frequency ?? 'daily',
+          foundational_motivator: profile.foundational_motivator ?? 'general',
         }}
       />
 

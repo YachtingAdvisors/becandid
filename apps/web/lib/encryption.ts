@@ -20,9 +20,6 @@ const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16;
 function getMasterKey(): string {
   const key = process.env.ENCRYPTION_MASTER_KEY ?? '';
-  if (!key && process.env.NODE_ENV === 'production' && typeof window === 'undefined') {
-    console.warn('ENCRYPTION_MASTER_KEY not set — encryption will be a passthrough');
-  }
   return key;
 }
 
@@ -41,7 +38,13 @@ function deriveKey(userId: string): Buffer {
 
 export function encrypt(plaintext: string, userId: string): string {
   if (!plaintext) return plaintext;
-  if (!getMasterKey()) return plaintext; // Skip in dev if no key configured
+  const masterKey = getMasterKey();
+  if (!masterKey) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('ENCRYPTION_MASTER_KEY required — cannot store unencrypted data in production');
+    }
+    return plaintext; // passthrough in dev only
+  }
 
   const key = deriveKey(userId);
   const iv = randomBytes(IV_LENGTH);
@@ -63,7 +66,13 @@ export function encrypt(plaintext: string, userId: string): string {
 
 export function decrypt(ciphertext: string, userId: string): string {
   if (!ciphertext) return ciphertext;
-  if (!getMasterKey()) return ciphertext;
+  const masterKey = getMasterKey();
+  if (!masterKey) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('ENCRYPTION_MASTER_KEY required — cannot decrypt in production without key');
+    }
+    return ciphertext;
+  }
 
   try {
     const packed = Buffer.from(ciphertext, 'base64');

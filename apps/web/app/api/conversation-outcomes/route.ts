@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     // Generate AI reflection on the conversation
     try {
       const response = await getAnthropic().messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
         max_tokens: 300,
         system: 'You generate brief, warm reflections on accountability conversations. 2-3 sentences max. Acknowledge what went well and offer one gentle suggestion. Grounded in Stringer\'s philosophy: kindness and curiosity over shame. Respond with plain text only.',
         messages: [{

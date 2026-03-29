@@ -58,6 +58,17 @@ export async function POST(req: NextRequest) {
   // ── Batch sync (from offline queue) ───────────────────
   if (body.batch && Array.isArray(body.events)) {
     const events = body.events.slice(0, MAX_BATCH_SIZE);
+
+    // Rate limit by total events, not just by request
+    for (let i = 0; i < events.length; i++) {
+      if (!checkUserRate(user.id)) {
+        return NextResponse.json(
+          { error: 'Rate limit exceeded', processed: i },
+          { status: 429, headers: { 'Retry-After': '60' } }
+        );
+      }
+    }
+
     const results = [];
 
     for (const event of events) {

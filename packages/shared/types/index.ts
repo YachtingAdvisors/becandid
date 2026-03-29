@@ -3,6 +3,8 @@
 // Updated with expanded rival categories
 // ============================================================
 
+import type { FoundationalMotivator } from './stringer';
+
 export type Severity = 'low' | 'medium' | 'high';
 export type Platform = 'android' | 'ios' | 'web' | 'extension';
 export type PartnerStatus = 'pending' | 'active' | 'declined';
@@ -213,6 +215,7 @@ export interface User {
   monitoring_enabled: boolean;
   streak_mode: StreakMode;
   timezone: string;
+  foundational_motivator?: FoundationalMotivator;
   created_at: string;
   updated_at: string;
 }

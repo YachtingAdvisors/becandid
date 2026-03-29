@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import {
   GOAL_LABELS, getCategoryEmoji,
   STREAK_MODE_LABELS, STREAK_MODE_SHORT,
-  type GoalCategory, type StreakMode,
+  MOTIVATOR_LABELS, MOTIVATOR_DESCRIPTIONS,
+  type GoalCategory, type StreakMode, type FoundationalMotivator,
 } from '@be-candid/shared';
 import GoalSelector from '../onboarding/GoalSelector';
 import TimezonePicker from './TimezonePicker';
@@ -24,6 +25,7 @@ interface SettingsFormProps {
     check_in_enabled?: boolean;
     check_in_hour?: number;
     check_in_frequency?: CheckInFrequency;
+    foundational_motivator?: string;
   };
 }
 
@@ -39,6 +41,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
   const [checkInEnabled, setCheckInEnabled] = useState(profile.check_in_enabled ?? true);
   const [checkInHour, setCheckInHour] = useState(profile.check_in_hour ?? 21);
   const [checkInFrequency, setCheckInFrequency] = useState<CheckInFrequency>(profile.check_in_frequency ?? 'daily');
+  const [foundationalMotivator, setFoundationalMotivator] = useState<FoundationalMotivator>((profile.foundational_motivator as FoundationalMotivator) ?? 'general');
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -65,6 +68,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
         check_in_enabled: checkInEnabled,
         check_in_hour: checkInHour,
         check_in_frequency: checkInFrequency,
+        foundational_motivator: foundationalMotivator,
       }),
     });
 
@@ -160,6 +164,31 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
             </button>
           ))}
         </div>
+      </section>
+
+      {/* ── Foundational Motivator ──────────────────────────── */}
+      <section className="card p-5 space-y-4">
+        <h2 className="font-display text-lg font-semibold text-ink">Foundational Motivator</h2>
+        <p className="text-xs text-ink-muted">Choose the perspective that grounds your journey. Quotes and reflections are tailored to match.</p>
+
+        <div className="space-y-2">
+          {(Object.keys(MOTIVATOR_LABELS) as FoundationalMotivator[]).map((key) => (
+            <button
+              key={key}
+              onClick={() => setFoundationalMotivator(key)}
+              className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all text-sm ${
+                foundationalMotivator === key
+                  ? 'border-brand-500 bg-brand-50'
+                  : 'border-surface-border hover:border-brand-300'
+              }`}
+            >
+              <span className="font-semibold text-ink">{MOTIVATOR_LABELS[key]}</span>
+              <p className="text-xs text-ink-muted mt-0.5">{MOTIVATOR_DESCRIPTIONS[key]}</p>
+            </button>
+          ))}
+        </div>
+
+        <p className="text-xs text-ink-muted leading-relaxed">Jay Stringer&apos;s insights are always included regardless of your choice.</p>
       </section>
 
       {/* ── Check-ins & Nudges ──────────────────────────────── */}

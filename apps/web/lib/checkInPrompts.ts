@@ -82,7 +82,7 @@ Tone: warm, direct, personally relevant. Reference specific context (their strea
 Output ONLY the check-in message text, no quotes, no preamble.`;
 
     const response = await getAnthropic().messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
       max_tokens: 200,
       messages: [{ role: 'user', content: prompt }],
     });

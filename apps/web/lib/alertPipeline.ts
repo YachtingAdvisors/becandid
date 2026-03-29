@@ -118,7 +118,7 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
     if (solo) {
       // Solo: self-reflection guide only
       const response = await getAnthropic().messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
         max_tokens: 800,
         system: SOLO_GUIDE_SYSTEM_PROMPT + (categoryGuidance ? `\n\n${categoryGuidance}` : ''),
         messages: [{
@@ -157,7 +157,7 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
       }
 
       const response = await getAnthropic().messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
         max_tokens: 1200,
         system: systemPrompt,
         messages: [{

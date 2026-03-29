@@ -16,8 +16,12 @@ import { useRouter } from 'next/navigation';
 import GoalSelector from '@/components/onboarding/GoalSelector';
 import PartnerPreview from '@/components/onboarding/PartnerPreview';
 import type { GoalCategory } from '@be-candid/shared';
+import {
+  MOTIVATOR_LABELS, MOTIVATOR_DESCRIPTIONS,
+  type FoundationalMotivator,
+} from '@be-candid/shared';
 
-type Step = 'goals' | 'stringer' | 'preview' | 'partner' | 'done';
+type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done';
 
 const STRINGER_PILLARS = [
   { icon: '🌊', title: 'Trace the Tributaries', body: "When something comes up, it's never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen." },
@@ -34,6 +38,7 @@ export default function OnboardingPage() {
   const [partnerEmail, setPartnerEmail] = useState('');
   const [partnerPhone, setPartnerPhone] = useState('');
   const [relationship, setRelationship] = useState('friend');
+  const [motivator, setMotivator] = useState<FoundationalMotivator>('general');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -92,8 +97,22 @@ export default function OnboardingPage() {
     setLoading(false);
   };
 
+  // ── Save motivator ──────────────────────────────────────
+  const saveMotivator = async () => {
+    setLoading(true);
+    try {
+      await fetch('/api/auth/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ foundational_motivator: motivator }),
+      });
+      setStep('preview');
+    } catch (e) { setError('Failed to save motivator'); }
+    setLoading(false);
+  };
+
   // ── Progress bar ──────────────────────────────────────
-  const STEPS: Step[] = ['goals', 'stringer', 'preview', 'partner', 'done'];
+  const STEPS: Step[] = ['goals', 'stringer', 'motivator', 'preview', 'partner', 'done'];
   const progress = STEPS.indexOf(step) / (STEPS.length - 1);
 
   return (
@@ -163,14 +182,14 @@ export default function OnboardingPage() {
             )}
             <button onClick={() => {
               if (stringerStep < STRINGER_PILLARS.length - 1) setStringerStep(stringerStep + 1);
-              else setStep('preview');
+              else setStep('motivator');
             }} className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 transition-opacity">
               {stringerStep === STRINGER_PILLARS.length - 1 ? 'Got it — continue' : 'Next'}
             </button>
           </div>
 
           {stringerStep === 0 && (
-            <button onClick={() => setStep('preview')} className="w-full mt-2 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body">Skip introduction</button>
+            <button onClick={() => setStep('motivator')} className="w-full mt-2 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body">Skip introduction</button>
           )}
 
           <p className="text-xs text-on-surface-variant text-center mt-6 font-body leading-relaxed">
@@ -179,7 +198,51 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {/* ═══════ STEP 3: Partner Preview ═══════ */}
+      {/* ═══════ STEP 3: Foundational Motivator ═══════ */}
+      {step === 'motivator' && (
+        <div className="max-w-md w-full animate-fade-in">
+          <div className="text-center mb-6">
+            <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Step 2b of 4</p>
+            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">What grounds you?</h1>
+            <p className="text-sm text-on-surface-variant font-body leading-relaxed">
+              Choose the perspective that resonates most. We&apos;ll tailor quotes and reflections to match.
+            </p>
+          </div>
+
+          <div className="space-y-3 mb-4">
+            {(Object.keys(MOTIVATOR_LABELS) as FoundationalMotivator[]).map((key) => (
+              <button
+                key={key}
+                onClick={() => setMotivator(key)}
+                className={`w-full text-left px-5 py-4 rounded-2xl border-2 transition-all ${
+                  motivator === key
+                    ? 'border-primary bg-primary-container/30 ring-2 ring-primary/20'
+                    : 'border-outline-variant bg-surface-container-lowest hover:border-primary/30'
+                }`}
+              >
+                <span className="text-sm font-label font-semibold text-on-surface">{MOTIVATOR_LABELS[key]}</span>
+                <p className="text-xs text-on-surface-variant font-body mt-1 leading-relaxed">{MOTIVATOR_DESCRIPTIONS[key]}</p>
+              </button>
+            ))}
+          </div>
+
+          <p className="text-xs text-on-surface-variant text-center font-body mb-4 leading-relaxed">
+            Jay Stringer&apos;s insights are always included regardless of your choice. You can change this anytime in Settings.
+          </p>
+
+          {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
+
+          <div className="flex gap-3">
+            <button onClick={() => setStep('stringer')} className="px-6 py-3 text-sm font-headline font-bold rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors">&larr; Back</button>
+            <button onClick={saveMotivator} disabled={loading}
+              className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 disabled:opacity-50 transition-opacity">
+              {loading ? 'Saving...' : 'Continue →'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════ STEP 4: Partner Preview ═══════ */}
       {step === 'preview' && (
         <div className="animate-fade-in">
           <PartnerPreview
