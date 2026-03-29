@@ -158,7 +158,7 @@ export default function LandingPage() {
               <div className="relative bg-surface-container-lowest rounded-[2.5rem] p-4 shadow-2xl transform rotate-2 group-hover:rotate-0 transition-transform duration-700">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT68HleSrMnpAIaNFqYPe73IWO7XnN3iTdgxGqhJ-Sa5bJE7gZMLcJEMgz5Rm6qTCl_yFpIVGlcgE72vammDctQBt3n4ITf7J4SBvQsJ7nA41rurTOdKDOVLA6P5R7jUOLOzEradB4DDCbtSdKNg3uXEtnJV7C9vPebWjc-ognxnGe5PAyxKMgZ7K0hgicdd1dYQOMZSvPSEMJC-4C7vlR8siJJPjIzjxa6p9m1a4T6ClPYG1AMsUkMsnq8erjcwoM9fjRubsONAdS"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBDhdaLlgxHIo_EQEqTmR12ZxXVjLjZzQR32EdMhoa_Wx7_3glU1nTRHm1c7XAWnFGGPLDLoqo8o-VvOMXB56KxDMWa054TdLlpsZsPPAGJhDElxPH8IYampDAz8ajs9SDk_IwFhdWISX-YRczgAUd6JegtfDruOhiPwoIaYjmDhVLDw8_GbAwE8PW5s2ci5wvWPSmnbu34eIOizHnoY2DJF7DCsL_pt-JSFBs1rj0Qw7_96_k7nUMFbrBYJHX52XfyKK4DnTy6Jp6"
                   alt="Be Candid dashboard showing integrity score and journaling prompts"
                   className="w-full h-auto rounded-[2rem] object-cover"
                 />
