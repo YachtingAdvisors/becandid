@@ -4,52 +4,65 @@ const FEATURES = [
   {
     icon: 'chat_bubble',
     title: 'AI Conversation Guides',
-    desc: 'When a pattern surfaces, personalized guides grounded in Motivational Interviewing help you and your partner have meaningful conversations about alignment.',
+    desc: 'Empathetic prompts and real-time guidance to facilitate difficult but necessary digital discussions.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDK75pW4vwBoIKZKqRfXv5nNixz53H86_XDRAM5lFE_qLDRDA_0EaBcExFNNcW2diDMzW7oHfniK5vT0VoDh8ORn6nDCr0bAoTYjdXoKn1JXHixWNHCN-flYfPlrnxYxeG5Q-eArpggt6kseUMEvlK-J3dB7Rfp0Tns9F2koKnKe904q18HbSiSBZrD9zSh5xQev-Mj2Rmdv4u19VE3ebdtEcecyMf1yeEMgGXxigV2uEAzs-KrJzjcwbLwiRFVLZnLuTzU2HNOJQcX',
+    alt: 'Glowing geometric nodes connected by light strands representing AI dialogue',
   },
   {
     icon: 'menu_book',
     title: 'Stringer Journal',
-    desc: 'Guided prompts based on Jay Stringer\u2019s framework help you understand the tributaries, longings, and roadmap beneath your patterns \u2014 so your digital life matches your real life.',
+    desc: 'A private space for reflective record-keeping, helping you track personal growth and interaction history.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfBxh_yzZ7uwgR50MZXnPl8QPW_ME7nN1lPEv_cD822RK8u7V3Of9E95ABemZ6rqV6rm8XlZxJ4wKTkxhiTM_BdCz20_ph4pMvKdJ0nnZ_vWe9SHbw_9L3pktumG67jQ9bcna8kWc8qkdjUObqfyMIRuBTqz8PcOF2YENphyR5zUA8P06cp0atPabHodQTd4U_R_CrPA0NsRlNWahv_-vNun8lbKvIeKrXMWssZuRwXhSxhjkg5EYMZoF14po0DPIq5w_QpV0AJlk5',
+    alt: 'Minimalist digital journal on a tablet with morning sunlight',
   },
   {
     icon: 'handshake',
     title: 'Partner Awareness',
-    desc: 'Your accountability partner receives context and AI-generated conversation starters when patterns emerge \u2014 clarity, not surveillance.',
+    desc: 'Shared insights that foster mutual trust without compromising individual privacy or autonomy.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC9z0_qFFcxPTynziBimlO4ZPOQFzK7CzCSyVCv0kNcrKCiAJBxSC5E1phNCkDn9xtVrExQQ87WeZIoheVpMKoAWKh41dsihbIIjOeUaFB8wHt5T--RFXDxFiuZTZO1vz6lISFQaOI04Tym26Ju5v_M3Car6glHvDiYJzZrxsZSfLbsTS8n4qUTvbU1Um6VgboqhHrYBMFUVZrJuwLBTCI0mDrRwx3eM2jkUnm56VUa29YoY5hiWJ-tcB-E4cNfJ-CTTJIPBiHFvTnT',
+    alt: 'Two intersecting circles in teal and blue symbolizing mutual understanding',
   },
   {
     icon: 'emergency_home',
     title: 'Crisis Detection',
-    desc: 'If patterns escalate, Be Candid detects it early and connects you with professional resources \u2014 no judgment.',
+    desc: 'Advanced sentiment analysis to identify potential distress signals and offer immediate supportive resources.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2PCBqh0r0XvbXJDoIEsvChMXbblBdWZXVmPnPx8vluAlIIDucgY3v30rMZfGzihOLd5Ia0--KQVA4mZVnXJD-77rO0isDR-vo4892fqZvxWQgm7uSZq9OhnYDnxtgTqiCNcuPpT6Py4FSd930P4VzXmFVT1QixXQxljEZ4m50_VBnJ1Oh7jgkg9h-R962WCiwhhqBP58uSLVH1IcJ2hKPaiEAer8GxO6AKpqR1hzUhFxE9ah4094WMrEQ1KslZWYovr7C_kdy07eD',
+    alt: 'Calm wave pattern in warm amber tones representing gentle monitoring',
   },
   {
     icon: 'encrypted',
     title: 'End-to-End Encryption',
-    desc: 'Your data is encrypted in transit and at rest. URLs are hashed, never stored. We literally cannot read your content.',
+    desc: 'State-of-the-art security ensuring your most vulnerable moments stay strictly between you and your trusted circle.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_SmlA10dM0e2T2J0UiwgngHZsGaBJ4JuqCNZAMl1QG4NU9v7tdmC3VWKFAAgak_lSpbNYxCSYrvDlzgYvrmimwqt6xA3UityznZhg10haskT1rixoScFsfQlyOxUPSy4fdt2iwV5XzUl3aCzdGUJ8rHfFoly-qoTP62_ZTq7p6uIvSVJhgSMv1mYaAxBej4h_RoU7Zw7LVBfQJ8TMInGYqDcbbHd0MWedNtXiT--RHCjXowUWZwHMl-8etkYyMXnymYrHzoXbOK3x',
+    alt: 'Glass lock icon floating above shimmering data particles in teal and cyan',
   },
   {
     icon: 'center_focus_strong',
     title: 'Alignment Tracking',
-    desc: 'Morning and evening segments keep you grounded. Build streaks, track congruence, and see how your screen time matches who you want to be.',
+    desc: 'Monitor how your digital habits align with your core values and long-term wellness goals.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5Ys--kStjkPby9Zzm20_PmXM5uVfGTfSuggs9r3WJvReEscj7W60sLEU-bUDtF0AeqbE_btr3fg9RPmicpxh6qiQDyEz9kbkYiONgY96ZqIF0rZzvv8n6COzpeCPg7_kjrqpK7j3jkkolkA5PkecMAoDZ2zWxG-K47MB8kCTYKEVOWCWAZ27E-IKn6Qa76TU-IwTauc8Vmc8t8kt1CVrPbj6lj7BcLktihlUai5twB3UU1E20Azu2iAHz59zoPDPhHCQV_js88LSX',
+    alt: 'Data visualization showing harmonic balance representing life-tech alignment',
   },
   {
     icon: 'filter_list',
     title: 'AI Content Filtering',
-    desc: 'AI-powered content filtering blocks harmful websites while allowing age-appropriate browsing for teens and adults.',
+    desc: 'Smart filters that shield you from toxic environments while highlighting positive, growth-oriented content.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAwFXB-FLuFEzJSGvNSOMO371jUsqU4or47dt12RQUpFyGKy0QYOYry8Y8HDlzk5QZ67tgUAlb-B-d19tir4g-nQ8QL0YgqMU_Prwnu0TABcEXoLJzVSBziYz3qoolNAD6Y618dCgmPAfcj9r_yUuXtYbEKV-2f0zOq_YLPiwbTA4liYmq9KZqjL29E__6ceJEJiW-KUMZC0sNZ-qY2P0HeyFgrtebqakuqHa9UQTP1wb_29AmK24CSjQSB7l_J5O6Bc1DpMOAVtinG',
+    alt: 'Semi-transparent prism filtering light into a clear beam',
   },
   {
     icon: 'timer',
     title: 'Screen Time Controls',
-    desc: 'Set healthy limits by category, schedule downtime, and build self-regulation with visual usage breakdowns.',
+    desc: 'Intuitive limits that encourage conscious consumption rather than restrictive digital deprivation.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8r5F8dD28slCIYA2s9aKRnx0uApEyC-ppD8DLNUx2-X5FfNFQcdM8OKJUWui0FekVLb68kQfkT-1cwWb0gQV7j7ByCGkWlauhEnJpptHOuNCkSzngOUHFwqnGARySp03UjnzsxG7kMKD62daIP6dBtMNhegwofC7BfwigGdnW2DFs-PBFldta7m6qgayt5m2637au0Hs2oan7RWWi4Gr6M-_qVeB_u4D_pAQFDTMnkNLFI1oxFD0Xqz0DYl8ItG1JsYZqGUPlfwDc',
+    alt: 'Zen garden sand pattern with minimalist clock silhouette',
   },
   {
     icon: 'shield',
     title: 'Guardian Dashboard',
-    desc: 'Parents get a dedicated dashboard with teen activity summaries, alerts, and conversation guides while respecting privacy.',
-  },
-  {
-    icon: 'block',
-    title: 'Sexting Prevention',
-    desc: 'AI detection and real-time alerts help protect teens from harmful messaging patterns with age-appropriate guidance.',
+    desc: 'A centralized command center for administrators to oversee safety settings and review collective wellness trends.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfpF--KFSH1cy_6OBg93bKMc1gd14EqwcEEog-t6MRUe8QhOI5SPIUcmoh6l1T6YUBUy4LKdEeuUZrslDB416pE39KXKFVf2lk7_dwje-3Rv7l-EbjKvvro96ASsDf7LTpYNVX3p_gipILTXxWXcR0angm8imcdY9CnP4SZ1neORKJH138yUFYcWIghaEtDYvDyGYr3ELkonIOhGIJ7I2ey1L0cMlqigWN9Kql3bpW-K7ZRT_mIP8RyLiwzFBz7-uetTG33SpOnXgB',
+    alt: 'Clean structured command center interface with soft glow',
   },
 ];
 
@@ -233,12 +246,20 @@ export default function LandingPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map((f) => (
-              <div key={f.title} className="group card p-7 hover:shadow-lg transition-all duration-300 hover:bg-surface-container-low">
+              <div key={f.title} className="group bg-surface-container-lowest rounded-xl p-6 transition-all duration-300 hover:bg-surface-container-low">
+                <div className="aspect-video mb-6 overflow-hidden rounded-lg">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={f.image}
+                    alt={f.alt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
                 <div className="flex items-start gap-4 mb-3">
                   <MaterialIcon name={f.icon} className="text-primary text-2xl" />
-                  <h3 className="font-headline font-bold text-base text-on-surface">{f.title}</h3>
+                  <h3 className="font-headline font-bold text-xl text-on-surface">{f.title}</h3>
                 </div>
-                <p className="text-sm text-on-surface-variant leading-relaxed">{f.desc}</p>
+                <p className="font-body text-on-surface-variant leading-relaxed text-sm">{f.desc}</p>
               </div>
             ))}
           </div>
