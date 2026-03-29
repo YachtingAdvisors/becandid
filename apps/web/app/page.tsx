@@ -344,36 +344,27 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <a
-                href="#"
-                className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:bg-surface-container transition-colors group"
-              >
+              <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
                 <span className="text-xl">🍎</span>
                 <div className="text-left">
-                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Download for</p>
-                  <p className="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">macOS</p>
+                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
+                  <p className="font-headline font-bold text-on-surface">macOS</p>
                 </div>
-              </a>
-              <a
-                href="#"
-                className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:bg-surface-container transition-colors group"
-              >
+              </div>
+              <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
                 <span className="text-xl">🪟</span>
                 <div className="text-left">
-                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Download for</p>
-                  <p className="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">Windows</p>
+                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
+                  <p className="font-headline font-bold text-on-surface">Windows</p>
                 </div>
-              </a>
-              <a
-                href="#"
-                className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:bg-surface-container transition-colors group"
-              >
+              </div>
+              <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
                 <span className="text-xl">🐧</span>
                 <div className="text-left">
-                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Download for</p>
-                  <p className="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">Linux</p>
+                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
+                  <p className="font-headline font-bold text-on-surface">Linux</p>
                 </div>
-              </a>
+              </div>
             </div>
             <p className="text-center text-xs text-on-surface-variant mt-4">
               Desktop apps are currently in beta. <Link href="/auth/signup" className="text-primary hover:underline">Sign up</Link> to get early access.
