@@ -24,9 +24,9 @@ import {
 type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done';
 
 const STRINGER_PILLARS = [
-  { icon: '🌊', title: 'Trace the Tributaries', body: "Your patterns are never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen. Understanding yourself is the first step to alignment." },
-  { icon: '💛', title: 'Name the Longing', body: "Beneath every pattern is something legitimate you need — belonging, rest, tenderness, significance. Naming it honestly is how you build congruence between who you are and who you want to be." },
-  { icon: '🧭', title: 'Follow the Roadmap', body: "Your patterns are a sign pointing to where your story needs attention. Instead of asking 'How do I stop?' — ask 'What is this revealing about the person I want to become?'" },
+  { icon: 'water_drop', title: 'Trace the Tributaries', body: "Your patterns are never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen. Understanding yourself is the first step to alignment." },
+  { icon: 'favorite', title: 'Name the Longing', body: "Beneath every pattern is something legitimate you need — belonging, rest, tenderness, significance. Naming it honestly is how you build congruence between who you are and who you want to be." },
+  { icon: 'explore', title: 'Follow the Roadmap', body: "Your patterns are a sign pointing to where your story needs attention. Instead of asking 'How do I stop?' — ask 'What is this revealing about the person I want to become?'" },
 ];
 
 export default function OnboardingPage() {
@@ -160,7 +160,7 @@ export default function OnboardingPage() {
                 </p>
               </div>
               <button onClick={saveGoals} disabled={goals.length === 0 || loading}
-                className="w-full md:w-auto px-12 py-4 bg-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-50">
+                className="w-full md:w-auto px-12 py-4 bg-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                 {loading ? 'Saving...' : `Continue with ${goals.length} rival${goals.length !== 1 ? 's' : ''}`}
               </button>
             </div>
@@ -382,7 +382,9 @@ export default function OnboardingPage() {
       {/* ═══════ STEP 5: Done ═══════ */}
       {step === 'done' && (
         <div className="max-w-md w-full text-center animate-fade-in">
-          <div className="text-5xl mb-4">🎉</div>
+          <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>celebration</span>
+          </div>
           <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">You&apos;re set up</h1>
           <p className="text-sm text-on-surface-variant leading-relaxed mb-6 font-body">
             {partnerName
@@ -392,12 +394,12 @@ export default function OnboardingPage() {
 
           <div className="text-left space-y-3 mb-8">
             {[
-              { icon: '📱', title: 'Install the mobile app', desc: 'Android: screen awareness. iOS: daily check-ins.' },
-              { icon: '📓', title: 'Write your first journal entry', desc: 'Start tracing the tributaries — before anything happens.' },
-              { icon: '💙', title: 'Check-ins start tonight', desc: "You'll receive a journal prompt at your preferred time." },
+              { icon: 'phone_iphone', title: 'Install the mobile app', desc: 'Android: screen awareness. iOS: daily check-ins.' },
+              { icon: 'edit_note', title: 'Write your first journal entry', desc: 'Start tracing the tributaries — before anything happens.' },
+              { icon: 'notifications_active', title: 'Check-ins start tonight', desc: "You'll receive a journal prompt at your preferred time." },
             ].map((item, i) => (
               <div key={i} className="flex gap-3 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant">
-                <span className="text-lg">{item.icon}</span>
+                <span className="material-symbols-outlined text-primary text-lg">{item.icon}</span>
                 <div>
                   <p className="text-sm font-medium text-on-surface font-label">{item.title}</p>
                   <p className="text-xs text-on-surface-variant font-body">{item.desc}</p>

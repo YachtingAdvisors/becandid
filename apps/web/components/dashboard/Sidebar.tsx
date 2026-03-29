@@ -28,11 +28,11 @@ interface SidebarProps {
 }
 
 // Bottom nav tabs for mobile
-const MOBILE_TABS = [
-  { id: 'overview', href: '/dashboard', label: 'Dashboard', icon: '\u25C9' },
-  { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: '\u26A1' },
-  { id: 'partner', href: '/dashboard/partner', label: 'Partners', icon: '\uD83E\uDD1D' },
-  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Journal', icon: '\uD83D\uDCD3' },
+const MOBILE_TABS_ALL = [
+  { id: 'overview', href: '/dashboard', label: 'Dashboard', icon: '\u25C9', solo: true },
+  { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: '\u26A1', solo: true },
+  { id: 'partner', href: '/dashboard/partner', label: 'Partners', icon: '\uD83E\uDD1D', solo: false },
+  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Journal', icon: '\uD83D\uDCD3', solo: true },
 ];
 
 export default function Sidebar({ userName, monitoringEnabled, navItems, soloMode }: SidebarProps) {
@@ -179,6 +179,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
           <div className="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
           <aside className="absolute left-0 top-0 bottom-0 w-72 bg-[#fbf9f8]/95 backdrop-blur-xl flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
             <button onClick={() => setOpen(false)}
+              aria-label="Close menu"
               className="absolute top-4 right-4 w-8 h-8 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container">
               {'\u2715'}
             </button>
@@ -190,7 +191,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
       {/* Mobile bottom nav bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant">
         <nav className="flex items-center justify-around px-2 py-1.5">
-          {MOBILE_TABS.map((tab) => {
+          {MOBILE_TABS_ALL.filter(tab => !soloMode || tab.solo).map((tab) => {
             const active = isActive(tab.href);
             return (
               <Link
