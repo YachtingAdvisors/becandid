@@ -70,7 +70,7 @@ export default function PrivacyPolicy() {
 
           <h3>1.3 Journal Entries</h3>
           <p>
-            You may write journal entries using our Stringer Journal feature. Journal content — including
+            You may write journal entries using our Candid Journal feature. Journal content — including
             freewrite text, guided prompt responses (tributaries, longings, roadmap), mood ratings, and tags —
             is encrypted using AES-256-GCM encryption with per-user derived keys <strong>before</strong> it
             is stored in our database. This means even our database administrators cannot read your journal

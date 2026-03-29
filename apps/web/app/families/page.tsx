@@ -163,7 +163,7 @@ export default function FamiliesPage() {
               </h3>
               <ul className="space-y-3">
                 {[
-                  'Journal entries and Stringer reflections',
+                  'Journal entries and guided reflections',
                   'Private conversation details',
                   'Mood and emotional data',
                   'Therapeutic content and notes',

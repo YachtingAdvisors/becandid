@@ -51,7 +51,7 @@ export default function TermsOfService() {
             Be Candid is an accountability and personal reflection application. It monitors device screen
             activity for content matching user-selected categories, notifies designated accountability
             partners, generates AI-powered conversation guides, and provides structured journaling tools
-            grounded in Jay Stringer&rsquo;s &ldquo;Unwanted&rdquo; framework.
+            grounded in a therapeutic framework for understanding unwanted behavior.
           </p>
 
           <h3>2.1 Be Candid Is Not Therapy</h3>
@@ -59,7 +59,7 @@ export default function TermsOfService() {
             <strong>Be Candid is not a substitute for professional mental health treatment.</strong> The
             Service does not provide therapy, counseling, psychiatric services, crisis intervention, medical
             advice, or diagnosis. AI-generated conversation guides are informational aids — not clinical
-            recommendations. The Stringer Journal prompts are reflection tools — not therapeutic interventions.
+            recommendations. The Candid Journal prompts are reflection tools — not therapeutic interventions.
           </p>
           <p>
             If you are experiencing a mental health crisis, please contact the 988 Suicide &amp; Crisis
@@ -174,10 +174,10 @@ export default function TermsOfService() {
           <h2>6. Intellectual Property</h2>
           <p>
             The Service, including its design, code, AI prompts, conversation guide frameworks, and the
-            Stringer Journal prompt system, is the intellectual property of Be Candid LLC. The
-            &ldquo;Unwanted&rdquo; framework referenced in the app is the intellectual property of Jay
-            Stringer and is used with attribution as an informational framework — not a licensed clinical
-            tool. Your journal entries, personal data, and uploaded content remain your property.
+            Candid Journal prompt system, is the intellectual property of Be Candid LLC. The
+            therapeutic framework referenced in the app is used with attribution as an informational
+            framework — not a licensed clinical tool. Your journal entries, personal data, and uploaded
+            content remain your property.
           </p>
 
           <h2>7. AI-Generated Content</h2>

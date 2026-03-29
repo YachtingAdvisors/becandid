@@ -130,7 +130,7 @@ export async function GET(req: NextRequest) {
       Open Journal →
     </a>
     <p style="text-align:center;font-size:12px;color:#9ca3af;margin:16px 0 0;font-style:italic;">
-      "${quote.text}" — Jay Stringer
+      "${quote.text}"
     </p>
   </div>
 </div></body></html>`,

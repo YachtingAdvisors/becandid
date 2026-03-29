@@ -190,10 +190,10 @@ export default async function DashboardPage() {
           <Link href="/dashboard/stringer-journal" className="flex items-center gap-4 p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.journal} alt="Stringer Journal" className="w-full h-full object-cover" />
+              <img src={IMAGES.journal} alt="Candid Journal" className="w-full h-full object-cover" />
             </div>
             <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">Stringer Journal</h4>
+              <h4 className="font-headline font-bold text-sm text-on-surface">Candid Journal</h4>
               <p className="text-[10px] text-on-surface-variant">Private space for reflective growth.</p>
             </div>
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>

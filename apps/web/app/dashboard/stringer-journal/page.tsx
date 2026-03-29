@@ -226,7 +226,7 @@ export default function StringerJournalPage() {
         <div className="p-4 rounded-2xl bg-secondary-container/40 border border-secondary-container">
           <p className="text-sm text-secondary leading-relaxed font-body">
             <strong>This entry is linked to a flagged event.</strong> That takes courage.
-            Stringer says the behavior is the signal, not the problem. Be curious with what comes up.
+            The behavior is the signal, not the problem. Be curious with what comes up.
           </p>
         </div>
       )}
@@ -347,7 +347,7 @@ export default function StringerJournalPage() {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div>
-            <h1 className="text-2xl font-headline font-bold text-on-surface">Stringer Journal</h1>
+            <h1 className="text-2xl font-headline font-bold text-on-surface">Candid Journal</h1>
             <p className="text-sm text-on-surface-variant font-body mt-1">Understanding yourself to align your life</p>
           </div>
           <div className="flex gap-2 shrink-0">

@@ -19,7 +19,7 @@ type Feature =
   | 'dataExportJson' | 'spouseExperience' | 'aiGuidesLimit' | 'partnerLimit';
 
 const FEATURE_COPY: Record<Feature, { title: string; description: string; emoji: string }> = {
-  journalReminders: { title: 'Journal Reminders', description: 'Scheduled Stringer prompts that meet you where you are', emoji: '🔔' },
+  journalReminders: { title: 'Journal Reminders', description: 'Scheduled journal prompts that meet you where you are', emoji: '🔔' },
   weeklyReflection: { title: 'Weekly AI Reflection', description: 'Claude reads your week and generates a personalized narrative', emoji: '✨' },
   vulnerabilityWindows: { title: 'Vulnerability Windows', description: 'Pre-schedule times you know you\'re at risk', emoji: '🕐' },
   patternDetection: { title: 'Pattern Detection', description: 'AI finds your time clusters, triggers, and frequency patterns', emoji: '📊' },

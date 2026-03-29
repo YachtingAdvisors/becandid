@@ -56,20 +56,20 @@ ${ph}${moodDots}${tagLine}${triggerBadge}</div>`;
   }).join('\n');
 
   return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
-<head><meta charset="utf-8"><title>Be Candid — Stringer Journal</title>
+<head><meta charset="utf-8"><title>Be Candid — Candid Journal</title>
 <style>@page{margin:1in;}body{font-family:Georgia,serif;}</style></head><body>
 <div style="text-align:center;margin-bottom:40pt;padding-bottom:20pt;border-bottom:2px solid #8B6914;">
 <h1 style="font-family:Georgia,serif;font-size:22pt;color:#2C1810;letter-spacing:2pt;">BE CANDID</h1>
-<p style="font-family:Georgia,serif;font-size:12pt;color:#8B6914;font-style:italic;">Stringer Journal — Drawing Wisdom from the Struggle</p>
+<p style="font-family:Georgia,serif;font-size:12pt;color:#8B6914;font-style:italic;">Candid Journal — Drawing Wisdom from the Struggle</p>
 <p style="font-family:Georgia,serif;font-size:9pt;color:#999;margin-top:8pt;">${entries.length} entries · Exported ${fmtDate(new Date().toISOString())}</p>
 </div>${rows}
 <div style="text-align:center;margin-top:30pt;padding-top:16pt;border-top:1px solid #ddd;">
-<p style="font-family:Georgia,serif;font-size:9pt;color:#aaa;font-style:italic;">"Freedom is found through kindness and curiosity." — Jay Stringer</p>
+<p style="font-family:Georgia,serif;font-size:9pt;color:#aaa;font-style:italic;">"Freedom is found through kindness and curiosity."</p>
 </div></body></html>`;
 }
 
 function buildNotesText(entries: StringerJournalEntry[]) {
-  let t = 'BE CANDID — Stringer Journal\nDrawing Wisdom from the Struggle\n';
+  let t = 'BE CANDID — Candid Journal\nDrawing Wisdom from the Struggle\n';
   t += '═'.repeat(50) + '\n' + entries.length + ' entries · Exported ' + fmtDate(new Date().toISOString()) + '\n\n';
   entries.forEach((e) => {
     t += '─'.repeat(50) + '\n' + fmtDate(e.created_at) + ' · ' + fmtTime(e.created_at);
@@ -83,7 +83,7 @@ function buildNotesText(entries: StringerJournalEntry[]) {
     if (e.tags?.length) t += 'Tags: ' + e.tags.join(', ') + '\n';
     t += '\n';
   });
-  t += '═'.repeat(50) + '\n"Freedom is found through kindness and curiosity." — Jay Stringer\n';
+  t += '═'.repeat(50) + '\n"Freedom is found through kindness and curiosity."\n';
   return t;
 }
 

@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { id: 'overview', href: '/dashboard', label: 'Overview', icon: '\u25C9', solo: true },
   { id: 'focus', href: '/dashboard/focus', label: 'Focus Board', icon: '\uD83C\uDFAF', solo: true },
   { id: 'checkins', href: '/dashboard/checkins', label: 'Check-ins', icon: '\u2713', solo: true },
-  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Stringer Journal', icon: '\uD83D\uDCD3', solo: true },
+  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: '\uD83D\uDCD3', solo: true },
   { id: 'journal', href: '/dashboard/journal', label: 'Growth Journal', icon: '\uD83D\uDCCA', solo: true },
   { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: '\u26A1', solo: true },
   { id: 'zone', href: '/dashboard/zone', label: 'In the Zone', icon: '\uD83D\uDD25', solo: true },

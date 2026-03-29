@@ -357,7 +357,7 @@ function buildPartnerEmailHTML(userName: string, categoryLabel: string, severity
       Start the Conversation →
     </a>
     <p style="text-align:center;font-size:12px;color:#9ca3af;margin:16px 0 0;font-style:italic;">
-      "Freedom is found through kindness and curiosity." — Jay Stringer
+      "Freedom is found through kindness and curiosity."
     </p>
   </div>
 </div></body></html>`;

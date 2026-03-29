@@ -154,7 +154,7 @@ export default function OnboardingPage() {
             <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">This is about alignment</h1>
             {stringerStep === 0 && (
               <p className="text-sm text-on-surface-variant leading-relaxed font-body">
-                Be Candid is grounded in Jay Stringer&apos;s research with nearly 4,000 people.
+                Be Candid is grounded in clinical research with nearly 4,000 people.
                 The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life.
               </p>
             )}
@@ -177,7 +177,6 @@ export default function OnboardingPage() {
           {stringerStep === STRINGER_PILLARS.length - 1 && (
             <div className="text-center mb-4">
               <p className="text-sm text-primary italic font-body">&ldquo;Freedom is found through kindness and curiosity.&rdquo;</p>
-              <p className="text-xs text-on-surface-variant mt-1 font-body">&mdash; Jay Stringer</p>
             </div>
           )}
 
@@ -198,7 +197,7 @@ export default function OnboardingPage() {
           )}
 
           <p className="text-xs text-on-surface-variant text-center mt-6 font-body leading-relaxed">
-            Our approach is grounded in clinical research by Jay Stringer, MDiv, LMHC, and informed by a multidisciplinary team of neurologists and licensed counselors \u2014 designed to help you understand yourself, not restrict yourself.
+            Our approach is grounded in clinical research and informed by a multidisciplinary team of neurologists and licensed counselors \u2014 designed to help you understand yourself, not restrict yourself.
           </p>
         </div>
       )}
@@ -232,7 +231,7 @@ export default function OnboardingPage() {
           </div>
 
           <p className="text-xs text-on-surface-variant text-center font-body mb-4 leading-relaxed">
-            Jay Stringer&apos;s insights are always included regardless of your choice. You can change this anytime in Settings.
+            Therapeutic insights are always included regardless of your choice. You can change this anytime in Settings.
           </p>
 
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}

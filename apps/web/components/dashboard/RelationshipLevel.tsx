@@ -192,7 +192,7 @@ export default function RelationshipLevel() {
         <p className="text-xs text-primary font-body">
           <span className="font-label font-medium">{'\u2726'} Bonus XP:</span>{' '}
           {data.isUser
-            ? 'Journal entries (+8), all 3 Stringer prompts (+5 extra), reaching out after a flag (+8)'
+            ? 'Journal entries (+8), all 3 journal prompts (+5 extra), reaching out after a flag (+8)'
             : 'Sending encouragement (+10), responding to alerts within 2 hours (+5)'}
         </p>
       </div>

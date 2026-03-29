@@ -39,10 +39,10 @@ export function generateSelfNotificationEmail(input: SelfNotificationInput): {
   <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
     <h2 style="font-family:Georgia,serif;font-size:22px;color:#0f0e1a;margin:0 0 16px;text-align:center;">Hey ${input.userName}</h2>
     <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 16px;">${introMap[input.severity] || introMap.medium} Your partner has been notified \u2014 not to judge, but to walk with you.</p>
-    <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 20px;">Jay Stringer's research shows that these moments are never random \u2014 they're connected to what's happening beneath the surface.</p>
+    <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 20px;">Research shows that these moments are never random \u2014 they're connected to what's happening beneath the surface.</p>
     <div style="background:#faf5ff;border-left:3px solid #8b5cf6;border-radius:0 10px 10px 0;padding:14px 18px;margin:0 0 24px;">
       <p style="margin:0;font-size:13px;color:#6d28d9;font-style:italic;line-height:1.6;">"${quote.text}"</p>
-      <p style="margin:6px 0 0;font-size:11px;color:#a78bfa;">\u2014 Jay Stringer, ${quote.ref}</p>
+      <p style="margin:6px 0 0;font-size:11px;color:#a78bfa;">\u2014 ${quote.ref}</p>
     </div>
     <p style="font-size:13px;font-weight:700;color:#0f0e1a;margin:0 0 10px;">Before you do anything else, ask yourself:</p>
     <div style="background:#f8fafc;border-radius:10px;padding:16px;margin:0 0 24px;">

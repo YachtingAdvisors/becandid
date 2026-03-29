@@ -121,7 +121,7 @@ export default function CommittedContender() {
             easier to walk away. That's not weakness — it's the most courageous thing a person can do.
           </p>
           <p className="text-xs text-violet-600 italic mt-3">
-            "Healing is not about simply saying no; it is about saying yes to the good, the true, and the beautiful." — Jay Stringer
+            "Healing is not about simply saying no; it is about saying yes to the good, the true, and the beautiful."
           </p>
         </div>
       </div>

@@ -90,7 +90,7 @@ export default function JournalSettings() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
           <span className="text-lg">📓</span>
-          <h3 className="text-sm font-semibold text-ink">Stringer Journal Reminders</h3>
+          <h3 className="text-sm font-semibold text-ink">Candid Journal Reminders</h3>
         </div>
         {saved && (
           <span className="text-xs text-emerald-600 font-medium animate-fade-in">✓ Saved</span>
@@ -98,7 +98,7 @@ export default function JournalSettings() {
       </div>
 
       <p className="text-xs text-ink-muted mb-4 leading-relaxed">
-        Get nudged to reflect with a Stringer-inspired prompt. Each notification includes a different
+        Get nudged to reflect with a guided prompt. Each notification includes a different
         question to help you trace the tributaries, name unmet longings, or follow the roadmap.
       </p>
 

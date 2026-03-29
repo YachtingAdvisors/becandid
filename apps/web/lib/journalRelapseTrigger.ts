@@ -119,7 +119,7 @@ export async function triggerRelapseJournal(
       Open Your Journal →
     </a>
     <p style="text-align:center;font-size:12px;color:#9ca3af;margin:16px 0 0;font-style:italic;">
-      "${quote.text}" — Jay Stringer
+      "${quote.text}"
     </p>
   </div>
   <p style="text-align:center;color:#9ca3af;font-size:11px;margin-top:16px;">

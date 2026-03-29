@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
   <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
     <h2 style="font-family:Georgia,serif;font-size:20px;color:#0f0e1a;margin:0 0 16px;">Therapist Portal Invitation</h2>
     <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 16px;">
-      <strong>${userName}</strong> has invited you to view their progress on Be Candid, an accountability and reflection app grounded in Jay Stringer's <em>Unwanted</em> framework.
+      <strong>${userName}</strong> has invited you to view their progress on Be Candid, an accountability and reflection app grounded in a therapeutic framework for understanding unwanted behavior.
     </p>
     <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 8px;">You'll have read-only access to:</p>
     <ul style="font-size:13px;color:#4b5563;line-height:1.8;margin:0 0 20px;padding-left:20px;">

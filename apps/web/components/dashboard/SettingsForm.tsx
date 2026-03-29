@@ -188,7 +188,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
           ))}
         </div>
 
-        <p className="text-xs text-ink-muted leading-relaxed">Jay Stringer&apos;s insights are always included regardless of your choice.</p>
+        <p className="text-xs text-ink-muted leading-relaxed">Therapeutic insights are always included regardless of your choice.</p>
       </section>
 
       {/* ── Check-ins & Nudges ──────────────────────────────── */}

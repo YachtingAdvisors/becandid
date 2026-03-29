@@ -185,7 +185,7 @@ export default function PricingPage() {
 
         <div className="text-center mt-12">
           <p className="text-sm text-on-surface-variant italic font-body">
-            &ldquo;Freedom is found through kindness and curiosity.&rdquo; &mdash; Jay Stringer
+            &ldquo;Freedom is found through kindness and curiosity.&rdquo;
           </p>
         </div>
       </div>

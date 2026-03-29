@@ -10,7 +10,7 @@ const FEATURES = [
   },
   {
     icon: 'menu_book',
-    title: 'Stringer Journal',
+    title: 'Candid Journal',
     desc: 'A private space for reflective record-keeping, helping you track personal growth and interaction history.',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfBxh_yzZ7uwgR50MZXnPl8QPW_ME7nN1lPEv_cD822RK8u7V3Of9E95ABemZ6rqV6rm8XlZxJ4wKTkxhiTM_BdCz20_ph4pMvKdJ0nnZ_vWe9SHbw_9L3pktumG67jQ9bcna8kWc8qkdjUObqfyMIRuBTqz8PcOF2YENphyR5zUA8P06cp0atPabHodQTd4U_R_CrPA0NsRlNWahv_-vNun8lbKvIeKrXMWssZuRwXhSxhjkg5EYMZoF14po0DPIq5w_QpV0AJlk5',
     alt: 'Minimalist digital journal on a tablet with morning sunlight',

@@ -93,7 +93,7 @@ export default async function WeeklyReflection({ userId }: { userId: string }) {
       {/* Stringer insight */}
       {reflection.stringer_insight && (
         <div className="mx-5 mb-3 p-3 rounded-lg bg-amber-50 border border-amber-100">
-          <p className="text-xs text-amber-600 font-medium mb-0.5">Stringer insight</p>
+          <p className="text-xs text-amber-600 font-medium mb-0.5">Therapeutic insight</p>
           <p className="text-sm text-amber-800 italic">{reflection.stringer_insight}</p>
         </div>
       )}
