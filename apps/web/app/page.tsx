@@ -66,39 +66,34 @@ const FEATURES = [
   },
 ];
 
-const PILLARS = [
+const TOOL_FEATURES = [
   {
-    icon: 'water_drop',
-    title: 'Trace the Tributaries',
-    desc: 'Your patterns don\u2019t come from nowhere. Identify the family dynamics, attachment wounds, and emotional currents that shape who you are online and off.',
+    icon: 'auto_awesome',
+    title: 'AI Conversation Guides',
+    desc: 'Context-aware prompts that help you navigate difficult conversations with clarity and honesty.',
+    bg: 'bg-primary-container',
+    text: 'text-on-primary-container',
   },
   {
-    icon: 'favorite',
-    title: 'Name the Longing',
-    desc: 'Beneath every pattern is an unmet need \u2014 for connection, significance, or rest. The Stringer Journal helps you name it so you can meet it with integrity.',
+    icon: 'history_edu',
+    title: 'Stringer Journal',
+    desc: 'A seamless, chronological thread of your daily reflections and milestones of growth.',
+    bg: 'bg-secondary-container',
+    text: 'text-on-secondary-container',
   },
   {
-    icon: 'explore',
-    title: 'Follow the Roadmap',
-    desc: 'With clarity about your story and desires, build concrete steps toward congruence \u2014 where the person you are online is the person you are.',
-  },
-];
-
-const STEPS = [
-  {
-    num: '01',
-    title: 'Define who you want to be',
-    desc: 'Choose the areas where you want alignment \u2014 from screen time to social media, and everything in between.',
+    icon: 'group',
+    title: 'Partner Awareness',
+    desc: 'Stay connected with shared accountability metrics that foster trust without surveillance.',
+    bg: 'bg-tertiary-container',
+    text: 'text-on-tertiary-container',
   },
   {
-    num: '02',
-    title: 'Invite a trusted partner',
-    desc: 'A friend, spouse, mentor, or coach. They get clarity and AI-generated conversation guides. Or go solo \u2014 your call.',
-  },
-  {
-    num: '03',
-    title: 'Build digital integrity',
-    desc: 'Track alignment streaks, journal with Stringer prompts, and have conversations that build congruence between your screen time and your real life.',
+    icon: 'emergency',
+    title: 'Crisis Detection',
+    desc: 'Proactive alerts and support paths when old patterns emerge, keeping you on track.',
+    bg: 'bg-primary-container',
+    text: 'text-on-primary-container',
   },
 ];
 
@@ -108,330 +103,229 @@ function MaterialIcon({ name, className = '' }: { name: string; className?: stri
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* ── Header (sticky, glass) ─────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 glass-effect border-b border-outline-variant/30">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Be Candid" className="h-8 w-auto" />
+    <div className="min-h-screen bg-surface text-on-surface">
+      {/* ── TopNavBar ──────────────────────────────────────── */}
+      <header className="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl">
+        <nav className="flex justify-between items-center px-6 lg:px-12 py-6 max-w-screen-2xl mx-auto">
+          <Link href="/" className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Be Candid" className="w-8 h-8 object-contain" />
+            <span className="text-2xl font-bold text-primary tracking-tighter">Be Candid</span>
           </Link>
-
-          <div className="flex items-center gap-8">
-            <div className="hidden md:flex items-center gap-6">
-              <a href="#pillars" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
-                Features
-              </a>
-              <Link href="/pricing" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
-                Pricing
-              </Link>
-              <a href="#download" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
-                Download
-              </a>
-              <a href="#cta" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
-                About
-              </a>
-              <Link href="/families" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
-                Families
-              </Link>
-            </div>
-            <Link href="/auth/signup" className="btn-primary text-sm py-2 px-5">
-              Get Started
-            </Link>
+          <div className="hidden md:flex items-center gap-10 font-body text-base tracking-tight">
+            <a href="#features" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Features</a>
+            <Link href="/pricing" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Pricing</Link>
+            <a href="#download" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Download</a>
+            <a href="#cta" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">About</a>
+            <Link href="/families" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Families</Link>
           </div>
-        </div>
-      </nav>
-
-      {/* ── Hero ──────────────────────────────────────────── */}
-      <section
-        className="relative pt-32 pb-24 px-6 overflow-hidden"
-        style={{
-          background: 'linear-gradient(165deg, #226779 0%, #a4e4f8 100%)',
-        }}
-      >
-        <div className="max-w-4xl mx-auto text-center stagger relative z-10">
-          <h1 className="font-headline font-extrabold text-5xl sm:text-6xl lg:text-7xl text-on-primary leading-[1.08] mb-6">
-            Accountability for every
-            <br />
-            stage of life
-          </h1>
-
-          <p className="text-lg sm:text-xl text-on-primary/80 leading-relaxed max-w-2xl mx-auto mb-10">
-            The most confident, inspiring and attractive people are those whose screen time
-            and face time matches the person they want to be across their lifetime.
-          </p>
-
-          <Link
-            href="/auth/signup"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container-lowest text-primary text-base font-semibold rounded-full hover:bg-surface-container-low transition-colors"
-          >
-            Become Who You Want to Be
+          <Link href="/auth/signup" className="px-8 py-3 bg-primary text-on-primary rounded-full font-label text-sm font-semibold tracking-wide hover:brightness-110 active:scale-95 transition-all">
+            Get Started
           </Link>
+        </nav>
+      </header>
 
-          <p className="mt-5 text-sm text-on-primary/60">
-            No credit card required &middot; Free forever plan available
-          </p>
-        </div>
-      </section>
-
-      {/* ── Credibility Bar ───────────────────────────────── */}
-      <section className="py-6 border-b border-outline-variant/20">
-        <div className="max-w-4xl mx-auto px-6">
-          <p className="text-center text-sm text-on-surface-variant">
-            Designed with neurologists and licensed mental health counselors to help you understand yourself, not restrict yourself
-          </p>
-        </div>
-      </section>
-
-      {/* ── For Adults & Families ──────────────────────── */}
-      <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
-          {/* Adults Card */}
-          <div className="card p-8">
-            <div className="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center mb-4">
-              <MaterialIcon name="self_improvement" className="text-primary text-2xl" />
-            </div>
-            <h3 className="font-headline font-bold text-xl text-on-surface mb-2">For Adults</h3>
-            <p className="text-sm text-on-surface-variant mb-4">Self-directed accountability with AI-powered conversation guides, partner support, and the Stringer therapeutic framework.</p>
-            <Link href="/auth/signup" className="text-primary font-label font-bold text-sm uppercase tracking-wider hover:underline">Get Started &rarr;</Link>
-          </div>
-          {/* Families Card */}
-          <div className="card p-8 bg-secondary-container/30">
-            <div className="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center mb-4">
-              <MaterialIcon name="family_restroom" className="text-on-secondary-container text-2xl" />
-            </div>
-            <h3 className="font-headline font-bold text-xl text-on-surface mb-2">For Teens &amp; Families</h3>
-            <p className="text-sm text-on-surface-variant mb-4">Parent-managed content filtering, screen time controls, real-time alerts, and age-appropriate guidance &mdash; accountability without surveillance.</p>
-            <Link href="/families" className="text-primary font-label font-bold text-sm uppercase tracking-wider hover:underline">Learn More &rarr;</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 3-Pillar Section (Stringer Framework) ─────────── */}
-      <section id="pillars" className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-center font-label text-xs font-semibold text-primary uppercase tracking-widest mb-3">
-            Built on Jay Stringer&apos;s Framework
-          </p>
-          <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
-            Understand yourself, align your life
-          </h2>
-          <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
-            Congruence builds confidence. Be Candid helps you understand the story
-            beneath your patterns so your digital life matches who you really are.
-          </p>
-
-          <div className="grid sm:grid-cols-3 gap-6">
-            {PILLARS.map((p) => (
-              <div key={p.title} className="card p-8 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-primary-container flex items-center justify-center mx-auto mb-5">
-                  <MaterialIcon name={p.icon} className="text-primary text-3xl" />
-                </div>
-                <h3 className="font-headline font-bold text-lg text-on-surface mb-2">{p.title}</h3>
-                <p className="text-sm text-on-surface-variant leading-relaxed">{p.desc}</p>
+      <main className="pt-24">
+        {/* ── Hero Section (two-column) ───────────────────── */}
+        <section className="relative overflow-hidden px-6 lg:px-12 pt-20 pb-32 max-w-screen-2xl mx-auto min-h-[700px] flex flex-col justify-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8 max-w-2xl">
+              <div className="inline-flex items-center gap-3 px-4 py-2 bg-surface-container-low rounded-full">
+                <MaterialIcon name="trending_up" className="text-primary text-lg" />
+                <span className="font-label text-xs font-bold uppercase tracking-widest text-primary">Growth Curve Certified</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ── Features Grid (bento) ─────────────────────────── */}
-      <section className="py-24 px-6 bg-surface-container-low">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
-            Everything you need for digital integrity
-          </h2>
-          <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
-            Awareness, journaling, conversation guides, and alignment tracking &mdash; all in one place.
-          </p>
+              <h1 className="font-headline text-5xl lg:text-7xl font-extrabold text-on-surface tracking-tighter leading-[1.05]">
+                Accountability for every stage of life
+              </h1>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURES.map((f) => (
-              <div key={f.title} className="group bg-surface-container-lowest rounded-xl p-6 transition-all duration-300 hover:bg-surface-container-low">
-                <div className="aspect-video mb-6 overflow-hidden rounded-lg">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={f.image}
-                    alt={f.alt}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="flex items-start gap-4 mb-3">
-                  <MaterialIcon name={f.icon} className="text-primary text-2xl" />
-                  <h3 className="font-headline font-bold text-xl text-on-surface">{f.title}</h3>
-                </div>
-                <p className="font-body text-on-surface-variant leading-relaxed text-sm">{f.desc}</p>
+              <p className="font-body text-xl text-on-surface-variant leading-relaxed opacity-80">
+                A digital sanctuary designed to foster integrity through intentional reflections, partner awareness, and AI-driven growth metrics. Build the habits that define who you truly are.
+              </p>
+
+              <div className="flex flex-wrap gap-6 pt-4">
+                <Link href="/auth/signup" className="px-10 py-5 bg-primary text-on-primary rounded-full font-label font-bold text-base shadow-sm hover:brightness-110 active:scale-95 transition-all">
+                  Get Started
+                </Link>
+                <a href="#journey" className="px-10 py-5 bg-secondary-container text-on-secondary-container rounded-lg font-label font-bold text-base hover:bg-secondary-fixed-dim active:scale-95 transition-all">
+                  How it Works
+                </a>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── How It Works ──────────────────────────────────── */}
-      <section id="how-it-works" className="py-24 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
-            How it works
-          </h2>
-          <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
-            Three steps to align your screen time with who you want to be.
-          </p>
-
-          <div className="grid sm:grid-cols-3 gap-8">
-            {STEPS.map((step) => (
-              <div key={step.num} className="text-center sm:text-left">
-                <div className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-container text-on-primary-container font-label text-sm font-bold mb-4">
-                  {step.num}
-                </div>
-                <h3 className="font-headline font-bold text-lg text-on-surface mb-2">{step.title}</h3>
-                <p className="text-sm text-on-surface-variant leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Download Section ─────────────────────────────── */}
-      <section id="download" className="py-24 px-6 bg-surface-container-low">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-center font-label text-xs font-semibold text-primary uppercase tracking-widest mb-3">
-            Available Everywhere
-          </p>
-          <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
-            Download Be Candid
-          </h2>
-          <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
-            Native apps for mobile and desktop. Your data syncs seamlessly across all devices, end-to-end encrypted.
-          </p>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* iOS */}
-            <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center">
-                <MaterialIcon name="phone_iphone" className="text-primary text-3xl" />
-              </div>
-              <div>
-                <h3 className="font-headline font-bold text-lg text-on-surface">iPhone &amp; iPad</h3>
-                <p className="text-sm text-on-surface-variant mt-1">iOS 16+ required</p>
-              </div>
-              <a
-                href="https://apps.apple.com/app/be-candid"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 px-6 bg-primary text-on-primary rounded-full font-label font-bold text-sm uppercase tracking-wider hover:opacity-90 transition-opacity text-center"
-              >
-                App Store
-              </a>
-              <p className="text-xs text-on-surface-variant">Includes Screen Time awareness</p>
             </div>
 
-            {/* Android */}
-            <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-2xl bg-secondary-container flex items-center justify-center">
-                <MaterialIcon name="phone_android" className="text-on-secondary-container text-3xl" />
+            <div className="relative group hidden lg:block">
+              <div className="absolute -inset-4 bg-gradient-to-tr from-primary/10 to-primary-container/20 blur-3xl rounded-full" />
+              <div className="relative bg-surface-container-lowest rounded-[2.5rem] p-4 shadow-2xl transform rotate-2 group-hover:rotate-0 transition-transform duration-700">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT68HleSrMnpAIaNFqYPe73IWO7XnN3iTdgxGqhJ-Sa5bJE7gZMLcJEMgz5Rm6qTCl_yFpIVGlcgE72vammDctQBt3n4ITf7J4SBvQsJ7nA41rurTOdKDOVLA6P5R7jUOLOzEradB4DDCbtSdKNg3uXEtnJV7C9vPebWjc-ognxnGe5PAyxKMgZ7K0hgicdd1dYQOMZSvPSEMJC-4C7vlR8siJJPjIzjxa6p9m1a4T6ClPYG1AMsUkMsnq8erjcwoM9fjRubsONAdS"
+                  alt="Be Candid dashboard showing integrity score and journaling prompts"
+                  className="w-full h-auto rounded-[2rem] object-cover"
+                />
               </div>
-              <div>
-                <h3 className="font-headline font-bold text-lg text-on-surface">Android</h3>
-                <p className="text-sm text-on-surface-variant mt-1">Android 10+ required</p>
+              {/* Floating Stat Card */}
+              <div className="absolute -bottom-10 -left-10 bg-surface-container-lowest p-8 rounded-3xl shadow-xl border border-outline-variant/15 max-w-[240px]">
+                <span className="material-symbols-outlined text-primary mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
+                <p className="font-headline text-3xl font-bold text-on-surface">+84%</p>
+                <p className="font-label text-xs text-on-surface-variant uppercase tracking-widest mt-1">Integrity Growth</p>
               </div>
-              <a
-                href="https://play.google.com/store/apps/details?id=io.becandid.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 px-6 bg-primary text-on-primary rounded-full font-label font-bold text-sm uppercase tracking-wider hover:opacity-90 transition-opacity text-center"
-              >
-                Google Play
-              </a>
-              <p className="text-xs text-on-surface-variant">Includes UsageStats awareness</p>
-            </div>
-
-            {/* Web App */}
-            <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-2xl bg-tertiary-container flex items-center justify-center">
-                <MaterialIcon name="language" className="text-on-tertiary-container text-3xl" />
-              </div>
-              <div>
-                <h3 className="font-headline font-bold text-lg text-on-surface">Web App</h3>
-                <p className="text-sm text-on-surface-variant mt-1">Chrome, Safari, Firefox, Edge</p>
-              </div>
-              <Link
-                href="/auth/signup"
-                className="w-full py-3 px-6 bg-primary text-on-primary rounded-full font-label font-bold text-sm uppercase tracking-wider hover:opacity-90 transition-opacity text-center"
-              >
-                Open in Browser
-              </Link>
-              <p className="text-xs text-on-surface-variant">No download required &mdash; works instantly</p>
             </div>
           </div>
+        </section>
 
-          {/* Desktop Section */}
-          <div className="card p-8">
-            <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-primary-container/50 flex items-center justify-center flex-shrink-0">
-                <MaterialIcon name="laptop_mac" className="text-primary text-2xl" />
-              </div>
-              <div className="text-center sm:text-left">
-                <h3 className="font-headline font-bold text-xl text-on-surface">Desktop Apps</h3>
-                <p className="text-sm text-on-surface-variant mt-1">
-                  Full dashboard experience with background awareness. Coming soon for macOS, Windows, and Linux.
-                </p>
-              </div>
+        {/* ── The Tools of Transformation ──────────────────── */}
+        <section className="bg-surface-container-low py-32 px-6 lg:px-12">
+          <div className="max-w-screen-2xl mx-auto">
+            <div className="mb-20 space-y-4">
+              <h2 className="font-headline text-4xl font-bold tracking-tight">The tools of transformation</h2>
+              <p className="font-body text-lg text-on-surface-variant max-w-xl">Intelligent features designed to protect your peace and empower your progress.</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
-                <MaterialIcon name="desktop_mac" className="text-on-surface-variant text-xl" />
-                <div className="text-left">
-                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
-                  <p className="font-headline font-bold text-on-surface">macOS</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {TOOL_FEATURES.map((f) => (
+                <div key={f.title} className="bg-surface p-10 rounded-[2rem] space-y-6 hover:translate-y-[-4px] transition-transform duration-300">
+                  <div className={`w-14 h-14 rounded-2xl ${f.bg} flex items-center justify-center ${f.text}`}>
+                    <MaterialIcon name={f.icon} className="text-3xl" />
+                  </div>
+                  <h3 className="font-headline text-xl font-bold">{f.title}</h3>
+                  <p className="font-body text-on-surface-variant leading-relaxed text-sm">{f.desc}</p>
                 </div>
-              </div>
-              <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
-                <MaterialIcon name="desktop_windows" className="text-on-surface-variant text-xl" />
-                <div className="text-left">
-                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
-                  <p className="font-headline font-bold text-on-surface">Windows</p>
-                </div>
-              </div>
-              <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
-                <MaterialIcon name="terminal" className="text-on-surface-variant text-xl" />
-                <div className="text-left">
-                  <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
-                  <p className="font-headline font-bold text-on-surface">Linux</p>
-                </div>
-              </div>
+              ))}
             </div>
-            <p className="text-center text-xs text-on-surface-variant mt-4">
-              Desktop apps are currently in beta. <Link href="/auth/signup" className="text-primary hover:underline">Sign up</Link> to get early access.
+          </div>
+        </section>
+
+        {/* ── Everything you need for digital integrity (BENTO — UNCHANGED) ── */}
+        <section id="features" className="py-24 px-6 bg-surface-container-low">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
+              Everything you need for digital integrity
+            </h2>
+            <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
+              Awareness, journaling, conversation guides, and alignment tracking &mdash; all in one place.
             </p>
-          </div>
-        </div>
-      </section>
 
-      {/* ── Final CTA ─────────────────────────────────────── */}
-      <section
-        id="cta"
-        className="py-24 px-6"
-        style={{
-          background: 'linear-gradient(165deg, #0e5b6c 0%, #226779 100%)',
-        }}
-      >
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-primary mb-4">
-            Become who you want to be
-          </h2>
-          <p className="text-on-primary/70 mb-8 max-w-md mx-auto">
-            Free to start. No credit card required. Takes 3 minutes to set up.
-          </p>
-          <Link
-            href="/auth/signup"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container-lowest text-primary text-base font-semibold rounded-full hover:bg-surface-container-low transition-colors"
-          >
-            Create Your Account
-          </Link>
-          <p className="mt-6 text-sm text-on-primary/50">
-            Your data is encrypted end-to-end. We never see your content.
-          </p>
-        </div>
-      </section>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {FEATURES.map((f) => (
+                <div key={f.title} className="group bg-surface-container-lowest rounded-xl p-6 transition-all duration-300 hover:bg-surface-container-low">
+                  <div className="aspect-video mb-6 overflow-hidden rounded-lg">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={f.image}
+                      alt={f.alt}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex items-start gap-4 mb-3">
+                    <MaterialIcon name={f.icon} className="text-primary text-2xl" />
+                    <h3 className="font-headline font-bold text-xl text-on-surface">{f.title}</h3>
+                  </div>
+                  <p className="font-body text-on-surface-variant leading-relaxed text-sm">{f.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── The Journey to Integrity ─────────────────────── */}
+        <section id="journey" className="py-32 px-6 lg:px-12 max-w-screen-2xl mx-auto overflow-hidden">
+          <div className="text-center mb-24">
+            <span className="font-label text-xs font-bold uppercase tracking-[0.3em] text-primary">The Process</span>
+            <h2 className="font-headline text-4xl lg:text-5xl font-bold mt-4 tracking-tight">The Journey to Integrity</h2>
+          </div>
+
+          <div className="relative">
+            {/* Connecting line */}
+            <div className="absolute top-1/2 left-0 w-full h-[2px] bg-outline-variant/20 hidden lg:block -translate-y-1/2" />
+
+            <div className="grid lg:grid-cols-3 gap-16 relative">
+              {[
+                { num: 1, title: 'Define who you want to be', desc: 'Articulate your values and vision for a resilient life using our guided introspection tools.' },
+                { num: 2, title: 'Invite a trusted partner', desc: 'Choose a companion for your journey\u2014someone who understands your goals and provides support.' },
+                { num: 3, title: 'Build digital integrity', desc: 'Consistent daily actions and honest reporting forge a path toward lasting personal growth.' },
+              ].map((step) => (
+                <div key={step.num} className="space-y-8 bg-surface">
+                  <div className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center text-2xl font-bold relative z-10 shadow-lg mx-auto lg:mx-0">
+                    {step.num}
+                  </div>
+                  <div className="space-y-4 text-center lg:text-left">
+                    <h3 className="font-headline text-2xl font-bold">{step.title}</h3>
+                    <p className="font-body text-on-surface-variant leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Growth on the Go (Download) ─────────────────── */}
+        <section id="download" className="bg-surface-container-high py-32 px-6 lg:px-12">
+          <div className="max-w-screen-2xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+            <div className="space-y-8 order-2 lg:order-1">
+              <h2 className="font-headline text-4xl lg:text-5xl font-extrabold tracking-tight">Growth on the go</h2>
+              <p className="font-body text-xl text-on-surface-variant leading-relaxed">
+                Sync your journey across all devices. Your sanctuary is always within reach, whether you&apos;re at your desk or in the world.
+              </p>
+              <div className="flex flex-wrap gap-4 pt-4">
+                <a href="https://apps.apple.com/app/be-candid" target="_blank" rel="noopener noreferrer"
+                  className="bg-on-surface text-surface px-8 py-4 rounded-xl flex items-center gap-3 hover:opacity-90 transition-opacity">
+                  <MaterialIcon name="ios" className="text-3xl" />
+                  <div className="text-left">
+                    <p className="text-[10px] uppercase font-label leading-none opacity-60">Download on the</p>
+                    <p className="text-lg font-bold font-headline leading-none">App Store</p>
+                  </div>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=io.becandid.app" target="_blank" rel="noopener noreferrer"
+                  className="bg-on-surface text-surface px-8 py-4 rounded-xl flex items-center gap-3 hover:opacity-90 transition-opacity">
+                  <MaterialIcon name="play_arrow" className="text-3xl" />
+                  <div className="text-left">
+                    <p className="text-[10px] uppercase font-label leading-none opacity-60">Get it on</p>
+                    <p className="text-lg font-bold font-headline leading-none">Google Play</p>
+                  </div>
+                </a>
+                <Link href="/auth/signup"
+                  className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl flex items-center gap-3 border border-outline-variant/20 hover:bg-surface-variant transition-colors">
+                  <MaterialIcon name="language" className="text-3xl" />
+                  <div className="text-left">
+                    <p className="text-[10px] uppercase font-label leading-none opacity-60">Access the</p>
+                    <p className="text-lg font-bold font-headline leading-none">Web App</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div className="order-1 lg:order-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkwH1gu_9V2EvOnO31n4vqthcIJ38CXEs13U_QPQwuVphsbsZ7PNryxCqeYO_SA1r0e-eG2-lnlIwyLEHXxqED_8DeRfuH2yod_703isQrBVZZxIlOsSkmp7LCReG2v-lOMGI6yA14Uqn-ePdNkC9zCdgu9SQ9o0hdzkFF8TaPWuWj52qw37E8T37XArlpnMVkZjiNWGy3Z06Vx5MzNrr4vbDaNEXtJwoHIO5-ckIUR3ahqYbwpeHm3XslHsNcPNtabM9lKlIkxHxk"
+                alt="Laptop and smartphone showing synchronized Be Candid integrity progress"
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ── Final CTA ───────────────────────────────────── */}
+        <section id="cta" className="py-32 px-6 lg:px-12">
+          <div className="max-w-screen-xl mx-auto bg-gradient-to-br from-primary to-primary-dim rounded-[3rem] p-16 lg:p-24 text-center space-y-10 relative overflow-hidden">
+            {/* Decorative blurred circles */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none">
+              <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
+              <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary-container rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
+            </div>
+
+            <h2 className="font-headline text-4xl lg:text-6xl font-extrabold text-on-primary tracking-tighter relative z-10">
+              Become who you want to be
+            </h2>
+            <p className="font-body text-xl text-on-primary/80 max-w-2xl mx-auto relative z-10">
+              Join thousands of others building a life of integrity and transparency. Start your 14-day free trial today.
+            </p>
+            <div className="relative z-10">
+              <Link href="/auth/signup" className="px-12 py-6 bg-surface-container-lowest text-primary rounded-full font-label font-bold text-lg shadow-xl hover:scale-105 active:scale-95 transition-all inline-block">
+                Create Your Account
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
