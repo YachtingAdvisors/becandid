@@ -10,12 +10,12 @@ const TIERS = [
     emoji: '🌱',
     monthlyPrice: 0,
     annualPrice: 0,
-    description: 'Start your journey',
+    description: 'Begin aligning',
     cta: 'Get Started',
     ctaHref: '/auth/signup',
     highlight: false,
     features: [
-      { text: 'Screen monitoring (16 categories)', included: true },
+      { text: 'Screen awareness (16 categories)', included: true },
       { text: '1 accountability partner', included: true },
       { text: '3 AI conversation guides / month', included: true },
       { text: 'Manual journal (no AI prompts)', included: true },
@@ -35,7 +35,7 @@ const TIERS = [
     emoji: '⚡',
     monthlyPrice: 9.99,
     annualPrice: 99,
-    description: 'Full accountability',
+    description: 'Full alignment',
     cta: 'Start Free Trial',
     ctaHref: '/auth/signup?plan=pro',
     highlight: true,
@@ -180,7 +180,7 @@ export default function PricingPage() {
         </div>
 
         <p className="text-center text-xs text-on-surface-variant mt-8 font-body">
-          All plans include end-to-end encryption, push notification privacy, and crisis resource detection.
+          All plans include end-to-end encryption, push notification privacy, crisis resource detection, and tools for digital integrity.
         </p>
 
         <div className="text-center mt-12">

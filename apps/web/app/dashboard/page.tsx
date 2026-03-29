@@ -7,6 +7,8 @@ import CheckInMini from '@/components/dashboard/CheckInMini';
 import NudgeBanner from '@/components/dashboard/NudgeBanner';
 import RelationshipMini from '@/components/dashboard/RelationshipMini';
 import SpouseImpactAwareness from '@/components/dashboard/SpouseImpactAwareness';
+import ScreenTimeCard from '@/components/dashboard/ScreenTimeCard';
+import ContentFilterStatus from '@/components/dashboard/ContentFilterStatus';
 import Link from 'next/link';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
@@ -57,7 +59,7 @@ export default async function DashboardPage() {
             <span className="text-lg font-body font-normal ml-2 text-on-primary/70">day streak</span>
           </h1>
           <p className="text-sm text-on-primary/60 font-body">
-            Here&apos;s your focus overview. Keep going.
+            Here&apos;s your alignment overview. Keep building congruence.
           </p>
         </div>
         {/* Decorative circles */}
@@ -99,7 +101,7 @@ export default async function DashboardPage() {
             <div className={`text-2xl font-headline font-bold ${profile?.monitoring_enabled ? 'text-primary' : 'text-outline'}`}>
               {profile?.monitoring_enabled ? 'ON' : 'OFF'}
             </div>
-            <div className="text-xs text-on-surface-variant font-label mt-1">Monitoring</div>
+            <div className="text-xs text-on-surface-variant font-label mt-1">Awareness</div>
           </div>
         </div>
       </div>
@@ -115,7 +117,7 @@ export default async function DashboardPage() {
         <Link href="/dashboard/stringer-journal?action=write"
           className="bg-tertiary-container rounded-3xl p-5 hover:shadow-md transition-all group">
           <div className="text-2xl mb-2">{'\uD83D\uDCD3'}</div>
-          <h3 className="font-headline font-bold text-on-tertiary-container text-base">I need support</h3>
+          <h3 className="font-headline font-bold text-on-tertiary-container text-base">I need clarity</h3>
           <p className="text-xs text-on-tertiary-container/70 font-body mt-1">Write in your Stringer Journal</p>
         </Link>
       </div>
@@ -135,6 +137,16 @@ export default async function DashboardPage() {
       <Suspense fallback={null}>
         <SpouseImpactAwareness />
       </Suspense>
+
+      {/* -- Screen Time & Content Filter -- */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <Suspense fallback={null}>
+          <ScreenTimeCard />
+        </Suspense>
+        <Suspense fallback={null}>
+          <ContentFilterStatus />
+        </Suspense>
+      </div>
 
       {/* -- Your Rivals -- */}
       {(profile?.goals ?? []).length > 0 && (

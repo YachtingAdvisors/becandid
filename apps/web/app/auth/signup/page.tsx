@@ -55,7 +55,7 @@ export default function SignUpPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="font-headline text-3xl font-bold text-primary">Be Candid</h1>
-          <p className="text-sm text-on-surface-variant mt-2 font-body">Start your accountability journey</p>
+          <p className="text-sm text-on-surface-variant mt-2 font-body">Align your digital life with who you want to be</p>
         </div>
 
         {!ageVerified ? (
@@ -100,7 +100,7 @@ export default function SignUpPage() {
               </form>
 
               <p className="text-xs text-on-surface-variant text-center mt-4 font-body">
-                Developed in partnership with board-certified neurologists and licensed mental health professionals
+                Designed with board-certified neurologists and licensed mental health professionals to help you understand yourself, not restrict yourself
               </p>
             </div>
 

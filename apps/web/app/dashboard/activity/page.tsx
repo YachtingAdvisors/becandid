@@ -93,7 +93,7 @@ export default function ActivityPage() {
           </h3>
           <p className="text-sm text-on-surface-variant font-body">
             {filter === 'all'
-              ? 'When monitoring detects activity in your tracked areas, events will appear here.'
+              ? 'When awareness detects activity in your tracked areas, events will appear here.'
               : 'Try a different filter or keep it up!'}
           </p>
         </div>

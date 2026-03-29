@@ -61,7 +61,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
         {monitoringEnabled && (
           <div className="px-3 py-2 rounded-2xl bg-primary-container/40 flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs text-primary font-label font-medium">Monitoring active</span>
+            <span className="text-xs text-primary font-label font-medium">Awareness active</span>
           </div>
         )}
         {soloMode && (
@@ -89,6 +89,50 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
             <span className="font-body">{item.label}</span>
           </Link>
         ))}
+
+        {/* Screen Time & Content Filter */}
+        <div className="mt-2 pt-2 border-t border-outline-variant/30">
+          <Link
+            href="/dashboard/screen-time"
+            onClick={() => setOpen(false)}
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 transition-all ${
+              isActive('/dashboard/screen-time')
+                ? 'bg-secondary-container text-on-secondary-container'
+                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
+            }`}
+          >
+            <span className="text-base w-5 text-center">{'\u23F1\uFE0F'}</span>
+            <span className="font-body">Screen Time</span>
+          </Link>
+          <Link
+            href="/dashboard/content-filter"
+            onClick={() => setOpen(false)}
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 transition-all ${
+              isActive('/dashboard/content-filter')
+                ? 'bg-secondary-container text-on-secondary-container'
+                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
+            }`}
+          >
+            <span className="text-base w-5 text-center">{'\uD83D\uDEE1\uFE0F'}</span>
+            <span className="font-body">Content Filter</span>
+          </Link>
+        </div>
+
+        {/* Guardian section */}
+        <div className="mt-2 pt-2 border-t border-outline-variant/30">
+          <Link
+            href="/guardian"
+            onClick={() => setOpen(false)}
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 transition-all ${
+              isActive('/guardian')
+                ? 'bg-secondary-container text-on-secondary-container'
+                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
+            }`}
+          >
+            <span className="text-base w-5 text-center">{'\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67'}</span>
+            <span className="font-body">Guardian</span>
+          </Link>
+        </div>
       </nav>
 
       {/* Upgrade CTA */}

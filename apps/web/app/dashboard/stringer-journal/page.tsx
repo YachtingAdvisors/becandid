@@ -348,7 +348,7 @@ export default function StringerJournalPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div>
             <h1 className="text-2xl font-headline font-bold text-on-surface">Stringer Journal</h1>
-            <p className="text-sm text-on-surface-variant font-body mt-1">Drawing wisdom from the struggle</p>
+            <p className="text-sm text-on-surface-variant font-body mt-1">Understanding yourself to align your life</p>
           </div>
           <div className="flex gap-2 shrink-0">
             {entries.length > 0 && (
@@ -450,7 +450,7 @@ export default function StringerJournalPage() {
               <div className="text-4xl mb-3">{'\uD83D\uDCD3'}</div>
               <h3 className="text-lg font-headline font-bold text-on-surface mb-2">Your journal is empty</h3>
               <p className="text-sm text-on-surface-variant font-body max-w-sm mx-auto mb-5">
-                Stringer teaches that our struggles aren&apos;t random &mdash; they&apos;re a roadmap. Start tracing the tributaries.
+                Your patterns aren&apos;t random &mdash; they&apos;re a roadmap to alignment. Start tracing the tributaries.
               </p>
               <button onClick={() => { resetForm(); setView('write'); }}
                 className="px-5 py-2.5 text-sm font-label font-medium rounded-2xl bg-primary text-on-primary hover:opacity-90">Write Your First Entry</button>

@@ -215,6 +215,7 @@ export interface User {
   monitoring_enabled: boolean;
   streak_mode: StreakMode;
   timezone: string;
+  account_mode?: AccountMode;
   foundational_motivator?: FoundationalMotivator;
   created_at: string;
   updated_at: string;
@@ -300,4 +301,55 @@ export interface AIConversationGuide {
     how_to_create_safety: string;
   };
 }
+// ─── Account Mode ─────────────────────────────────────────
+export type AccountMode = 'adult' | 'teen';
+
+// ─── Guardian ─────────────────────────────────────────────
+export type GuardianRelationship = 'parent' | 'guardian' | 'counselor' | 'mentor';
+
+export interface Guardian {
+  id: string;
+  guardian_user_id: string;
+  teen_user_id: string;
+  relationship: GuardianRelationship;
+  status: 'pending' | 'active' | 'revoked';
+  permissions: GuardianPermissions;
+  invite_token: string;
+  created_at: string;
+}
+
+export interface GuardianPermissions {
+  view_events: boolean;
+  view_journal: boolean; // Never true by default — journal is sacred
+  manage_content_filter: boolean;
+  manage_screen_time: boolean;
+  receive_alerts: boolean;
+  manage_settings: boolean;
+}
+
+// ─── Content Filter ───────────────────────────────────────
+export type ContentFilterLevel = 'off' | 'standard' | 'strict' | 'custom';
+
+// ─── Screen Time ──────────────────────────────────────────
+export interface ScreenTimeRule {
+  id: string;
+  user_id: string;
+  category: string; // GoalCategory or 'all'
+  daily_limit_minutes: number | null;
+  downtime_start: string | null; // HH:MM
+  downtime_end: string | null;   // HH:MM
+  days_of_week: number[];        // 0-6 (Sun-Sat)
+  enforced: boolean;             // Guardian-locked if true
+  created_at: string;
+}
+
+export interface ScreenTimeUsage {
+  user_id: string;
+  date: string;
+  category: string;
+  minutes_used: number;
+  limit_minutes: number | null;
+  over_limit: boolean;
+}
+
 export * from './stringer';

@@ -5,7 +5,7 @@ import { useState } from 'react';
 const PARTNER_SEES = [
   { icon: '⚡', text: 'That a flag was triggered', detail: 'They see the category (e.g. "Social Media") and severity — not what you were looking at.' },
   { icon: '🕐', text: 'When it happened', detail: 'Date and time. No URLs, no screenshots, no browsing history.' },
-  { icon: '🤖', text: 'An AI conversation guide', detail: 'Claude generates a guide for how to have a productive conversation with you — grounded in Motivational Interviewing, not shame.' },
+  { icon: '🤖', text: 'An AI conversation guide', detail: 'Claude generates a guide for how to have a meaningful conversation with you — grounded in Motivational Interviewing, focused on clarity and alignment.' },
   { icon: '📊', text: 'Your focus streak', detail: 'How many days in a row you\'ve been focused. Streaks reset on a flag but start rebuilding immediately.' },
   { icon: '📓', text: 'That you journaled (not what you wrote)', detail: 'They see "3 journal entries this week" — never the content. Your reflections are private.' },
 ];
@@ -35,7 +35,7 @@ export default function PartnerPreview({
           What your partner will see
         </h1>
         <p className="text-sm text-on-surface-variant leading-relaxed font-body">
-          Be Candid is built on radical transparency — you should know exactly what your partner can access.
+          Accountability is clarity. You should know exactly what your partner can see, because congruence starts with honesty.
         </p>
       </div>
 
@@ -84,7 +84,7 @@ export default function PartnerPreview({
           ))}
           <div className="mt-3 p-3 rounded-2xl bg-secondary-container/50 border border-secondary/10">
             <p className="text-xs text-on-secondary-container italic leading-relaxed font-body">
-              &ldquo;Freedom is found through kindness and curiosity.&rdquo; Your journal is your space for honest self-examination. It&apos;s never shared.
+              Your journal is your space for honest self-understanding. The person you are online is the person you are \u2014 and this space helps you explore that with integrity. It&apos;s never shared.
             </p>
           </div>
         </div>

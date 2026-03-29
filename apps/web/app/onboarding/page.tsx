@@ -24,9 +24,9 @@ import {
 type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done';
 
 const STRINGER_PILLARS = [
-  { icon: '🌊', title: 'Trace the Tributaries', body: "When something comes up, it's never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen." },
-  { icon: '💛', title: 'Name the Longing', body: "Beneath every struggle is something legitimate you need — belonging, rest, tenderness, significance. The behavior is a misguided attempt to meet that need." },
-  { icon: '🧭', title: 'Follow the Roadmap', body: "Your struggle is a sign pointing to where your pain is. Instead of asking 'How do I stop?' — ask 'What is this revealing about the life I want?'" },
+  { icon: '🌊', title: 'Trace the Tributaries', body: "Your patterns are never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen. Understanding yourself is the first step to alignment." },
+  { icon: '💛', title: 'Name the Longing', body: "Beneath every pattern is something legitimate you need — belonging, rest, tenderness, significance. Naming it honestly is how you build congruence between who you are and who you want to be." },
+  { icon: '🧭', title: 'Follow the Roadmap', body: "Your patterns are a sign pointing to where your story needs attention. Instead of asking 'How do I stop?' — ask 'What is this revealing about the person I want to become?'" },
 ];
 
 export default function OnboardingPage() {
@@ -146,11 +146,11 @@ export default function OnboardingPage() {
         <div className="max-w-md w-full animate-fade-in">
           <div className="text-center mb-6">
             <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Our Philosophy</p>
-            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">This isn&apos;t about shame</h1>
+            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">This is about alignment</h1>
             {stringerStep === 0 && (
               <p className="text-sm text-on-surface-variant leading-relaxed font-body">
                 Be Candid is grounded in Jay Stringer&apos;s research with nearly 4,000 people.
-                The core finding: unwanted behavior is never random. It&apos;s shaped by the parts of your story that remain unaddressed.
+                The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life.
               </p>
             )}
           </div>
@@ -193,7 +193,7 @@ export default function OnboardingPage() {
           )}
 
           <p className="text-xs text-on-surface-variant text-center mt-6 font-body leading-relaxed">
-            Our approach is grounded in clinical research by Jay Stringer, MDiv, LMHC, and informed by a multidisciplinary team of neurologists and licensed counselors.
+            Our approach is grounded in clinical research by Jay Stringer, MDiv, LMHC, and informed by a multidisciplinary team of neurologists and licensed counselors \u2014 designed to help you understand yourself, not restrict yourself.
           </p>
         </div>
       )}
@@ -321,7 +321,7 @@ export default function OnboardingPage() {
 
           <div className="text-left space-y-3 mb-8">
             {[
-              { icon: '📱', title: 'Install the mobile app', desc: 'Android: screen monitoring. iOS: daily check-ins.' },
+              { icon: '📱', title: 'Install the mobile app', desc: 'Android: screen awareness. iOS: daily check-ins.' },
               { icon: '📓', title: 'Write your first journal entry', desc: 'Start tracing the tributaries — before anything happens.' },
               { icon: '💙', title: 'Check-ins start tonight', desc: "You'll receive a journal prompt at your preferred time." },
             ].map((item, i) => (

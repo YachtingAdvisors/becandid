@@ -4,17 +4,17 @@ const FEATURES = [
   {
     icon: '\u{1F916}',
     title: 'AI Conversation Guides',
-    desc: 'When a flag fires, personalized guides grounded in Motivational Interviewing help you and your partner have productive conversations.',
+    desc: 'When a pattern surfaces, personalized guides grounded in Motivational Interviewing help you and your partner have meaningful conversations about alignment.',
   },
   {
     icon: '\u{1F4D3}',
     title: 'Stringer Journal',
-    desc: 'Guided prompts based on Jay Stringer\u2019s framework help you uncover the tributaries, longings, and roadmap beneath compulsive behavior.',
+    desc: 'Guided prompts based on Jay Stringer\u2019s framework help you understand the tributaries, longings, and roadmap beneath your patterns \u2014 so your digital life matches your real life.',
   },
   {
     icon: '\u{1F514}',
-    title: 'Partner Alerts',
-    desc: 'Your accountability partner gets real-time alerts with context and AI-generated conversation starters when patterns emerge.',
+    title: 'Partner Awareness',
+    desc: 'Your accountability partner receives context and AI-generated conversation starters when patterns emerge \u2014 clarity, not surveillance.',
   },
   {
     icon: '\u{1F6A8}',
@@ -28,8 +28,28 @@ const FEATURES = [
   },
   {
     icon: '\u{1F3AF}',
-    title: 'Focus Tracking',
-    desc: 'Morning and evening segments keep you anchored. Earn trust points, build streaks, and watch real progress unfold.',
+    title: 'Alignment Tracking',
+    desc: 'Morning and evening segments keep you grounded. Build streaks, track congruence, and see how your screen time matches who you want to be.',
+  },
+  {
+    icon: '\u{1F6E1}\u{FE0F}',
+    title: 'AI Content Filtering',
+    desc: 'AI-powered content filtering blocks harmful websites while allowing age-appropriate browsing for teens and adults.',
+  },
+  {
+    icon: '\u{23F1}\u{FE0F}',
+    title: 'Screen Time Controls',
+    desc: 'Set healthy limits by category, schedule downtime, and build self-regulation with visual usage breakdowns.',
+  },
+  {
+    icon: '\u{1F468}\u{200D}\u{1F469}\u{200D}\u{1F467}',
+    title: 'Guardian Dashboard',
+    desc: 'Parents get a dedicated dashboard with teen activity summaries, alerts, and conversation guides while respecting privacy.',
+  },
+  {
+    icon: '\u{1F6AB}',
+    title: 'Sexting Prevention',
+    desc: 'AI detection and real-time alerts help protect teens from harmful messaging patterns with age-appropriate guidance.',
   },
 ];
 
@@ -37,35 +57,35 @@ const PILLARS = [
   {
     emoji: '\u{1F30A}',
     title: 'Trace the Tributaries',
-    desc: 'Compulsive behavior doesn\u2019t come from nowhere. Identify the family dynamics, attachment wounds, and emotional patterns that feed unwanted habits.',
+    desc: 'Your patterns don\u2019t come from nowhere. Identify the family dynamics, attachment wounds, and emotional currents that shape who you are online and off.',
   },
   {
     emoji: '\u{1F49B}',
     title: 'Name the Longing',
-    desc: 'Beneath every destructive pattern is an unmet need \u2014 for connection, significance, or safety. The Stringer Journal helps you name it.',
+    desc: 'Beneath every pattern is an unmet need \u2014 for connection, significance, or rest. The Stringer Journal helps you name it so you can meet it with integrity.',
   },
   {
     emoji: '\u{1F9ED}',
     title: 'Follow the Roadmap',
-    desc: 'With clarity about your story and desires, build concrete steps toward the life you actually want \u2014 with your partner beside you.',
+    desc: 'With clarity about your story and desires, build concrete steps toward congruence \u2014 where the person you are online is the person you are.',
   },
 ];
 
 const STEPS = [
   {
     num: '01',
-    title: 'Sign up and choose your rivals',
-    desc: 'Pick the categories you want accountability for \u2014 from sexual content to social media, substances to gambling.',
+    title: 'Define who you want to be',
+    desc: 'Choose the areas where you want alignment \u2014 from screen time to social media, and everything in between.',
   },
   {
     num: '02',
     title: 'Invite a trusted partner',
-    desc: 'A friend, spouse, mentor, or coach. They get alerts and AI-generated conversation guides. Or go solo \u2014 your call.',
+    desc: 'A friend, spouse, mentor, or coach. They get clarity and AI-generated conversation guides. Or go solo \u2014 your call.',
   },
   {
     num: '03',
-    title: 'Get AI-powered accountability',
-    desc: 'Track focus streaks, journal with Stringer prompts, earn trust points, and have conversations that actually lead somewhere.',
+    title: 'Build digital integrity',
+    desc: 'Track alignment streaks, journal with Stringer prompts, and have conversations that build congruence between your screen time and your real life.',
   },
 ];
 
@@ -93,6 +113,9 @@ export default function LandingPage() {
               <a href="#cta" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
                 About
               </a>
+              <Link href="/families" className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+                Families
+              </Link>
             </div>
             <Link href="/auth/signup" className="btn-primary text-sm py-2 px-5">
               Get Started
@@ -110,22 +133,21 @@ export default function LandingPage() {
       >
         <div className="max-w-4xl mx-auto text-center stagger relative z-10">
           <h1 className="font-headline font-extrabold text-5xl sm:text-6xl lg:text-7xl text-on-primary leading-[1.08] mb-6">
-            Accountability that goes
+            Accountability for every
             <br />
-            beneath the surface
+            stage of life
           </h1>
 
           <p className="text-lg sm:text-xl text-on-primary/80 leading-relaxed max-w-2xl mx-auto mb-10">
-            Be Candid combines neuroscience-backed monitoring with Jay Stringer&apos;s
-            therapeutic framework to help you understand the &ldquo;why&rdquo; behind
-            unwanted behaviors.
+            The most confident, inspiring and attractive people are those whose screen time
+            and face time matches the person they want to be across their lifetime.
           </p>
 
           <Link
             href="/auth/signup"
             className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container-lowest text-primary text-base font-semibold rounded-full hover:bg-surface-container-low transition-colors"
           >
-            Start Your Journey
+            Become Who You Want to Be
           </Link>
 
           <p className="mt-5 text-sm text-on-primary/60">
@@ -138,8 +160,28 @@ export default function LandingPage() {
       <section className="py-6 border-b border-outline-variant/20">
         <div className="max-w-4xl mx-auto px-6">
           <p className="text-center text-sm text-on-surface-variant">
-            Designed in collaboration with neurologists and licensed mental health counselors
+            Designed with neurologists and licensed mental health counselors to help you understand yourself, not restrict yourself
           </p>
+        </div>
+      </section>
+
+      {/* ── For Adults & Families ──────────────────────── */}
+      <section className="py-16 px-6">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
+          {/* Adults Card */}
+          <div className="card p-8">
+            <div className="text-3xl mb-4">{'\uD83E\uDDED'}</div>
+            <h3 className="font-headline font-bold text-xl text-on-surface mb-2">For Adults</h3>
+            <p className="text-sm text-on-surface-variant mb-4">Self-directed accountability with AI-powered conversation guides, partner support, and the Stringer therapeutic framework.</p>
+            <Link href="/auth/signup" className="text-primary font-label font-bold text-sm uppercase tracking-wider hover:underline">Get Started &rarr;</Link>
+          </div>
+          {/* Families Card */}
+          <div className="card p-8 bg-secondary-container/30">
+            <div className="text-3xl mb-4">{'\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67'}</div>
+            <h3 className="font-headline font-bold text-xl text-on-surface mb-2">For Teens &amp; Families</h3>
+            <p className="text-sm text-on-surface-variant mb-4">Parent-managed content filtering, screen time controls, real-time alerts, and age-appropriate guidance &mdash; accountability without surveillance.</p>
+            <Link href="/families" className="text-primary font-label font-bold text-sm uppercase tracking-wider hover:underline">Learn More &rarr;</Link>
+          </div>
         </div>
       </section>
 
@@ -150,11 +192,11 @@ export default function LandingPage() {
             Built on Jay Stringer&apos;s Framework
           </p>
           <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
-            Go deeper than willpower
+            Understand yourself, align your life
           </h2>
           <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
-            Most accountability apps just block and monitor. Be Candid helps you understand
-            the story beneath the behavior.
+            Congruence builds confidence. Be Candid helps you understand the story
+            beneath your patterns so your digital life matches who you really are.
           </p>
 
           <div className="grid sm:grid-cols-3 gap-6">
@@ -173,10 +215,10 @@ export default function LandingPage() {
       <section className="py-24 px-6 bg-surface-container-low">
         <div className="max-w-5xl mx-auto">
           <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-surface text-center mb-4">
-            Everything you need
+            Everything you need for digital integrity
           </h2>
           <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
-            Monitoring, journaling, conversation guides, and growth tracking &mdash; all in one place.
+            Awareness, journaling, conversation guides, and alignment tracking &mdash; all in one place.
           </p>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -198,7 +240,7 @@ export default function LandingPage() {
             How it works
           </h2>
           <p className="text-center text-on-surface-variant mb-16 max-w-lg mx-auto">
-            Three steps. No surveillance. No shame.
+            Three steps to align your screen time with who you want to be.
           </p>
 
           <div className="grid sm:grid-cols-3 gap-8">
@@ -246,7 +288,7 @@ export default function LandingPage() {
               >
                 App Store
               </a>
-              <p className="text-xs text-on-surface-variant">Includes Screen Time integration</p>
+              <p className="text-xs text-on-surface-variant">Includes Screen Time awareness</p>
             </div>
 
             {/* Android */}
@@ -266,7 +308,7 @@ export default function LandingPage() {
               >
                 Google Play
               </a>
-              <p className="text-xs text-on-surface-variant">Includes UsageStats monitoring</p>
+              <p className="text-xs text-on-surface-variant">Includes UsageStats awareness</p>
             </div>
 
             {/* Web App */}
@@ -297,7 +339,7 @@ export default function LandingPage() {
               <div className="text-center sm:text-left">
                 <h3 className="font-headline font-bold text-xl text-on-surface">Desktop Apps</h3>
                 <p className="text-sm text-on-surface-variant mt-1">
-                  Full dashboard experience with background monitoring. Coming soon for macOS, Windows, and Linux.
+                  Full dashboard experience with background awareness. Coming soon for macOS, Windows, and Linux.
                 </p>
               </div>
             </div>
@@ -350,7 +392,7 @@ export default function LandingPage() {
       >
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-headline font-extrabold text-3xl sm:text-4xl text-on-primary mb-4">
-            Begin your journey toward freedom
+            Become who you want to be
           </h2>
           <p className="text-on-primary/70 mb-8 max-w-md mx-auto">
             Free to start. No credit card required. Takes 3 minutes to set up.

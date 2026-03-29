@@ -7,6 +7,7 @@ import JournalSettings from '@/components/dashboard/JournalSettings';
 import PrivacySettings from '@/components/dashboard/PrivacySettings';
 import SoloModeToggle from '@/components/dashboard/SoloModeToggle';
 import TherapistSettings from '@/components/dashboard/TherapistSettings';
+import Link from 'next/link';
 
 export default async function SettingsPage() {
   const supabase = await createServerSupabaseClient();
@@ -27,7 +28,7 @@ export default async function SettingsPage() {
       <div>
         <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">Settings</h1>
         <p className="text-sm text-on-surface-variant font-body">
-          Manage your profile, rivals, monitoring preferences, and check-in schedule.
+          Manage your profile, rivals, awareness preferences, and check-in schedule.
         </p>
       </div>
 
@@ -64,6 +65,50 @@ export default async function SettingsPage() {
 
       {/* Subscription Details */}
       <SubscriptionCard />
+
+      {/* Content Filter Settings */}
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 border border-outline-variant shadow-sm">
+        <div className="flex items-center justify-between">
+          <h2 className="font-headline text-lg font-bold text-on-surface">Content Filter</h2>
+          <Link href="/dashboard/content-filter" className="text-xs text-primary font-label font-medium hover:underline">
+            Manage
+          </Link>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="inline-flex px-3 py-1 rounded-full text-xs font-label font-semibold bg-primary-container text-primary">
+            Standard
+          </span>
+          <span className="text-xs text-on-surface-variant font-body">
+            AI-powered content filtering is active
+          </span>
+        </div>
+      </section>
+
+      {/* Screen Time Summary */}
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 border border-outline-variant shadow-sm">
+        <div className="flex items-center justify-between">
+          <h2 className="font-headline text-lg font-bold text-on-surface">Screen Time</h2>
+          <Link href="/dashboard/screen-time" className="text-xs text-primary font-label font-medium hover:underline">
+            View Details
+          </Link>
+        </div>
+        <p className="text-xs text-on-surface-variant font-body">
+          Monitor and manage screen time usage, set limits by category, and configure downtime schedules.
+        </p>
+      </section>
+
+      {/* Account Mode */}
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 border border-outline-variant shadow-sm">
+        <h2 className="font-headline text-lg font-bold text-on-surface">Account Mode</h2>
+        <div className="flex items-center gap-3">
+          <span className="inline-flex px-3 py-1 rounded-full text-xs font-label font-semibold bg-secondary-container text-on-secondary-container">
+            Adult
+          </span>
+          <span className="text-xs text-on-surface-variant font-body">
+            Self-directed accountability with optional partner support
+          </span>
+        </div>
+      </section>
 
       {/* Privacy & Security */}
       <PrivacySettings />

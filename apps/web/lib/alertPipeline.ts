@@ -30,6 +30,7 @@ import { buildCategoryPromptAddition } from './categoryGuidance';
 import { generateSelfNotificationEmail } from './email/stringerSelfNotification';
 import { SPOUSE_GUIDE_ADDITION } from './spouseExperience';
 import { generateSpouseAlertEmail } from './email/spouseAlertEmail';
+import { filterContent } from './contentFilter';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
@@ -91,6 +92,20 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
     }).select().single();
 
     if (eventError) throw new Error(`Event insert failed: ${eventError.message}`);
+
+    // ── Step 0: Content filter check ─────────────────────
+    const filterResult = await filterContent(
+      userId,
+      event.metadata?.url as string || null,
+      event.metadata?.domain as string || null,
+      event.metadata?.app_name as string || event.platform || null,
+      {}
+    ).catch(() => null);
+
+    // Auto-escalate severity if content filter flags it as blocked
+    if (filterResult?.blocked && event.severity !== 'high') {
+      event.severity = 'high';
+    }
 
     // ── 2. Mark focus segment distracted ────────────────
     try {

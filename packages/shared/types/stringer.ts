@@ -208,6 +208,53 @@ export const SPIRITUAL_QUOTES: MotivatorQuote[] = [
     ref: 'The Grace Awakening',
     motivator: 'spiritual',
   },
+  {
+    text: 'Freedom is an often paradoxical and unexpected path that is found through kindness and curiosity. What would it mean for you to bless instead of curse your body for experiencing what it felt? Will you cry out with agony for how your desire was misused instead of remaining silent in your shame? Honesty and kindness change the human heart. Contempt for arousal and silence in our shame lead to continual pursuit of unwanted sexual behavior.',
+    author: 'Jay Stringer',
+    ref: 'Unwanted',
+    motivator: 'spiritual',
+  },
+  // ── Buddhist ────────────────────────────────────────────
+  {
+    text: 'Nothing can harm you as much as your own thoughts unguarded.',
+    author: 'The Buddha',
+    ref: 'Dhammapada',
+    motivator: 'spiritual',
+  },
+  {
+    text: 'You yourself must strive. The Buddhas only point the way.',
+    author: 'The Buddha',
+    ref: 'Dhammapada 276',
+    motivator: 'spiritual',
+  },
+  // ── Jewish tradition (via modern voices) ────────────────
+  {
+    text: 'The human soul is a candle of God. When we hide parts of ourselves in the dark, we are dimming the very light we were created to carry.',
+    author: 'Rabbi Jonathan Sacks',
+    ref: 'To Heal a Fractured World',
+    motivator: 'spiritual',
+  },
+  // ── Islamic tradition (via modern voices) ───────────────
+  {
+    text: 'The wound is the place where the Light enters you. Do not turn away from your brokenness — it is the door.',
+    author: 'Omid Safi',
+    ref: 'Radical Love',
+    motivator: 'spiritual',
+  },
+  // ── Hindu tradition (via modern voices) ─────────────────
+  {
+    text: 'When you let go of who you think you should be, you make room to discover who you actually are. That discovery is the beginning of all real change.',
+    author: 'Eknath Easwaran',
+    ref: 'Conquest of Mind',
+    motivator: 'spiritual',
+  },
+  // ── Sikh tradition (via modern voices) ──────────────────
+  {
+    text: 'True courage is not the absence of fear but the willingness to walk through it honestly, with your community beside you.',
+    author: 'Valarie Kaur',
+    ref: 'See No Stranger',
+    motivator: 'spiritual',
+  },
 ];
 
 export const PSYCHOLOGICAL_QUOTES: MotivatorQuote[] = [
