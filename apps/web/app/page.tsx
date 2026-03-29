@@ -295,7 +295,7 @@ export default function LandingPage() {
             <div className="order-1 lg:order-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkwH1gu_9V2EvOnO31n4vqthcIJ38CXEs13U_QPQwuVphsbsZ7PNryxCqeYO_SA1r0e-eG2-lnlIwyLEHXxqED_8DeRfuH2yod_703isQrBVZZxIlOsSkmp7LCReG2v-lOMGI6yA14Uqn-ePdNkC9zCdgu9SQ9o0hdzkFF8TaPWuWj52qw37E8T37XArlpnMVkZjiNWGy3Z06Vx5MzNrr4vbDaNEXtJwoHIO5-ckIUR3ahqYbwpeHm3XslHsNcPNtabM9lKlIkxHxk"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo-SYobDlsUK6Jtkhk6AOOLEAwVNupQmSLEPlK8FuQIe6s2NVffDH_R4IbPyToq3JBb_q1CbH2MuJevxCbYMBD03TcBYONX7kOxkb1R4RSBnS07LOFuReuhJ0QXbvHMm9TYaQh0gQEOzNkvBNo9bxfHdGr3BnFynKwkIqWRXSD6AZTKTymbgvo9xYIablHUGDjYReLJ_TGzLgV9aLZI0FhD1y6mjoVmKqYrAocN7xNumX62L_1dhIR5Wu5kHe_TboeF2sqIoh3kROT"
                 alt="Laptop and smartphone showing synchronized Be Candid integrity progress"
                 className="w-full h-auto"
               />
