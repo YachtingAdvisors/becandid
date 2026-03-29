@@ -17,6 +17,7 @@ import { useRouter } from 'expo-router';
 import { setupPushNotifications, getScreenFromNotification } from '../src/lib/push/setup';
 import { startOfflineQueueListener, syncPendingEvents } from '../src/lib/offlineQueue';
 import { supabase } from '../src/lib/supabase';
+import { updateCachedBlocklist } from '../src/lib/contentFilter.client';
 
 // Configure notification handling
 Notifications.setNotificationHandler({
@@ -51,13 +52,57 @@ export default function RootLayout() {
       offlineCleanup = startOfflineQueueListener();
       await syncPendingEvents().catch(console.error);
 
-      // 4. Platform monitoring
+      // 4. Platform monitoring (legacy stub)
       if (Platform.OS === 'android') {
         const { registerMonitoringTask } = await import('../src/lib/monitor.android');
         await registerMonitoringTask().catch(console.error);
       } else if (Platform.OS === 'ios') {
         const { registerMonitoringTask } = await import('../src/lib/monitor.ios');
         await registerMonitoringTask().catch(console.error);
+      }
+
+      // 5. Content filter — fetch user's custom rules and seed local cache
+      try {
+        const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'https://becandid.io';
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (currentSession?.access_token) {
+          const rulesRes = await fetch(`${apiUrl}/api/content-filter/rules`, {
+            headers: { Authorization: `Bearer ${currentSession.access_token}` },
+          });
+          if (rulesRes.ok) {
+            const { rules } = await rulesRes.json();
+            if (Array.isArray(rules)) {
+              await updateCachedBlocklist(rules);
+            }
+          }
+        }
+      } catch (e) {
+        // Non-fatal — app works fine with the bundled default blocklist
+        console.warn('[Layout] Content filter init failed (using defaults):', e);
+      }
+
+      // 6. Start platform-appropriate monitoring if user has it enabled
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('monitoring_enabled')
+          .eq('id', session.user.id)
+          .single();
+
+        const monitoringEnabled = profile?.monitoring_enabled === true;
+
+        if (monitoringEnabled) {
+          const apiBase = process.env.EXPO_PUBLIC_API_URL || 'https://becandid.io';
+          if (Platform.OS === 'android') {
+            const { startAndroidMonitoring } = await import('../src/lib/monitor.android');
+            startAndroidMonitoring({ userId: session.user.id, apiBase });
+          } else if (Platform.OS === 'ios') {
+            const { startIOSMonitoring } = await import('../src/lib/monitor.ios');
+            startIOSMonitoring({ userId: session.user.id, apiBase });
+          }
+        }
+      } catch (e) {
+        console.warn('[Layout] Monitoring init failed:', e);
       }
 
       setIsReady(true);
@@ -131,6 +176,16 @@ export default function RootLayout() {
       responseListener.current?.remove();
       subscription.unsubscribe();
       offlineCleanup?.();
+      // Stop platform monitoring on unmount
+      if (Platform.OS === 'android') {
+        import('../src/lib/monitor.android').then(({ stopAndroidMonitoring }) => {
+          stopAndroidMonitoring();
+        }).catch(() => {});
+      } else if (Platform.OS === 'ios') {
+        import('../src/lib/monitor.ios').then(({ stopIOSMonitoring }) => {
+          stopIOSMonitoring();
+        }).catch(() => {});
+      }
     };
   }, []);
 
