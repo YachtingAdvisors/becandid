@@ -37,7 +37,6 @@ export default function SignUpPage() {
       return;
     }
 
-    // Create profile row via API (service role handles insert)
     if (data.user) {
       await fetch('/api/auth/profile', {
         method: 'POST',
@@ -51,58 +50,80 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto" />
-          <p className="text-sm text-on-surface-variant mt-2 font-body">Align your digital life with who you want to be 🌿</p>
-        </div>
+    <main className="min-h-screen pt-16 flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
+      {/* Ambient Background Elements */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary-container/20 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-tertiary-container/10 rounded-full blur-[100px] pointer-events-none" />
 
+      {/* Top Nav */}
+      <header className="fixed top-0 w-full z-50 bg-background/70 backdrop-blur-md flex items-center justify-between px-6 h-16">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary text-2xl">shield</span>
+          <span className="font-headline font-bold tracking-tight text-primary text-xl">Be Candid</span>
+        </Link>
+        <div className="hidden md:flex items-center gap-8">
+          <Link href="/legal/privacy" className="font-label text-xs uppercase tracking-widest text-on-surface/60 hover:text-primary transition-colors">Privacy</Link>
+          <Link href="/legal/terms" className="font-label text-xs uppercase tracking-widest text-on-surface/60 hover:text-primary transition-colors">Security</Link>
+        </div>
+      </header>
+
+      {/* Main Card */}
+      <div className="w-full max-w-xl bg-surface-container-lowest rounded-[2rem] p-8 md:p-12 shadow-[0_4px_40px_rgba(45,112,130,0.06)] relative z-10 border border-outline-variant/15">
         {!ageVerified ? (
-          <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-8">
-            <AgeGate onVerified={() => setAgeVerified(true)} />
-          </div>
+          <AgeGate onVerified={() => setAgeVerified(true)} />
         ) : (
           <>
-            <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-8">
-              <form onSubmit={handleSignUp} className="space-y-5">
-                {error && (
-                  <div className="px-4 py-3 rounded-2xl bg-error/5 border border-error/20 text-error text-sm font-body">{error}</div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Your name</label>
-                  <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                    className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                    placeholder="e.g. Alex" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Email</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                    className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                    placeholder="you@example.com" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Password</label>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
-                    className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                    placeholder="At least 8 characters" />
-                </div>
-
-                <SignupConsent checked={consented} onChange={setConsented} />
-
-                <button type="submit" disabled={!consented || loading}
-                  className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold rounded-full hover:opacity-90 transition-opacity disabled:opacity-50">
-                  {loading ? 'Creating account...' : 'Create Account'}
-                </button>
-              </form>
-
-              <p className="text-xs text-on-surface-variant text-center mt-4 font-body">
-                Designed with board-certified neurologists and licensed mental health professionals to help you understand yourself, not restrict yourself
+            {/* Signup Form Header */}
+            <div className="mb-10 text-center md:text-left">
+              <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-surface-container-low">
+                <span className="material-symbols-outlined text-primary text-3xl">person_add</span>
+              </div>
+              <h1 className="font-headline text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface mb-4">
+                Create your <span className="text-primary italic">account.</span>
+              </h1>
+              <p className="font-body text-on-surface-variant text-lg leading-relaxed max-w-md">
+                Join a community built on integrity, transparency, and growth.
               </p>
             </div>
+
+            <form onSubmit={handleSignUp} className="space-y-6">
+              {error && (
+                <div className="px-4 py-3 rounded-2xl bg-error/5 border border-error/20 text-error text-sm font-body">{error}</div>
+              )}
+
+              <div className="flex flex-col gap-2">
+                <label className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant ml-1">Your name</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} required
+                  className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 font-body text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                  placeholder="e.g. Alex" />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant ml-1">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                  className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 font-body text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                  placeholder="you@example.com" />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant ml-1">Password</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
+                  className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 font-body text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+                  placeholder="At least 8 characters" />
+              </div>
+
+              <SignupConsent checked={consented} onChange={setConsented} />
+
+              <button type="submit" disabled={!consented || loading}
+                className="w-full bg-primary hover:bg-primary-dim text-on-primary font-headline font-bold py-5 px-8 rounded-full transition-all duration-300 shadow-lg shadow-primary/10 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50">
+                {loading ? 'Creating account...' : 'Create Account'}
+                <span className="material-symbols-outlined text-xl">arrow_forward</span>
+              </button>
+            </form>
+
+            <p className="text-xs text-on-surface-variant text-center mt-6 font-body">
+              Designed with board-certified neurologists and licensed mental health professionals
+            </p>
 
             <p className="text-center text-sm text-on-surface-variant mt-6 font-body">
               Already have an account?{' '}
@@ -111,6 +132,17 @@ export default function SignUpPage() {
           </>
         )}
       </div>
-    </div>
+
+      {/* Side Image (desktop only) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <div className="fixed bottom-12 right-12 hidden lg:block w-64 h-80 rounded-3xl overflow-hidden shadow-2xl rotate-3 border-8 border-white group">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY90xEQO9NELBIOl00lEgpRdEnVz37dUYzWjvXZB1TkQOJ5axfuYfSF6mp9bPRr2msjc7A1HoAKwY1QpOavXs00p9uG58eH6DC4OQzHUtG_CA83PbemOKfeFdNKgOGgwpnHnMiQqz_8Ze7C544Gk-ZyX_eVS3TicHgJguseCmscixAAxfggQc3kauVJ5DzLbZzrHZ8E4h9SDzG9gqSzYDQZUa0RIFmmRhhf1FgQJrVkEo8raZ-gZHdKaZcqaCee5fO6rm_3cQGzTED"
+          alt="Calm atmosphere"
+          className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
+      </div>
+    </main>
   );
 }
