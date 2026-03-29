@@ -95,9 +95,9 @@ export default function LandingPage() {
       {/* ── Header (sticky, glass) ─────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 glass-effect border-b border-outline-variant/30">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="font-headline text-xl font-extrabold text-primary">
-            Be Candid
-          </span>
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="Be Candid" className="h-8 w-auto" />
+          </Link>
 
           <div className="flex items-center gap-8">
             <div className="hidden md:flex items-center gap-6">

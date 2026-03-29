@@ -10,7 +10,7 @@ export default function LegalFooter() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-headline text-base font-extrabold text-primary">Be Candid</span>
+            <img src="/logo.png" alt="Be Candid" className="h-6 w-auto" />
           </div>
 
           <div className="flex items-center gap-6 text-sm font-label text-on-surface-variant">

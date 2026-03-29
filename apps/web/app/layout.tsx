@@ -23,22 +23,32 @@ const fontLabel = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Be Candid — Accountability That Heals',
+    default: 'Be Candid — Align Your Digital Life',
     template: '%s | Be Candid',
   },
-  description: 'An accountability app that monitors device activity, alerts your partner, and generates AI-powered conversation guides. No shame, by design.',
+  description: 'The most confident, inspiring people are those whose screen time matches the person they want to be. AI-powered accountability with zero shame.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io'),
+  icons: {
+    icon: [
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+  },
   openGraph: {
-    title: 'Be Candid — Accountability That Heals',
-    description: 'Monitor screen activity, alert your accountability partner, and get AI-powered conversation guides built on Motivational Interviewing. Zero shame.',
+    title: 'Be Candid — Align Your Digital Life',
+    description: 'The most confident, inspiring people are those whose screen time matches the person they want to be. AI-powered accountability for teens and adults.',
     siteName: 'Be Candid',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 1200, alt: 'Be Candid Logo' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Be Candid — Accountability That Heals',
-    description: 'AI-powered accountability conversations. No shame, by design.',
+    title: 'Be Candid — Align Your Digital Life',
+    description: 'AI-powered accountability. Your screen time should match who you want to be.',
+    images: ['/og-image.png'],
   },
+  manifest: '/manifest.json',
   robots: {
     index: true,
     follow: true,
