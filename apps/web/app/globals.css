@@ -9,6 +9,11 @@
   --font-label: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
+/* ─── Material Symbols ──────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
 /* ─── Base Styles ────────────────────────────────────────── */
 body {
   @apply bg-background text-on-surface antialiased;

@@ -2,52 +2,52 @@ import Link from 'next/link';
 
 const FEATURES = [
   {
-    icon: '\u{1F916}',
+    icon: 'chat_bubble',
     title: 'AI Conversation Guides',
     desc: 'When a pattern surfaces, personalized guides grounded in Motivational Interviewing help you and your partner have meaningful conversations about alignment.',
   },
   {
-    icon: '\u{1F4D3}',
+    icon: 'menu_book',
     title: 'Stringer Journal',
     desc: 'Guided prompts based on Jay Stringer\u2019s framework help you understand the tributaries, longings, and roadmap beneath your patterns \u2014 so your digital life matches your real life.',
   },
   {
-    icon: '\u{1F514}',
+    icon: 'handshake',
     title: 'Partner Awareness',
     desc: 'Your accountability partner receives context and AI-generated conversation starters when patterns emerge \u2014 clarity, not surveillance.',
   },
   {
-    icon: '\u{1F6A8}',
+    icon: 'emergency_home',
     title: 'Crisis Detection',
     desc: 'If patterns escalate, Be Candid detects it early and connects you with professional resources \u2014 no judgment.',
   },
   {
-    icon: '\u{1F512}',
+    icon: 'encrypted',
     title: 'End-to-End Encryption',
     desc: 'Your data is encrypted in transit and at rest. URLs are hashed, never stored. We literally cannot read your content.',
   },
   {
-    icon: '\u{1F3AF}',
+    icon: 'center_focus_strong',
     title: 'Alignment Tracking',
     desc: 'Morning and evening segments keep you grounded. Build streaks, track congruence, and see how your screen time matches who you want to be.',
   },
   {
-    icon: '\u{1F6E1}\u{FE0F}',
+    icon: 'filter_list',
     title: 'AI Content Filtering',
     desc: 'AI-powered content filtering blocks harmful websites while allowing age-appropriate browsing for teens and adults.',
   },
   {
-    icon: '\u{23F1}\u{FE0F}',
+    icon: 'timer',
     title: 'Screen Time Controls',
     desc: 'Set healthy limits by category, schedule downtime, and build self-regulation with visual usage breakdowns.',
   },
   {
-    icon: '\u{1F468}\u{200D}\u{1F469}\u{200D}\u{1F467}',
+    icon: 'shield',
     title: 'Guardian Dashboard',
     desc: 'Parents get a dedicated dashboard with teen activity summaries, alerts, and conversation guides while respecting privacy.',
   },
   {
-    icon: '\u{1F6AB}',
+    icon: 'block',
     title: 'Sexting Prevention',
     desc: 'AI detection and real-time alerts help protect teens from harmful messaging patterns with age-appropriate guidance.',
   },
@@ -55,17 +55,17 @@ const FEATURES = [
 
 const PILLARS = [
   {
-    emoji: '\u{1F30A}',
+    icon: 'water_drop',
     title: 'Trace the Tributaries',
     desc: 'Your patterns don\u2019t come from nowhere. Identify the family dynamics, attachment wounds, and emotional currents that shape who you are online and off.',
   },
   {
-    emoji: '\u{1F49B}',
+    icon: 'favorite',
     title: 'Name the Longing',
     desc: 'Beneath every pattern is an unmet need \u2014 for connection, significance, or rest. The Stringer Journal helps you name it so you can meet it with integrity.',
   },
   {
-    emoji: '\u{1F9ED}',
+    icon: 'explore',
     title: 'Follow the Roadmap',
     desc: 'With clarity about your story and desires, build concrete steps toward congruence \u2014 where the person you are online is the person you are.',
   },
@@ -88,6 +88,10 @@ const STEPS = [
     desc: 'Track alignment streaks, journal with Stringer prompts, and have conversations that build congruence between your screen time and your real life.',
   },
 ];
+
+function MaterialIcon({ name, className = '' }: { name: string; className?: string }) {
+  return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
+}
 
 export default function LandingPage() {
   return (
@@ -170,14 +174,18 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
           {/* Adults Card */}
           <div className="card p-8">
-            <div className="text-3xl mb-4">{'\uD83E\uDDED'}</div>
+            <div className="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center mb-4">
+              <MaterialIcon name="self_improvement" className="text-primary text-2xl" />
+            </div>
             <h3 className="font-headline font-bold text-xl text-on-surface mb-2">For Adults</h3>
             <p className="text-sm text-on-surface-variant mb-4">Self-directed accountability with AI-powered conversation guides, partner support, and the Stringer therapeutic framework.</p>
             <Link href="/auth/signup" className="text-primary font-label font-bold text-sm uppercase tracking-wider hover:underline">Get Started &rarr;</Link>
           </div>
           {/* Families Card */}
           <div className="card p-8 bg-secondary-container/30">
-            <div className="text-3xl mb-4">{'\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67'}</div>
+            <div className="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center mb-4">
+              <MaterialIcon name="family_restroom" className="text-on-secondary-container text-2xl" />
+            </div>
             <h3 className="font-headline font-bold text-xl text-on-surface mb-2">For Teens &amp; Families</h3>
             <p className="text-sm text-on-surface-variant mb-4">Parent-managed content filtering, screen time controls, real-time alerts, and age-appropriate guidance &mdash; accountability without surveillance.</p>
             <Link href="/families" className="text-primary font-label font-bold text-sm uppercase tracking-wider hover:underline">Learn More &rarr;</Link>
@@ -202,7 +210,9 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-3 gap-6">
             {PILLARS.map((p) => (
               <div key={p.title} className="card p-8 text-center">
-                <div className="text-4xl mb-5">{p.emoji}</div>
+                <div className="w-14 h-14 rounded-2xl bg-primary-container flex items-center justify-center mx-auto mb-5">
+                  <MaterialIcon name={p.icon} className="text-primary text-3xl" />
+                </div>
                 <h3 className="font-headline font-bold text-lg text-on-surface mb-2">{p.title}</h3>
                 <p className="text-sm text-on-surface-variant leading-relaxed">{p.desc}</p>
               </div>
@@ -223,9 +233,11 @@ export default function LandingPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map((f) => (
-              <div key={f.title} className="card p-7 hover:shadow-lg transition-shadow">
-                <div className="text-3xl mb-4">{f.icon}</div>
-                <h3 className="font-headline font-bold text-base text-on-surface mb-2">{f.title}</h3>
+              <div key={f.title} className="group card p-7 hover:shadow-lg transition-all duration-300 hover:bg-surface-container-low">
+                <div className="flex items-start gap-4 mb-3">
+                  <MaterialIcon name={f.icon} className="text-primary text-2xl" />
+                  <h3 className="font-headline font-bold text-base text-on-surface">{f.title}</h3>
+                </div>
                 <p className="text-sm text-on-surface-variant leading-relaxed">{f.desc}</p>
               </div>
             ))}
@@ -273,8 +285,8 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {/* iOS */}
             <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center text-3xl">
-                📱
+              <div className="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center">
+                <MaterialIcon name="phone_iphone" className="text-primary text-3xl" />
               </div>
               <div>
                 <h3 className="font-headline font-bold text-lg text-on-surface">iPhone &amp; iPad</h3>
@@ -293,8 +305,8 @@ export default function LandingPage() {
 
             {/* Android */}
             <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-2xl bg-secondary-container flex items-center justify-center text-3xl">
-                🤖
+              <div className="w-16 h-16 rounded-2xl bg-secondary-container flex items-center justify-center">
+                <MaterialIcon name="phone_android" className="text-on-secondary-container text-3xl" />
               </div>
               <div>
                 <h3 className="font-headline font-bold text-lg text-on-surface">Android</h3>
@@ -313,8 +325,8 @@ export default function LandingPage() {
 
             {/* Web App */}
             <div className="card p-8 text-center flex flex-col items-center gap-4 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 rounded-2xl bg-tertiary-container flex items-center justify-center text-3xl">
-                🌐
+              <div className="w-16 h-16 rounded-2xl bg-tertiary-container flex items-center justify-center">
+                <MaterialIcon name="language" className="text-on-tertiary-container text-3xl" />
               </div>
               <div>
                 <h3 className="font-headline font-bold text-lg text-on-surface">Web App</h3>
@@ -326,15 +338,15 @@ export default function LandingPage() {
               >
                 Open in Browser
               </Link>
-              <p className="text-xs text-on-surface-variant">No download required — works instantly</p>
+              <p className="text-xs text-on-surface-variant">No download required &mdash; works instantly</p>
             </div>
           </div>
 
           {/* Desktop Section */}
           <div className="card p-8">
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-primary-container/50 flex items-center justify-center text-2xl flex-shrink-0">
-                💻
+              <div className="w-14 h-14 rounded-2xl bg-primary-container/50 flex items-center justify-center flex-shrink-0">
+                <MaterialIcon name="laptop_mac" className="text-primary text-2xl" />
               </div>
               <div className="text-center sm:text-left">
                 <h3 className="font-headline font-bold text-xl text-on-surface">Desktop Apps</h3>
@@ -345,21 +357,21 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
-                <span className="text-xl">🍎</span>
+                <MaterialIcon name="desktop_mac" className="text-on-surface-variant text-xl" />
                 <div className="text-left">
                   <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
                   <p className="font-headline font-bold text-on-surface">macOS</p>
                 </div>
               </div>
               <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
-                <span className="text-xl">🪟</span>
+                <MaterialIcon name="desktop_windows" className="text-on-surface-variant text-xl" />
                 <div className="text-left">
                   <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
                   <p className="font-headline font-bold text-on-surface">Windows</p>
                 </div>
               </div>
               <div className="flex items-center justify-center gap-3 py-3 px-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 opacity-60 cursor-default">
-                <span className="text-xl">🐧</span>
+                <MaterialIcon name="terminal" className="text-on-surface-variant text-xl" />
                 <div className="text-left">
                   <p className="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Coming Soon</p>
                   <p className="font-headline font-bold text-on-surface">Linux</p>
