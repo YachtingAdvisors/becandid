@@ -21,9 +21,9 @@ interface CheckInEntry {
   partner_response: string | null;
 }
 
-const MOOD_EMOJIS: Record<string, string> = {
-  great: '🌟', good: '✅', okay: '😐', struggling: '💭', crisis: '🆘',
-  confident: '💪', hopeful: '🌱', concerned: '🤔', worried: '😟',
+const MOOD_ICONS: Record<string, string> = {
+  great: 'sentiment_very_satisfied', good: 'sentiment_satisfied', okay: 'sentiment_neutral', struggling: 'psychology', crisis: 'emergency',
+  confident: 'fitness_center', hopeful: 'eco', concerned: 'help', worried: 'mood_bad',
 };
 
 export default function GrowthJournalPage() {
@@ -47,8 +47,8 @@ export default function GrowthJournalPage() {
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto space-y-6">
-        <div className="h-8 bg-gray-200 rounded w-48 animate-pulse" />
-        <div className="card p-8 animate-pulse"><div className="h-40 bg-gray-100 rounded" /></div>
+        <div className="h-8 bg-surface-container rounded w-48 animate-pulse" />
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 animate-pulse"><div className="h-40 bg-surface-container-low rounded" /></div>
       </div>
     );
   }
@@ -90,13 +90,15 @@ export default function GrowthJournalPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6 stagger">
       <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">📓 Growth Journal</h1>
+        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1 flex items-center gap-3">
+          <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>book</span> Growth Journal
+        </h1>
         <p className="text-sm text-on-surface-variant font-body">Your accountability story, told in data and reflections.</p>
       </div>
 
       {/* ── Narrative Summary ──────────────────────────────── */}
-      <div className="card p-5 bg-gradient-to-br from-primary-container/30 to-emerald-50 border-outline-variant">
-        <h3 className="font-headline text-sm font-bold text-on-primary-container mb-2">21-Day Summary</h3>
+      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 bg-gradient-to-br from-primary-container/30 to-emerald-50">
+        <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">21-Day Summary</h3>
         <p className="text-sm text-on-surface leading-relaxed font-body">
           Over the last 3 weeks, you've been focused for <strong>{focusRate}%</strong> of your tracked segments.
           {' '}Your current streak is <strong>{journal.streak.streakDays} days</strong>.
@@ -120,35 +122,39 @@ export default function GrowthJournalPage() {
 
       {/* ── Key Metrics ────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="card px-4 py-3 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
           <div className="text-2xl font-headline font-bold text-primary">{focusRate}%</div>
-          <div className="text-xs text-on-surface-variant mt-0.5">Focus Rate</div>
+          <div className="text-xs text-on-surface-variant font-label mt-0.5">Focus Rate</div>
         </div>
-        <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-headline font-bold text-emerald-600">🔥 {journal.streak.streakDays}d</div>
-          <div className="text-xs text-on-surface-variant mt-0.5">Current Streak</div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+          <div className="text-2xl font-headline font-bold text-emerald-600 flex items-center justify-center gap-1">
+            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span> {journal.streak.streakDays}d
+          </div>
+          <div className="text-xs text-on-surface-variant font-label mt-0.5">Current Streak</div>
         </div>
-        <div className="card px-4 py-3 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
           <div className="text-2xl font-headline font-bold text-primary">{journal.balance.toLocaleString()}</div>
-          <div className="text-xs text-on-surface-variant mt-0.5">Trust Points</div>
+          <div className="text-xs text-on-surface-variant font-label mt-0.5">Trust Points</div>
         </div>
-        <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-headline font-bold text-amber-600">🏅 {journal.milestones.length}</div>
-          <div className="text-xs text-on-surface-variant mt-0.5">Milestones</div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+          <div className="text-2xl font-headline font-bold text-amber-600 flex items-center justify-center gap-1">
+            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span> {journal.milestones.length}
+          </div>
+          <div className="text-xs text-on-surface-variant font-label mt-0.5">Milestones</div>
         </div>
       </div>
 
       {/* ── Morning vs Evening ─────────────────────────────── */}
       {morningTotal > 0 && eveningTotal > 0 && (
-        <div className="card p-5">
-          <h3 className="font-headline text-sm font-bold text-on-surface mb-3">Morning vs Evening</h3>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+          <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Morning vs Evening</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-medium text-on-surface">Morning</span>
                 <span className="text-xs text-on-surface-variant">{Math.round((morningFocused / morningTotal) * 100)}%</span>
               </div>
-              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-surface-container-low rounded-full overflow-hidden">
                 <div
                   className="h-full bg-emerald-400 rounded-full transition-all"
                   style={{ width: `${(morningFocused / morningTotal) * 100}%` }}
@@ -160,7 +166,7 @@ export default function GrowthJournalPage() {
                 <span className="text-xs font-medium text-on-surface">Evening</span>
                 <span className="text-xs text-on-surface-variant">{Math.round((eveningFocused / eveningTotal) * 100)}%</span>
               </div>
-              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-surface-container-low rounded-full overflow-hidden">
                 <div
                   className="h-full bg-emerald-400 rounded-full transition-all"
                   style={{ width: `${(eveningFocused / eveningTotal) * 100}%` }}
@@ -173,8 +179,8 @@ export default function GrowthJournalPage() {
 
       {/* ── Mood Timeline ──────────────────────────────────── */}
       {moods.length > 0 && (
-        <div className="card p-5">
-          <h3 className="font-headline text-sm font-bold text-on-surface mb-3">Mood Timeline</h3>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+          <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Mood Timeline</h3>
           <div className="flex items-end gap-1 h-20">
             {moods.slice(-21).map((m, i) => (
               <div
@@ -202,16 +208,16 @@ export default function GrowthJournalPage() {
 
       {/* ── Recent Reflections ─────────────────────────────── */}
       {completedCheckIns.some(ci => ci.user_response) && (
-        <div className="card p-5">
-          <h3 className="font-headline text-sm font-bold text-on-surface mb-3">Your Reflections</h3>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+          <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Your Reflections</h3>
           <div className="space-y-3">
             {completedCheckIns
               .filter(ci => ci.user_response)
               .slice(0, 10)
               .map(ci => (
-                <div key={ci.id} className="flex gap-3 items-start">
-                  <span className="text-lg flex-shrink-0 mt-0.5">
-                    {MOOD_EMOJIS[ci.user_mood ?? 'okay']}
+                <div key={ci.id} className="flex items-center gap-4 p-3 rounded-xl border border-outline-variant/30 hover:bg-surface-container-low">
+                  <span className="material-symbols-outlined text-primary text-lg flex-shrink-0">
+                    {MOOD_ICONS[ci.user_mood ?? 'okay'] ?? 'sentiment_neutral'}
                   </span>
                   <div className="flex-1">
                     <p className="text-sm text-on-surface leading-relaxed italic font-body">"{ci.user_response}"</p>
@@ -220,7 +226,7 @@ export default function GrowthJournalPage() {
                         weekday: 'short', month: 'short', day: 'numeric',
                       })}
                       {ci.partner_mood && (
-                        <> · Partner felt {MOOD_EMOJIS[ci.partner_mood]} {ci.partner_mood}</>
+                        <> · Partner felt <span className="material-symbols-outlined text-xs align-middle">{MOOD_ICONS[ci.partner_mood] ?? 'sentiment_neutral'}</span> {ci.partner_mood}</>
                       )}
                     </p>
                   </div>
@@ -232,8 +238,10 @@ export default function GrowthJournalPage() {
 
       {/* ── Milestones Timeline ────────────────────────────── */}
       {journal.milestones.length > 0 && (
-        <div className="card p-5">
-          <h3 className="font-headline text-sm font-bold text-on-surface mb-3">🏅 Milestone Timeline</h3>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+          <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span> Milestone Timeline
+          </h3>
           <div className="space-y-2">
             {journal.milestones.map(m => (
               <div key={m.milestone} className="flex items-center gap-3 text-sm">

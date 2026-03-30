@@ -70,26 +70,29 @@ export default function ConversationsPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <ToastContainer />
 
-      <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">Conversations</h1>
-        <p className="text-sm text-on-surface-variant font-body">Alerts, AI guides, and accountability conversations.</p>
+      <div className="flex items-center gap-3">
+        <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>forum</span>
+        <div>
+          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Conversations</h1>
+          <p className="text-sm text-on-surface-variant font-body">Alerts, AI guides, and accountability conversations.</p>
+        </div>
       </div>
 
       {/* Pending conversations */}
       {pending.length > 0 && (
         <div className="space-y-3">
-          <h2 className="font-headline text-sm font-bold text-on-surface uppercase tracking-wider">Needs Conversation ({pending.length})</h2>
+          <h2 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest">Needs Conversation ({pending.length})</h2>
           {pending.map(alert => (
-            <div key={alert.id} className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-xl">{getCategoryEmoji(alert.events?.category as GoalCategory)}</span>
+            <div key={alert.id} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+              <div className="flex items-center gap-4 mb-3">
+                <span className="material-symbols-outlined text-primary text-xl">flag</span>
                 <div className="flex-1">
                   <div className="text-sm font-label font-medium text-on-surface">
                     {GOAL_LABELS[alert.events?.category as GoalCategory] ?? 'Alert'}
                   </div>
                   <div className="text-xs text-on-surface-variant font-label">{timeAgo(alert.sent_at)}</div>
                 </div>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold ${SEVERITY_STYLES[alert.events?.severity as Severity ?? 'medium']}`}>
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${SEVERITY_STYLES[alert.events?.severity as Severity ?? 'medium']}`}>
                   {alert.events?.severity}
                 </span>
               </div>
@@ -102,16 +105,16 @@ export default function ConversationsPage() {
 
               <div className="flex gap-2">
                 <button onClick={() => markComplete(alert.id, 'positive')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-primary-container/30 text-primary border border-primary-container hover:bg-primary-container/50 transition-colors">
-                  {'\u2705'} Positive
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-primary-container/30 text-primary border border-primary-container hover:bg-primary-container/50 transition-colors inline-flex items-center justify-center gap-1">
+                  <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>sentiment_satisfied</span> Positive
                 </button>
                 <button onClick={() => markComplete(alert.id, 'neutral')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-surface-container text-on-surface-variant border border-outline-variant hover:bg-surface-container-low transition-colors">
-                  {'\uD83D\uDE10'} Neutral
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-surface-container text-on-surface-variant border border-outline-variant hover:bg-surface-container-low transition-colors inline-flex items-center justify-center gap-1">
+                  <span className="material-symbols-outlined text-sm">sentiment_neutral</span> Neutral
                 </button>
                 <button onClick={() => markComplete(alert.id, 'difficult')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-error/5 text-error border border-error/20 hover:bg-error/10 transition-colors">
-                  {'\uD83D\uDCAA'} Difficult
+                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-error/5 text-error border border-error/20 hover:bg-error/10 transition-colors inline-flex items-center justify-center gap-1">
+                  <span className="material-symbols-outlined text-sm">fitness_center</span> Difficult
                 </button>
               </div>
             </div>
@@ -122,8 +125,8 @@ export default function ConversationsPage() {
       {/* Completed */}
       {completed.length > 0 && (
         <div className="space-y-3">
-          <h2 className="font-headline text-sm font-bold text-on-surface uppercase tracking-wider">Completed ({completed.length})</h2>
-          <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant divide-y divide-outline-variant/50">
+          <h2 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest">Completed ({completed.length})</h2>
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 divide-y divide-outline-variant/30">
             {completed.map(alert => {
               const conv = alert.conversations[0];
               const OUTCOME_STYLE: Record<string, string> = {
@@ -132,8 +135,8 @@ export default function ConversationsPage() {
                 difficult: 'bg-error/5 text-error',
               };
               return (
-                <div key={alert.id} className="flex items-center gap-3 px-5 py-3">
-                  <span className="text-lg">{getCategoryEmoji(alert.events?.category as GoalCategory)}</span>
+                <div key={alert.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low">
+                  <span className="material-symbols-outlined text-on-surface-variant text-lg">flag</span>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-label font-medium text-on-surface">
                       {GOAL_LABELS[alert.events?.category as GoalCategory] ?? 'Alert'}
@@ -141,10 +144,11 @@ export default function ConversationsPage() {
                     <div className="text-xs text-on-surface-variant font-label">{timeAgo(alert.sent_at)}</div>
                   </div>
                   {conv?.outcome && (
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold ${OUTCOME_STYLE[conv.outcome] ?? ''}`}>
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${OUTCOME_STYLE[conv.outcome] ?? ''}`}>
                       {conv.outcome}
                     </span>
                   )}
+                  <span className="material-symbols-outlined text-on-surface-variant text-lg">chevron_right</span>
                 </div>
               );
             })}
@@ -153,8 +157,8 @@ export default function ConversationsPage() {
       )}
 
       {alerts.length === 0 && !loading && (
-        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-12 text-center">
-          <div className="text-4xl mb-4">{'\uD83D\uDCAC'}</div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+          <span className="material-symbols-outlined text-on-surface-variant text-4xl mb-4 block">forum</span>
           <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No conversations yet</h3>
           <p className="text-sm text-on-surface-variant font-body">When alerts are triggered, your conversation guides will appear here.</p>
         </div>

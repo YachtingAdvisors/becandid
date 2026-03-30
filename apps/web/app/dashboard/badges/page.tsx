@@ -8,25 +8,25 @@ interface Milestone {
 }
 
 const ALL_BADGES = [
-  { key: 'focused_segments_10',  label: '10 Focused Segments',  icon: '🌱', tier: 'bronze' },
-  { key: 'focused_segments_25',  label: '25 Focused Segments',  icon: '🌿', tier: 'bronze' },
-  { key: 'focused_segments_50',  label: '50 Focused Segments',  icon: '🌳', tier: 'silver' },
-  { key: 'focused_segments_100', label: '100 Focused Segments', icon: '🏔️', tier: 'gold' },
-  { key: 'full_days_7',          label: '7 Full Focused Days',  icon: '⭐', tier: 'bronze' },
-  { key: 'full_days_14',         label: '14 Full Focused Days', icon: '🌟', tier: 'silver' },
-  { key: 'full_days_30',         label: '30 Full Focused Days', icon: '💫', tier: 'gold' },
-  { key: 'full_days_60',         label: '60 Full Focused Days', icon: '🔥', tier: 'gold' },
-  { key: 'full_days_90',         label: '90 Full Focused Days', icon: '👑', tier: 'platinum' },
-  { key: 'points_100',           label: '100 Trust Points',     icon: '🎯', tier: 'bronze' },
-  { key: 'points_500',           label: '500 Trust Points',     icon: '💎', tier: 'silver' },
-  { key: 'points_1000',          label: '1,000 Trust Points',   icon: '🏆', tier: 'gold' },
-  { key: 'points_5000',          label: '5,000 Trust Points',   icon: '🦁', tier: 'platinum' },
-  { key: 'conversations_5',      label: '5 Conversations',      icon: '💬', tier: 'bronze' },
-  { key: 'conversations_10',     label: '10 Conversations',     icon: '🤝', tier: 'silver' },
-  { key: 'conversations_25',     label: '25 Conversations',     icon: '❤️', tier: 'gold' },
-  { key: 'streak_7',             label: '7-Day Streak',         icon: '🔥', tier: 'bronze' },
-  { key: 'streak_30',            label: '30-Day Streak',        icon: '⚡', tier: 'gold' },
-  { key: 'streak_90',            label: '90-Day Streak',        icon: '🏅', tier: 'platinum' },
+  { key: 'focused_segments_10',  label: '10 Focused Segments',  icon: 'eco', tier: 'bronze' },
+  { key: 'focused_segments_25',  label: '25 Focused Segments',  icon: 'park', tier: 'bronze' },
+  { key: 'focused_segments_50',  label: '50 Focused Segments',  icon: 'forest', tier: 'silver' },
+  { key: 'focused_segments_100', label: '100 Focused Segments', icon: 'landscape', tier: 'gold' },
+  { key: 'full_days_7',          label: '7 Full Focused Days',  icon: 'star', tier: 'bronze' },
+  { key: 'full_days_14',         label: '14 Full Focused Days', icon: 'stars', tier: 'silver' },
+  { key: 'full_days_30',         label: '30 Full Focused Days', icon: 'auto_awesome', tier: 'gold' },
+  { key: 'full_days_60',         label: '60 Full Focused Days', icon: 'local_fire_department', tier: 'gold' },
+  { key: 'full_days_90',         label: '90 Full Focused Days', icon: 'crown', tier: 'platinum' },
+  { key: 'points_100',           label: '100 Trust Points',     icon: 'target', tier: 'bronze' },
+  { key: 'points_500',           label: '500 Trust Points',     icon: 'diamond', tier: 'silver' },
+  { key: 'points_1000',          label: '1,000 Trust Points',   icon: 'emoji_events', tier: 'gold' },
+  { key: 'points_5000',          label: '5,000 Trust Points',   icon: 'workspace_premium', tier: 'platinum' },
+  { key: 'conversations_5',      label: '5 Conversations',      icon: 'chat', tier: 'bronze' },
+  { key: 'conversations_10',     label: '10 Conversations',     icon: 'handshake', tier: 'silver' },
+  { key: 'conversations_25',     label: '25 Conversations',     icon: 'favorite', tier: 'gold' },
+  { key: 'streak_7',             label: '7-Day Streak',         icon: 'local_fire_department', tier: 'bronze' },
+  { key: 'streak_30',            label: '30-Day Streak',        icon: 'bolt', tier: 'gold' },
+  { key: 'streak_90',            label: '90-Day Streak',        icon: 'military_tech', tier: 'platinum' },
 ];
 
 const TIER_STYLES = {
@@ -54,9 +54,9 @@ export default function BadgesPage() {
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto space-y-6">
-        <div className="h-8 bg-gray-200 rounded w-32 animate-pulse" />
+        <div className="h-8 bg-surface-container rounded w-32 animate-pulse" />
         <div className="grid grid-cols-3 gap-3">
-          {[1,2,3,4,5,6].map(i => <div key={i} className="card p-6 animate-pulse"><div className="h-16 bg-gray-100 rounded" /></div>)}
+          {[1,2,3,4,5,6].map(i => <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 animate-pulse"><div className="h-16 bg-surface-container-low rounded" /></div>)}
         </div>
       </div>
     );
@@ -65,19 +65,21 @@ export default function BadgesPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6 stagger">
       <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">🏅 Badges</h1>
+        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1 flex items-center gap-3">
+          <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span> Badges
+        </h1>
         <p className="text-sm text-on-surface-variant font-body">
           {earnedCount} of {ALL_BADGES.length} earned. Keep going!
         </p>
       </div>
 
       {/* Progress bar */}
-      <div className="card p-4">
+      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-on-surface">{earnedCount}/{ALL_BADGES.length}</span>
-          <span className="text-xs text-on-surface-variant">{Math.round((earnedCount / ALL_BADGES.length) * 100)}% complete</span>
+          <span className="text-sm font-headline font-bold text-on-surface">{earnedCount}/{ALL_BADGES.length}</span>
+          <span className="text-xs text-on-surface-variant font-label">{Math.round((earnedCount / ALL_BADGES.length) * 100)}% complete</span>
         </div>
-        <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-3 bg-surface-container-low rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 rounded-full transition-all"
             style={{ width: `${(earnedCount / ALL_BADGES.length) * 100}%` }} />
         </div>
@@ -92,16 +94,18 @@ export default function BadgesPage() {
 
           return (
             <div key={badge.key}
-              className={`card p-4 text-center transition-all ${
+              className={`bg-surface-container-lowest rounded-2xl border p-4 text-center transition-all ${
                 isEarned
                   ? `${tier.bg} ${tier.border} border-2 shadow-sm`
-                  : 'opacity-40 grayscale'
+                  : 'border-outline-variant/30 opacity-40 grayscale'
               }`}
             >
-              <div className={`text-3xl mb-2 ${isEarned ? '' : 'filter blur-[1px]'}`}>
-                {isEarned ? badge.icon : '🔒'}
+              <div className={`mb-2 ${isEarned ? '' : 'filter blur-[1px]'}`}>
+                <span className={`material-symbols-outlined text-3xl ${isEarned ? tier.text : 'text-on-surface-variant'}`} style={isEarned ? { fontVariationSettings: "'FILL' 1" } : undefined}>
+                  {isEarned ? badge.icon : 'lock'}
+                </span>
               </div>
-              <div className={`text-xs font-semibold ${isEarned ? tier.text : 'text-gray-400'}`}>
+              <div className={`text-xs font-bold font-label ${isEarned ? tier.text : 'text-on-surface-variant'}`}>
                 {badge.label}
               </div>
               {isEarned && milestone && (
@@ -110,7 +114,7 @@ export default function BadgesPage() {
                 </div>
               )}
               {!isEarned && (
-                <div className="text-[10px] text-gray-400 mt-1 capitalize">{badge.tier}</div>
+                <div className="text-[10px] text-on-surface-variant mt-1 capitalize font-label">{badge.tier}</div>
               )}
             </div>
           );

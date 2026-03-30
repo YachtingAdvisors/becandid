@@ -5,25 +5,25 @@ import { useRouter } from 'next/navigation';
 
 const STEPS = [
   {
-    icon: '🤝',
+    icon: 'handshake',
     title: 'Your Role',
     body: 'You\'re not a surveillance officer. You\'re a trusted person who shows up when it matters. Every alert comes with an AI conversation guide designed to help you have a productive, shame-free conversation.',
     highlight: 'Your presence is the intervention.',
   },
   {
-    icon: '📋',
+    icon: 'check_circle',
     title: 'Check-ins',
-    body: 'You\'ll receive periodic check-ins that both of you must confirm. Select how you feel about their progress — confident, hopeful, concerned, or worried. Your honest assessment helps them see how they\'re showing up to the people who matter.',
+    body: 'You\'ll receive periodic check-ins that both of you must confirm. Select how you feel about their progress -- confident, hopeful, concerned, or worried. Your honest assessment helps them see how they\'re showing up to the people who matter.',
     highlight: 'Both of you confirm. Both of you earn trust points.',
   },
   {
-    icon: '💬',
+    icon: 'forum',
     title: 'Conversation Guides',
-    body: 'When an alert fires, you\'ll get an AI guide with specific dos and don\'ts for that category. It tells you how to open the conversation, what NOT to say, and questions to ask. Read it before you talk — it makes a real difference.',
+    body: 'When an alert fires, you\'ll get an AI guide with specific dos and don\'ts for that category. It tells you how to open the conversation, what NOT to say, and questions to ask. Read it before you talk -- it makes a real difference.',
     highlight: 'The guide is your playbook. Use it.',
   },
   {
-    icon: '🚫',
+    icon: 'block',
     title: 'What Not To Do',
     body: 'Never shame them. Never threaten. Never say "just stop." Never bring it up in front of others. Never use it as ammunition in a fight. If you can\'t be safe, you shouldn\'t be their partner.',
     highlight: 'Your job is safety, not judgment.',
@@ -62,8 +62,10 @@ export default function PartnerOnboardingPage() {
         </div>
 
         {/* Card */}
-        <div className="card p-8 text-center">
-          <div className="text-5xl mb-4">{current.icon}</div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-primary text-4xl">{current.icon}</span>
+          </div>
           <h2 className="font-headline text-2xl font-bold text-on-surface mb-4">{current.title}</h2>
           <p className="text-sm text-on-surface-variant leading-relaxed mb-4">{current.body}</p>
           <div className="px-4 py-3 rounded-2xl bg-primary-container/30 border border-primary/20">
@@ -73,14 +75,14 @@ export default function PartnerOnboardingPage() {
 
         {/* Mutual accountability option (last step) */}
         {isLast && (
-          <div className="card p-5">
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5">
             <button
               onClick={() => setEnableMutual(!enableMutual)}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 text-left transition-all ${
                 enableMutual ? 'border-primary bg-primary-container/30' : 'border-outline-variant hover:border-primary/40'
               }`}
             >
-              <span className="text-2xl">🔄</span>
+              <span className="material-symbols-outlined text-primary text-2xl">sync</span>
               <div className="flex-1">
                 <div className="text-sm font-semibold text-on-surface">Enable mutual accountability</div>
                 <p className="text-xs text-on-surface-variant mt-0.5">
@@ -91,9 +93,7 @@ export default function PartnerOnboardingPage() {
                 enableMutual ? 'bg-primary border-primary' : 'border-outline-variant'
               }`}>
                 {enableMutual && (
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
+                  <span className="material-symbols-outlined text-white text-sm">check</span>
                 )}
               </div>
             </button>
@@ -103,15 +103,20 @@ export default function PartnerOnboardingPage() {
         {/* Navigation */}
         <div className="flex gap-3">
           {step > 0 && (
-            <button onClick={() => setStep(step - 1)} className="btn-ghost">← Back</button>
+            <button onClick={() => setStep(step - 1)} className="flex items-center gap-1 px-4 py-3 text-sm font-label font-medium text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+              <span className="material-symbols-outlined text-lg">arrow_back</span>
+              Back
+            </button>
           )}
           {!isLast ? (
-            <button onClick={() => setStep(step + 1)} className="btn-primary flex-1 justify-center py-3">
-              Continue →
+            <button onClick={() => setStep(step + 1)} className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:bg-primary/90 transition-colors">
+              Continue
+              <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           ) : (
-            <button onClick={handleComplete} disabled={loading} className="btn-primary flex-1 justify-center py-3 disabled:opacity-50">
-              {loading ? 'Setting up…' : enableMutual ? 'Enable & Continue →' : 'I\'m Ready →'}
+            <button onClick={handleComplete} disabled={loading} className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:bg-primary/90 disabled:opacity-50 transition-colors">
+              {loading ? 'Setting up...' : enableMutual ? 'Enable & Continue' : 'I\'m Ready'}
+              <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           )}
         </div>

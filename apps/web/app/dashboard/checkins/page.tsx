@@ -67,29 +67,32 @@ export default function CheckInsPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <ToastContainer />
 
-      <div>
-        <h1 className="font-headline font-bold text-on-surface text-3xl mb-1">Check-ins</h1>
-        <p className="text-sm text-on-surface-variant font-body">
-          Both you and your partner confirm each check-in for it to count.
-        </p>
+      <div className="flex items-center gap-3">
+        <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+        <div>
+          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Check-ins</h1>
+          <p className="text-sm text-on-surface-variant font-body">
+            Both you and your partner confirm each check-in for it to count.
+          </p>
+        </div>
       </div>
 
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="card px-4 py-3 text-center">
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
             <div className="text-2xl font-headline font-bold text-primary">{stats.completionRate}%</div>
             <div className="text-xs text-on-surface-variant font-label mt-0.5">Completion Rate</div>
           </div>
-          <div className="card px-4 py-3 text-center">
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
             <div className="text-2xl font-headline font-bold text-primary">{stats.currentStreak}</div>
             <div className="text-xs text-on-surface-variant font-label mt-0.5">Check-in Streak</div>
           </div>
-          <div className="card px-4 py-3 text-center">
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
             <div className="text-2xl font-headline font-bold text-on-surface">{stats.completed}</div>
             <div className="text-xs text-on-surface-variant font-label mt-0.5">Completed</div>
           </div>
-          <div className="card px-4 py-3 text-center">
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
             <div className={`text-2xl font-headline font-bold ${actionNeeded > 0 ? 'text-tertiary' : 'text-outline'}`}>
               {actionNeeded}
             </div>
@@ -122,15 +125,15 @@ export default function CheckInsPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="card p-6 animate-pulse">
+            <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 animate-pulse">
               <div className="h-4 bg-surface-container rounded w-3/4 mb-3" />
               <div className="h-3 bg-surface-container-low rounded w-1/2" />
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="card p-12 text-center">
-          <div className="text-4xl mb-4">📋</div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+          <span className="material-symbols-outlined text-on-surface-variant text-4xl mb-4 block">assignment</span>
           <h3 className="font-headline font-bold text-on-surface text-xl mb-2">
             {filter === 'all' ? 'No check-ins yet' : `No ${filter} check-ins`}
           </h3>

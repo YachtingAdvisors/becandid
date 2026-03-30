@@ -55,9 +55,12 @@ export default function PartnerCheckInsPage() {
       <ToastContainer />
 
       <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">
-          📋 {monitoredName}'s Check-ins
-        </h1>
+        <div className="flex items-center gap-3 mb-1">
+          <span className="material-symbols-outlined text-primary text-3xl">check_circle</span>
+          <h1 className="font-headline text-3xl font-bold text-on-surface">
+            {monitoredName}'s Check-ins
+          </h1>
+        </div>
         <p className="text-sm font-body text-on-surface-variant">
           Confirm your side of each check-in. Both of you need to respond for it to count.
         </p>
@@ -65,15 +68,15 @@ export default function PartnerCheckInsPage() {
 
       {/* Action needed banner */}
       {actionNeeded > 0 && (
-        <div className="card p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">📋</span>
+            <span className="material-symbols-outlined text-amber-600 text-2xl">assignment_late</span>
             <div>
               <div className="text-sm font-bold text-on-surface">
                 {actionNeeded} check-in{actionNeeded !== 1 ? 's' : ''} waiting for your confirmation
               </div>
               <p className="text-xs text-on-surface-variant mt-0.5">
-                Your response matters — it shows {monitoredName} you're engaged.
+                Your response matters -- it shows {monitoredName} you're engaged.
               </p>
             </div>
           </div>
@@ -84,15 +87,17 @@ export default function PartnerCheckInsPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="card p-6 animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-3" />
-              <div className="h-3 bg-gray-100 rounded w-1/2" />
+            <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 animate-pulse">
+              <div className="h-4 bg-surface-container-low rounded-xl w-3/4 mb-3" />
+              <div className="h-3 bg-surface-container-low rounded-xl w-1/2" />
             </div>
           ))}
         </div>
       ) : checkIns.length === 0 ? (
-        <div className="card p-12 text-center">
-          <div className="text-4xl mb-4">📋</div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-primary text-3xl">check_circle</span>
+          </div>
           <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No check-ins yet</h3>
           <p className="text-sm text-on-surface-variant">
             When {monitoredName} has check-ins scheduled, they'll appear here for your confirmation.

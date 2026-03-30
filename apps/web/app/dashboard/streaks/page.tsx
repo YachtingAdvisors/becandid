@@ -42,13 +42,16 @@ export default function StreaksPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 stagger">
-      <div>
-        <h1 className="font-headline font-bold text-on-surface text-3xl mb-1">In the Zone</h1>
-        <p className="text-sm text-on-surface-variant font-body">Your focus streak and category performance.</p>
+      <div className="flex items-center gap-3">
+        <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+        <div>
+          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Streaks</h1>
+          <p className="text-sm text-on-surface-variant font-body">Your focus streak and category performance.</p>
+        </div>
       </div>
 
       {/* Streak hero */}
-      <div className="card p-6 text-center bg-gradient-to-br from-emerald-50 to-primary-container border-outline-variant">
+      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 text-center bg-gradient-to-br from-emerald-50 to-primary-container">
         <div className="text-5xl font-headline font-bold text-primary mb-1">
           {data.streak.streakDays}
         </div>
@@ -67,7 +70,7 @@ export default function StreaksPage() {
                 ? 'bg-primary-container text-on-primary-container border-primary-container'
                 : 'bg-surface-container text-on-surface-variant border-outline-variant'
             }`}>
-              {data.streak.streakDays >= m ? '🏅' : '○'} {m}d
+              {data.streak.streakDays >= m ? <span className="material-symbols-outlined text-sm align-middle" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span> : <span className="material-symbols-outlined text-sm align-middle">radio_button_unchecked</span>} {m}d
             </div>
           ))}
         </div>
@@ -75,12 +78,12 @@ export default function StreaksPage() {
 
       {/* Tracked categories */}
       {goals.length > 0 && (
-        <div className="card p-5">
-          <h3 className="font-headline font-bold text-on-surface text-sm mb-3">Your Rivals</h3>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+          <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Your Rivals</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {goals.map(goal => (
-              <div key={goal} className="flex items-center gap-2.5 px-3 py-2.5 rounded-2xl bg-surface-container-low border border-outline-variant/30">
-                <span className="text-xl">{getCategoryEmoji(goal)}</span>
+              <div key={goal} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30">
+                <span className="material-symbols-outlined text-primary text-xl">track_changes</span>
                 <div>
                   <div className="text-sm font-medium text-on-surface font-label leading-tight">{GOAL_LABELS[goal]}</div>
                   <div className="text-[10px] text-on-surface-variant font-label">Monitoring active</div>
@@ -92,8 +95,8 @@ export default function StreaksPage() {
       )}
 
       {/* 21-day heatmap recap */}
-      <div className="card p-5">
-        <h3 className="font-headline font-bold text-on-surface text-sm mb-3">21-Day Overview</h3>
+      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+        <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">21-Day Overview</h3>
         <div className="grid grid-cols-7 gap-1.5">
           {heatmap.map(day => {
             const bothFocused = day.morning === 'focused' && day.evening === 'focused';

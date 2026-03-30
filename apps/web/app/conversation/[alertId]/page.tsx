@@ -1,8 +1,25 @@
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { GOAL_LABELS, getCategoryEmoji, type GoalCategory, type Severity } from '@be-candid/shared';
+import { GOAL_LABELS, type GoalCategory, type Severity } from '@be-candid/shared';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import RegenerateGuide from '@/components/dashboard/RegenerateGuide';
+
+const CATEGORY_ICONS: Record<string, string> = {
+  gambling: 'casino',
+  alcohol: 'local_bar',
+  drugs: 'medication',
+  smoking: 'smoking_rooms',
+  porn: 'visibility_off',
+  social_media: 'phone_android',
+  gaming: 'sports_esports',
+  shopping: 'shopping_cart',
+  self_harm: 'healing',
+};
+
+function getCategoryIcon(category?: string): string {
+  if (!category) return 'notification_important';
+  return CATEGORY_ICONS[category] ?? 'notification_important';
+}
 
 interface Props {
   params: { alertId: string };
@@ -43,18 +60,23 @@ export default async function ConversationPage({ params }: Props) {
   const categoryLabel = GOAL_LABELS[event?.category as GoalCategory] ?? event?.category;
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">
           <Link href={isOwner ? '/dashboard/conversations' : '/partner/conversations'}
-            className="text-sm text-primary hover:underline font-label">← Back</Link>
+            className="flex items-center gap-1 text-sm text-primary hover:underline font-label">
+            <span className="material-symbols-outlined text-lg">arrow_back</span>
+            Back
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-3xl">{getCategoryEmoji(event?.category as GoalCategory)}</span>
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+            <span className="material-symbols-outlined text-primary text-2xl">{getCategoryIcon(event?.category)}</span>
+          </div>
           <div>
-            <h1 className="font-headline text-2xl font-bold text-on-surface">{categoryLabel} — Conversation Guide</h1>
+            <h1 className="font-headline text-2xl font-bold text-on-surface">{categoryLabel} -- Conversation Guide</h1>
             <p className="text-sm text-on-surface-variant font-body">
               {event?.severity} severity · {event?.platform} · {new Date(event?.timestamp).toLocaleString()}
             </p>
@@ -62,8 +84,9 @@ export default async function ConversationPage({ params }: Props) {
         </div>
 
         {!isOwner && (
-          <div className="px-3 py-2 rounded-xl bg-primary-container/30 border border-outline-variant text-xs text-on-primary-container font-medium">
-            👁 Partner view — showing the guide prepared for you
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary-container/30 border border-outline-variant text-xs text-on-primary-container font-medium">
+            <span className="material-symbols-outlined text-sm">visibility</span>
+            Partner view -- showing the guide prepared for you
           </div>
         )}
 
@@ -72,40 +95,40 @@ export default async function ConversationPage({ params }: Props) {
           <div className="space-y-4">
             {role === 'user' ? (
               <>
-                <GuideSection title="How to Open the Conversation" icon="💬" color="primary">
+                <GuideSection title="How to Open the Conversation" icon="chat" color="primary">
                   {guide.opening}
                 </GuideSection>
-                <GuideSection title="How to Be Honest" icon="🤝" color="violet">
+                <GuideSection title="How to Be Honest" icon="handshake" color="violet">
                   {guide.how_to_be_honest}
                 </GuideSection>
-                <GuideSection title="What to Ask For" icon="🙏" color="emerald">
+                <GuideSection title="What to Ask For" icon="volunteer_activism" color="emerald">
                   {guide.what_to_ask_for}
                 </GuideSection>
-                <div className="card p-5 bg-amber-50 border-amber-200 text-center">
+                <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 bg-amber-50 border-amber-200 text-center">
                   <p className="text-sm italic text-amber-800 leading-relaxed font-body">"{guide.affirmation}"</p>
                 </div>
                 {guide.professional_resources && (
-                  <GuideSection title="Additional Support" icon="💙" color="blue">
+                  <GuideSection title="Additional Support" icon="support" color="blue">
                     {guide.professional_resources}
                   </GuideSection>
                 )}
               </>
             ) : (
               <>
-                <GuideSection title="How to Open" icon="💬" color="primary">
+                <GuideSection title="How to Open" icon="chat" color="primary">
                   {guide.opening}
                 </GuideSection>
-                <GuideSection title="What NOT to Say or Do" icon="🚫" color="red">
+                <GuideSection title="What NOT to Say or Do" icon="block" color="red">
                   {Array.isArray(guide.what_not_to_say)
                     ? guide.what_not_to_say.map((w: string, i: number) => <p key={i} className="mb-1">• {w}</p>)
                     : guide.what_not_to_say}
                 </GuideSection>
-                <GuideSection title="Questions to Ask" icon="❓" color="emerald">
+                <GuideSection title="Questions to Ask" icon="help" color="emerald">
                   {Array.isArray(guide.questions)
                     ? guide.questions.map((q: string, i: number) => <p key={i} className="mb-1">• {q}</p>)
                     : guide.questions}
                 </GuideSection>
-                <GuideSection title="Creating Safety" icon="🛡️" color="violet">
+                <GuideSection title="Creating Safety" icon="shield" color="violet">
                   {guide.how_to_create_safety}
                 </GuideSection>
               </>
@@ -121,8 +144,10 @@ export default async function ConversationPage({ params }: Props) {
           </div>
           </>
         ) : (
-          <div className="card p-8 text-center">
-            <div className="text-4xl mb-4">📝</div>
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-primary text-3xl">edit_note</span>
+            </div>
             <h3 className="font-headline text-lg font-bold text-on-surface mb-2">No guide available</h3>
             <p className="text-sm text-on-surface-variant font-body">The AI guide wasn't generated for this alert. Use your own judgment and the principles of honest, non-judgmental conversation.</p>
           </div>
@@ -142,9 +167,9 @@ function GuideSection({ title, icon, color, children }: { title: string; icon: s
   };
 
   return (
-    <div className={`card p-5 border-l-4 ${colors[color] ?? colors.primary}`}>
+    <div className={`bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 border-l-4 ${colors[color] ?? colors.primary}`}>
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-lg">{icon}</span>
+        <span className="material-symbols-outlined text-lg">{icon}</span>
         <h3 className="text-xs font-semibold text-on-surface uppercase tracking-wider font-label">{title}</h3>
       </div>
       <div className="text-sm text-on-surface leading-relaxed font-body">{children}</div>

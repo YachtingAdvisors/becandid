@@ -43,9 +43,12 @@ export default function ActivityPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">Activity Feed</h1>
-        <p className="text-sm text-on-surface-variant font-body">All flagged events, newest first.</p>
+      <div className="flex items-center gap-3">
+        <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>timeline</span>
+        <div>
+          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Activity</h1>
+          <p className="text-sm text-on-surface-variant font-body">All flagged events, newest first.</p>
+        </div>
       </div>
 
       {/* Category filter */}
@@ -70,7 +73,7 @@ export default function ActivityPage() {
                 : 'bg-surface-container text-on-surface-variant hover:bg-primary-container/30 hover:text-primary'
             }`}
           >
-            {getCategoryEmoji(cat)} {GOAL_LABELS[cat]}
+            <span className="material-symbols-outlined text-sm">category</span> {GOAL_LABELS[cat]}
           </button>
         ))}
       </div>
@@ -79,15 +82,15 @@ export default function ActivityPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-4 animate-pulse">
+            <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 animate-pulse">
               <div className="h-5 bg-surface-container rounded w-48 mb-2" />
               <div className="h-3 bg-surface-container-low rounded w-32" />
             </div>
           ))}
         </div>
       ) : events.length === 0 ? (
-        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-12 text-center">
-          <div className="text-4xl mb-4">{'\uD83C\uDFAF'}</div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+          <span className="material-symbols-outlined text-on-surface-variant text-4xl mb-4 block">target</span>
           <h3 className="font-headline text-xl font-bold text-on-surface mb-2">
             {filter === 'all' ? 'No events yet' : `No ${GOAL_LABELS[filter]} events`}
           </h3>
@@ -98,12 +101,10 @@ export default function ActivityPage() {
           </p>
         </div>
       ) : (
-        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant divide-y divide-outline-variant/50">
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 divide-y divide-outline-variant/30">
           {events.map((event) => (
-            <div key={event.id} className="flex items-center gap-3 px-5 py-3.5">
-              <span className="text-xl flex-shrink-0">
-                {getCategoryEmoji(event.category)}
-              </span>
+            <div key={event.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low">
+              <span className="material-symbols-outlined text-primary text-xl flex-shrink-0">monitoring</span>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-label font-medium text-on-surface">
                   {GOAL_LABELS[event.category] ?? event.category}
@@ -113,7 +114,7 @@ export default function ActivityPage() {
                   {event.platform} \u00B7 {timeAgo(event.timestamp)}
                 </div>
               </div>
-              <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold ${SEVERITY_STYLES[event.severity]}`}>
+              <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${SEVERITY_STYLES[event.severity]}`}>
                 {event.severity}
               </span>
             </div>

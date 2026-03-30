@@ -101,9 +101,9 @@ export default function InvitePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="card p-8 animate-pulse w-80">
-          <div className="h-6 bg-gray-200 rounded w-48 mx-auto mb-4" />
-          <div className="h-4 bg-gray-100 rounded w-64 mx-auto" />
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 animate-pulse w-80">
+          <div className="h-6 bg-surface-container-low rounded-xl w-48 mx-auto mb-4" />
+          <div className="h-4 bg-surface-container-low rounded-xl w-64 mx-auto" />
         </div>
       </div>
     );
@@ -112,8 +112,15 @@ export default function InvitePage() {
   if (error && !invite) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <div className="card p-8 text-center max-w-sm">
-          <div className="text-4xl mb-4">😕</div>
+        {/* Ambient background circles */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        </div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 text-center max-w-sm relative z-10">
+          <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-red-600 text-3xl">error</span>
+          </div>
           <h2 className="font-headline text-xl font-semibold text-on-surface mb-2">Invalid Invite</h2>
           <p className="text-sm text-on-surface-variant">{error}</p>
         </div>
@@ -123,10 +130,19 @@ export default function InvitePage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
+      {/* Ambient background circles */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/3 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-sm relative z-10">
         <div className="text-center mb-6">
           <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto mb-4" />
-          <div className="text-4xl mb-3">🤝</div>
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <span className="material-symbols-outlined text-primary text-4xl">group_add</span>
+          </div>
           <h1 className="font-headline text-2xl font-bold text-on-surface">You're Invited</h1>
           <p className="text-sm font-body text-on-surface-variant mt-1">
             <strong>{invite?.inviter_name}</strong> wants you to be their accountability partner on Be Candid.
@@ -134,43 +150,51 @@ export default function InvitePage() {
         </div>
 
         {error && (
-          <div className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm mb-4">{error}</div>
+          <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm mb-4">
+            <span className="material-symbols-outlined text-lg">error</span>
+            {error}
+          </div>
         )}
 
         {!needsAccount ? (
-          <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant/30 p-6 space-y-4">
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4">
             <div className="px-4 py-3 rounded-2xl bg-primary-container/30 border border-primary/20">
-              <p className="text-sm font-body text-primary leading-relaxed">
-                As an accountability partner, you'll receive alerts when {invite?.inviter_name} flags activity,
-                along with AI-generated conversation guides. You'll also participate in mutual check-ins.
-              </p>
+              <div className="flex items-start gap-3">
+                <span className="material-symbols-outlined text-primary text-lg mt-0.5">info</span>
+                <p className="text-sm font-body text-primary leading-relaxed">
+                  As an accountability partner, you'll receive alerts when {invite?.inviter_name} flags activity,
+                  along with AI-generated conversation guides. You'll also participate in mutual check-ins.
+                </p>
+              </div>
             </div>
             <button onClick={handleAccept} disabled={accepting}
-              className="w-full py-3 bg-primary text-on-primary text-sm font-label font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50">
-              {accepting ? 'Accepting…' : 'Accept Invitation'}
+              className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-lg">check_circle</span>
+              {accepting ? 'Accepting...' : 'Accept Invitation'}
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSignUpAndAccept} className="bg-surface-container-lowest rounded-3xl border border-outline-variant/30 p-6 space-y-4">
+          <form onSubmit={handleSignUpAndAccept} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4">
             <p className="text-sm font-body text-on-surface-variant">Create a free account to accept this invitation.</p>
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1">Your name</label>
               <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1">Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1">Password</label>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
-                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <button type="submit" disabled={accepting}
-              className="w-full py-3 bg-primary text-on-primary text-sm font-label font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50">
-              {accepting ? 'Creating account…' : 'Create Account & Accept'}
+              className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-lg">person_add</span>
+              {accepting ? 'Creating account...' : 'Create Account & Accept'}
             </button>
           </form>
         )}

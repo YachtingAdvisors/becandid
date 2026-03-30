@@ -44,9 +44,9 @@ export default function PartnerIndexPage() {
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto space-y-6 animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-48" />
+        <div className="h-8 bg-surface-container-low rounded-xl w-48" />
         <div className="grid grid-cols-2 gap-4">
-          {[1, 2, 3, 4].map(i => <div key={i} className="card p-6"><div className="h-16 bg-gray-100 rounded" /></div>)}
+          {[1, 2, 3, 4].map(i => <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6"><div className="h-16 bg-surface-container-low rounded-xl" /></div>)}
         </div>
       </div>
     );
@@ -55,11 +55,16 @@ export default function PartnerIndexPage() {
   if (!data) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="card p-12 text-center">
-          <div className="text-4xl mb-4">🤝</div>
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-primary text-3xl">handshake</span>
+          </div>
           <h2 className="font-headline text-2xl font-bold text-on-surface mb-3">No Active Partnership</h2>
           <p className="text-sm font-body text-on-surface-variant mb-6">When someone invites you as their accountability partner, this is where you'll see their progress.</p>
-          <Link href="/dashboard" className="btn-primary">Go to Dashboard</Link>
+          <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:bg-primary/90 transition-colors">
+            <span className="material-symbols-outlined text-lg">arrow_back</span>
+            Go to Dashboard
+          </Link>
         </div>
       </div>
     );
@@ -70,9 +75,12 @@ export default function PartnerIndexPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6 stagger">
       <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">
-          🤝 {data.monitoredUserName}'s Overview
-        </h1>
+        <div className="flex items-center gap-3 mb-1">
+          <span className="material-symbols-outlined text-primary text-3xl">handshake</span>
+          <h1 className="font-headline text-3xl font-bold text-on-surface">
+            {data.monitoredUserName}'s Overview
+          </h1>
+        </div>
         <p className="text-sm font-body text-on-surface-variant">
           You're their accountability partner. Here's how they're doing.
         </p>
@@ -80,9 +88,9 @@ export default function PartnerIndexPage() {
 
       {/* Action needed banner */}
       {actionCount > 0 && (
-        <div className="card p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">⚡</span>
+            <span className="material-symbols-outlined text-amber-600 text-2xl">bolt</span>
             <div className="flex-1">
               <div className="text-sm font-bold text-on-surface">
                 {actionCount} action{actionCount !== 1 ? 's' : ''} waiting for you
@@ -99,17 +107,19 @@ export default function PartnerIndexPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="card px-4 py-3 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 px-4 py-3 text-center">
           <div className="text-2xl font-headline font-bold text-primary">{data.balance.toLocaleString()}</div>
           <div className="text-xs text-on-surface-variant mt-0.5">Trust Points</div>
         </div>
-        <div className="card px-4 py-3 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 px-4 py-3 text-center">
           <div className="text-2xl font-headline font-bold text-emerald-600">{data.streak.streakDays}</div>
           <div className="text-xs text-on-surface-variant mt-0.5">Day Streak</div>
         </div>
-        <div className="card px-4 py-3 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 px-4 py-3 text-center">
           <div className={`text-2xl font-headline font-bold ${actionCount > 0 ? 'text-amber-500' : 'text-emerald-600'}`}>
-            {actionCount > 0 ? actionCount : '✓'}
+            {actionCount > 0 ? actionCount : (
+              <span className="material-symbols-outlined text-emerald-600 text-2xl">check_circle</span>
+            )}
           </div>
           <div className="text-xs text-on-surface-variant mt-0.5">{actionCount > 0 ? 'Action Needed' : 'All Clear'}</div>
         </div>
@@ -117,27 +127,35 @@ export default function PartnerIndexPage() {
 
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
-        <Link href="/partner/focus" className="card p-5 hover:shadow-md transition-shadow text-center">
-          <div className="text-3xl mb-2">🎯</div>
+        <Link href="/partner/focus" className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 hover:shadow-md transition-shadow text-center group">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <span className="material-symbols-outlined text-primary text-2xl">center_focus_strong</span>
+          </div>
           <div className="font-headline text-sm font-bold text-on-surface">Focus Board</div>
           <p className="text-xs text-on-surface-variant mt-1">3-week heatmap & milestones</p>
         </Link>
-        <Link href="/partner/checkins" className="card p-5 hover:shadow-md transition-shadow text-center">
-          <div className="text-3xl mb-2">📋</div>
+        <Link href="/partner/checkins" className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 hover:shadow-md transition-shadow text-center group">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <span className="material-symbols-outlined text-primary text-2xl">check_circle</span>
+          </div>
           <div className="font-headline text-sm font-bold text-on-surface">Check-ins</div>
           <p className="text-xs text-on-surface-variant mt-1">
             {data.pendingCheckIns > 0 ? `${data.pendingCheckIns} waiting` : 'All caught up'}
           </p>
         </Link>
-        <Link href="/partner/conversations" className="card p-5 hover:shadow-md transition-shadow text-center">
-          <div className="text-3xl mb-2">💬</div>
+        <Link href="/partner/conversations" className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 hover:shadow-md transition-shadow text-center group">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <span className="material-symbols-outlined text-primary text-2xl">forum</span>
+          </div>
           <div className="font-headline text-sm font-bold text-on-surface">Conversations</div>
           <p className="text-xs text-on-surface-variant mt-1">
             {data.pendingConversations > 0 ? `${data.pendingConversations} pending` : 'View history'}
           </p>
         </Link>
-        <Link href="/partner/encourage" className="card p-5 hover:shadow-md transition-shadow text-center">
-          <div className="text-3xl mb-2">💪</div>
+        <Link href="/partner/encourage" className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 hover:shadow-md transition-shadow text-center group">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <span className="material-symbols-outlined text-primary text-2xl">favorite</span>
+          </div>
           <div className="font-headline text-sm font-bold text-on-surface">Encourage</div>
           <p className="text-xs text-on-surface-variant mt-1">Send a supportive message</p>
         </Link>
