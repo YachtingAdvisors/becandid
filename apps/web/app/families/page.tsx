@@ -51,7 +51,7 @@ export default function FamiliesPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-outline-variant/30">
         <div className="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/">
-            <img src="/logo.png" alt="Be Candid" className="h-8 w-auto" />
+            <img src="/logo.png" alt="Be Candid" className="h-12 w-auto" />
           </Link>
           <div className="flex items-center gap-4">
             <Link

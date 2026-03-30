@@ -49,7 +49,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
       {/* Logo */}
       <div className="px-5 pt-6 pb-5">
         <div className="flex items-center gap-2.5">
-          <img src="/logo.png" alt="Be Candid" className="h-9 w-auto" />
+          <img src="/logo.png" alt="Be Candid" className="h-12 w-auto" />
         </div>
       </div>
 

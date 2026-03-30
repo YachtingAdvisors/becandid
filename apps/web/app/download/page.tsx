@@ -61,8 +61,7 @@ export default function DownloadPage() {
         <nav className="flex justify-between items-center px-6 lg:px-12 py-6 max-w-screen-2xl mx-auto">
           <Link href="/" className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="w-8 h-8 object-contain" />
-            <span className="text-2xl font-bold text-primary tracking-tighter">Be Candid</span>
+            <img src="/logo.png" alt="Be Candid" className="w-14 h-14 object-contain" />
           </Link>
           <div className="hidden md:flex items-center gap-10 font-body text-base tracking-tight">
             <Link href="/#features" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Features</Link>

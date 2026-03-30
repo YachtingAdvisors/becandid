@@ -17,7 +17,7 @@ export default function GuardianLayout({
               &larr; Dashboard
             </Link>
             <span className="text-outline-variant">|</span>
-            <img src="/logo.png" alt="Be Candid" className="h-8 w-auto" />
+            <img src="/logo.png" alt="Be Candid" className="h-12 w-auto" />
             <span className="text-sm text-on-surface-variant font-label">
               &mdash; Guardian Dashboard
             </span>
