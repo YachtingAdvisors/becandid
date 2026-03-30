@@ -3,7 +3,7 @@ import Link from 'next/link';
 const FEATURES = [
   {
     icon: 'chat_bubble',
-    title: 'Stress-Tested Conversation Guides',
+    title: 'Conversation Guides and Ice Breakers',
     desc: 'Designed by neurologists and mental health therapists. Evidence-based prompts for difficult but necessary digital discussions.',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDK75pW4vwBoIKZKqRfXv5nNixz53H86_XDRAM5lFE_qLDRDA_0EaBcExFNNcW2diDMzW7oHfniK5vT0VoDh8ORn6nDCr0bAoTYjdXoKn1JXHixWNHCN-flYfPlrnxYxeG5Q-eArpggt6kseUMEvlK-J3dB7Rfp0Tns9F2koKnKe904q18HbSiSBZrD9zSh5xQev-Mj2Rmdv4u19VE3ebdtEcecyMf1yeEMgGXxigV2uEAzs-KrJzjcwbLwiRFVLZnLuTzU2HNOJQcX',
     alt: 'Glowing geometric nodes connected by light strands representing AI dialogue',
