@@ -9,7 +9,7 @@ export default function DashboardError({
 }) {
   return (
     <div className="max-w-2xl mx-auto py-16 text-center">
-      <div className="text-5xl mb-4">⚠️</div>
+      <span className="material-symbols-outlined text-5xl mb-4">warning</span>
       <h2 className="font-display text-2xl font-semibold text-ink mb-3">
         Something went wrong
       </h2>

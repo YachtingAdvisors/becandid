@@ -8,18 +8,18 @@ type UserMood = 'great' | 'good' | 'okay' | 'struggling' | 'crisis';
 type PartnerMood = 'confident' | 'hopeful' | 'concerned' | 'worried';
 
 const USER_MOODS: { value: UserMood; emoji: string; label: string; desc: string }[] = [
-  { value: 'great',      emoji: '🌟', label: 'Great',      desc: 'Feeling strong and focused' },
-  { value: 'good',       emoji: '✅', label: 'Good',       desc: 'Steady and on track' },
-  { value: 'okay',       emoji: '😐', label: 'Okay',       desc: 'Managing, but could be better' },
-  { value: 'struggling', emoji: '💭', label: 'Struggling', desc: 'Having a tough time' },
-  { value: 'crisis',     emoji: '🆘', label: 'Crisis',     desc: 'Need immediate support' },
+  { value: 'great',      emoji: 'star', label: 'Great',      desc: 'Feeling strong and focused' },
+  { value: 'good',       emoji: 'check_circle', label: 'Good',       desc: 'Steady and on track' },
+  { value: 'okay',       emoji: 'sentiment_neutral', label: 'Okay',       desc: 'Managing, but could be better' },
+  { value: 'struggling', emoji: 'chat_bubble', label: 'Struggling', desc: 'Having a tough time' },
+  { value: 'crisis',     emoji: 'emergency', label: 'Crisis',     desc: 'Need immediate support' },
 ];
 
 const PARTNER_MOODS: { value: PartnerMood; emoji: string; label: string; desc: string }[] = [
-  { value: 'confident', emoji: '💪', label: 'Confident', desc: 'They seem to be doing well' },
-  { value: 'hopeful',   emoji: '🌱', label: 'Hopeful',   desc: 'Making progress, still growing' },
-  { value: 'concerned', emoji: '🤔', label: 'Concerned', desc: 'Something feels off' },
-  { value: 'worried',   emoji: '😟', label: 'Worried',   desc: 'I think they need more support' },
+  { value: 'confident', emoji: 'fitness_center', label: 'Confident', desc: 'They seem to be doing well' },
+  { value: 'hopeful',   emoji: 'eco', label: 'Hopeful',   desc: 'Making progress, still growing' },
+  { value: 'concerned', emoji: 'help', label: 'Concerned', desc: 'Something feels off' },
+  { value: 'worried',   emoji: 'sentiment_worried', label: 'Worried',   desc: 'I think they need more support' },
 ];
 
 interface CheckInData {
@@ -125,7 +125,7 @@ export default function CheckInResponsePage() {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center px-4">
         <div className="card p-8 text-center max-w-sm">
-          <div className="text-4xl mb-4">😕</div>
+          <span className="material-symbols-outlined text-4xl mb-4">sentiment_dissatisfied</span>
           <h2 className="font-display text-xl font-semibold text-ink mb-2">Something's Wrong</h2>
           <p className="text-sm text-ink-muted mb-6">{error}</p>
           <a href="/auth/signin" className="btn-primary">Sign In</a>
@@ -139,7 +139,7 @@ export default function CheckInResponsePage() {
       <div className="min-h-screen bg-surface flex items-center justify-center px-4">
         <div className="card p-10 text-center max-w-sm stagger">
           <div className="text-5xl mb-4">
-            {selectedMood === 'crisis' || selectedMood === 'struggling' ? '💙' : '✅'}
+            {selectedMood === 'crisis' || selectedMood === 'struggling' ? <span className="material-symbols-outlined text-blue-400">favorite</span> : <span className="material-symbols-outlined text-emerald-500">check_circle</span>}
           </div>
           <h2 className="font-display text-2xl font-semibold text-ink mb-3">
             {selectedMood === 'crisis' ? 'Thanks for being honest.'
@@ -165,7 +165,7 @@ export default function CheckInResponsePage() {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center px-4">
         <div className="card p-10 text-center max-w-sm">
-          <div className="text-5xl mb-4">✅</div>
+          <span className="material-symbols-outlined text-5xl mb-4 text-emerald-500">check_circle</span>
           <h2 className="font-display text-xl font-semibold text-ink mb-3">Already Confirmed</h2>
           <p className="text-sm text-ink-muted mb-6">
             {checkIn?.status === 'completed'
@@ -207,7 +207,7 @@ export default function CheckInResponsePage() {
                     : 'border-surface-border hover:border-brand-200'
                 }`}
               >
-                <span className="text-2xl">{m.emoji}</span>
+                <span className="material-symbols-outlined text-2xl">{m.emoji}</span>
                 <div>
                   <div className="text-sm font-semibold text-ink">{m.label}</div>
                   <div className="text-xs text-ink-muted">{m.desc}</div>

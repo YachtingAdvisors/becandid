@@ -8,11 +8,11 @@ interface PartnerNavProps {
 }
 
 const NAV_ITEMS = [
-  { href: '/partner',              label: 'Overview', icon: '◉' },
-  { href: '/partner/focus',        label: 'Focus',    icon: '🎯' },
-  { href: '/partner/checkins',     label: 'Check-ins', icon: '📋' },
-  { href: '/partner/conversations', label: 'Convos',   icon: '💬' },
-  { href: '/partner/encourage',    label: 'Encourage', icon: '💪' },
+  { href: '/partner',              label: 'Overview', icon: 'dashboard' },
+  { href: '/partner/focus',        label: 'Focus',    icon: 'center_focus_strong' },
+  { href: '/partner/checkins',     label: 'Check-ins', icon: 'checklist' },
+  { href: '/partner/conversations', label: 'Convos',   icon: 'forum' },
+  { href: '/partner/encourage',    label: 'Encourage', icon: 'fitness_center' },
 ];
 
 export default function PartnerNav({ monitoredName }: PartnerNavProps) {
@@ -35,7 +35,7 @@ export default function PartnerNav({ monitoredName }: PartnerNavProps) {
 
           <Link href="/dashboard"
             className="px-3 py-1.5 text-xs font-medium text-ink-muted hover:text-ink hover:bg-surface-muted rounded-lg transition-colors hidden sm:inline-flex">
-            ← My Dashboard
+            <span className="material-symbols-outlined text-sm">arrow_back</span> My Dashboard
           </Link>
         </div>
 
@@ -55,7 +55,7 @@ export default function PartnerNav({ monitoredName }: PartnerNavProps) {
                     : 'border-transparent text-ink-muted hover:text-ink hover:border-gray-300'
                 }`}
               >
-                <span>{item.icon}</span>
+                <span className="material-symbols-outlined text-lg">{item.icon}</span>
                 {item.label}
               </Link>
             );

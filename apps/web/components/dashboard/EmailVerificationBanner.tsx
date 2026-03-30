@@ -34,7 +34,7 @@ export default function EmailVerificationBanner({ email }: { email: string }) {
     <div className="bg-amber-50 border-b border-amber-200 px-4 py-3">
       <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="text-lg">📧</span>
+          <span className="material-symbols-outlined text-lg">mail</span>
           <p className="text-sm text-amber-800">
             {sent
               ? `Verification email sent to ${email}. Check your inbox.`

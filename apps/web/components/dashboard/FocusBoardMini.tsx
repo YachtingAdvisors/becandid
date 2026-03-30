@@ -66,12 +66,12 @@ export default function FocusBoardMini() {
 
   const todayIcon =
     todayMorning === 'focused' && todayEvening === 'focused'
-      ? '✅'
+      ? 'check_circle'
       : todayMorning === 'pending' && todayEvening === 'pending'
-        ? '—'
+        ? 'remove'
         : todayMorning === 'focused' || todayEvening === 'focused'
-          ? '⚡'
-          : '⚠️';
+          ? 'bolt'
+          : 'warning';
 
   return (
     <Link href="/dashboard/focus" className="card p-4 hover:shadow-md transition-shadow block">
@@ -93,7 +93,7 @@ export default function FocusBoardMini() {
           <div className="text-[10px] text-ink-muted">Day Streak</div>
         </div>
         <div className="text-center flex-1">
-          <div className="text-xl">{todayIcon}</div>
+          <span className="material-symbols-outlined text-xl">{todayIcon}</span>
           <div className="text-[10px] text-ink-muted">{todayLabel}</div>
         </div>
       </div>

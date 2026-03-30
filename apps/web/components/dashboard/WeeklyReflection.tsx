@@ -48,7 +48,7 @@ export default async function WeeklyReflection({ userId }: { userId: string }) {
       <div className="bg-gradient-to-r from-violet-50 to-amber-50 px-5 py-4 border-b border-violet-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="text-lg">✨</span>
+            <span className="material-symbols-outlined text-lg">auto_awesome</span>
             <div>
               <h3 className="text-sm font-semibold text-violet-900">Weekly Reflection</h3>
               <p className="text-xs text-violet-600">{weekLabel} – {weekEndLabel} · {data.entry_count} entries</p>

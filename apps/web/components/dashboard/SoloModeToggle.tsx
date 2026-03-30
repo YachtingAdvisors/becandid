@@ -50,7 +50,7 @@ export default function SoloModeToggle() {
     <div className="card p-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <span className="text-lg">{solo ? '🧭' : '🤝'}</span>
+          <span className="material-symbols-outlined text-lg">{solo ? 'explore' : 'handshake'}</span>
           <div>
             <h3 className="text-sm font-semibold text-ink">
               {solo ? 'Solo Mode' : 'Partner Mode'}

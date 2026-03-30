@@ -22,7 +22,7 @@ interface Session {
 }
 
 const PLATFORM_ICONS: Record<string, string> = {
-  ios: '📱', android: '📱', web: '💻',
+  ios: 'phone_iphone', android: 'phone_android', web: 'computer',
 };
 
 export default function PrivacySettings() {
@@ -109,7 +109,7 @@ export default function PrivacySettings() {
       <div className="card p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
-            <span className="text-lg">🔐</span>
+            <span className="material-symbols-outlined text-lg">enhanced_encryption</span>
             <h3 className="text-sm font-semibold text-ink">Active Sessions</h3>
           </div>
           {sessions.length > 1 && (
@@ -123,7 +123,7 @@ export default function PrivacySettings() {
           {sessions.map((s, i) => (
             <div key={s.id} className="flex items-center justify-between py-2.5 px-3 rounded-lg bg-gray-50 border border-surface-border">
               <div className="flex items-center gap-3">
-                <span className="text-lg">{PLATFORM_ICONS[s.platform] || '💻'}</span>
+                <span className="material-symbols-outlined text-lg">{PLATFORM_ICONS[s.platform] || 'computer'}</span>
                 <div>
                   <p className="text-sm font-medium text-ink">{s.device}</p>
                   <p className="text-xs text-ink-muted">
@@ -149,9 +149,9 @@ export default function PrivacySettings() {
       {/* Data Retention */}
       <div className="card p-5">
         <div className="flex items-center gap-2.5 mb-3">
-          <span className="text-lg">🗓️</span>
+          <span className="material-symbols-outlined text-lg">calendar_month</span>
           <h3 className="text-sm font-semibold text-ink">Data Retention</h3>
-          {saved && <span className="text-xs text-emerald-600 font-medium">✓ Saved</span>}
+          {saved && <span className="text-xs text-emerald-600 font-medium flex items-center gap-0.5"><span className="material-symbols-outlined text-sm">check</span> Saved</span>}
         </div>
         <p className="text-xs text-ink-muted mb-4 leading-relaxed">
           Flagged events older than this will be automatically deleted. Journal entries are never auto-deleted — they're your reflection work.
@@ -175,7 +175,7 @@ export default function PrivacySettings() {
       {/* Data Export & Purge */}
       <div className="card p-5">
         <div className="flex items-center gap-2.5 mb-3">
-          <span className="text-lg">📦</span>
+          <span className="material-symbols-outlined text-lg">inventory_2</span>
           <h3 className="text-sm font-semibold text-ink">Your Data</h3>
         </div>
         <div className="space-y-2">
@@ -194,12 +194,12 @@ export default function PrivacySettings() {
               <p className="text-sm font-medium text-red-600">Delete data</p>
               <p className="text-xs text-ink-muted">Permanently remove specific data</p>
             </div>
-            <span className="text-sm text-red-400">{showPurge ? '▾' : '▸'}</span>
+            <span className="material-symbols-outlined text-sm text-red-400">{showPurge ? 'expand_more' : 'chevron_right'}</span>
           </button>
 
           {showPurge && (
             <div className="p-3 rounded-lg bg-red-50 border border-red-100 space-y-2">
-              <p className="text-xs text-red-600 font-medium mb-2">⚠️ These actions cannot be undone</p>
+              <p className="text-xs text-red-600 font-medium mb-2 flex items-center gap-1"><span className="material-symbols-outlined text-sm">warning</span> These actions cannot be undone</p>
               {[
                 { type: 'events', label: 'Delete all flagged events', desc: 'Removes activity history' },
                 { type: 'journal', label: 'Delete all journal entries', desc: 'Removes reflections + prompts' },

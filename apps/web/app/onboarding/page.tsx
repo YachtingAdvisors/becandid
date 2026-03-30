@@ -211,7 +211,7 @@ export default function OnboardingPage() {
 
               {stringerStep === 0 && (
                 <p className="text-base text-on-surface-variant leading-relaxed font-body max-w-lg">
-                  Be Candid is grounded in the clinical research of Dr. Kevin Laser, psychiatrist and author of <em>Everybody Had Wings</em>, and the practical accountability framework developed by Shawn Laser, RMHCI. The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life.
+                  Be Candid is grounded in clinical research and backed by a team of psychiatrists and mental health counselors. The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life.
                 </p>
               )}
 

@@ -49,7 +49,7 @@ export default function CheckInMini() {
       {actionNeeded.length > 0 ? (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-lg flex-shrink-0">
-            📋
+            <span className="material-symbols-outlined">checklist</span>
           </div>
           <div className="flex-1">
             <div className="text-sm font-medium text-ink">
@@ -66,7 +66,7 @@ export default function CheckInMini() {
       ) : (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-lg flex-shrink-0">
-            ✅
+            <span className="material-symbols-outlined">check_circle</span>
           </div>
           <div className="flex-1">
             <div className="text-sm font-medium text-ink">All caught up</div>

@@ -3,19 +3,19 @@
 import { useState } from 'react';
 
 const PARTNER_SEES = [
-  { icon: '⚡', text: 'That a flag was triggered', detail: 'They see the category (e.g. "Social Media") and severity — not what you were looking at.' },
-  { icon: '🕐', text: 'When it happened', detail: 'Date and time. No URLs, no screenshots, no browsing history.' },
-  { icon: '🤖', text: 'An AI conversation guide', detail: 'Claude generates a guide for how to have a meaningful conversation with you — grounded in Motivational Interviewing, focused on clarity and alignment.' },
-  { icon: '📊', text: 'Your focus streak', detail: 'How many days in a row you\'ve been focused. Streaks reset on a flag but start rebuilding immediately.' },
-  { icon: '📓', text: 'That you journaled (not what you wrote)', detail: 'They see "3 journal entries this week" — never the content. Your reflections are private.' },
+  { icon: 'flag', text: 'That a flag was triggered', detail: 'They see the category (e.g. "Social Media") and severity — not what you were looking at.' },
+  { icon: 'schedule', text: 'When it happened', detail: 'Date and time. No URLs, no screenshots, no browsing history.' },
+  { icon: 'smart_toy', text: 'An AI conversation guide', detail: 'Claude generates a guide for how to have a meaningful conversation with you — grounded in Motivational Interviewing, focused on clarity and alignment.' },
+  { icon: 'trending_up', text: 'Your focus streak', detail: 'How many days in a row you\'ve been focused. Streaks reset on a flag but start rebuilding immediately.' },
+  { icon: 'edit_note', text: 'That you journaled (not what you wrote)', detail: 'They see "3 journal entries this week" — never the content. Your reflections are private.' },
 ];
 
 const PARTNER_NEVER_SEES = [
-  { icon: '🔒', text: 'URLs or websites visited' },
-  { icon: '🔒', text: 'Screenshots or screen recordings' },
-  { icon: '🔒', text: 'Your journal entries or reflections' },
-  { icon: '🔒', text: 'Your mood or check-in responses' },
-  { icon: '🔒', text: 'Content of push notifications you receive' },
+  { icon: 'lock', text: 'URLs or websites visited' },
+  { icon: 'lock', text: 'Screenshots or screen recordings' },
+  { icon: 'lock', text: 'Your journal entries or reflections' },
+  { icon: 'lock', text: 'Your mood or check-in responses' },
+  { icon: 'lock', text: 'Content of push notifications you receive' },
 ];
 
 export default function PartnerPreview({
@@ -65,7 +65,7 @@ export default function PartnerPreview({
           {PARTNER_SEES.map((item, i) => (
             <div key={i} className="p-3.5 rounded-2xl bg-surface-container-lowest border border-outline-variant">
               <div className="flex items-center gap-3 mb-1">
-                <span className="text-base">{item.icon}</span>
+                <span className="material-symbols-outlined text-lg">{item.icon}</span>
                 <p className="text-sm font-medium text-on-surface font-label">{item.text}</p>
               </div>
               <p className="text-xs text-on-surface-variant leading-relaxed pl-8 font-body">{item.detail}</p>
@@ -78,7 +78,7 @@ export default function PartnerPreview({
         <div className="space-y-2">
           {PARTNER_NEVER_SEES.map((item, i) => (
             <div key={i} className="flex items-center gap-3 p-3.5 rounded-2xl bg-primary-container/30 border border-primary/10">
-              <span className="text-base">{item.icon}</span>
+              <span className="material-symbols-outlined text-lg">{item.icon}</span>
               <p className="text-sm font-medium text-on-surface font-label">{item.text}</p>
             </div>
           ))}

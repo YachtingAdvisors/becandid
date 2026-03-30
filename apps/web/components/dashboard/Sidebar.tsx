@@ -29,10 +29,10 @@ interface SidebarProps {
 
 // Bottom nav tabs for mobile
 const MOBILE_TABS_ALL = [
-  { id: 'overview', href: '/dashboard', label: 'Dashboard', icon: '\u25C9', solo: true },
-  { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: '\u26A1', solo: true },
-  { id: 'partner', href: '/dashboard/partner', label: 'Partners', icon: '\uD83E\uDD1D', solo: false },
-  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Journal', icon: '\uD83D\uDCD3', solo: true },
+  { id: 'overview', href: '/dashboard', label: 'Dashboard', icon: 'dashboard', solo: true },
+  { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: 'timeline', solo: true },
+  { id: 'partner', href: '/dashboard/partner', label: 'Partners', icon: 'handshake', solo: false },
+  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Journal', icon: 'edit_note', solo: true },
 ];
 
 export default function Sidebar({ userName, monitoringEnabled, navItems, soloMode }: SidebarProps) {
@@ -63,7 +63,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
         )}
         {soloMode && (
           <div className="px-3 py-2 rounded-2xl bg-tertiary-container/40 flex items-center gap-2">
-            <span className="text-xs">{'\uD83E\uDDED'}</span>
+            <span className="material-symbols-outlined text-xs">explore</span>
             <span className="text-xs text-on-tertiary-container font-label font-medium">Solo mode</span>
           </div>
         )}
@@ -82,7 +82,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
                 : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
             }`}
           >
-            <span className="text-base w-5 text-center">{item.icon}</span>
+            <span className="material-symbols-outlined text-lg w-5 text-center">{item.icon}</span>
             <span className="font-body">{item.label}</span>
           </Link>
         ))}
@@ -98,7 +98,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
                 : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
             }`}
           >
-            <span className="text-base w-5 text-center">{'\u23F1\uFE0F'}</span>
+            <span className="material-symbols-outlined text-lg w-5 text-center">timer</span>
             <span className="font-body">Screen Time</span>
           </Link>
           <Link
@@ -110,7 +110,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
                 : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
             }`}
           >
-            <span className="text-base w-5 text-center">{'\uD83D\uDEE1\uFE0F'}</span>
+            <span className="material-symbols-outlined text-lg w-5 text-center">filter_alt</span>
             <span className="font-body">Content Filter</span>
           </Link>
         </div>
@@ -126,7 +126,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
                 : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
             }`}
           >
-            <span className="text-base w-5 text-center">{'\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67'}</span>
+            <span className="material-symbols-outlined text-lg w-5 text-center">supervisor_account</span>
             <span className="font-body">Guardian</span>
           </Link>
         </div>
@@ -139,7 +139,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
           onClick={() => setOpen(false)}
           className="flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium text-tertiary hover:bg-tertiary-container/20 transition-colors"
         >
-          <span className="text-base w-5 text-center">{'\u2728'}</span>
+          <span className="material-symbols-outlined text-lg w-5 text-center">auto_awesome</span>
           <span className="font-body">Upgrade Plan</span>
         </Link>
       </div>
@@ -181,7 +181,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
             <button onClick={() => setOpen(false)}
               aria-label="Close menu"
               className="absolute top-4 right-4 w-8 h-8 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container">
-              {'\u2715'}
+              <span className="material-symbols-outlined text-lg">close</span>
             </button>
             {sidebarContent}
           </aside>
@@ -203,7 +203,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
                     : 'text-on-surface-variant hover:text-primary'
                 }`}
               >
-                <span className="text-lg">{tab.icon}</span>
+                <span className="material-symbols-outlined text-lg">{tab.icon}</span>
                 <span className="text-[10px] font-label font-medium">{tab.label}</span>
               </Link>
             );

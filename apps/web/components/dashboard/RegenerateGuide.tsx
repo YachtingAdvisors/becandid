@@ -48,7 +48,7 @@ export default function RegenerateGuide({ alertId }: RegenerateGuideProps) {
             Regenerating…
           </>
         ) : (
-          <>🔄 Regenerate Guide</>
+          <><span className="material-symbols-outlined text-sm align-middle">refresh</span> Regenerate Guide</>
         )}
       </button>
       {error && (

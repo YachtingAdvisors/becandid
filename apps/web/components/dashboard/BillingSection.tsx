@@ -109,7 +109,7 @@ export default function BillingSection() {
         </div>
         <div className="px-3 py-2 rounded-xl bg-surface-muted">
           <div className="text-xs text-ink-muted">Pattern Detection</div>
-          <div className="font-semibold text-ink">{billing.limits.patternDetection ? '✅ Active' : '❌ Pro only'}</div>
+          <div className="font-semibold text-ink">{billing.limits.patternDetection ? <><span className="material-symbols-outlined text-sm text-emerald-500 align-middle">check_circle</span> Active</> : <><span className="material-symbols-outlined text-sm text-red-500 align-middle">cancel</span> Pro only</>}</div>
         </div>
       </div>
 

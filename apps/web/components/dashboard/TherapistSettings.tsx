@@ -96,7 +96,7 @@ export default function TherapistSettings() {
     <div className="card p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
-          <span className="text-lg">🩺</span>
+          <span className="material-symbols-outlined text-lg">medical_services</span>
           <h3 className="text-sm font-semibold text-ink">Therapist Access</h3>
         </div>
         {connections.length < 3 && (
@@ -180,7 +180,7 @@ export default function TherapistSettings() {
             <p className="text-sm text-amber-800">{conn.therapist_name || conn.therapist_email}</p>
             <p className="text-xs text-amber-600">Invite pending</p>
           </div>
-          <span className="text-xs text-amber-500">⏳</span>
+          <span className="material-symbols-outlined text-xs text-amber-500">hourglass_empty</span>
         </div>
       ))}
 

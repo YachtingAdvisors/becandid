@@ -31,25 +31,25 @@ interface StatsData {
 
 // ─── Constants ────────────────────────────────────────────────
 const MILESTONE_LABELS: Record<string, { label: string; icon: string }> = {
-  focused_segments_10:  { label: '10 Focused Segments',   icon: '🌱' },
-  focused_segments_25:  { label: '25 Focused Segments',   icon: '🌿' },
-  focused_segments_50:  { label: '50 Focused Segments',   icon: '🌳' },
-  focused_segments_100: { label: '100 Focused Segments',  icon: '🏔️' },
-  full_days_7:          { label: '7 Full Focused Days',    icon: '⭐' },
-  full_days_14:         { label: '14 Full Focused Days',   icon: '🌟' },
-  full_days_30:         { label: '30 Full Focused Days',   icon: '💫' },
-  full_days_60:         { label: '60 Full Focused Days',   icon: '🔥' },
-  full_days_90:         { label: '90 Full Focused Days',   icon: '👑' },
-  points_100:           { label: '100 Trust Points',       icon: '🎯' },
-  points_500:           { label: '500 Trust Points',       icon: '💎' },
-  points_1000:          { label: '1,000 Trust Points',     icon: '🏆' },
-  points_5000:          { label: '5,000 Trust Points',     icon: '🦁' },
-  conversations_5:      { label: '5 Conversations',        icon: '💬' },
-  conversations_10:     { label: '10 Conversations',       icon: '🤝' },
-  conversations_25:     { label: '25 Conversations',       icon: '❤️' },
-  streak_7:             { label: '7-Day Streak',           icon: '🔥' },
-  streak_30:            { label: '30-Day Streak',          icon: '⚡' },
-  streak_90:            { label: '90-Day Streak',          icon: '🏅' },
+  focused_segments_10:  { label: '10 Focused Segments',   icon: 'eco' },
+  focused_segments_25:  { label: '25 Focused Segments',   icon: 'park' },
+  focused_segments_50:  { label: '50 Focused Segments',   icon: 'forest' },
+  focused_segments_100: { label: '100 Focused Segments',  icon: 'landscape' },
+  full_days_7:          { label: '7 Full Focused Days',    icon: 'star' },
+  full_days_14:         { label: '14 Full Focused Days',   icon: 'star_rate' },
+  full_days_30:         { label: '30 Full Focused Days',   icon: 'auto_awesome' },
+  full_days_60:         { label: '60 Full Focused Days',   icon: 'local_fire_department' },
+  full_days_90:         { label: '90 Full Focused Days',   icon: 'crown' },
+  points_100:           { label: '100 Trust Points',       icon: 'center_focus_strong' },
+  points_500:           { label: '500 Trust Points',       icon: 'diamond' },
+  points_1000:          { label: '1,000 Trust Points',     icon: 'emoji_events' },
+  points_5000:          { label: '5,000 Trust Points',     icon: 'pets' },
+  conversations_5:      { label: '5 Conversations',        icon: 'forum' },
+  conversations_10:     { label: '10 Conversations',       icon: 'handshake' },
+  conversations_25:     { label: '25 Conversations',       icon: 'favorite' },
+  streak_7:             { label: '7-Day Streak',           icon: 'local_fire_department' },
+  streak_30:            { label: '30-Day Streak',          icon: 'bolt' },
+  streak_90:            { label: '90-Day Streak',          icon: 'military_tech' },
 };
 
 const ACTION_LABELS: Record<string, string> = {
@@ -162,10 +162,10 @@ export default function FocusBoard() {
             {today?.morning === 'pending' && today?.evening === 'pending'
               ? '—'
               : todayFocusedCount === 2
-                ? '✅'
+                ? <span className="material-symbols-outlined text-emerald-500">check_circle</span>
                 : todayFocusedCount === 1
-                  ? '⚡'
-                  : '⚠️'}
+                  ? <span className="material-symbols-outlined text-amber-500">bolt</span>
+                  : <span className="material-symbols-outlined text-red-500">warning</span>}
           </div>
           <div className="text-xs text-ink-muted mt-0.5">
             {today?.morning === 'pending' && today?.evening === 'pending'
@@ -255,14 +255,14 @@ export default function FocusBoard() {
           </h3>
           <div className="flex flex-wrap gap-2">
             {milestones.map((m) => {
-              const info = MILESTONE_LABELS[m.milestone] || { label: m.milestone, icon: '🏅' };
+              const info = MILESTONE_LABELS[m.milestone] || { label: m.milestone, icon: 'military_tech' };
               return (
                 <div
                   key={m.milestone}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-xs font-medium text-amber-800"
                   title={`Unlocked ${new Date(m.unlocked_at).toLocaleDateString()}`}
                 >
-                  <span>{info.icon}</span>
+                  <span className="material-symbols-outlined text-base">{info.icon}</span>
                   <span>{info.label}</span>
                 </div>
               );
@@ -278,7 +278,7 @@ export default function FocusBoard() {
           className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-ink hover:bg-gray-50 transition-colors"
         >
           <span>Recent Points Activity</span>
-          <span className="text-ink-muted">{showHistory ? '▲' : '▼'}</span>
+          <span className="material-symbols-outlined text-ink-muted text-lg">{showHistory ? 'expand_less' : 'expand_more'}</span>
         </button>
 
         {showHistory && (

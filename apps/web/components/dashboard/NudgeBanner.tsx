@@ -11,9 +11,9 @@ interface Nudge {
 }
 
 const SEVERITY_STYLES = {
-  info:    { bg: 'bg-blue-50',   border: 'border-blue-200',   icon: '💡', text: 'text-blue-800' },
-  warning: { bg: 'bg-amber-50',  border: 'border-amber-200',  icon: '⚠️', text: 'text-amber-800' },
-  urgent:  { bg: 'bg-red-50',    border: 'border-red-200',    icon: '🚨', text: 'text-red-800' },
+  info:    { bg: 'bg-blue-50',   border: 'border-blue-200',   icon: 'lightbulb', text: 'text-blue-800' },
+  warning: { bg: 'bg-amber-50',  border: 'border-amber-200',  icon: 'warning', text: 'text-amber-800' },
+  urgent:  { bg: 'bg-red-50',    border: 'border-red-200',    icon: 'crisis_alert', text: 'text-red-800' },
 };
 
 export default function NudgeBanner() {
@@ -43,13 +43,13 @@ export default function NudgeBanner() {
         const style = SEVERITY_STYLES[nudge.severity];
         return (
           <div key={nudge.id} className={`${style.bg} ${style.border} border rounded-2xl px-4 py-3 flex items-start gap-3`}>
-            <span className="text-lg flex-shrink-0 mt-0.5">{style.icon}</span>
+            <span className="material-symbols-outlined text-lg flex-shrink-0 mt-0.5">{style.icon}</span>
             <p className={`text-sm ${style.text} flex-1 leading-relaxed`}>{nudge.message}</p>
             <button
               onClick={() => dismiss(nudge.id)}
               className="text-ink-muted hover:text-ink text-xs font-medium flex-shrink-0 mt-0.5"
             >
-              ✕
+              <span className="material-symbols-outlined text-sm">close</span>
             </button>
           </div>
         );

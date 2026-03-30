@@ -22,18 +22,18 @@
 import { useState, useEffect } from 'react';
 
 const FEELINGS = [
-  { value: 'hurt', emoji: '💔', label: 'Hurt' },
-  { value: 'angry', emoji: '😤', label: 'Angry' },
-  { value: 'numb', emoji: '😶', label: 'Numb' },
-  { value: 'anxious', emoji: '😰', label: 'Anxious' },
-  { value: 'hopeful', emoji: '🌱', label: 'Hopeful' },
-  { value: 'exhausted', emoji: '😫', label: 'Exhausted' },
-  { value: 'betrayed', emoji: '💔', label: 'Betrayed' },
-  { value: 'lonely', emoji: '😔', label: 'Lonely' },
-  { value: 'determined', emoji: '💪', label: 'Determined' },
-  { value: 'loved', emoji: '❤️', label: 'Loved' },
-  { value: 'confused', emoji: '😕', label: 'Confused' },
-  { value: 'healing', emoji: '🩹', label: 'Healing' },
+  { value: 'hurt', emoji: 'heart_broken', label: 'Hurt' },
+  { value: 'angry', emoji: 'sentiment_very_dissatisfied', label: 'Angry' },
+  { value: 'numb', emoji: 'sentiment_neutral', label: 'Numb' },
+  { value: 'anxious', emoji: 'psychology_alt', label: 'Anxious' },
+  { value: 'hopeful', emoji: 'eco', label: 'Hopeful' },
+  { value: 'exhausted', emoji: 'bedtime', label: 'Exhausted' },
+  { value: 'betrayed', emoji: 'heart_broken', label: 'Betrayed' },
+  { value: 'lonely', emoji: 'sentiment_dissatisfied', label: 'Lonely' },
+  { value: 'determined', emoji: 'fitness_center', label: 'Determined' },
+  { value: 'loved', emoji: 'favorite', label: 'Loved' },
+  { value: 'confused', emoji: 'help', label: 'Confused' },
+  { value: 'healing', emoji: 'healing', label: 'Healing' },
 ];
 
 const CONTENDER_TITLES = [
@@ -110,7 +110,7 @@ export default function CommittedContender() {
       {/* Contender identity card */}
       <div className="card p-0 overflow-hidden">
         <div className="bg-gradient-to-r from-rose-50 via-violet-50 to-amber-50 px-5 py-6 text-center">
-          <div className="text-3xl mb-2">{contenderLevel >= 3 ? '⚔️' : contenderLevel >= 2 ? '💪' : contenderLevel >= 1 ? '🌱' : '🤲'}</div>
+          <span className="material-symbols-outlined text-3xl mb-2">{contenderLevel >= 3 ? 'swords' : contenderLevel >= 2 ? 'fitness_center' : contenderLevel >= 1 ? 'eco' : 'volunteer_activism'}</span>
           <h2 className="text-lg font-display font-semibold text-ink mb-1">{contender.title}</h2>
           <p className="text-sm text-ink-muted">{contender.subtitle}</p>
         </div>
@@ -129,13 +129,13 @@ export default function CommittedContender() {
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
         <a href="/partner/journal" className="card p-4 text-center hover:border-brand/30 transition-colors">
-          <span className="text-2xl block mb-1">📓</span>
+          <span className="material-symbols-outlined text-2xl block mb-1">edit_note</span>
           <p className="text-sm font-medium text-ink">My Journal</p>
           <p className="text-xs text-ink-muted">{journalCount} entries</p>
         </a>
         <button onClick={() => setShowImpact(!showImpact)}
           className="card p-4 text-center hover:border-brand/30 transition-colors w-full">
-          <span className="text-2xl block mb-1">💛</span>
+          <span className="material-symbols-outlined text-2xl block mb-1">volunteer_activism</span>
           <p className="text-sm font-medium text-ink">Impact Check-in</p>
           <p className="text-xs text-ink-muted">How am I doing?</p>
         </button>
@@ -159,7 +159,7 @@ export default function CommittedContender() {
                       ? 'bg-brand/10 text-brand border border-brand/30'
                       : 'bg-gray-50 text-ink-muted border border-transparent hover:bg-gray-100'
                   }`}>
-                  {f.emoji} {f.label}
+                  <span className="material-symbols-outlined text-sm">{f.emoji}</span> {f.label}
                 </button>
               ))}
             </div>
@@ -240,7 +240,7 @@ export default function CommittedContender() {
             className={`w-full py-2.5 text-sm font-medium rounded-lg transition-all ${
               saved ? 'bg-emerald-500 text-white' : 'bg-brand text-white hover:bg-brand-dark disabled:opacity-50'
             }`}>
-            {saved ? '✓ Saved' : saving ? 'Saving…' : 'Submit Check-in'}
+            {saved ? <><span className="material-symbols-outlined text-sm align-middle">check</span> Saved</> : saving ? 'Saving...' : 'Submit Check-in'}
           </button>
         </div>
       )}
@@ -270,7 +270,7 @@ export default function CommittedContender() {
       {/* Journal encouragement */}
       <div className="card p-4 bg-gradient-to-r from-violet-50 to-rose-50 border-violet-100">
         <div className="flex items-center gap-3">
-          <span className="text-xl">📓</span>
+          <span className="material-symbols-outlined text-xl">edit_note</span>
           <div className="flex-1">
             <p className="text-sm font-medium text-ink">Your journal is your space</p>
             <p className="text-xs text-ink-muted mt-0.5">

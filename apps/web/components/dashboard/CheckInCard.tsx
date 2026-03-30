@@ -30,18 +30,18 @@ interface CheckInCardProps {
 // ─── Mood Options ─────────────────────────────────────────────
 
 const USER_MOODS: { value: UserMood; emoji: string; label: string }[] = [
-  { value: 'great',      emoji: '🌟', label: 'Great' },
-  { value: 'good',       emoji: '✅', label: 'Good' },
-  { value: 'okay',       emoji: '😐', label: 'Okay' },
-  { value: 'struggling', emoji: '💭', label: 'Struggling' },
-  { value: 'crisis',     emoji: '🆘', label: 'Crisis' },
+  { value: 'great',      emoji: 'star', label: 'Great' },
+  { value: 'good',       emoji: 'check_circle', label: 'Good' },
+  { value: 'okay',       emoji: 'sentiment_neutral', label: 'Okay' },
+  { value: 'struggling', emoji: 'chat_bubble', label: 'Struggling' },
+  { value: 'crisis',     emoji: 'emergency', label: 'Crisis' },
 ];
 
 const PARTNER_MOODS: { value: PartnerMood; emoji: string; label: string }[] = [
-  { value: 'confident', emoji: '💪', label: 'Confident' },
-  { value: 'hopeful',   emoji: '🌱', label: 'Hopeful' },
-  { value: 'concerned', emoji: '🤔', label: 'Concerned' },
-  { value: 'worried',   emoji: '😟', label: 'Worried' },
+  { value: 'confident', emoji: 'fitness_center', label: 'Confident' },
+  { value: 'hopeful',   emoji: 'eco', label: 'Hopeful' },
+  { value: 'concerned', emoji: 'help', label: 'Concerned' },
+  { value: 'worried',   emoji: 'sentiment_worried', label: 'Worried' },
 ];
 
 const STATUS_CONFIG = {
@@ -155,7 +155,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
               ? 'bg-emerald-100 text-emerald-700'
               : 'bg-gray-100 text-gray-500'
           }`}>
-            {userDone ? '✓' : '○'} You{role === 'partner' ? 'r partner' : ''}
+            {userDone ? <span className="material-symbols-outlined text-sm">check</span> : <span className="material-symbols-outlined text-sm">radio_button_unchecked</span>} You{role === 'partner' ? 'r partner' : ''}
             {userDone && checkIn.user_mood && (
               <span className="ml-0.5">
                 {USER_MOODS.find(m => m.value === checkIn.user_mood)?.emoji}
@@ -174,7 +174,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
               ? 'bg-emerald-100 text-emerald-700'
               : 'bg-gray-100 text-gray-500'
           }`}>
-            {partnerDone ? '✓' : '○'} {role === 'user' ? (partnerName ?? 'Partner') : 'You'}
+            {partnerDone ? <span className="material-symbols-outlined text-sm">check</span> : <span className="material-symbols-outlined text-sm">radio_button_unchecked</span>} {role === 'user' ? (partnerName ?? 'Partner') : 'You'}
             {partnerDone && checkIn.partner_mood && (
               <span className="ml-0.5">
                 {PARTNER_MOODS.find(m => m.value === checkIn.partner_mood)?.emoji}
@@ -203,7 +203,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
                     : 'border-transparent bg-white hover:border-brand-200'
                 }`}
               >
-                <span className="text-lg">{m.emoji}</span>
+                <span className="material-symbols-outlined text-lg">{m.emoji}</span>
                 <span className="text-[10px] font-medium text-ink-muted">{m.label}</span>
               </button>
             ))}
@@ -236,7 +236,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
       {alreadyConfirmed && checkIn.status !== 'completed' && (
         <div className="px-4 pb-3 pt-2 border-t border-surface-border/50">
           <p className="text-xs text-ink-muted text-center">
-            ✓ You've confirmed. Waiting for {role === 'user' ? (partnerName ?? 'your partner') : 'them'} to complete their side.
+            <span className="material-symbols-outlined text-sm align-middle">check</span> You've confirmed. Waiting for {role === 'user' ? (partnerName ?? 'your partner') : 'them'} to complete their side.
           </p>
         </div>
       )}
@@ -245,7 +245,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
       {checkIn.status === 'completed' && (
         <div className="px-4 pb-3 pt-2 border-t border-emerald-200/50">
           <p className="text-xs text-emerald-700 text-center font-medium">
-            ✓ Both confirmed — check-in complete! +5 trust points each
+            <span className="material-symbols-outlined text-sm align-middle">check</span> Both confirmed — check-in complete! +5 trust points each
           </p>
         </div>
       )}

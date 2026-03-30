@@ -1,9 +1,9 @@
 'use client';
 
 import {
-  CATEGORY_GROUPS,
+  GOAL_LABELS,
+  GOAL_DESCRIPTIONS,
   type GoalCategory,
-  type CategoryGroup,
 } from '@be-candid/shared';
 
 interface GoalSelectorProps {
@@ -12,70 +12,57 @@ interface GoalSelectorProps {
   disabled?: boolean;
 }
 
-/* Material icon for each group label */
-const GROUP_ICONS: Record<string, string> = {
-  'Sexual Content': 'volcano',
-  'Compulsive Consumption': 'shopping_basket',
-  'Substances & Recovery': 'pill',
-  'Body Image & Eating Disorders': 'accessibility_new',
-  'Gambling & Financial': 'account_balance_wallet',
-  'Dating & Relationships': 'favorite',
-  'Gaming': 'sports_esports',
-  'Rage & Outrage': 'mode_comment',
-};
-
-/* Short user-facing descriptions for the bento cards */
-const GROUP_SHORT_DESC: Record<string, string> = {
-  'Sexual Content': 'Navigating digital consumption and boundaries.',
-  'Compulsive Consumption': 'Managing the urge for excessive buying or scrolling.',
-  'Substances & Recovery': 'Staying clean and maintaining sobriety goals.',
-  'Body Image & Eating Disorders': 'Developing a healthy relationship with yourself.',
-  'Gambling & Financial': 'Restoring balance to your finances and risk-taking.',
-  'Dating & Relationships': 'Cultivating meaningful connections, not just clicks.',
-  'Gaming': 'Reclaiming time from virtual worlds and loops.',
-  'Rage & Outrage': 'Breaking the cycle of reactionary digital behavior.',
-};
+/* Individual category cards with material icons */
+const CATEGORY_CARDS: { id: GoalCategory; icon: string }[] = [
+  { id: 'pornography', icon: 'visibility_off' },
+  { id: 'sexting', icon: 'chat_bubble' },
+  { id: 'social_media', icon: 'phone_android' },
+  { id: 'binge_watching', icon: 'live_tv' },
+  { id: 'impulse_shopping', icon: 'shopping_cart' },
+  { id: 'alcohol_drugs', icon: 'local_bar' },
+  { id: 'vaping_tobacco', icon: 'smoking_rooms' },
+  { id: 'eating_disorder', icon: 'restaurant' },
+  { id: 'body_checking', icon: 'accessibility_new' },
+  { id: 'gambling', icon: 'casino' },
+  { id: 'sports_betting', icon: 'sports_football' },
+  { id: 'day_trading', icon: 'trending_up' },
+  { id: 'dating_apps', icon: 'favorite' },
+  { id: 'gaming', icon: 'sports_esports' },
+  { id: 'rage_content', icon: 'mode_comment' },
+];
 
 export default function GoalSelector({ selected, onChange, disabled }: GoalSelectorProps) {
-  function toggleGroup(group: CategoryGroup) {
+  function toggleGoal(goal: GoalCategory) {
     if (disabled) return;
-    const allSelected = group.categories.every(c => selected.includes(c));
-    if (allSelected) {
-      onChange(selected.filter(g => !group.categories.includes(g)));
+    if (selected.includes(goal)) {
+      onChange(selected.filter(g => g !== goal));
     } else {
-      const newSelected = [...new Set([...selected, ...group.categories])];
-      onChange(newSelected);
+      onChange([...selected, goal]);
     }
-  }
-
-  function isGroupSelected(group: CategoryGroup): boolean {
-    return group.categories.some(c => selected.includes(c));
   }
 
   return (
     <div>
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {CATEGORY_GROUPS.map((group) => {
-          const isSelected = isGroupSelected(group);
-          const materialIcon = GROUP_ICONS[group.label] ?? 'category';
-          const shortDesc = GROUP_SHORT_DESC[group.label] ?? group.description;
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {CATEGORY_CARDS.map((cat) => {
+          const isSelected = selected.includes(cat.id);
 
           return (
             <button
-              key={group.label}
+              key={cat.id}
               type="button"
-              onClick={() => toggleGroup(group)}
+              onClick={() => toggleGoal(cat.id)}
               disabled={disabled}
-              className={`group relative flex flex-col p-6 rounded-xl text-left transition-all hover:bg-surface-container-low active:scale-[0.98] outline-none disabled:opacity-50 ${
+              className={`group relative flex flex-col p-5 rounded-xl text-left transition-all hover:bg-surface-container-low active:scale-[0.98] outline-none disabled:opacity-50 ${
                 isSelected
                   ? 'bg-primary-container/20 shadow-[0_0_0_2px_#226779]'
                   : 'bg-surface-container-lowest'
               }`}
             >
-              <div className="mb-6 flex justify-between items-start">
-                <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
-                  <span className="material-symbols-outlined text-2xl">{materialIcon}</span>
+              <div className="mb-4 flex justify-between items-start">
+                <div className="w-11 h-11 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+                  <span className="material-symbols-outlined text-xl">{cat.icon}</span>
                 </div>
                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                   isSelected ? 'border-primary' : 'border-outline-variant'
@@ -85,8 +72,8 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
                   }`} />
                 </div>
               </div>
-              <h3 className="font-headline font-bold text-lg text-on-surface mb-1">{group.label}</h3>
-              <p className="font-body text-sm text-on-surface-variant">{shortDesc}</p>
+              <h3 className="font-headline font-bold text-sm text-on-surface mb-1">{GOAL_LABELS[cat.id]}</h3>
+              <p className="font-body text-xs text-on-surface-variant leading-snug">{GOAL_DESCRIPTIONS[cat.id]}</p>
             </button>
           );
         })}
@@ -95,27 +82,20 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
       {/* Custom option */}
       <button
         type="button"
-        onClick={() => {
-          if (disabled) return;
-          if (selected.includes('custom')) {
-            onChange(selected.filter(g => g !== 'custom'));
-          } else {
-            onChange([...selected, 'custom']);
-          }
-        }}
+        onClick={() => toggleGoal('custom')}
         disabled={disabled}
-        className={`w-full mt-4 flex items-center gap-4 p-6 rounded-xl text-left transition-all hover:bg-surface-container-low active:scale-[0.98] outline-none disabled:opacity-50 ${
+        className={`w-full mt-4 flex items-center gap-4 p-5 rounded-xl text-left transition-all hover:bg-surface-container-low active:scale-[0.98] outline-none disabled:opacity-50 ${
           selected.includes('custom')
             ? 'bg-primary-container/20 shadow-[0_0_0_2px_#226779]'
             : 'bg-surface-container-lowest border-2 border-dashed border-outline-variant'
         }`}
       >
-        <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
-          <span className="material-symbols-outlined text-2xl">tune</span>
+        <div className="w-11 h-11 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+          <span className="material-symbols-outlined text-xl">tune</span>
         </div>
         <div className="flex-1">
-          <h3 className="font-headline font-bold text-lg text-on-surface">Custom</h3>
-          <p className="font-body text-sm text-on-surface-variant">Define your own category to monitor</p>
+          <h3 className="font-headline font-bold text-sm text-on-surface">Custom</h3>
+          <p className="font-body text-xs text-on-surface-variant">Define your own category to monitor</p>
         </div>
         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
           selected.includes('custom') ? 'border-primary' : 'border-outline-variant'
@@ -127,14 +107,13 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
       </button>
 
       {/* Informational prompt */}
-      <div className="mt-8 p-6 rounded-2xl bg-surface-container-low flex flex-col md:flex-row items-center gap-6">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-primary text-2xl">lightbulb</span>
+      <div className="mt-8 p-5 rounded-2xl bg-surface-container-low flex items-start gap-4">
+        <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-primary text-xl">lightbulb</span>
         </div>
         <div>
-          <p className="font-headline font-bold text-on-surface mb-1">Not sure where to start?</p>
-          <p className="text-on-surface-variant text-sm">Most members start with one or two rivals to build focus before expanding their journey. You can always add more later.</p>
+          <p className="font-headline font-bold text-on-surface text-sm mb-1">Not sure where to start?</p>
+          <p className="text-on-surface-variant text-xs leading-relaxed">Most members start with one or two rivals to build focus before expanding their journey. You can always add more later.</p>
         </div>
       </div>
 

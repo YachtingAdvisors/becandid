@@ -15,18 +15,18 @@ import EmailVerificationBanner from '@/components/dashboard/EmailVerificationBan
 
 // Nav items — some hidden in solo mode
 const NAV_ITEMS = [
-  { id: 'overview', href: '/dashboard', label: 'Overview', icon: '\u25C9', solo: true },
-  { id: 'focus', href: '/dashboard/focus', label: 'Focus Board', icon: '\uD83C\uDFAF', solo: true },
-  { id: 'checkins', href: '/dashboard/checkins', label: 'Check-ins', icon: '\u2713', solo: true },
-  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: '\uD83D\uDCD3', solo: true },
-  { id: 'journal', href: '/dashboard/journal', label: 'Growth Journal', icon: '\uD83D\uDCCA', solo: true },
-  { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: '\u26A1', solo: true },
-  { id: 'streaks', href: '/dashboard/streaks', label: 'Streaks', icon: '\uD83C\uDFC6', solo: true },
-  { id: 'badges', href: '/dashboard/badges', label: 'Badges', icon: '\uD83C\uDFC5', solo: true },
-  { id: 'notifications', href: '/dashboard/notifications', label: 'Notifications', icon: '\uD83D\uDD14', solo: true },
-  { id: 'conversations', href: '/dashboard/conversations', label: 'Conversations', icon: '\uD83D\uDCAC', solo: false },
-  { id: 'partner', href: '/dashboard/partner', label: 'Partner', icon: '\uD83E\uDD1D', solo: false },
-  { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: '\u2699', solo: true },
+  { id: 'overview', href: '/dashboard', label: 'Overview', icon: 'dashboard', solo: true },
+  { id: 'focus', href: '/dashboard/focus', label: 'Focus Board', icon: 'center_focus_strong', solo: true },
+  { id: 'checkins', href: '/dashboard/checkins', label: 'Check-ins', icon: 'check_circle', solo: true },
+  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: 'edit_note', solo: true },
+  { id: 'journal', href: '/dashboard/journal', label: 'Growth Journal', icon: 'book', solo: true },
+  { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: 'timeline', solo: true },
+  { id: 'streaks', href: '/dashboard/streaks', label: 'Streaks', icon: 'local_fire_department', solo: true },
+  { id: 'badges', href: '/dashboard/badges', label: 'Badges', icon: 'military_tech', solo: true },
+  { id: 'notifications', href: '/dashboard/notifications', label: 'Notifications', icon: 'notifications', solo: true },
+  { id: 'conversations', href: '/dashboard/conversations', label: 'Conversations', icon: 'forum', solo: false },
+  { id: 'partner', href: '/dashboard/partner', label: 'Partner', icon: 'handshake', solo: false },
+  { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: 'settings', solo: true },
 ];
 
 export default async function DashboardLayout({
@@ -62,7 +62,7 @@ export default async function DashboardLayout({
       id: 'invite-partner',
       href: '/dashboard/partner',
       label: 'Invite a Partner',
-      icon: '\u2795',
+      icon: 'person_add',
       solo: true,
     });
   }

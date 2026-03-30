@@ -19,16 +19,16 @@
 import { useState, useEffect } from 'react';
 
 const FEELING_EMOJIS: Record<string, string> = {
-  hurt: '💔', angry: '😤', numb: '😶', anxious: '😰',
-  hopeful: '🌱', exhausted: '😫', betrayed: '💔', lonely: '😔',
-  determined: '💪', loved: '❤️', confused: '😕', healing: '🩹',
+  hurt: 'heart_broken', angry: 'sentiment_very_dissatisfied', numb: 'sentiment_neutral', anxious: 'psychology_alt',
+  hopeful: 'eco', exhausted: 'bedtime', betrayed: 'heart_broken', lonely: 'sentiment_dissatisfied',
+  determined: 'fitness_center', loved: 'favorite', confused: 'help', healing: 'healing',
 };
 
 const TRUST_LABELS: Record<string, { label: string; color: string; emoji: string }> = {
-  rebuilding: { label: 'Trust rebuilding', color: 'text-emerald-600', emoji: '📈' },
-  stable: { label: 'Trust holding steady', color: 'text-amber-600', emoji: '➡️' },
-  declining: { label: 'Trust declining', color: 'text-red-600', emoji: '📉' },
-  unknown: { label: 'Not enough data yet', color: 'text-ink-muted', emoji: '—' },
+  rebuilding: { label: 'Trust rebuilding', color: 'text-emerald-600', emoji: 'trending_up' },
+  stable: { label: 'Trust holding steady', color: 'text-amber-600', emoji: 'trending_flat' },
+  declining: { label: 'Trust declining', color: 'text-red-600', emoji: 'trending_down' },
+  unknown: { label: 'Not enough data yet', color: 'text-ink-muted', emoji: 'remove' },
 };
 
 export default function SpouseImpactAwareness() {
@@ -53,7 +53,7 @@ export default function SpouseImpactAwareness() {
       {/* Header */}
       <div className="bg-gradient-to-r from-rose-50 to-amber-50 px-5 py-4 border-b border-rose-100">
         <div className="flex items-center gap-2.5">
-          <span className="text-lg">💍</span>
+          <span className="material-symbols-outlined text-lg">loyalty</span>
           <div>
             <h3 className="text-sm font-semibold text-ink">How {data.spouse_name} is doing</h3>
             <p className="text-xs text-ink-muted">Your spouse's experience matters in this journey</p>
@@ -66,7 +66,7 @@ export default function SpouseImpactAwareness() {
         <div className="flex items-center justify-between">
           <span className="text-sm text-ink">Trust trend</span>
           <span className={`text-sm font-medium ${trust.color}`}>
-            {trust.emoji} {trust.label}
+            <span className="material-symbols-outlined text-base align-middle">{trust.emoji}</span> {trust.label}
           </span>
         </div>
 
@@ -77,7 +77,7 @@ export default function SpouseImpactAwareness() {
             <div className="flex flex-wrap gap-1.5">
               {data.recent_feelings.map((feeling: string) => (
                 <span key={feeling} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-gray-50 text-ink border border-surface-border">
-                  {FEELING_EMOJIS[feeling] || '•'} {feeling}
+                  <span className="material-symbols-outlined text-sm">{FEELING_EMOJIS[feeling] || 'circle'}</span> {feeling}
                 </span>
               ))}
             </div>
@@ -116,7 +116,7 @@ export default function SpouseImpactAwareness() {
         {/* Spouse contender level */}
         {data.contender_level > 0 && (
           <div className="flex items-center gap-3 p-3 rounded-lg bg-violet-50 border border-violet-100">
-            <span className="text-xl">{data.contender_level >= 3 ? '⚔️' : data.contender_level >= 2 ? '💪' : '🌱'}</span>
+            <span className="material-symbols-outlined text-xl">{data.contender_level >= 3 ? 'swords' : data.contender_level >= 2 ? 'fitness_center' : 'eco'}</span>
             <div>
               <p className="text-xs text-violet-600 font-medium">
                 {data.spouse_name} is a Committed Contender

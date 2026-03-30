@@ -89,11 +89,11 @@ export default function JournalSettings() {
     <div className="card p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
-          <span className="text-lg">📓</span>
+          <span className="material-symbols-outlined text-lg">edit_note</span>
           <h3 className="text-sm font-semibold text-ink">Candid Journal Reminders</h3>
         </div>
         {saved && (
-          <span className="text-xs text-emerald-600 font-medium animate-fade-in">✓ Saved</span>
+          <span className="text-xs text-emerald-600 font-medium animate-fade-in flex items-center gap-0.5"><span className="material-symbols-outlined text-sm">check</span> Saved</span>
         )}
       </div>
 

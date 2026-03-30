@@ -14,9 +14,9 @@
 import { useState, useEffect } from 'react';
 
 const PLAN_DISPLAY: Record<string, { name: string; emoji: string; color: string }> = {
-  free: { name: 'Free', emoji: '🌱', color: 'text-ink-muted' },
-  pro: { name: 'Pro', emoji: '⚡', color: 'text-brand' },
-  therapy: { name: 'Therapy', emoji: '🩺', color: 'text-violet-600' },
+  free: { name: 'Free', emoji: 'eco', color: 'text-ink-muted' },
+  pro: { name: 'Pro', emoji: 'bolt', color: 'text-brand' },
+  therapy: { name: 'Therapy', emoji: 'medical_services', color: 'text-violet-600' },
 };
 
 export default function SubscriptionCard() {
@@ -71,7 +71,7 @@ export default function SubscriptionCard() {
     <div className="card p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
-          <span className="text-lg">{planInfo.emoji}</span>
+          <span className="material-symbols-outlined text-lg">{planInfo.emoji}</span>
           <div>
             <h3 className="text-sm font-semibold text-ink">Subscription</h3>
             <p className={`text-xs font-medium ${planInfo.color}`}>{planInfo.name} Plan</p>

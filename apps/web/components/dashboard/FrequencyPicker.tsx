@@ -21,11 +21,11 @@ const FREQUENCIES: CheckInFrequency[] = [
 ];
 
 const FREQUENCY_ICONS: Record<CheckInFrequency, string> = {
-  daily:         '🔥',
-  every_2_days:  '⚡',
-  every_3_days:  '📅',
-  weekly:        '📆',
-  every_2_weeks: '🗓️',
+  daily:         'local_fire_department',
+  every_2_days:  'bolt',
+  every_3_days:  'event',
+  weekly:        'date_range',
+  every_2_weeks: 'calendar_month',
 };
 
 export default function FrequencyPicker({ value, onChange, disabled }: FrequencyPickerProps) {
@@ -50,7 +50,7 @@ export default function FrequencyPicker({ value, onChange, disabled }: Frequency
                 : 'border-surface-border hover:border-brand-200'
             } disabled:opacity-50`}
           >
-            <span className="text-xl flex-shrink-0">{FREQUENCY_ICONS[freq]}</span>
+            <span className="material-symbols-outlined text-xl flex-shrink-0">{FREQUENCY_ICONS[freq]}</span>
             <div className="flex-1">
               <div className="text-sm font-semibold text-ink">{FREQUENCY_LABELS[freq]}</div>
               <div className="text-xs text-ink-muted mt-0.5">{FREQUENCY_DESCRIPTIONS[freq]}</div>
