@@ -79,13 +79,13 @@ export default function LandingPage() {
         <nav className="flex justify-between items-center px-6 lg:px-12 py-6 max-w-screen-2xl mx-auto">
           <Link href="/" className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="w-8 h-8 object-contain" />
+            <img src="/logo.png" alt="Be Candid" className="w-10 h-10 object-contain" />
             <span className="text-2xl font-bold text-primary tracking-tighter">Be Candid</span>
           </Link>
           <div className="hidden md:flex items-center gap-10 font-body text-base tracking-tight">
             <a href="#features" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Features</a>
             <Link href="/pricing" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Pricing</Link>
-            <a href="#download" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Download</a>
+            <Link href="/download" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Download</Link>
             <a href="#cta" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">About</a>
             <Link href="/families" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Families</Link>
           </div>
@@ -220,22 +220,22 @@ export default function LandingPage() {
                 Sync your journey across all devices. Your sanctuary is always within reach, whether you&apos;re at your desk or in the world.
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
-                <a href="https://apps.apple.com/app/be-candid" target="_blank" rel="noopener noreferrer"
+                <Link href="/download"
                   className="bg-on-surface text-surface px-8 py-4 rounded-xl flex items-center gap-3 hover:opacity-90 transition-opacity">
                   <MaterialIcon name="ios" className="text-3xl" />
                   <div className="text-left">
-                    <p className="text-[10px] uppercase font-label leading-none opacity-60">Download on the</p>
-                    <p className="text-lg font-bold font-headline leading-none">App Store</p>
+                    <p className="text-[10px] uppercase font-label leading-none opacity-60">Install on</p>
+                    <p className="text-lg font-bold font-headline leading-none">iPhone & iPad</p>
                   </div>
-                </a>
-                <a href="https://play.google.com/store/apps/details?id=io.becandid.app" target="_blank" rel="noopener noreferrer"
+                </Link>
+                <Link href="/download"
                   className="bg-on-surface text-surface px-8 py-4 rounded-xl flex items-center gap-3 hover:opacity-90 transition-opacity">
                   <MaterialIcon name="play_arrow" className="text-3xl" />
                   <div className="text-left">
-                    <p className="text-[10px] uppercase font-label leading-none opacity-60">Get it on</p>
-                    <p className="text-lg font-bold font-headline leading-none">Google Play</p>
+                    <p className="text-[10px] uppercase font-label leading-none opacity-60">Install on</p>
+                    <p className="text-lg font-bold font-headline leading-none">Android</p>
                   </div>
-                </a>
+                </Link>
                 <Link href="/auth/signup"
                   className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl flex items-center gap-3 border border-outline-variant/20 hover:bg-surface-variant transition-colors">
                   <MaterialIcon name="language" className="text-3xl" />
@@ -245,6 +245,9 @@ export default function LandingPage() {
                   </div>
                 </Link>
               </div>
+              <p className="font-body text-sm text-on-surface-variant opacity-70">
+                Be Candid installs as a Progressive Web App &mdash; no app store needed.
+              </p>
             </div>
             <div className="order-1 lg:order-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
