@@ -155,7 +155,7 @@ export default function OnboardingPage() {
             <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
               <div className="hidden md:block">
                 <p className="text-on-surface-variant text-sm font-label font-bold uppercase tracking-widest">Selection Active</p>
-                <p className="text-primary font-headline font-bold">
+                <p className={`font-headline font-bold ${goals.length === 0 ? 'text-on-surface-variant' : 'text-primary'}`}>
                   {goals.length === 0 ? 'No rivals selected' : `${goals.length} Rival${goals.length !== 1 ? 's' : ''} Identified`}
                 </p>
               </div>

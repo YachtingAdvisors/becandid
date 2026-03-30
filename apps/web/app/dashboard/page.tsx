@@ -260,8 +260,8 @@ export default async function DashboardPage() {
           <div className="divide-y divide-outline-variant/20">
             {events.map((event: any) => (
               <div key={event.id} className="flex items-center gap-3 px-5 py-3.5">
-                <span className="text-xl flex-shrink-0">
-                  {getCategoryEmoji(event.category as GoalCategory)}
+                <span className="material-symbols-outlined text-primary text-xl flex-shrink-0">
+                  monitoring
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-on-surface font-body">
