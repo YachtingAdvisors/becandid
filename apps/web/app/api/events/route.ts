@@ -27,6 +27,14 @@ const MAX_EVENTS_PER_HOUR = 30;
 // ── Simple per-user rate tracking ───────────────────────────
 const userEventCounts = new Map<string, { count: number; resetAt: number }>();
 
+// Periodically clean stale entries (prevent memory leak)
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, val] of userEventCounts) {
+    if (now > val.resetAt) userEventCounts.delete(key);
+  }
+}, 300_000); // every 5 min
+
 function checkUserRate(userId: string): boolean {
   const now = Date.now();
   const entry = userEventCounts.get(userId);

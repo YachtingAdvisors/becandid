@@ -33,7 +33,8 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/auth/sessions', 'Unauthorized', 401);
 
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    const ip = req.ip
+      ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
       ?? req.headers.get('x-real-ip') ?? 'unknown';
     const userAgent = req.headers.get('user-agent') ?? 'unknown';
 

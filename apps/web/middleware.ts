@@ -63,10 +63,12 @@ setInterval(() => {
 
 // ─── Timing-Safe Comparison ──────────────────────────────────
 function timingSafeEqual(a: string, b: string): boolean {
-  const maxLen = Math.max(a.length, b.length);
-  let result = a.length ^ b.length;
-  for (let i = 0; i < maxLen; i++) {
-    result |= (a.charCodeAt(i % (a.length || 1)) ?? 0) ^ (b.charCodeAt(i % (b.length || 1)) ?? 0);
+  if (a.length !== b.length) {
+    return false;
+  }
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
   return result === 0;
 }
@@ -91,7 +93,8 @@ export async function middleware(request: NextRequest) {
 
   // ── 1. IP rate limit on all API requests ────────────────
   if (pathname.startsWith('/api/')) {
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    const ip = request.ip
+      ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
       ?? request.headers.get('x-real-ip')
       ?? 'unknown';
 
@@ -226,7 +229,7 @@ export async function middleware(request: NextRequest) {
         method: 'POST',
         headers: {
           cookie: request.headers.get('cookie') ?? '',
-          'x-forwarded-for': request.headers.get('x-forwarded-for') ?? '',
+          'x-forwarded-for': request.ip ?? request.headers.get('x-forwarded-for') ?? '',
           'user-agent': request.headers.get('user-agent') ?? '',
         },
       }).catch(() => {});
