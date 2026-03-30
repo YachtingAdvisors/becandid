@@ -89,9 +89,14 @@ export default function LandingPage() {
             <a href="#cta" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">About</a>
             <Link href="/families" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Families</Link>
           </div>
-          <Link href="/auth/signup" className="px-8 py-3 bg-primary text-on-primary rounded-full font-label text-sm font-semibold tracking-wide hover:brightness-110 active:scale-95 transition-all">
-            Get Started
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/auth/signin" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 font-label text-sm font-semibold">
+              Log in
+            </Link>
+            <Link href="/auth/signup" className="px-8 py-3 bg-primary text-on-primary rounded-full font-label text-sm font-semibold tracking-wide hover:brightness-110 active:scale-95 transition-all">
+              Get Started
+            </Link>
+          </div>
         </nav>
       </header>
 
