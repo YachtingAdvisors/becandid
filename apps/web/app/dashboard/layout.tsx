@@ -20,7 +20,6 @@ const NAV_ITEMS = [
   { id: 'focus', href: '/dashboard/focus', label: 'Focus Board', icon: 'center_focus_strong', solo: true },
   { id: 'checkins', href: '/dashboard/checkins', label: 'Check-ins', icon: 'check_circle', solo: true },
   { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: 'edit_note', solo: true },
-  { id: 'journal', href: '/dashboard/journal', label: 'Growth Journal', icon: 'book', solo: true },
   { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: 'timeline', solo: true },
   { id: 'streaks', href: '/dashboard/streaks', label: 'Streaks', icon: 'local_fire_department', solo: true },
   { id: 'badges', href: '/dashboard/badges', label: 'Badges', icon: 'military_tech', solo: true },

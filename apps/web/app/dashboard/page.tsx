@@ -11,6 +11,7 @@ import ScreenTimeCard from '@/components/dashboard/ScreenTimeCard';
 import ContentFilterStatus from '@/components/dashboard/ContentFilterStatus';
 import WalkthroughWrapper from '@/components/dashboard/WalkthroughWrapper';
 import QuickMoodCheckin from '@/components/dashboard/QuickMoodCheckin';
+import GrowthJournalWidget from '@/components/dashboard/GrowthJournalWidget';
 import Link from 'next/link';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
@@ -197,6 +198,11 @@ export default async function DashboardPage() {
           <ContentFilterStatus />
         </Suspense>
       </div>
+
+      {/* ── Growth Journal Widget ────────────────────────── */}
+      <Suspense fallback={null}>
+        <GrowthJournalWidget />
+      </Suspense>
 
       {/* ── Other Services ─────────────────────────────────── */}
       <section>
