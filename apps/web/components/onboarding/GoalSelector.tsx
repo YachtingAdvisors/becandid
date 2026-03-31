@@ -106,6 +106,16 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
         </div>
       </button>
 
+      {/* Custom category disclaimer */}
+      {selected.includes('custom') && (
+        <div className="mt-3 px-4 py-3 rounded-xl bg-amber-50 ring-1 ring-amber-200/40 flex items-start gap-3">
+          <span className="material-symbols-outlined text-amber-700 text-lg mt-0.5 flex-shrink-0">info</span>
+          <p className="text-xs text-amber-900 font-body leading-relaxed">
+            <strong>Heads up:</strong> Our AI monitoring system is trained on the standard categories above. With a custom category, automated detection will be less accurate and the system will rely more heavily on your manual check-ins, journal entries, and self-reported activity to track your progress. You&rsquo;ll get the most out of Be Candid by pairing this with regular honest reflection.
+          </p>
+        </div>
+      )}
+
       {/* Informational prompt */}
       <div className="mt-8 p-5 rounded-2xl bg-surface-container-low flex items-start gap-4">
         <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center shrink-0">
