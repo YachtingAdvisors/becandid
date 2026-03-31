@@ -1,7 +1,7 @@
 /**
- * Screen capture with change detection.
+ * Screen capture with change detection and randomized timing.
  *
- * Takes periodic screenshots of the primary display,
+ * Takes screenshots at random intervals within a 2-minute window,
  * compares with the previous capture using pixel-diff,
  * and sends to the server for AI analysis if changed.
  */
@@ -15,13 +15,26 @@ let captureTimer = null;
 let paused = false;
 
 /**
+ * Schedule the next capture at a random time within the interval window.
+ * E.g., for a 2-minute window, capture happens at a random second between 0-120.
+ */
+function scheduleNext() {
+  if (captureTimer) clearTimeout(captureTimer);
+  const windowMs = 2 * 60 * 1000; // 2-minute window
+  const randomDelay = Math.floor(Math.random() * windowMs);
+  captureTimer = setTimeout(async () => {
+    await captureOnce();
+    scheduleNext(); // Schedule the next random capture
+  }, randomDelay);
+}
+
+/**
  * Start the capture loop.
  */
 function startCapturing() {
   stopCapturing();
-  const intervalMs = (store.get('interval_minutes') || 5) * 60 * 1000;
-  captureTimer = setInterval(captureOnce, intervalMs);
-  console.log(`[capturer] Started — every ${store.get('interval_minutes')} min`);
+  scheduleNext();
+  console.log('[capturer] Started — random intervals within 2-min windows');
 }
 
 /**
@@ -29,7 +42,7 @@ function startCapturing() {
  */
 function stopCapturing() {
   if (captureTimer) {
-    clearInterval(captureTimer);
+    clearTimeout(captureTimer);
     captureTimer = null;
   }
 }
@@ -91,8 +104,8 @@ async function captureOnce() {
     const result = await uploadCapture(base64);
 
     // Update stats
-    store.set('captures_today', (store.get('captures_today') || 0) + 1);
-    store.set('last_capture_at', new Date().toISOString());
+    store.set('heartbeats_today', (store.get('heartbeats_today') || 0) + 1);
+    store.set('last_heartbeat_capture', new Date().toISOString());
 
     if (result?.event_id) {
       store.set('flagged_today', (store.get('flagged_today') || 0) + 1);
@@ -142,16 +155,15 @@ function computeChange(currentThumbnail) {
 }
 
 /**
- * Get current capture stats for tray display.
+ * Get current stats for tray display.
  */
 function getCaptureStats() {
   resetDailyStats();
   return {
-    captures_today: store.get('captures_today') || 0,
+    heartbeats_today: store.get('heartbeats_today') || 0,
     flagged_today: store.get('flagged_today') || 0,
-    last_capture_at: store.get('last_capture_at'),
+    last_heartbeat_capture: store.get('last_heartbeat_capture'),
     monitoring: store.get('monitoring_enabled') && !paused,
-    interval_minutes: store.get('interval_minutes') || 5,
   };
 }
 

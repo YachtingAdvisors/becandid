@@ -13,13 +13,13 @@ const DEFAULTS = {
   expires_at: null,
   user_id: null,
   monitoring_enabled: true,
-  interval_minutes: 5,
+  interval_minutes: 2,
   change_threshold: 0.10,
   auto_launch: true,
-  captures_today: 0,
+  heartbeats_today: 0,
   flagged_today: 0,
-  last_capture_at: null,
-  captures_date: null,
+  last_heartbeat_capture: null,
+  stats_date: null,
 };
 
 const configPath = path.join(app.getPath('userData'), 'be-candid-config.json');
@@ -58,10 +58,10 @@ const store = {
 
 function resetDailyStats() {
   const today = new Date().toISOString().slice(0, 10);
-  if (store.get('captures_date') !== today) {
-    store.set('captures_today', 0);
+  if (store.get('stats_date') !== today) {
+    store.set('heartbeats_today', 0);
     store.set('flagged_today', 0);
-    store.set('captures_date', today);
+    store.set('stats_date', today);
   }
 }
 

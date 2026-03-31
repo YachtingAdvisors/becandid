@@ -47,15 +47,14 @@ function updateTrayMenu() {
 
   const stats = getCaptureStats();
   const monitoring = store.get('monitoring_enabled');
-  const interval = store.get('interval_minutes') || 5;
 
-  const lastCapture = stats.last_capture_at
-    ? timeAgo(stats.last_capture_at)
+  const lastHeartbeat = stats.last_heartbeat_capture
+    ? timeAgo(stats.last_heartbeat_capture)
     : 'Never';
 
   const menu = Menu.buildFromTemplate([
     {
-      label: 'Be Candid Screen Monitor',
+      label: 'Be Candid',
       enabled: false,
     },
     { type: 'separator' },
@@ -66,22 +65,17 @@ function updateTrayMenu() {
         store.set('monitoring_enabled', newState);
         if (newState) startCapturing();
         else stopCapturing();
-        // Notify server of toggle (triggers partner alert if paused)
         notifyMonitoringToggle(newState);
         updateTrayMenu();
       },
     },
     {
-      label: `  Every ${interval} minutes`,
-      enabled: false, // Frequency controlled by admin via dashboard
-    },
-    {
-      label: `  Last capture: ${lastCapture}`,
+      label: `  Last heartbeat: ${lastHeartbeat}`,
       enabled: false,
     },
     { type: 'separator' },
     {
-      label: `  Today: ${stats.captures_today} captures, ${stats.flagged_today} flagged`,
+      label: `  Heartbeats: ${stats.heartbeats_today}  ·  Flagged: ${stats.flagged_today}`,
       enabled: false,
     },
     { type: 'separator' },
