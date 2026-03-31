@@ -77,6 +77,24 @@ export default function CheckInsPage() {
         </div>
       </div>
 
+      {/* Philosophy callout */}
+      <div className="bg-gradient-to-br from-primary-container/30 to-amber-50/40 rounded-2xl ring-1 ring-primary-container/30 p-5">
+        <div className="flex items-start gap-3">
+          <span className="material-symbols-outlined text-primary text-xl mt-0.5 flex-shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>self_improvement</span>
+          <div>
+            <p className="text-sm text-on-surface leading-relaxed font-body italic">
+              &ldquo;The unexamined life is not worth living.&rdquo;
+            </p>
+            <p className="text-xs text-on-surface-variant font-label mt-0.5 mb-2">&mdash; Socrates</p>
+            <p className="text-xs text-on-surface-variant font-body leading-relaxed">
+              A check-in isn&rsquo;t a test you pass or fail &mdash; it&rsquo;s a moment of honest reflection.
+              Pausing to ask <em>&ldquo;how am I really doing?&rdquo;</em> is itself the practice.
+              The people who grow aren&rsquo;t the ones who never struggle; they&rsquo;re the ones who keep showing up to look.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
