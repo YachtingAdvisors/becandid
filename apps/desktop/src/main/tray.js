@@ -46,11 +46,14 @@ function updateTrayMenu() {
   const stats = getCaptureStats();
   const monitoring = store.get('monitoring_enabled');
 
-  // Swap tray icon: green C when active, gray C when inactive
+  // Swap tray icon: green circle + white C when active, plain white C when inactive
   try {
     const iconFile = monitoring ? 'tray-icon-active@2x.png' : 'tray-icon-inactive@2x.png';
     let newIcon = nativeImage.createFromPath(path.join(__dirname, '..', '..', 'assets', iconFile));
     newIcon = newIcon.resize({ width: 16, height: 16 });
+    // Only set as template for inactive (so macOS adapts white/dark)
+    // Active icon keeps its green color by NOT being a template
+    newIcon.setTemplateImage(!monitoring);
     tray.setImage(newIcon);
   } catch {}
 
