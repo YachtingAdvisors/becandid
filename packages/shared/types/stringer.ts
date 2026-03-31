@@ -122,8 +122,8 @@ export const MOTIVATOR_LABELS: Record<FoundationalMotivator, string> = {
 };
 
 export const MOTIVATOR_DESCRIPTIONS: Record<FoundationalMotivator, string> = {
-  spiritual: 'Quotes from Tim Keller, C.S. Lewis, Henri Nouwen, and other faith-based thinkers on grace, identity, and redemption.',
-  psychological: 'Insights from Jay Stringer, Brené Brown, and clinical research on shame, vulnerability, and healing.',
+  spiritual: 'Faith-grounded reflections on grace, identity, and redemption to anchor your journey.',
+  psychological: 'Clinical insights on shame, vulnerability, and healing rooted in research and self-understanding.',
   relational: 'Wisdom about trust, intimacy, and rebuilding connection with those you love.',
   general: 'A blend of all perspectives — whatever resonates with you.',
 };

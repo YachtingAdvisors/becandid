@@ -24,9 +24,9 @@ import {
 type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done';
 
 const STRINGER_PILLARS = [
-  { icon: 'water_drop', title: 'Trace the Tributaries', body: "Your patterns are never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen. Understanding yourself is the first step to alignment." },
-  { icon: 'favorite', title: 'Name the Longing', body: "Beneath every pattern is something legitimate you need — belonging, rest, tenderness, significance. Naming it honestly is how you build congruence between who you are and who you want to be." },
-  { icon: 'explore', title: 'Follow the Roadmap', body: "Your patterns are a sign pointing to where your story needs attention. Instead of asking 'How do I stop?' — ask 'What is this revealing about the person I want to become?'" },
+  { icon: 'water_drop', heading: 'alignment', title: 'Trace the Tributaries', body: "Your patterns are never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen. Understanding yourself is the first step to alignment.", image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=400&fit=crop' },
+  { icon: 'favorite', heading: 'truth', title: 'Name the Longing', body: "Beneath every pattern is something legitimate you need — belonging, rest, tenderness, significance. Naming it honestly is how you build congruence between who you are and who you want to be.", image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=400&fit=crop' },
+  { icon: 'explore', heading: 'the journey', title: 'Follow the Roadmap', body: "Your patterns are a sign pointing to where your story needs attention. Instead of asking 'How do I stop?' — ask 'What is this revealing about the person I want to become?'", image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=400&fit=crop' },
 ];
 
 export default function OnboardingPage() {
@@ -190,19 +190,19 @@ export default function OnboardingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
             {/* Illustration side */}
             <div className="lg:col-span-5 relative order-2 lg:order-1">
-              <div className="aspect-square w-full bg-surface-container-low rounded-[2.5rem] overflow-hidden relative shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
+              <div className="aspect-[2/1] w-full bg-surface-container-low rounded-2xl overflow-hidden relative shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfJWqKMSXlvHw1bjG_NiKk_SezDaQfkh-Ft8kv3_uS-M2F0nwmBdKTe6IeiUOebg8N8n4FCEDAT5gS6Gw_tLLoJZs8dY23N-ehTVHux3ea6lv3gqi0ZpPkZtUMKF8ROMLqYy1afSUghw-DU3z2VQeBebQEgoZKN9bKeGb0K30fnQyWqrlXwoSDG202BkVxrzSWfoqAn_aEq94VXcBo6b5Zgsk65x86EFgcWrLY63eqpGviDwpH1b_HRZ_674L59oriG7fSAIu9Akyb"
-                  alt="Abstract roadmap with intersecting paths"
-                  className="w-full h-full object-cover mix-blend-multiply opacity-90"
+                  src={STRINGER_PILLARS[stringerStep].image}
+                  alt={STRINGER_PILLARS[stringerStep].title}
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent" />
               </div>
               {/* Floating icon */}
-              <div className="absolute -bottom-6 -right-6 w-24 h-24 lg:w-32 lg:h-32 bg-secondary-container rounded-full flex items-center justify-center shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
-                <span className="material-symbols-outlined text-on-secondary-container text-3xl lg:text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  {stringerStep === 0 ? 'water_drop' : stringerStep === 1 ? 'favorite' : 'explore'}
+              <div className="absolute -bottom-4 -right-4 w-16 h-16 lg:w-20 lg:h-20 bg-secondary-container rounded-full flex items-center justify-center shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
+                <span className="material-symbols-outlined text-on-secondary-container text-2xl lg:text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  {STRINGER_PILLARS[stringerStep].icon}
                 </span>
               </div>
             </div>
@@ -213,13 +213,13 @@ export default function OnboardingPage() {
                 <span className="font-label text-xs uppercase tracking-[0.2em] text-outline mb-4 block">Transformation Phase</span>
                 <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-on-surface leading-tight">
                   This is about <br />
-                  <span className="text-primary italic">alignment</span>
+                  <span className="text-primary italic">{STRINGER_PILLARS[stringerStep].heading}</span>
                 </h1>
               </div>
 
               {stringerStep === 0 && (
                 <p className="text-base text-on-surface-variant leading-relaxed font-body max-w-lg">
-                  Be Candid is grounded in clinical research and backed by a team of psychiatrists and mental health counselors. The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life.
+                  Be Candid is grounded in clinical research and backed by a team of psychiatrists and mental health counselors. The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life. That alignment is the foundation of authentic communication, reduced anxiety, and a nervous system that no longer carries the weight of a double life.
                 </p>
               )}
 
