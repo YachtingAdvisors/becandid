@@ -191,13 +191,13 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
               </div>
               <div>
                 <h3 className="font-headline text-base font-bold text-on-surface">Pause Monitoring?</h3>
-                <p className="text-xs text-on-surface-variant">Your partner will be notified.</p>
+                <p className="text-xs text-on-surface-variant">Keep your partner in the know.</p>
               </div>
             </div>
 
             <div>
               <label className="text-xs font-label font-medium text-on-surface-variant block mb-1.5">
-                Add a note for your partner <span className="text-on-surface-variant/50">(optional)</span>
+                Send a message to your partner
               </label>
               <textarea
                 value={pauseReason}

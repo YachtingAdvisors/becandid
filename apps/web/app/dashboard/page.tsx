@@ -139,7 +139,7 @@ export default async function DashboardPage() {
           <p className="text-[10px] text-on-surface-variant leading-tight mt-1">Central safety oversight.</p>
         </Link>
 
-        {/* Screen Time — half width */}
+        {/* Screen Time */}
         <Link href="/dashboard/screen-time" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
@@ -153,6 +153,22 @@ export default async function DashboardPage() {
           </div>
           <h3 className="font-headline font-bold text-sm text-on-surface">Screen Time</h3>
           <p className="text-[10px] text-on-surface-variant leading-tight mt-1">Conscious digital limits.</p>
+        </Link>
+
+        {/* Candid Journal */}
+        <Link href="/dashboard/stringer-journal" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
+          <div className="flex justify-between items-start mb-3">
+            <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
+            </div>
+            <span className="bg-primary/10 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Reflect</span>
+          </div>
+          <div className="w-full aspect-square rounded-lg overflow-hidden mb-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={IMAGES.journal} alt="Candid Journal" className="w-full h-full object-cover" />
+          </div>
+          <h3 className="font-headline font-bold text-sm text-on-surface">Candid Journal</h3>
+          <p className="text-[10px] text-on-surface-variant leading-tight mt-1">Private space for reflective growth.</p>
         </Link>
 
         {/* Partner Awareness — full width */}

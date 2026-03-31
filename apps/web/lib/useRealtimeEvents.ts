@@ -64,7 +64,14 @@ export function useRealtimeEvents(userId: string): UseRealtimeEventsResult {
         setConnected(status === 'SUBSCRIBED');
       });
 
+    // Timeout: if not connected after 5 seconds, mark as connected anyway
+    // so the empty state renders instead of the spinner
+    const timeout = setTimeout(() => {
+      setConnected((prev) => prev || true);
+    }, 5000);
+
     return () => {
+      clearTimeout(timeout);
       supabase.removeChannel(channel);
     };
   }, [userId]);

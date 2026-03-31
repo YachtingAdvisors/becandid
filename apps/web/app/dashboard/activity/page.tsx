@@ -25,7 +25,7 @@ const SEVERITY_STYLES: Record<Severity, string> = {
 };
 
 export default function ActivityPage() {
-  const [tab, setTab] = useState<'live' | 'history'>('live');
+  const [tab, setTab] = useState<'live' | 'history'>('history');
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<GoalCategory | 'all'>('all');
@@ -100,8 +100,9 @@ export default function ActivityPage() {
           <LiveActivityDashboard userId={userId} />
         ) : (
           <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
-            <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" />
-            <p className="text-sm text-on-surface-variant mt-4 font-body">Connecting to live feed...</p>
+            <span className="material-symbols-outlined text-5xl text-on-surface-variant/30 mb-4 block">timeline</span>
+            <p className="font-headline text-base font-bold text-on-surface-variant/60">Loading activity feed...</p>
+            <p className="font-body text-sm text-on-surface-variant/40 mt-1">If this persists, try switching to the History tab.</p>
           </div>
         )
       )}

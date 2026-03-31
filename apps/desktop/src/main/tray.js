@@ -15,18 +15,28 @@ function createTray(callbacks = {}) {
   onSignOut = callbacks.onSignOut || (() => {});
 
   // Use white C-leaf logo as template image (macOS adapts for dark/light menu bar)
+  // Must resize to exactly 16x16 logical pixels for proper menu bar alignment
   const iconPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon.png');
+  const icon2xPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon@2x.png');
   let icon;
   try {
-    icon = nativeImage.createFromPath(iconPath);
-    icon.setTemplateImage(true); // macOS template: renders white on dark, dark on light
+    // Load @2x and resize to 16x16 logical (32x32 actual) for crisp Retina rendering
+    icon = nativeImage.createFromPath(icon2xPath);
+    icon = icon.resize({ width: 16, height: 16 });
+    icon.setTemplateImage(true);
     if (icon.isEmpty()) throw new Error('empty');
   } catch {
-    icon = nativeImage.createEmpty();
+    try {
+      icon = nativeImage.createFromPath(iconPath);
+      icon = icon.resize({ width: 16, height: 16 });
+      icon.setTemplateImage(true);
+    } catch {
+      icon = nativeImage.createEmpty();
+    }
   }
 
   tray = new Tray(icon);
-  tray.setToolTip('Be Candid Screen Monitor');
+  // Don't set title — it shows as text label next to the icon on macOS
 
   updateTrayMenu();
   return tray;
@@ -77,7 +87,14 @@ function updateTrayMenu() {
     { type: 'separator' },
     {
       label: 'Open Dashboard →',
-      click: () => shell.openExternal('https://becandid.io/dashboard/activity'),
+      click: () => {
+        const { getAccessToken } = require('./auth');
+        const token = getAccessToken();
+        const url = token
+          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&redirect=/dashboard`
+          : 'https://becandid.io/dashboard';
+        shell.openExternal(url);
+      },
     },
     { type: 'separator' },
     {

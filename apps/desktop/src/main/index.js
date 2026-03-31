@@ -6,7 +6,7 @@
  * into the event/alert pipeline.
  */
 
-const { app, BrowserWindow, powerMonitor, ipcMain } = require('electron');
+const { app, BrowserWindow, powerMonitor, ipcMain, systemPreferences, desktopCapturer } = require('electron');
 const path = require('path');
 const { isAuthenticated, signIn, fetchSettings } = require('./auth');
 const { startCapturing, stopCapturing, setPaused, captureOnce } = require('./capturer');
@@ -27,6 +27,20 @@ if (process.platform === 'darwin') {
 let loginWindow = null;
 
 app.whenReady().then(async () => {
+  // Request screen recording permission immediately on macOS
+  // This triggers the system permission prompt on first launch
+  if (process.platform === 'darwin') {
+    try {
+      const hasAccess = systemPreferences.getMediaAccessStatus('screen');
+      if (hasAccess !== 'granted') {
+        // Trigger the permission prompt by attempting a capture
+        desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 1, height: 1 } })
+          .then(() => console.log('[permissions] Screen recording access granted'))
+          .catch(() => console.log('[permissions] Screen recording access pending'));
+      }
+    } catch {}
+  }
+
   // Set up power monitoring for idle detection
   powerMonitor.on('lock-screen', () => setPaused(true));
   powerMonitor.on('unlock-screen', () => setPaused(false));
