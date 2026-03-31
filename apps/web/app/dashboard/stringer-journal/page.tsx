@@ -354,9 +354,9 @@ export default function StringerJournalPage() {
             {entries.length > 0 && (
               <div className="relative">
                 <button onClick={() => setShowExport(!showExport)}
-                  className="px-3 py-2 text-sm font-label rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant">{'\u2193'} Export</button>
+                  className="px-3 py-2 min-h-[44px] text-sm font-label rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant cursor-pointer transition-all duration-200">{'\u2193'} Export</button>
                 {showExport && (
-                  <div className="absolute right-0 mt-2 w-56 bg-surface-container-lowest rounded-2xl shadow-lg border border-outline-variant z-20 overflow-hidden">
+                  <div className="absolute right-0 mt-2 w-56 bg-surface-container-lowest rounded-2xl shadow-lg ring-1 ring-outline-variant/10 z-20 overflow-hidden">
                     <a href="/api/journal?export=word" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body" onClick={() => setShowExport(false)}>
                       <span className="font-label font-medium">{'\uD83D\uDCC4'} Word Document</span>
                       <span className="block text-xs text-on-surface-variant mt-0.5">Download .doc file</span>
@@ -371,11 +371,11 @@ export default function StringerJournalPage() {
             )}
             {view === 'list' && (
               <button onClick={() => { resetForm(); setView('write'); }}
-                className="px-4 py-2 text-sm font-label font-medium rounded-2xl bg-primary text-on-primary hover:opacity-90">+ New Entry</button>
+                className="px-4 py-2 min-h-[44px] text-sm font-label font-medium rounded-2xl bg-primary text-on-primary cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200">+ New Entry</button>
             )}
           </div>
         </div>
-        <div className="p-4 rounded-3xl bg-gradient-to-r from-secondary-container/40 to-tertiary-container/40 border border-outline-variant">
+        <div className="p-4 rounded-3xl bg-gradient-to-r from-secondary-container/40 to-tertiary-container/40 ring-1 ring-outline-variant/10">
           <p className="text-sm text-secondary italic leading-relaxed font-body">&ldquo;{quote.text}&rdquo;</p>
           <p className="text-xs text-on-surface-variant font-label mt-1">&mdash; {quote.author}, {quote.ref}</p>
         </div>
@@ -388,7 +388,7 @@ export default function StringerJournalPage() {
       {view === 'detail' && selected && (
         <div className="space-y-4 animate-fade-in">
           <button onClick={() => { setSelected(null); setView('list'); }} className="text-sm text-on-surface-variant hover:text-on-surface font-label">{'\u2190'} Back</button>
-          <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-6">
+          <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
               <div>
                 <h2 className="text-base sm:text-lg font-headline font-bold text-on-surface">
@@ -405,7 +405,7 @@ export default function StringerJournalPage() {
               </div>
               <div className="flex items-center gap-2">
                 {selected.mood && <span className="text-2xl">{MOODS.find((m) => m.v === selected.mood)?.emoji}</span>}
-                <button onClick={() => startEdit(selected)} className="text-xs text-primary hover:opacity-80 font-label px-2 py-1 rounded-xl border border-outline-variant">Edit</button>
+                <button onClick={() => startEdit(selected)} className="text-xs text-primary hover:opacity-80 font-label px-2 py-1 rounded-xl ring-1 ring-outline-variant/10">Edit</button>
                 <button onClick={() => { if (confirm('Delete this entry?')) handleDelete(selected.id); }} className="text-xs text-error hover:opacity-80 font-label px-2 py-1">Delete</button>
               </div>
             </div>
