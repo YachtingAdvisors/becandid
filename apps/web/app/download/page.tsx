@@ -237,6 +237,38 @@ export default function DownloadPage() {
                 <p className="font-label text-[10px] text-on-surface-variant/60 mt-3">
                   Free &middot; Requires a Be Candid account &middot; macOS 12+ / Windows 10+
                 </p>
+
+                {/* macOS install help */}
+                <details className="mt-4 group">
+                  <summary className="flex items-center gap-2 cursor-pointer text-xs text-violet-600 font-label font-medium hover:underline">
+                    <MaterialIcon name="help" className="text-sm" />
+                    macOS shows a security warning?
+                  </summary>
+                  <div className="mt-3 p-4 rounded-xl bg-violet-50/50 ring-1 ring-violet-200/30 space-y-3">
+                    <p className="text-xs text-on-surface-variant font-body leading-relaxed">
+                      Because the app is new, macOS may show &ldquo;Apple could not verify&rdquo;. This is normal for apps distributed outside the App Store. To open it:
+                    </p>
+                    <ol className="space-y-2">
+                      {[
+                        'Open the DMG and drag Be Candid to Applications',
+                        'Try to open it \u2014 you\u2019ll see the warning. Click Done.',
+                        'Go to System Settings \u2192 Privacy & Security',
+                        'Scroll down \u2014 you\u2019ll see \u201cBe Candid was blocked\u201d with an Open Anyway button',
+                        'Click Open Anyway, then Open in the confirmation dialog',
+                      ].map((step, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-on-surface-variant font-body">
+                          <span className="flex-shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center text-[10px] font-bold mt-0.5">
+                            {i + 1}
+                          </span>
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                    <p className="text-[10px] text-on-surface-variant/60 font-label">
+                      You only need to do this once. The app is code-signed with our Apple Developer ID certificate.
+                    </p>
+                  </div>
+                </details>
               </div>
 
               {/* How it works mini-diagram */}
