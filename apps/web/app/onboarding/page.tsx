@@ -402,38 +402,21 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {/* ═══════ STEP 5: Done ═══════ */}
+      {/* ═══════ STEP 5: Done — redirect to dashboard ═══════ */}
       {step === 'done' && (
         <div className="max-w-md w-full text-center animate-fade-in">
           <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>celebration</span>
+            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
-          <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">You&apos;re set up</h1>
-          <p className="text-sm text-on-surface-variant leading-relaxed mb-6 font-body">
+          <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">You&apos;re all set</h1>
+          <p className="text-sm text-on-surface-variant leading-relaxed mb-8 font-body">
             {partnerName
               ? `${partnerName} will receive an email inviting them to be your accountability partner.`
               : "You're starting in solo mode. Your journal and self-reflection guides are ready."}
           </p>
 
-          <div className="text-left space-y-3 mb-8">
-            {[
-              { icon: 'phone_iphone', title: 'Install the mobile app', desc: 'Android: screen awareness. iOS: daily check-ins.', href: '/download' },
-              { icon: 'edit_note', title: 'Write your first journal entry', desc: 'Start tracing the tributaries — before anything happens.', href: '/dashboard/stringer-journal?action=write' },
-              { icon: 'notifications_active', title: 'Configure check-ins', desc: "Set your preferred time and frequency in settings.", href: '/dashboard/settings' },
-            ].map((item, i) => (
-              <Link key={i} href={item.href} className="flex gap-3 p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant hover:ring-primary/20 hover:shadow-md transition-all duration-200 cursor-pointer">
-                <span className="material-symbols-outlined text-primary text-lg">{item.icon}</span>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-on-surface font-label">{item.title}</p>
-                  <p className="text-xs text-on-surface-variant font-body">{item.desc}</p>
-                </div>
-                <span className="material-symbols-outlined text-outline-variant text-lg self-center">chevron_right</span>
-              </Link>
-            ))}
-          </div>
-
           <button onClick={() => router.push('/dashboard')}
-            className="w-full py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
+            className="w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
             Go to Dashboard →
           </button>
         </div>
