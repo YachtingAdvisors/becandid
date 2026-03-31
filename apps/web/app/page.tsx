@@ -168,14 +168,13 @@ export default function LandingPage() {
 
               {/* Headline */}
               <h1 className="font-headline text-[2.75rem] sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold text-on-surface tracking-tight leading-[1.08]">
-                Accountability for{' '}
-                <span className="text-primary">every stage</span>{' '}
-                of life
+                Recovery starts with{' '}
+                <span className="text-primary">radical honesty.</span>
               </h1>
 
               {/* Sub */}
               <p className="font-body text-lg lg:text-xl text-on-surface-variant leading-relaxed max-w-md">
-                A digital sanctuary designed to foster integrity through intentional reflections, partner awareness, and AI-driven growth metrics.
+                An accountability app that combines screen monitoring, guided journaling, and AI-driven insights to help you break free from unwanted habits &mdash; for good.
               </p>
 
               {/* CTAs */}
