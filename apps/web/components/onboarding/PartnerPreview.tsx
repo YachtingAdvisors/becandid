@@ -5,7 +5,7 @@ import { useState } from 'react';
 const PARTNER_SEES = [
   { icon: 'flag', text: 'That a flag was triggered', detail: 'They see the category (e.g. "Social Media") and severity — not what you were looking at.' },
   { icon: 'schedule', text: 'When it happened', detail: 'Date and time. No URLs, no screenshots, no browsing history.' },
-  { icon: 'smart_toy', text: 'An AI conversation guide', detail: 'Claude generates a guide for how to have a meaningful conversation with you — grounded in Motivational Interviewing, focused on clarity and alignment.' },
+  { icon: 'smart_toy', text: 'A custom conversation guide', detail: 'A personalized guide is generated for how to have a meaningful conversation with you — grounded in Motivational Interviewing, focused on clarity and alignment.' },
   { icon: 'trending_up', text: 'Your focus streak', detail: 'How many days in a row you\'ve been focused. Streaks reset on a flag but start rebuilding immediately.' },
   { icon: 'edit_note', text: 'That you journaled (not what you wrote)', detail: 'They see "3 journal entries this week" — never the content. Your reflections are private.' },
 ];

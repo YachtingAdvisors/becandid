@@ -504,9 +504,9 @@ export default function LandingPage() {
         {/* ── Footer ──────────────────────────────────────── */}
         <footer className="border-t border-outline-variant/10 bg-surface">
           <div className="max-w-screen-xl mx-auto px-6 py-12">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
               {/* Brand */}
-              <div className="sm:col-span-2 lg:col-span-1">
+              <div className="col-span-2 lg:col-span-1">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mb-4" />
                 <p className="font-body text-sm text-on-surface-variant leading-relaxed max-w-xs">

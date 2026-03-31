@@ -13,6 +13,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import GoalSelector from '@/components/onboarding/GoalSelector';
 import PartnerPreview from '@/components/onboarding/PartnerPreview';
 import type { GoalCategory } from '@be-candid/shared';
@@ -402,17 +403,18 @@ export default function OnboardingPage() {
 
           <div className="text-left space-y-3 mb-8">
             {[
-              { icon: 'phone_iphone', title: 'Install the mobile app', desc: 'Android: screen awareness. iOS: daily check-ins.' },
-              { icon: 'edit_note', title: 'Write your first journal entry', desc: 'Start tracing the tributaries — before anything happens.' },
-              { icon: 'notifications_active', title: 'Check-ins start tonight', desc: "You'll receive a journal prompt at your preferred time." },
+              { icon: 'phone_iphone', title: 'Install the mobile app', desc: 'Android: screen awareness. iOS: daily check-ins.', href: '/download' },
+              { icon: 'edit_note', title: 'Write your first journal entry', desc: 'Start tracing the tributaries — before anything happens.', href: '/dashboard/stringer-journal?action=write' },
+              { icon: 'notifications_active', title: 'Configure check-ins', desc: "Set your preferred time and frequency in settings.", href: '/dashboard/settings' },
             ].map((item, i) => (
-              <div key={i} className="flex gap-3 p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant">
+              <Link key={i} href={item.href} className="flex gap-3 p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant hover:ring-primary/20 hover:shadow-md transition-all duration-200 cursor-pointer">
                 <span className="material-symbols-outlined text-primary text-lg">{item.icon}</span>
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-on-surface font-label">{item.title}</p>
                   <p className="text-xs text-on-surface-variant font-body">{item.desc}</p>
                 </div>
-              </div>
+                <span className="material-symbols-outlined text-outline-variant text-lg self-center">chevron_right</span>
+              </Link>
             ))}
           </div>
 
