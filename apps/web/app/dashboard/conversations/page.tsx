@@ -32,7 +32,6 @@ const SEVERITY_STYLES: Record<Severity, string> = {
 export default function ConversationsPage() {
   const [alerts, setAlerts] = useState<AlertRow[]>([]);
   const [partner, setPartner] = useState<PartnerData | null>(null);
-  const [motivator, setMotivator] = useState<string>('general');
   const [loading, setLoading] = useState(true);
   const [reinviting, setReinviting] = useState(false);
   const { ToastContainer, showMilestones } = useMilestoneToasts();
@@ -42,11 +41,9 @@ export default function ConversationsPage() {
     Promise.all([
       fetch('/api/partners').then(r => r.json()).catch(() => ({})),
       fetch('/api/alerts?limit=30').then(r => r.json()).catch(() => ({})),
-      fetch('/api/auth/profile').then(r => r.json()).catch(() => ({})),
-    ]).then(([partnerData, alertsData, profileData]) => {
+    ]).then(([partnerData, alertsData]) => {
       setPartner(partnerData.partner ?? null);
       setAlerts(alertsData.alerts ?? []);
-      setMotivator(profileData.profile?.foundational_motivator ?? 'general');
     }).finally(() => setLoading(false));
   }, []);
 
@@ -90,41 +87,21 @@ export default function ConversationsPage() {
         </div>
       </div>
 
-      {/* Philosophy callout — spiritual path */}
-      {motivator === 'spiritual' && (
-        <div className="bg-gradient-to-br from-amber-50/60 to-primary-container/20 rounded-2xl ring-1 ring-amber-200/30 p-5">
-          <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-amber-700 text-xl mt-0.5 flex-shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>local_library</span>
-            <div>
-              <p className="text-sm text-on-surface leading-relaxed font-body italic">
-                &ldquo;If we are not heedful of the way the Spirit of God works in us, we will become spiritual hypocrites. We see where other folks are failing, and we turn our discernment into the gibe of criticism instead of into intercession on their behalf.&rdquo;
-              </p>
-              <p className="text-xs text-on-surface-variant font-label mt-1.5 mb-2">&mdash; Oswald Chambers, <span className="italic">My Utmost for His Highest</span></p>
-              <p className="text-xs text-on-surface-variant font-body leading-relaxed">
-                Accountability isn&rsquo;t about catching someone in a fall &mdash; it&rsquo;s about standing beside them so they don&rsquo;t have to get up alone. Lead with your own honesty before asking for theirs.
-              </p>
-            </div>
+      {/* Philosophy callout */}
+      <div className="bg-gradient-to-br from-amber-50/60 to-primary-container/20 rounded-2xl ring-1 ring-amber-200/30 p-5">
+        <div className="flex items-start gap-3">
+          <span className="material-symbols-outlined text-amber-700 text-xl mt-0.5 flex-shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>local_library</span>
+          <div>
+            <p className="text-sm text-on-surface leading-relaxed font-body italic">
+              &ldquo;If we are not heedful of the way the Spirit of God works in us, we will become spiritual hypocrites. We see where other folks are failing, and we turn our discernment into the gibe of criticism instead of into intercession on their behalf.&rdquo;
+            </p>
+            <p className="text-xs text-on-surface-variant font-label mt-1.5 mb-2">&mdash; Oswald Chambers, <span className="italic">My Utmost for His Highest</span></p>
+            <p className="text-xs text-on-surface-variant font-body leading-relaxed">
+              Accountability isn&rsquo;t about catching someone in a fall, it&rsquo;s about standing beside them in prayer so they don&rsquo;t have to get up alone. Lead with your own honesty before asking for theirs.
+            </p>
           </div>
         </div>
-      )}
-
-      {/* Philosophy callout — general/psychological/relational */}
-      {motivator !== 'spiritual' && (
-        <div className="bg-gradient-to-br from-primary-container/30 to-emerald-50/40 rounded-2xl ring-1 ring-primary-container/30 p-5">
-          <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-primary text-xl mt-0.5 flex-shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>handshake</span>
-            <div>
-              <p className="text-sm text-on-surface leading-relaxed font-body italic">
-                &ldquo;The quality of your life is the quality of your relationships.&rdquo;
-              </p>
-              <p className="text-xs text-on-surface-variant font-label mt-0.5 mb-2">&mdash; Esther Perel</p>
-              <p className="text-xs text-on-surface-variant font-body leading-relaxed">
-                Accountability isn&rsquo;t surveillance &mdash; it&rsquo;s an invitation to be known. The conversations that change us aren&rsquo;t the ones where we get caught, but the ones where we choose to be honest first.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
 
       {/* Partner card */}
       {partner ? (
