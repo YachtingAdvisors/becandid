@@ -67,7 +67,8 @@ export async function PATCH(req: NextRequest) {
 
   // Notify partner when monitoring is paused
   if (body.enabled === false || body.notify_partner === true) {
-    notifyPartnerMonitoringPaused(db, user.id).catch(console.error);
+    const reason = typeof body.reason === 'string' ? body.reason.slice(0, 200) : undefined;
+    notifyPartnerMonitoringPaused(db, user.id, reason).catch(console.error);
   }
 
   return NextResponse.json({ success: true, ...update });
@@ -76,7 +77,7 @@ export async function PATCH(req: NextRequest) {
 /**
  * Send notification to accountability partner when monitoring is paused.
  */
-async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createServiceClient>, userId: string) {
+async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createServiceClient>, userId: string, reason?: string) {
   // Get active partner
   const { data: partnership } = await db
     .from('partners')
@@ -120,10 +121,11 @@ async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createService
   }
 
   // Create alert record
+  const reasonText = reason ? `\n\nTheir note: "${reason}"` : '';
   await db.from('alerts').insert({
     user_id: userId,
     event_id: null,
-    partner_guide: `${userName} has paused their screen monitoring. This may be a good time to check in with them.`,
+    partner_guide: `${userName} has paused their screen monitoring.${reasonText}\n\nThis may be a good time to check in with them.`,
   });
 
   // Send email to partner
@@ -139,6 +141,7 @@ async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createService
           <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto;">
             <h2 style="color: #226779;">Monitoring Paused</h2>
             <p>${userName} has paused their screen monitoring on Be Candid.</p>
+            ${reason ? `<p style="background: #fef3cd; padding: 12px 16px; border-radius: 8px; margin: 16px 0;"><strong>Their note:</strong> ${reason}</p>` : ''}
             <p>This could be a good time to reach out and check in with them.</p>
             <a href="https://becandid.io/partner" style="display: inline-block; padding: 12px 24px; background: #226779; color: white; border-radius: 8px; text-decoration: none; font-weight: 600;">Open Be Candid</a>
             <p style="color: #999; font-size: 12px; margin-top: 24px;">You're receiving this because you're ${userName}'s accountability partner on Be Candid.</p>

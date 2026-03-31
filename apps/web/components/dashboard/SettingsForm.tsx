@@ -34,7 +34,9 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
   const [name, setName] = useState(profile.name || '');
   const [phone, setPhone] = useState(profile.phone || '');
   const [goals, setGoals] = useState<GoalCategory[]>(profile.goals || []);
-  const [monitoringEnabled, setMonitoringEnabled] = useState(profile.monitoring_enabled);
+  const [monitoringEnabled, setMonitoringEnabled] = useState(profile.monitoring_enabled ?? true);
+  const [showPauseModal, setShowPauseModal] = useState(false);
+  const [pauseReason, setPauseReason] = useState('');
   const [streakMode, setStreakMode] = useState<StreakMode>(profile.streak_mode || 'no_failures');
   const [timezone, setTimezone] = useState(profile.timezone || 'America/New_York');
   const [nudgeEnabled, setNudgeEnabled] = useState(profile.nudge_enabled ?? true);
@@ -85,7 +87,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
       fetch('/api/screen-capture/settings', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enabled: false, notify_partner: true }),
+        body: JSON.stringify({ enabled: false, notify_partner: true, reason: pauseReason || undefined }),
       }).catch(() => {});
     }
 
@@ -139,13 +141,18 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
             <div className="text-xs text-ink-muted mt-0.5">
               {monitoringEnabled
                 ? 'Screen activity detection is running. Your partner can see your status.'
-                : 'Monitoring is off. Your partner will be notified.'}
+                : 'Monitoring is off. Your partner has been notified.'}
             </div>
           </div>
           <button
             onClick={() => {
-              if (monitoringEnabled && !confirm('Pausing monitoring will notify your accountability partner. Continue?')) return;
-              setMonitoringEnabled(!monitoringEnabled);
+              if (monitoringEnabled) {
+                // Show pause modal instead of toggling immediately
+                setPauseReason('');
+                setShowPauseModal(true);
+              } else {
+                setMonitoringEnabled(true);
+              }
             }}
             className={`relative w-14 h-7 rounded-full transition-all duration-300 cursor-pointer flex-shrink-0 ${
               monitoringEnabled ? 'bg-emerald-500 shadow-lg shadow-emerald-500/30' : 'bg-red-300 shadow-lg shadow-red-300/30'
@@ -156,13 +163,73 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
             }`} />
           </button>
         </div>
-        {!monitoringEnabled && (
+        {!monitoringEnabled && pauseReason && (
+          <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-amber-50 ring-1 ring-amber-200/50">
+            <span className="material-symbols-outlined text-amber-600 text-base mt-0.5">edit_note</span>
+            <p className="text-xs text-amber-800 font-body">Sent to partner: &ldquo;{pauseReason}&rdquo;</p>
+          </div>
+        )}
+        {!monitoringEnabled && !pauseReason && (
           <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-50 ring-1 ring-red-200/50">
             <span className="material-symbols-outlined text-red-500 text-base">warning</span>
-            <p className="text-xs text-red-700 font-body">Your accountability partner will be alerted that monitoring is paused.</p>
+            <p className="text-xs text-red-700 font-body">Your accountability partner has been alerted that monitoring is paused.</p>
           </div>
         )}
       </section>
+
+      {/* ── Pause Monitoring Modal ────────────────────────── */}
+      {showPauseModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={() => setShowPauseModal(false)}>
+          <div className="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" />
+          <div
+            className="relative bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 shadow-2xl max-w-sm w-full p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                <span className="material-symbols-outlined text-amber-700">pause_circle</span>
+              </div>
+              <div>
+                <h3 className="font-headline text-base font-bold text-on-surface">Pause Monitoring?</h3>
+                <p className="text-xs text-on-surface-variant">Your partner will be notified.</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-label font-medium text-on-surface-variant block mb-1.5">
+                Add a note for your partner <span className="text-on-surface-variant/50">(optional)</span>
+              </label>
+              <textarea
+                value={pauseReason}
+                onChange={(e) => setPauseReason(e.target.value)}
+                placeholder="e.g. Taking a break for personal time, at a doctor's appointment, traveling..."
+                rows={3}
+                maxLength={200}
+                className="w-full px-3 py-2.5 rounded-xl border border-outline-variant text-sm font-body text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+              />
+              <p className="text-[10px] text-on-surface-variant/50 text-right mt-1">{pauseReason.length}/200</p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowPauseModal(false)}
+                className="flex-1 py-2.5 text-sm font-label font-medium text-on-surface-variant rounded-full ring-1 ring-outline-variant hover:bg-surface-container-low cursor-pointer transition-all duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setMonitoringEnabled(false);
+                  setShowPauseModal(false);
+                }}
+                className="flex-1 py-2.5 text-sm font-label font-bold text-white bg-red-500 rounded-full shadow-lg shadow-red-500/20 hover:brightness-110 cursor-pointer transition-all duration-200"
+              >
+                Pause Monitoring
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Rivals (Goals) ──────────────────────────────────── */}
       <section className="card p-5 space-y-4">
