@@ -80,6 +80,15 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
       return;
     }
 
+    // If monitoring was toggled off, notify partner via screen-capture settings
+    if (!monitoringEnabled) {
+      fetch('/api/screen-capture/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: false, notify_partner: true }),
+      }).catch(() => {});
+    }
+
     setSaved(true);
     router.refresh();
     setTimeout(() => setSaved(false), 3000);
@@ -121,20 +130,38 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
 
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-sm font-medium text-ink">Monitoring active</div>
-            <div className="text-xs text-ink-muted">Screen activity detection is running</div>
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${monitoringEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-red-400'}`} />
+              <div className="text-sm font-medium text-ink">
+                {monitoringEnabled ? 'Monitoring Active' : 'Monitoring Paused'}
+              </div>
+            </div>
+            <div className="text-xs text-ink-muted mt-0.5">
+              {monitoringEnabled
+                ? 'Screen activity detection is running. Your partner can see your status.'
+                : 'Monitoring is off. Your partner will be notified.'}
+            </div>
           </div>
           <button
-            onClick={() => setMonitoringEnabled(!monitoringEnabled)}
-            className={`relative w-11 h-6 rounded-full transition-colors ${
-              monitoringEnabled ? 'bg-brand-600' : 'bg-gray-300'
+            onClick={() => {
+              if (monitoringEnabled && !confirm('Pausing monitoring will notify your accountability partner. Continue?')) return;
+              setMonitoringEnabled(!monitoringEnabled);
+            }}
+            className={`relative w-14 h-7 rounded-full transition-all duration-300 cursor-pointer flex-shrink-0 ${
+              monitoringEnabled ? 'bg-emerald-500 shadow-lg shadow-emerald-500/30' : 'bg-red-300 shadow-lg shadow-red-300/30'
             }`}
           >
-            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-              monitoringEnabled ? 'translate-x-5' : ''
+            <span className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ${
+              monitoringEnabled ? 'translate-x-7' : ''
             }`} />
           </button>
         </div>
+        {!monitoringEnabled && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-50 ring-1 ring-red-200/50">
+            <span className="material-symbols-outlined text-red-500 text-base">warning</span>
+            <p className="text-xs text-red-700 font-body">Your accountability partner will be alerted that monitoring is paused.</p>
+          </div>
+        )}
       </section>
 
       {/* ── Rivals (Goals) ──────────────────────────────────── */}

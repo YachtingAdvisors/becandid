@@ -14,14 +14,14 @@ let onSignOut = null;
 function createTray(callbacks = {}) {
   onSignOut = callbacks.onSignOut || (() => {});
 
-  // Use a simple 22x22 tray icon (or fallback to app icon)
+  // Use white C-leaf logo as template image (macOS adapts for dark/light menu bar)
   const iconPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon.png');
   let icon;
   try {
     icon = nativeImage.createFromPath(iconPath);
+    icon.setTemplateImage(true); // macOS template: renders white on dark, dark on light
     if (icon.isEmpty()) throw new Error('empty');
   } catch {
-    // Fallback: create a simple colored circle
     icon = nativeImage.createEmpty();
   }
 
@@ -50,30 +50,20 @@ function updateTrayMenu() {
     },
     { type: 'separator' },
     {
-      label: monitoring ? '✓ Monitoring Active' : '  Monitoring Paused',
+      label: monitoring ? '● Monitoring Active' : '○ Monitoring Paused',
       click: () => {
         const newState = !store.get('monitoring_enabled');
         store.set('monitoring_enabled', newState);
         if (newState) startCapturing();
         else stopCapturing();
+        // Notify server of toggle (triggers partner alert if paused)
+        notifyMonitoringToggle(newState);
         updateTrayMenu();
       },
     },
     {
       label: `  Every ${interval} minutes`,
-      submenu: [2, 5, 10, 15].map((min) => ({
-        label: `${min} minutes`,
-        type: 'radio',
-        checked: interval === min,
-        click: () => {
-          store.set('interval_minutes', min);
-          if (monitoring) {
-            stopCapturing();
-            startCapturing();
-          }
-          updateTrayMenu();
-        },
-      })),
+      enabled: false, // Frequency controlled by admin via dashboard
     },
     {
       label: `  Last capture: ${lastCapture}`,
@@ -121,6 +111,23 @@ function timeAgo(isoString) {
   if (mins < 60) return `${mins} min ago`;
   const hours = Math.floor(mins / 60);
   return `${hours}h ago`;
+}
+
+// Notify server when monitoring is toggled (triggers partner alert if paused)
+async function notifyMonitoringToggle(enabled) {
+  const { getAccessToken } = require('./auth');
+  const token = getAccessToken();
+  if (!token) return;
+  try {
+    await fetch('https://becandid.io/api/screen-capture/settings', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ enabled, notify_partner: !enabled }),
+    });
+  } catch {}
 }
 
 // Refresh tray menu every 30 seconds to update "last capture" time
