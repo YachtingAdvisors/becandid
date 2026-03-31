@@ -2,7 +2,7 @@
  * System tray icon and menu for Be Candid Screen Monitor.
  */
 
-const { Tray, Menu, nativeImage, shell } = require('electron');
+const { app, Tray, Menu, nativeImage, shell } = require('electron');
 const path = require('path');
 const { store } = require('./store');
 const { getCaptureStats, startCapturing, stopCapturing } = require('./capturer');
@@ -73,14 +73,13 @@ function updateTrayMenu() {
       label: `  Last heartbeat: ${lastHeartbeat}`,
       enabled: false,
     },
-    { type: 'separator' },
     {
       label: `  Heartbeats: ${stats.heartbeats_today}  ·  Flagged: ${stats.flagged_today}`,
       enabled: false,
     },
     { type: 'separator' },
     {
-      label: 'Open Dashboard →',
+      label: 'Open Dashboard',
       click: () => {
         const { getAccessToken } = require('./auth');
         const token = getAccessToken();
@@ -88,6 +87,38 @@ function updateTrayMenu() {
           ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&redirect=/dashboard`
           : 'https://becandid.io/dashboard';
         shell.openExternal(url);
+      },
+    },
+    {
+      label: 'Open Journal',
+      click: () => {
+        const { getAccessToken } = require('./auth');
+        const token = getAccessToken();
+        const url = token
+          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&redirect=/dashboard/stringer-journal?action=write`
+          : 'https://becandid.io/dashboard/stringer-journal';
+        shell.openExternal(url);
+      },
+    },
+    {
+      label: 'Log Activity',
+      click: () => {
+        const { getAccessToken } = require('./auth');
+        const token = getAccessToken();
+        const url = token
+          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&redirect=/dashboard/activity`
+          : 'https://becandid.io/dashboard/activity';
+        shell.openExternal(url);
+      },
+    },
+    { type: 'separator' },
+    {
+      label: 'Start on Login',
+      type: 'checkbox',
+      checked: store.get('auto_launch'),
+      click: (menuItem) => {
+        store.set('auto_launch', menuItem.checked);
+        app.setLoginItemSettings({ openAtLogin: menuItem.checked });
       },
     },
     { type: 'separator' },
