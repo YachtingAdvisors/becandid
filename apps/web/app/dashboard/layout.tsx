@@ -21,8 +21,7 @@ const NAV_ITEMS = [
   { id: 'checkins', href: '/dashboard/checkins', label: 'Check-ins', icon: 'check_circle', solo: true },
   { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: 'edit_note', solo: true },
   { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: 'timeline', solo: true },
-  { id: 'streaks', href: '/dashboard/streaks', label: 'Streaks', icon: 'local_fire_department', solo: true },
-  { id: 'badges', href: '/dashboard/badges', label: 'Badges', icon: 'military_tech', solo: true },
+  { id: 'progress', href: '/dashboard/progress', label: 'Progress', icon: 'trending_up', solo: true },
   { id: 'conversations', href: '/dashboard/conversations', label: 'Partner Conversations', icon: 'forum', solo: false },
   { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: 'settings', solo: true },
 ];
