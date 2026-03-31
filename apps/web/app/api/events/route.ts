@@ -21,7 +21,7 @@ import { sanitizeText } from '@/lib/security';
 import { GOAL_LABELS } from '@be-candid/shared';
 
 const VALID_SEVERITIES = ['low', 'medium', 'high'];
-const VALID_PLATFORMS = ['web', 'ios', 'android', 'extension'];
+const VALID_PLATFORMS = ['web', 'ios', 'android', 'extension', 'desktop'];
 const MAX_BATCH_SIZE = 20;
 const MAX_EVENTS_PER_HOUR = 30;
 

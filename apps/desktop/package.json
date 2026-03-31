@@ -1,0 +1,20 @@
+{
+  "name": "@be-candid/desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Be Candid Desktop Screen Monitor",
+  "main": "src/main/index.js",
+  "scripts": {
+    "dev": "electron .",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.0"
+  }
+}

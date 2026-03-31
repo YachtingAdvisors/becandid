@@ -1,0 +1,45 @@
+SHORT DESCRIPTION (132 chars max):
+Privacy-first browsing awareness for accountability. Track screen time, block distracting sites, and build healthier digital habits.
+
+---
+
+FULL DESCRIPTION:
+
+Be Candid helps you build awareness of your digital habits with privacy-first browsing monitoring.
+
+HOW IT WORKS
+• Tracks which websites you visit and how long you spend on them
+• Automatically categorizes sites (social media, streaming, news, etc.)
+• Flags or blocks distracting and harmful content
+• Sends data to your Be Candid dashboard for insights and accountability
+
+PRIVACY FIRST
+• Only domain names are tracked — never full URLs, page content, or form data
+• Domains are SHA-256 hashed before leaving your device
+• All classification happens locally in your browser
+• No screenshots, keystrokes, or screen recordings — ever
+
+ACCOUNTABILITY FEATURES
+• Share awareness summaries with a trusted accountability partner
+• Partners see categories and severity levels, never raw browsing data
+• Real-time alerts for high-severity browsing events
+• Works with Be Candid's check-in system, journal, and focus tools
+
+WORKS OFFLINE
+• Events queue locally when you're offline
+• Automatically syncs when your connection returns
+• Failed uploads retry for up to 7 days
+
+GETTING STARTED
+1. Create a free account at becandid.io
+2. Install this extension
+3. Sign in with your Be Candid credentials
+4. Browse normally — your dashboard updates in real-time
+
+Requires a Be Candid account (free tier available).
+Learn more at https://becandid.io
+
+---
+
+CATEGORY: Productivity
+LANGUAGE: English

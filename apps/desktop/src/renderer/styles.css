@@ -1,0 +1,138 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: #fbf9f8;
+  color: #313333;
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.container {
+  padding: 48px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(34, 103, 121, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #313333;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #5e5f5f;
+  margin-top: 2px;
+}
+
+.error {
+  background: rgba(168, 56, 54, 0.08);
+  color: #a83836;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  width: 100%;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.form {
+  width: 100%;
+  -webkit-app-region: no-drag;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5e5f5f;
+  margin-bottom: 6px;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #eeeeed;
+  font-size: 14px;
+  color: #313333;
+  outline: none;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+
+.field input:focus {
+  box-shadow: 0 0 0 2px rgba(34, 103, 121, 0.25);
+  background: #fff;
+}
+
+.field input::placeholder {
+  color: #b1b2b2;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: #226779;
+  color: #f0fbff;
+  border: none;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(34, 103, 121, 0.2);
+  margin-top: 8px;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 16px rgba(34, 103, 121, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.footer-text {
+  margin-top: 24px;
+  font-size: 11px;
+  color: #5e5f5f;
+  text-align: center;
+  line-height: 1.5;
+}

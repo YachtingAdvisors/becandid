@@ -72,13 +72,14 @@ async function handleTabChange(tabId, url) {
   }
 }
 
-// ── Idle Detection ─────────────────────────────────────────────
+// ── Idle Detection (not available in Safari) ──────────────────
 
-chrome.idle.setDetectionInterval(60); // 60 seconds
-
-chrome.idle.onStateChanged.addListener((state) => {
-  setIdleState(state !== 'active');
-});
+if (chrome.idle?.onStateChanged) {
+  chrome.idle.setDetectionInterval(60); // 60 seconds
+  chrome.idle.onStateChanged.addListener((state) => {
+    setIdleState(state !== 'active');
+  });
+}
 
 // ── Alarms ─────────────────────────────────────────────────────
 

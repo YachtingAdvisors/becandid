@@ -34,8 +34,43 @@ export async function setMonitoringEnabled(enabled) {
 }
 
 // Tracker state persistence (survives service worker restarts)
+// chrome.storage.session is not fully supported in Safari — fallback to local with prefix
+const SESSION_KEYS = ['currentTab', 'domainStats'];
+const SESS_PREFIX = '_sess_';
+
+async function sessionGet(keys) {
+  try {
+    if (chrome.storage.session) {
+      return await chrome.storage.session.get(keys);
+    }
+  } catch {}
+  // Fallback: use chrome.storage.local with prefix
+  const prefixed = keys.map(k => SESS_PREFIX + k);
+  const raw = await chrome.storage.local.get(prefixed);
+  const result = {};
+  for (const k of keys) {
+    result[k] = raw[SESS_PREFIX + k] ?? undefined;
+  }
+  return result;
+}
+
+async function sessionSet(data) {
+  try {
+    if (chrome.storage.session) {
+      await chrome.storage.session.set(data);
+      return;
+    }
+  } catch {}
+  // Fallback: use chrome.storage.local with prefix
+  const prefixed = {};
+  for (const [k, v] of Object.entries(data)) {
+    prefixed[SESS_PREFIX + k] = v;
+  }
+  await chrome.storage.local.set(prefixed);
+}
+
 export async function getTrackerState() {
-  const result = await chrome.storage.session.get(['currentTab', 'domainStats']);
+  const result = await sessionGet(['currentTab', 'domainStats']);
   return {
     currentTab: result.currentTab || null,
     domainStats: result.domainStats || {},
@@ -43,7 +78,7 @@ export async function getTrackerState() {
 }
 
 export async function setTrackerState(state) {
-  await chrome.storage.session.set(state);
+  await sessionSet(state);
 }
 
 // Event queue persistence

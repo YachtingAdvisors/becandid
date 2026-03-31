@@ -7,15 +7,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const BACKEND_PREFIXES = ['/dashboard', '/partner', '/guardian', '/onboarding', '/checkin', '/conversation'];
-
 export default function LegalFooter() {
-  const pathname = usePathname();
+  // All pages now have their own footer — this component is deprecated.
+  // Keeping the component to avoid breaking the layout import.
+  return null;
 
-  // Hide footer on app backend pages (dashboard, partner, guardian, etc.)
-  if (BACKEND_PREFIXES.some((p) => pathname.startsWith(p))) {
-    return null;
-  }
+  // eslint-disable-next-line no-unreachable
+  const pathname = usePathname();
 
   return (
     <footer className="ring-1 ring-outline-variant/5 bg-surface-container-lowest/80 glass-effect">

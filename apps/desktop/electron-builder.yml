@@ -1,0 +1,30 @@
+appId: io.becandid.desktop
+productName: Be Candid
+copyright: Copyright © 2026 Be Candid
+
+directories:
+  output: dist
+
+files:
+  - src/**/*
+  - assets/**/*
+  - package.json
+
+mac:
+  category: public.app-category.lifestyle
+  icon: assets/icon.icns
+  target:
+    - dmg
+    - zip
+
+win:
+  icon: assets/icon.ico
+  target:
+    - nsis
+
+nsis:
+  oneClick: true
+  perMachine: false
+
+dmg:
+  title: Be Candid Screen Monitor
