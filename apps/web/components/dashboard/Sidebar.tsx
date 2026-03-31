@@ -40,17 +40,21 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
   const [open, setOpen] = useState(false);
   const [appRunning, setAppRunning] = useState<boolean | null>(null); // null = loading
   const [showTroubleshoot, setShowTroubleshoot] = useState(false);
+  const [checking, setChecking] = useState(false);
+
+  const checkConnection = () => {
+    setChecking(true);
+    fetch('/api/heartbeat')
+      .then(r => r.json())
+      .then(d => setAppRunning(d.app_running === true))
+      .catch(() => setAppRunning(false))
+      .finally(() => setTimeout(() => setChecking(false), 500));
+  };
 
   // Check heartbeat every 30 seconds
   useEffect(() => {
-    const check = () => {
-      fetch('/api/heartbeat')
-        .then(r => r.json())
-        .then(d => setAppRunning(d.app_running === true))
-        .catch(() => setAppRunning(false));
-    };
-    check();
-    const interval = setInterval(check, 30000);
+    checkConnection();
+    const interval = setInterval(checkConnection, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -71,10 +75,16 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
       {/* Mode + monitoring badges */}
       <div className="px-4 space-y-2 pb-2">
         {appRunning === true && monitoringEnabled ? (
-          <div className="px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs text-emerald-700 font-label font-medium">Awareness Active</span>
-          </div>
+          <button
+            onClick={checkConnection}
+            className="w-full px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2 cursor-pointer hover:bg-emerald-500/15 transition-colors"
+          >
+            <div className={`w-1.5 h-1.5 rounded-full bg-emerald-500 ${checking ? '' : 'animate-pulse'}`} />
+            <span className="text-xs text-emerald-700 font-label font-medium flex-1 text-left">
+              {checking ? 'Checking...' : 'Awareness Active'}
+            </span>
+            <span className="material-symbols-outlined text-emerald-500 text-sm">refresh</span>
+          </button>
         ) : appRunning === null ? (
           <div className="px-3 py-2 rounded-2xl bg-surface-container flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30" />
@@ -92,6 +102,13 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
             </button>
             {showTroubleshoot && (
               <div className="mt-2 px-3 py-3 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 space-y-2.5">
+                <button
+                  onClick={checkConnection}
+                  className="w-full flex items-center justify-center gap-2 py-2 text-[11px] font-label font-semibold text-primary bg-primary/[0.06] rounded-xl hover:bg-primary/[0.12] cursor-pointer transition-all"
+                >
+                  <span className={`material-symbols-outlined text-sm ${checking ? 'animate-spin' : ''}`}>refresh</span>
+                  {checking ? 'Checking...' : 'Check Connection'}
+                </button>
                 <p className="text-[10px] font-label font-bold uppercase tracking-wider text-on-surface-variant">Troubleshoot</p>
                 <ol className="space-y-2">
                   {[
