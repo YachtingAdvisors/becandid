@@ -83,7 +83,7 @@ export default function ConversationsPage() {
         <div className="space-y-3">
           <h2 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest">Needs Conversation ({pending.length})</h2>
           {pending.map(alert => (
-            <div key={alert.id} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+            <div key={alert.id} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6">
               <div className="flex items-center gap-4 mb-3">
                 <span className="material-symbols-outlined text-primary text-xl">flag</span>
                 <div className="flex-1">
@@ -105,15 +105,15 @@ export default function ConversationsPage() {
 
               <div className="flex gap-2">
                 <button onClick={() => markComplete(alert.id, 'positive')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-primary-container/30 text-primary border border-primary-container hover:bg-primary-container/50 transition-colors inline-flex items-center justify-center gap-1">
+                  className="flex-1 py-2 min-h-[44px] text-xs font-label font-medium rounded-full bg-primary-container/30 text-primary border border-primary-container hover:bg-primary-container/50 cursor-pointer transition-all duration-200 inline-flex items-center justify-center gap-1 hover:shadow-lg hover:shadow-primary/10">
                   <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>sentiment_satisfied</span> Positive
                 </button>
                 <button onClick={() => markComplete(alert.id, 'neutral')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-surface-container text-on-surface-variant border border-outline-variant hover:bg-surface-container-low transition-colors inline-flex items-center justify-center gap-1">
+                  className="flex-1 py-2 min-h-[44px] text-xs font-label font-medium rounded-full bg-surface-container text-on-surface-variant border border-outline-variant hover:bg-surface-container-low cursor-pointer transition-all duration-200 inline-flex items-center justify-center gap-1">
                   <span className="material-symbols-outlined text-sm">sentiment_neutral</span> Neutral
                 </button>
                 <button onClick={() => markComplete(alert.id, 'difficult')}
-                  className="flex-1 py-2 text-xs font-label font-medium rounded-full bg-error/5 text-error border border-error/20 hover:bg-error/10 transition-colors inline-flex items-center justify-center gap-1">
+                  className="flex-1 py-2 min-h-[44px] text-xs font-label font-medium rounded-full bg-error/5 text-error border border-error/20 hover:bg-error/10 cursor-pointer transition-all duration-200 inline-flex items-center justify-center gap-1">
                   <span className="material-symbols-outlined text-sm">fitness_center</span> Difficult
                 </button>
               </div>
@@ -126,7 +126,7 @@ export default function ConversationsPage() {
       {completed.length > 0 && (
         <div className="space-y-3">
           <h2 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest">Completed ({completed.length})</h2>
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 divide-y divide-outline-variant/30">
+          <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 divide-y divide-outline-variant/30">
             {completed.map(alert => {
               const conv = alert.conversations[0];
               const OUTCOME_STYLE: Record<string, string> = {
@@ -157,7 +157,7 @@ export default function ConversationsPage() {
       )}
 
       {alerts.length === 0 && !loading && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
           <span className="material-symbols-outlined text-on-surface-variant text-4xl mb-4 block">forum</span>
           <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No conversations yet</h3>
           <p className="text-sm text-on-surface-variant font-body">When alerts are triggered, your conversation guides will appear here.</p>

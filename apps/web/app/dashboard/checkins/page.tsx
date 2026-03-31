@@ -80,19 +80,19 @@ export default function CheckInsPage() {
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+          <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
             <div className="text-2xl font-headline font-bold text-primary">{stats.completionRate}%</div>
             <div className="text-xs text-on-surface-variant font-label mt-0.5">Completion Rate</div>
           </div>
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+          <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
             <div className="text-2xl font-headline font-bold text-primary">{stats.currentStreak}</div>
             <div className="text-xs text-on-surface-variant font-label mt-0.5">Check-in Streak</div>
           </div>
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+          <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
             <div className="text-2xl font-headline font-bold text-on-surface">{stats.completed}</div>
             <div className="text-xs text-on-surface-variant font-label mt-0.5">Completed</div>
           </div>
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+          <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
             <div className={`text-2xl font-headline font-bold ${actionNeeded > 0 ? 'text-tertiary' : 'text-outline'}`}>
               {actionNeeded}
             </div>
@@ -107,9 +107,9 @@ export default function CheckInsPage() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-full text-xs font-label font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-full text-xs font-label font-medium cursor-pointer transition-all duration-200 ${
               filter === f
-                ? 'bg-primary text-on-primary'
+                ? 'bg-primary text-on-primary shadow-lg shadow-primary/20'
                 : 'bg-surface-container text-on-surface-variant hover:bg-primary-container/30 hover:text-primary'
             }`}
           >
@@ -125,15 +125,15 @@ export default function CheckInsPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 animate-pulse">
+            <div key={i} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 animate-pulse">
               <div className="h-4 bg-surface-container rounded w-3/4 mb-3" />
               <div className="h-3 bg-surface-container-low rounded w-1/2" />
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
-          <span className="material-symbols-outlined text-on-surface-variant text-4xl mb-4 block">assignment</span>
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
+          <span className="material-symbols-outlined text-on-surface-variant/60 text-5xl mb-4 block">assignment</span>
           <h3 className="font-headline font-bold text-on-surface text-xl mb-2">
             {filter === 'all' ? 'No check-ins yet' : `No ${filter} check-ins`}
           </h3>

@@ -136,7 +136,7 @@ export default function AgeGate({ onVerified, onRejected }: AgeGateProps) {
         <button
           type="submit"
           disabled={!month || !day || !year}
-          className="w-full bg-primary hover:bg-primary-dim text-on-primary font-headline font-bold py-5 px-8 rounded-full transition-all duration-300 shadow-lg shadow-primary/10 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
+          className="w-full bg-primary hover:bg-primary-dim text-on-primary font-headline font-bold py-5 px-8 rounded-full transition-all duration-200 shadow-lg shadow-primary/10 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 focus:ring-offset-background"
         >
           Verify Age &amp; Continue
           <span className="material-symbols-outlined text-xl">arrow_forward</span>

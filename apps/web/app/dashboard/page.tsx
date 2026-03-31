@@ -53,24 +53,26 @@ export default async function DashboardPage() {
   const pendingConversations = alerts.filter((a: any) => !a.conversations?.[0]?.completed_at).length;
 
   return (
-    <div className="max-w-lg mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8">
       {/* ── Header ─────────────────────────────────────────── */}
-      <section>
+      <section className="relative pb-4">
+        <p className="font-label text-xs text-on-surface-variant/60 uppercase tracking-widest mb-1">Welcome back</p>
         <h2 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-2">
           Quick Access Dashboard
         </h2>
         <p className="font-body text-sm text-on-surface-variant leading-relaxed">
           Hey {profile?.name?.split(' ')[0] ?? 'there'} &mdash; immediate tools for your on-the-go safety management.
         </p>
+        <div className="absolute bottom-0 left-0 w-16 h-0.5 rounded-full bg-gradient-to-r from-primary to-tertiary" />
       </section>
 
       {/* ── Nudges ─────────────────────────────────────────── */}
       <NudgeBanner />
 
       {/* ── Featured Cards Grid ────────────────────────────── */}
-      <section className="grid grid-cols-2 gap-4">
+      <section className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Crisis Detection — full width */}
-        <Link href="/dashboard/activity" className="col-span-2 group bg-surface-container-low rounded-2xl overflow-hidden shadow-sm border border-outline-variant/30 p-4">
+        <Link href="/dashboard/activity" className="col-span-2 lg:col-span-3 group bg-surface-container-low rounded-2xl overflow-hidden shadow-sm ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer p-5">
           <div className="flex justify-between items-start mb-4">
             <div className="p-2.5 bg-surface-container-lowest rounded-xl shadow-sm">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
@@ -96,7 +98,7 @@ export default async function DashboardPage() {
         </Link>
 
         {/* Guardian Hub — half width */}
-        <Link href="/guardian" className="group bg-surface-container-low rounded-2xl border border-outline-variant/30 p-4 flex flex-col">
+        <Link href="/guardian" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>shield</span>
@@ -112,7 +114,7 @@ export default async function DashboardPage() {
         </Link>
 
         {/* Screen Time — half width */}
-        <Link href="/dashboard/screen-time" className="group bg-surface-container-low rounded-2xl border border-outline-variant/30 p-4 flex flex-col">
+        <Link href="/dashboard/screen-time" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>timer</span>
@@ -128,7 +130,7 @@ export default async function DashboardPage() {
         </Link>
 
         {/* Partner Awareness — full width */}
-        <Link href="/dashboard/partner" className="col-span-2 group bg-surface-container-low rounded-2xl border border-outline-variant/30 p-4 flex items-center gap-4">
+        <Link href="/dashboard/partner" className="col-span-2 lg:col-span-3 group bg-surface-container-low rounded-2xl ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer p-5 flex items-center gap-4">
           <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={IMAGES.partner} alt="Partner Awareness" className="w-full h-full object-cover" />
@@ -174,8 +176,8 @@ export default async function DashboardPage() {
       {/* ── Other Services ─────────────────────────────────── */}
       <section>
         <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-4">Other Services</h3>
-        <div className="space-y-3">
-          <Link href="/dashboard/conversations" className="flex items-center gap-4 p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <Link href="/dashboard/conversations" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={IMAGES.conversation} alt="Conversation Guides" className="w-full h-full object-cover" />
@@ -187,7 +189,7 @@ export default async function DashboardPage() {
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
           </Link>
 
-          <Link href="/dashboard/stringer-journal" className="flex items-center gap-4 p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors">
+          <Link href="/dashboard/stringer-journal" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={IMAGES.journal} alt="Candid Journal" className="w-full h-full object-cover" />
@@ -199,7 +201,7 @@ export default async function DashboardPage() {
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
           </Link>
 
-          <Link href="/dashboard/content-filter" className="flex items-center gap-4 p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors">
+          <Link href="/dashboard/content-filter" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={IMAGES.contentFilter} alt="AI Content Filtering" className="w-full h-full object-cover" />
@@ -211,7 +213,7 @@ export default async function DashboardPage() {
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
           </Link>
 
-          <Link href="/dashboard/streaks" className="flex items-center gap-4 p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors">
+          <Link href="/dashboard/streaks" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={IMAGES.alignment} alt="Alignment Tracking" className="w-full h-full object-cover" />
@@ -223,7 +225,7 @@ export default async function DashboardPage() {
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
           </Link>
 
-          <Link href="/dashboard/security" className="flex items-center gap-4 p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors">
+          <Link href="/dashboard/security" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={IMAGES.encryption} alt="End-to-End Encryption" className="w-full h-full object-cover" />
@@ -235,7 +237,7 @@ export default async function DashboardPage() {
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
           </Link>
 
-          <Link href="/dashboard/checkins" className="flex items-center gap-4 p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl hover:bg-surface-container-low transition-colors">
+          <Link href="/dashboard/checkins" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
             </div>

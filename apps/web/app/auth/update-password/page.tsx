@@ -79,7 +79,7 @@ export default function UpdatePasswordPage() {
         </nav>
 
         <div className="relative z-10 w-full max-w-xl">
-          <div className="bg-surface-container-lowest rounded-[2rem] shadow-[0_4px_40px_rgba(45,112,130,0.06)] border border-outline-variant/15 p-10 sm:p-12 text-center">
+          <div className="bg-surface-container-lowest rounded-[2rem] shadow-[0_4px_40px_rgba(45,112,130,0.06)] ring-1 ring-outline-variant/10 transition-all duration-200 hover:shadow-md hover:shadow-on-surface/[0.04] p-10 sm:p-12 text-center">
             <div className="flex justify-center mb-6">
               <div className="w-14 h-14 rounded-2xl bg-surface-container-low flex items-center justify-center">
                 <span className="material-symbols-outlined text-primary text-[28px]">check_circle</span>
@@ -104,20 +104,19 @@ export default function UpdatePasswordPage() {
       {/* Fixed top nav */}
       <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/70 border-b border-outline-variant/10">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-primary text-[22px]">shield</span>
-            <span className="font-headline font-bold text-on-surface text-[15px] tracking-tight">Be Candid</span>
+          <Link href="/" className="flex items-center gap-2.5 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-lg">
+            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-[13px] font-label text-on-surface-variant hover:text-on-surface transition-colors">Privacy</Link>
-            <Link href="/security" className="text-[13px] font-label text-on-surface-variant hover:text-on-surface transition-colors">Security</Link>
+            <Link href="/privacy" className="text-[13px] font-label text-on-surface-variant hover:text-on-surface cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Privacy</Link>
+            <Link href="/security" className="text-[13px] font-label text-on-surface-variant hover:text-on-surface cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Security</Link>
           </div>
         </div>
       </nav>
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-xl">
-        <div className="bg-surface-container-lowest rounded-[2rem] shadow-[0_4px_40px_rgba(45,112,130,0.06)] border border-outline-variant/15 p-10 sm:p-12">
+        <div className="bg-surface-container-lowest rounded-[2rem] shadow-[0_4px_40px_rgba(45,112,130,0.06)] ring-1 ring-outline-variant/10 transition-all duration-200 hover:shadow-md hover:shadow-on-surface/[0.04] p-10 sm:p-12">
           {/* Icon badge */}
           <div className="flex justify-center mb-6">
             <div className="w-14 h-14 rounded-2xl bg-surface-container-low flex items-center justify-center">
@@ -137,8 +136,10 @@ export default function UpdatePasswordPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="px-4 py-3 rounded-2xl bg-error/5 border border-error/20 text-error text-sm font-body flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px]">error</span>
+              <div className="px-4 py-3 rounded-2xl bg-error/5 ring-1 ring-error/20 text-error text-sm font-body flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-error/10 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[18px]">error</span>
+                </div>
                 {error}
               </div>
             )}

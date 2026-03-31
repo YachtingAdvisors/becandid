@@ -46,7 +46,7 @@ export default function PartnerIndexPage() {
       <div className="max-w-3xl mx-auto space-y-6 animate-pulse">
         <div className="h-8 bg-surface-container-low rounded-xl w-48" />
         <div className="grid grid-cols-2 gap-4">
-          {[1, 2, 3, 4].map(i => <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6"><div className="h-16 bg-surface-container-low rounded-xl" /></div>)}
+          {[1, 2, 3, 4].map(i => <div key={i} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6"><div className="h-16 bg-surface-container-low rounded-xl" /></div>)}
         </div>
       </div>
     );
@@ -55,13 +55,13 @@ export default function PartnerIndexPage() {
   if (!data) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-primary text-3xl">handshake</span>
           </div>
           <h2 className="font-headline text-2xl font-bold text-on-surface mb-3">No Active Partnership</h2>
           <p className="text-sm font-body text-on-surface-variant mb-6">When someone invites you as their accountability partner, this is where you'll see their progress.</p>
-          <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:bg-primary/90 transition-colors">
+          <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
             <span className="material-symbols-outlined text-lg">arrow_back</span>
             Go to Dashboard
           </Link>
@@ -88,7 +88,7 @@ export default function PartnerIndexPage() {
 
       {/* Action needed banner */}
       {actionCount > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-amber-200 p-4 bg-gradient-to-r from-amber-50 to-orange-50">
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-amber-600 text-2xl">bolt</span>
             <div className="flex-1">
@@ -107,15 +107,15 @@ export default function PartnerIndexPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 px-4 py-3 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
           <div className="text-2xl font-headline font-bold text-primary">{data.balance.toLocaleString()}</div>
           <div className="text-xs text-on-surface-variant mt-0.5">Trust Points</div>
         </div>
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 px-4 py-3 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
           <div className="text-2xl font-headline font-bold text-emerald-600">{data.streak.streakDays}</div>
           <div className="text-xs text-on-surface-variant mt-0.5">Day Streak</div>
         </div>
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 px-4 py-3 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
           <div className={`text-2xl font-headline font-bold ${actionCount > 0 ? 'text-amber-500' : 'text-emerald-600'}`}>
             {actionCount > 0 ? actionCount : (
               <span className="material-symbols-outlined text-emerald-600 text-2xl">check_circle</span>
@@ -127,14 +127,14 @@ export default function PartnerIndexPage() {
 
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
-        <Link href="/partner/focus" className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 hover:shadow-md transition-shadow text-center group">
+        <Link href="/partner/focus" className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 text-center group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
             <span className="material-symbols-outlined text-primary text-2xl">center_focus_strong</span>
           </div>
           <div className="font-headline text-sm font-bold text-on-surface">Focus Board</div>
           <p className="text-xs text-on-surface-variant mt-1">3-week heatmap & milestones</p>
         </Link>
-        <Link href="/partner/checkins" className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 hover:shadow-md transition-shadow text-center group">
+        <Link href="/partner/checkins" className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 text-center group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
             <span className="material-symbols-outlined text-primary text-2xl">check_circle</span>
           </div>
@@ -143,7 +143,7 @@ export default function PartnerIndexPage() {
             {data.pendingCheckIns > 0 ? `${data.pendingCheckIns} waiting` : 'All caught up'}
           </p>
         </Link>
-        <Link href="/partner/conversations" className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 hover:shadow-md transition-shadow text-center group">
+        <Link href="/partner/conversations" className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 text-center group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
             <span className="material-symbols-outlined text-primary text-2xl">forum</span>
           </div>
@@ -152,7 +152,7 @@ export default function PartnerIndexPage() {
             {data.pendingConversations > 0 ? `${data.pendingConversations} pending` : 'View history'}
           </p>
         </Link>
-        <Link href="/partner/encourage" className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 hover:shadow-md transition-shadow text-center group">
+        <Link href="/partner/encourage" className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 text-center group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
             <span className="material-symbols-outlined text-primary text-2xl">favorite</span>
           </div>

@@ -48,7 +48,7 @@ export default function GrowthJournalPage() {
     return (
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="h-8 bg-surface-container rounded w-48 animate-pulse" />
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 animate-pulse"><div className="h-40 bg-surface-container-low rounded" /></div>
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-8 animate-pulse"><div className="h-40 bg-surface-container-low rounded" /></div>
       </div>
     );
   }
@@ -97,7 +97,7 @@ export default function GrowthJournalPage() {
       </div>
 
       {/* ── Narrative Summary ──────────────────────────────── */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 bg-gradient-to-br from-primary-container/30 to-emerald-50">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 bg-gradient-to-br from-primary-container/30 to-emerald-50">
         <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">21-Day Summary</h3>
         <p className="text-sm text-on-surface leading-relaxed font-body">
           Over the last 3 weeks, you've been focused for <strong>{focusRate}%</strong> of your tracked segments.
@@ -122,21 +122,21 @@ export default function GrowthJournalPage() {
 
       {/* ── Key Metrics ────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
           <div className="text-2xl font-headline font-bold text-primary">{focusRate}%</div>
           <div className="text-xs text-on-surface-variant font-label mt-0.5">Focus Rate</div>
         </div>
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
           <div className="text-2xl font-headline font-bold text-emerald-600 flex items-center justify-center gap-1">
             <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span> {journal.streak.streakDays}d
           </div>
           <div className="text-xs text-on-surface-variant font-label mt-0.5">Current Streak</div>
         </div>
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
           <div className="text-2xl font-headline font-bold text-primary">{journal.balance.toLocaleString()}</div>
           <div className="text-xs text-on-surface-variant font-label mt-0.5">Trust Points</div>
         </div>
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
           <div className="text-2xl font-headline font-bold text-amber-600 flex items-center justify-center gap-1">
             <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span> {journal.milestones.length}
           </div>
@@ -146,7 +146,7 @@ export default function GrowthJournalPage() {
 
       {/* ── Morning vs Evening ─────────────────────────────── */}
       {morningTotal > 0 && eveningTotal > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6">
           <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Morning vs Evening</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -179,7 +179,7 @@ export default function GrowthJournalPage() {
 
       {/* ── Mood Timeline ──────────────────────────────────── */}
       {moods.length > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6">
           <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Mood Timeline</h3>
           <div className="flex items-end gap-1 h-20">
             {moods.slice(-21).map((m, i) => (
@@ -208,14 +208,14 @@ export default function GrowthJournalPage() {
 
       {/* ── Recent Reflections ─────────────────────────────── */}
       {completedCheckIns.some(ci => ci.user_response) && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6">
           <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Your Reflections</h3>
           <div className="space-y-3">
             {completedCheckIns
               .filter(ci => ci.user_response)
               .slice(0, 10)
               .map(ci => (
-                <div key={ci.id} className="flex items-center gap-4 p-3 rounded-xl border border-outline-variant/30 hover:bg-surface-container-low">
+                <div key={ci.id} className="flex items-center gap-4 p-3 rounded-xl ring-1 ring-outline-variant/10 hover:bg-surface-container-low hover:ring-primary/20 transition-all duration-200 cursor-pointer">
                   <span className="material-symbols-outlined text-primary text-lg flex-shrink-0">
                     {MOOD_ICONS[ci.user_mood ?? 'okay'] ?? 'sentiment_neutral'}
                   </span>
@@ -238,7 +238,7 @@ export default function GrowthJournalPage() {
 
       {/* ── Milestones Timeline ────────────────────────────── */}
       {journal.milestones.length > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6">
           <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-2">
             <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span> Milestone Timeline
           </h3>

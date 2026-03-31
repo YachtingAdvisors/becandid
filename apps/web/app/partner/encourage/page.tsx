@@ -60,7 +60,7 @@ export default function EncouragePage() {
   if (sent) {
     return (
       <div className="max-w-lg mx-auto">
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-10 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-10 text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
             <span className="material-symbols-outlined text-primary text-4xl">{currentIcon}</span>
           </div>
@@ -69,10 +69,10 @@ export default function EncouragePage() {
             Your message is on its way. These moments matter more than you know.
           </p>
           <div className="flex gap-3 justify-center">
-            <button onClick={() => { setSent(false); setMessage(''); }} className="px-4 py-2 text-sm font-label font-medium text-on-surface-variant border border-outline-variant rounded-full hover:bg-surface-container-low transition-colors">
+            <button onClick={() => { setSent(false); setMessage(''); }} className="px-4 py-2 text-sm font-label font-medium text-on-surface-variant ring-1 ring-outline-variant rounded-full hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               Send another
             </button>
-            <button onClick={() => router.push('/partner/focus')} className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-bold rounded-full hover:bg-primary/90 transition-colors">
+            <button onClick={() => router.push('/partner/focus')} className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               Back to overview
             </button>
           </div>
@@ -98,7 +98,7 @@ export default function EncouragePage() {
         </div>
       )}
 
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <label className="block text-sm font-medium text-on-surface mb-3">Choose a tone</label>
         <div className="flex flex-wrap gap-2">
           {TONE_ICONS.map((t, i) => (
@@ -113,7 +113,7 @@ export default function EncouragePage() {
         </div>
       </div>
 
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <label className="block text-sm font-medium text-on-surface mb-3">Quick messages</label>
         <div className="space-y-2">
           {QUICK_MESSAGES.map(m => (
@@ -127,7 +127,7 @@ export default function EncouragePage() {
         </div>
       </div>
 
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <label className="block text-sm font-medium text-on-surface mb-2">Or write your own</label>
         <textarea value={message} onChange={e => setMessage(e.target.value)}
           rows={3} placeholder="Say something real..."

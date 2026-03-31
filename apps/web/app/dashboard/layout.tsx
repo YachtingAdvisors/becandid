@@ -75,11 +75,13 @@ export default async function DashboardLayout({
         navItems={visibleNav}
         soloMode={isSolo}
       />
-      <main className="flex-1 min-w-0 pt-16 pb-20 lg:pt-0 lg:pb-0">
+      <main className="flex-1 min-w-0 pt-16 pb-20 lg:pt-0 lg:pb-0 relative">
+        {/* Subtle top gradient decorative element */}
+        <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
         {!isVerified && user.email && (
           <EmailVerificationBanner email={user.email} />
         )}
-        <div className="px-4 py-6 lg:px-8 lg:py-8">
+        <div className="relative px-4 py-6 lg:px-10 lg:py-10">
           {children}
         </div>
       </main>

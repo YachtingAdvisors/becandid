@@ -75,14 +75,14 @@ export default function PartnerConversationsPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 animate-pulse">
+            <div key={i} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 animate-pulse">
               <div className="h-4 bg-surface-container-low rounded-xl w-48 mb-2" />
               <div className="h-3 bg-surface-container-low rounded-xl w-32" />
             </div>
           ))}
         </div>
       ) : alerts.length === 0 ? (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-primary text-3xl">forum</span>
           </div>
@@ -100,7 +100,7 @@ export default function PartnerConversationsPage() {
                 Needs Conversation ({pending.length})
               </h2>
               {pending.map(a => (
-                <div key={a.id} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4">
+                <div key={a.id} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-md transition-all duration-300">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                       <span className="material-symbols-outlined text-primary text-xl">{getCategoryIcon(a.events?.category as GoalCategory)}</span>
@@ -114,7 +114,7 @@ export default function PartnerConversationsPage() {
                   </div>
                   {a.ai_guide_partner && (
                     <Link href={`/conversation/${a.id}`}
-                      className="flex items-center justify-center gap-2 w-full py-2.5 text-center text-sm font-label font-bold bg-primary text-on-primary rounded-full hover:bg-primary/90 transition-colors">
+                      className="flex items-center justify-center gap-2 w-full py-2.5 text-center text-sm font-label font-bold bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
                       <span className="material-symbols-outlined text-lg">menu_book</span>
                       View Your Conversation Guide
                     </Link>
@@ -130,7 +130,7 @@ export default function PartnerConversationsPage() {
               <h2 className="text-xs font-bold text-on-surface-muted uppercase tracking-wider">
                 Completed ({completed.length})
               </h2>
-              <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 divide-y divide-surface-border/50">
+              <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 divide-y divide-surface-border/50">
                 {completed.map(a => {
                   const conv = a.conversations[0];
                   return (
@@ -149,7 +149,7 @@ export default function PartnerConversationsPage() {
                           {conv.outcome}
                         </span>
                       )}
-                      <Link href={`/conversation/${a.id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1">
+                      <Link href={`/conversation/${a.id}`} className="text-xs text-primary font-medium hover:underline flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-lg px-1 py-0.5">
                         <span className="material-symbols-outlined text-sm">menu_book</span>
                         Guide
                       </Link>

@@ -6,24 +6,24 @@ import Link from 'next/link';
 
 export default function LegalFooter() {
   return (
-    <footer className="border-t border-outline-variant/30 bg-surface-container-lowest/80 glass-effect">
+    <footer className="ring-1 ring-outline-variant/5 bg-surface-container-lowest/80 glass-effect">
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Be Candid" className="h-6 w-auto" />
+            <img src="/logo.png" alt="Be Candid" className="h-8 w-auto" />
           </div>
 
           <div className="flex items-center gap-6 text-sm font-label text-on-surface-variant">
-            <Link href="/pricing" className="hover:text-primary transition-colors">
+            <Link href="/pricing" className="hover:text-primary transition-colors duration-200 cursor-pointer">
               Pricing
             </Link>
-            <Link href="/legal/privacy" className="hover:text-primary transition-colors">
+            <Link href="/legal/privacy" className="hover:text-primary transition-colors duration-200 cursor-pointer">
               Privacy Policy
             </Link>
-            <Link href="/legal/terms" className="hover:text-primary transition-colors">
+            <Link href="/legal/terms" className="hover:text-primary transition-colors duration-200 cursor-pointer">
               Terms of Service
             </Link>
-            <a href="mailto:support@becandid.io" className="hover:text-primary transition-colors">
+            <a href="mailto:support@becandid.io" className="hover:text-primary transition-colors duration-200 cursor-pointer">
               Contact
             </a>
           </div>

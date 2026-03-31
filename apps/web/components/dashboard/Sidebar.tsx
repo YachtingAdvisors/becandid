@@ -76,10 +76,10 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
             key={item.id}
             href={item.href}
             onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 transition-all ${
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
               isActive(item.href)
-                ? 'bg-secondary-container text-on-secondary-container'
-                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
+                ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
+                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
             }`}
           >
             <span className="material-symbols-outlined text-lg w-5 text-center">{item.icon}</span>
@@ -87,15 +87,16 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
           </Link>
         ))}
 
-        {/* Screen Time & Content Filter */}
+        {/* Tools section */}
         <div className="mt-2 pt-2 border-t border-outline-variant/30">
+          <span className="px-4 text-[10px] font-label font-semibold uppercase tracking-widest text-on-surface-variant/50 mb-1 block">Tools</span>
           <Link
             href="/dashboard/screen-time"
             onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 transition-all ${
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
               isActive('/dashboard/screen-time')
-                ? 'bg-secondary-container text-on-secondary-container'
-                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
+                ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
+                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
             }`}
           >
             <span className="material-symbols-outlined text-lg w-5 text-center">timer</span>
@@ -104,10 +105,10 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
           <Link
             href="/dashboard/content-filter"
             onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 transition-all ${
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
               isActive('/dashboard/content-filter')
-                ? 'bg-secondary-container text-on-secondary-container'
-                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
+                ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
+                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
             }`}
           >
             <span className="material-symbols-outlined text-lg w-5 text-center">filter_alt</span>
@@ -120,10 +121,10 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
           <Link
             href="/guardian"
             onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 transition-all ${
+            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
               isActive('/guardian')
-                ? 'bg-secondary-container text-on-secondary-container'
-                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20'
+                ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
+                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
             }`}
           >
             <span className="material-symbols-outlined text-lg w-5 text-center">supervisor_account</span>
@@ -137,17 +138,24 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
         <Link
           href="/pricing"
           onClick={() => setOpen(false)}
-          className="flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium text-tertiary hover:bg-tertiary-container/20 transition-colors"
+          className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-tertiary bg-gradient-to-r from-primary/10 to-tertiary/10 ring-1 ring-primary/15 cursor-pointer hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30"
         >
           <span className="material-symbols-outlined text-lg w-5 text-center">auto_awesome</span>
-          <span className="font-body">Upgrade Plan</span>
+          <span className="font-body font-semibold">Upgrade Plan</span>
         </Link>
       </div>
 
       {/* User */}
       <div className="px-5 py-4 border-t border-outline-variant">
-        <p className="text-sm font-headline font-bold text-on-surface truncate">{userName}</p>
-        <Link href="/dashboard/settings" className="text-xs text-on-surface-variant hover:text-primary font-label">Settings</Link>
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <span className="text-sm font-headline font-bold text-primary">{userName.charAt(0).toUpperCase()}</span>
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-headline font-bold text-on-surface truncate">{userName}</p>
+            <Link href="/dashboard/settings" className="text-xs text-on-surface-variant hover:text-primary font-label cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30 rounded">Settings</Link>
+          </div>
+        </div>
       </div>
 
       {/* Clinical expertise note */}
@@ -161,7 +169,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
     <>
       {/* Mobile hamburger */}
       <button onClick={() => setOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-40 w-10 h-10 rounded-2xl bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant shadow-sm flex items-center justify-center"
+        className="lg:hidden fixed top-4 left-4 z-40 w-11 h-11 rounded-2xl bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant shadow-sm flex items-center justify-center cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30"
         aria-label="Open menu">
         <svg className="w-5 h-5 text-on-surface" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -180,7 +188,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
           <aside className="absolute left-0 top-0 bottom-0 w-72 bg-[#fbf9f8]/95 backdrop-blur-xl flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
             <button onClick={() => setOpen(false)}
               aria-label="Close menu"
-              className="absolute top-4 right-4 w-8 h-8 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container">
+              className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30">
               <span className="material-symbols-outlined text-lg">close</span>
             </button>
             {sidebarContent}
@@ -190,19 +198,20 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
 
       {/* Mobile bottom nav bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant">
-        <nav className="flex items-center justify-around px-2 py-1.5">
+        <nav className="flex items-center justify-around px-2 py-1">
           {MOBILE_TABS_ALL.filter(tab => !soloMode || tab.solo).map((tab) => {
             const active = isActive(tab.href);
             return (
               <Link
                 key={tab.id}
                 href={tab.href}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl min-w-[60px] transition-all ${
+                className={`relative flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-2xl min-w-[60px] cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                   active
                     ? 'bg-secondary-container text-on-secondary-container'
                     : 'text-on-surface-variant hover:text-primary'
                 }`}
               >
+                {active && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-primary" />}
                 <span className="material-symbols-outlined text-lg">{tab.icon}</span>
                 <span className="text-[10px] font-label font-medium">{tab.label}</span>
               </Link>

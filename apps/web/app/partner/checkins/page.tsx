@@ -68,7 +68,7 @@ export default function PartnerCheckInsPage() {
 
       {/* Action needed banner */}
       {actionNeeded > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-amber-200 p-4 bg-gradient-to-r from-amber-50 to-orange-50">
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-amber-600 text-2xl">assignment_late</span>
             <div>
@@ -87,14 +87,14 @@ export default function PartnerCheckInsPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 animate-pulse">
+            <div key={i} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 animate-pulse">
               <div className="h-4 bg-surface-container-low rounded-xl w-3/4 mb-3" />
               <div className="h-3 bg-surface-container-low rounded-xl w-1/2" />
             </div>
           ))}
         </div>
       ) : checkIns.length === 0 ? (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-primary text-3xl">check_circle</span>
           </div>

@@ -7,19 +7,20 @@ export default function GuardianLayout({
 }) {
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-outline-variant bg-surface-container-lowest">
+      <header className="ring-1 ring-outline-variant/10 bg-surface-container-lowest/90 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard"
-              className="text-sm text-on-surface-variant hover:text-primary font-label font-medium"
+              className="inline-flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-primary font-label font-medium transition-colors duration-200 cursor-pointer"
             >
-              &larr; Dashboard
+              <span className="material-symbols-outlined text-base">arrow_back</span>
+              Dashboard
             </Link>
-            <span className="text-outline-variant">|</span>
-            <img src="/logo.png" alt="Be Candid" className="h-12 w-auto" />
+            <span className="text-outline-variant/40">|</span>
+            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
             <span className="text-sm text-on-surface-variant font-label">
-              &mdash; Guardian Dashboard
+              Guardian Dashboard
             </span>
           </div>
         </div>
