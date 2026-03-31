@@ -92,6 +92,7 @@ function MaterialIcon({ name, className = '', filled = false }: { name: string; 
 /* ─── Main page ──────────────────────────────────────────────── */
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -132,10 +133,10 @@ export default function LandingPage() {
             })}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
             <Link
               href="/auth/signin"
-              className="hidden sm:inline-flex px-5 py-2.5 text-sm font-medium text-on-surface/70 hover:text-on-surface rounded-full hover:bg-surface-container-low transition-all duration-200 cursor-pointer"
+              className="px-5 py-2.5 text-sm font-medium text-on-surface/70 hover:text-on-surface rounded-full hover:bg-surface-container-low transition-all duration-200 cursor-pointer"
             >
               Log in
             </Link>
@@ -146,7 +147,52 @@ export default function LandingPage() {
               Get Started
             </Link>
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            <span className="material-symbols-outlined text-on-surface text-2xl">
+              {mobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
         </nav>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-surface/95 backdrop-blur-xl border-t border-outline-variant/10 px-6 pb-6 pt-2">
+            <div className="space-y-1">
+              {[
+                { label: 'Features', href: '#features' },
+                { label: 'How It Works', href: '#journey' },
+                { label: 'Download', href: '/download' },
+                { label: 'Families', href: '/families' },
+                { label: 'Pricing', href: '/pricing' },
+              ].map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 rounded-xl font-body text-base text-on-surface hover:bg-surface-container-low transition-all duration-200"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+            <div className="mt-4 pt-4 border-t border-outline-variant/10 flex flex-col gap-3">
+              <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-3 text-center text-on-surface font-label text-sm font-semibold rounded-xl hover:bg-surface-container-low transition-all duration-200 cursor-pointer">
+                Log in
+              </Link>
+              <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-3 text-center bg-primary text-on-primary rounded-full font-label text-sm font-semibold shadow-lg shadow-primary/20 hover:brightness-110 transition-all duration-200 cursor-pointer">
+                Get Started
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       <main>

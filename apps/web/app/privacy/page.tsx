@@ -1,3 +1,4 @@
+import PublicNav from '@/components/PublicNav';
 import Link from 'next/link';
 
 export const metadata = {
@@ -14,25 +15,7 @@ const LAST_UPDATED = 'March 30, 2026';
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-surface text-on-surface">
-      {/* Nav */}
-      <header className="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl">
-        <nav className="flex justify-between items-center px-6 lg:px-12 py-6 max-w-screen-2xl mx-auto">
-          <Link href="/" className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="h-12 w-auto object-contain" />
-          </Link>
-          <div className="hidden md:flex items-center gap-10 font-body text-base tracking-tight">
-            <Link href="/#features" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 cursor-pointer">Features</Link>
-            <Link href="/pricing" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 cursor-pointer">Pricing</Link>
-            <Link href="/download" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 cursor-pointer">Download</Link>
-            <Link href="/families" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 cursor-pointer">Families</Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/auth/signin" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 font-label text-sm font-semibold cursor-pointer">Log in</Link>
-            <Link href="/auth/signup" className="px-8 py-3 bg-primary text-on-primary rounded-full font-label text-sm font-semibold tracking-wide shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer">Get Started</Link>
-          </div>
-        </nav>
-      </header>
+      <PublicNav />
 
       <main className="pt-32 pb-24 px-6 lg:px-12 max-w-3xl mx-auto">
         <h1 className="font-headline text-4xl lg:text-5xl font-extrabold text-on-surface tracking-tight mb-4">

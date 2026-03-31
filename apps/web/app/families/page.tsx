@@ -1,3 +1,4 @@
+import PublicNav from '@/components/PublicNav';
 import Link from 'next/link';
 
 const FEATURES = [
@@ -47,35 +48,7 @@ const STEPS = [
 export default function FamiliesPage() {
   return (
     <div className="min-h-screen bg-[#fbf9f8]">
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-outline-variant/10">
-        <div className="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="cursor-pointer">
-            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
-          </Link>
-          <div className="hidden md:flex items-center gap-1 font-body text-sm">
-            <Link href="/" className="px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer">Home</Link>
-            <Link href="/#features" className="px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer">Features</Link>
-            <Link href="/pricing" className="px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer">Pricing</Link>
-            <Link href="/download" className="px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer">Download</Link>
-            <span className="px-4 py-2 rounded-full text-primary font-medium cursor-default">Families</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/auth/signin"
-              className="hidden sm:inline-flex px-5 py-2.5 text-sm font-medium text-on-surface/70 hover:text-on-surface rounded-full hover:bg-surface-container-low transition-all duration-200 cursor-pointer"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="px-5 py-2.5 bg-primary text-on-primary text-sm font-label font-semibold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
-            >
-              Get Started
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* Hero */}
       <section
