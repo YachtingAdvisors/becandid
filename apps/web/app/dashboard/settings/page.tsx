@@ -15,13 +15,30 @@ export default async function SettingsPage() {
   if (!user) return null;
 
   const db = createServiceClient();
-  const { data: profile } = await db
+
+  // Use select('*') to avoid failing on missing columns from un-run migrations
+  const { data: raw } = await db
     .from('users')
-    .select('name, phone, goals, monitoring_enabled, streak_mode, timezone, nudge_enabled, check_in_enabled, check_in_hour, check_in_frequency, foundational_motivator')
+    .select('*')
     .eq('id', user.id)
     .single();
 
-  if (!profile) return null;
+  if (!raw) return null;
+
+  // Apply safe defaults for any columns that might not exist yet
+  const profile = {
+    name: raw.name ?? '',
+    phone: raw.phone ?? '',
+    goals: raw.goals ?? [],
+    monitoring_enabled: raw.monitoring_enabled ?? true,
+    streak_mode: raw.streak_mode ?? 'no_failures',
+    timezone: raw.timezone ?? 'America/New_York',
+    nudge_enabled: raw.nudge_enabled ?? true,
+    check_in_enabled: raw.check_in_enabled ?? true,
+    check_in_hour: raw.check_in_hour ?? 21,
+    check_in_frequency: raw.check_in_frequency ?? 'daily',
+    foundational_motivator: raw.foundational_motivator ?? 'general',
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
