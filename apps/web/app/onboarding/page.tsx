@@ -74,9 +74,12 @@ export default function OnboardingPage() {
 
   // ── Send partner invite ───────────────────────────────
   const sendInvite = async () => {
-    if (!partnerName.trim() || !partnerEmail.trim()) return;
-    setLoading(true);
     setError('');
+    if (!partnerName.trim()) { setError('Please enter your partner\'s name.'); return; }
+    if (!partnerEmail.trim()) { setError('Please enter your partner\'s email.'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(partnerEmail.trim())) { setError('Please enter a valid email address.'); return; }
+    if (partnerPhone.trim() && partnerPhone.trim().length < 7) { setError('Please enter a valid phone number (at least 7 digits).'); return; }
+    setLoading(true);
     try {
       const res = await fetch('/api/partners', {
         method: 'POST',
@@ -85,12 +88,23 @@ export default function OnboardingPage() {
           partner_name: partnerName.trim(),
           partner_email: partnerEmail.trim().toLowerCase(),
           partner_phone: partnerPhone.trim() || undefined,
-          relationship,
+          relationship_type: relationship,
         }),
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || 'Failed to send invite');
+        // Extract specific field errors from Zod validation
+        if (data.details?.fieldErrors) {
+          const fields = data.details.fieldErrors;
+          const messages = [];
+          if (fields.partner_name) messages.push(`Name: ${fields.partner_name[0]}`);
+          if (fields.partner_email) messages.push(`Email: ${fields.partner_email[0]}`);
+          if (fields.partner_phone) messages.push(`Phone: ${fields.partner_phone[0]}`);
+          if (fields.relationship_type) messages.push(`Relationship: ${fields.relationship_type[0]}`);
+          setError(messages.length > 0 ? messages.join('. ') : (data.error || 'Failed to send invite'));
+        } else {
+          setError(data.error || 'Failed to send invite');
+        }
       } else {
         setStep('done');
       }

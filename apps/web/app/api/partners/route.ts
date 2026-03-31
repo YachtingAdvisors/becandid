@@ -12,7 +12,7 @@ const InviteSchema = z.object({
   partner_name: z.string().min(1).max(100),
   partner_email: z.string().email().max(254),
   partner_phone: z.string().max(20).optional(),
-  relationship_type: z.enum(['friend', 'spouse', 'mentor', 'family', 'coach']),
+  relationship_type: z.enum(['friend', 'spouse', 'mentor', 'family', 'coach', 'therapist', 'pastor']),
 });
 
 export async function GET(req: NextRequest) {
