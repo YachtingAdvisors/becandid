@@ -56,8 +56,8 @@ export default function DownloadPage() {
         <section className="px-6 lg:px-12 pt-20 pb-16 max-w-screen-2xl mx-auto text-center">
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="inline-flex items-center gap-3 px-4 py-2 bg-surface-container-low rounded-full">
-              <MaterialIcon name="extension" className="text-primary text-lg" />
-              <span className="font-label text-xs font-bold uppercase tracking-widest text-primary">Browser Extensions</span>
+              <MaterialIcon name="download" className="text-primary text-lg" />
+              <span className="font-label text-xs font-bold uppercase tracking-widest text-primary">Get Be Candid</span>
             </div>
 
             <h1 className="font-headline text-5xl lg:text-7xl font-extrabold text-on-surface tracking-tighter leading-[1.05]">
@@ -65,12 +65,130 @@ export default function DownloadPage() {
             </h1>
 
             <p className="font-body text-xl text-on-surface-variant leading-relaxed opacity-80 max-w-2xl mx-auto">
-              Install the Be Candid browser extension for real-time awareness monitoring. Privacy-first &mdash; only domain names are tracked, never full URLs or page content.
+              Desktop screen monitoring and mobile accountability &mdash; privacy-first, AI-powered, and always by your side.
             </p>
           </div>
         </section>
 
-        {/* ── Browser Extensions (Primary) ─────────────────── */}
+        {/* ── Primary: Desktop Monitor + Mobile App ─────── */}
+        <section className="px-6 lg:px-12 pb-12 max-w-screen-2xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Desktop Screen Monitor */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.08] to-primary/[0.02] rounded-2xl p-8 ring-1 ring-primary/20 hover:ring-primary/30 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+                  <MaterialIcon name="desktop_windows" className="text-primary text-3xl" />
+                </div>
+                <div>
+                  <h3 className="font-headline text-2xl font-bold text-on-surface">Desktop Monitor</h3>
+                  <p className="font-body text-sm text-on-surface-variant">macOS &amp; Windows</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-5">
+                {[
+                  { icon: 'screenshot_monitor', label: 'Full Screen' },
+                  { icon: 'psychology', label: 'AI Analysis' },
+                  { icon: 'visibility_off', label: 'Never Stored' },
+                ].map((f) => (
+                  <span key={f.label} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/[0.08] text-primary font-label text-xs font-medium">
+                    <MaterialIcon name={f.icon} className="text-sm" />
+                    {f.label}
+                  </span>
+                ))}
+              </div>
+
+              <p className="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
+                Monitors your entire screen across all apps. AI analyzes periodic screenshots against your goals, then immediately deletes them. Runs silently in your menu bar.
+              </p>
+
+              <a
+                href="https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0/BeCandid-1.0.0-mac-arm64.dmg"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+              >
+                <MaterialIcon name="download" className="text-lg" />
+                Download for Mac
+              </a>
+
+              <p className="font-label text-[10px] text-on-surface-variant/60 mt-3">
+                Free &middot; macOS 12+ &middot; Apple Silicon
+              </p>
+
+              <details className="mt-4 group">
+                <summary className="flex items-center gap-2 cursor-pointer text-xs text-primary font-label font-medium hover:underline">
+                  <MaterialIcon name="help" className="text-sm" />
+                  macOS security warning?
+                </summary>
+                <div className="mt-3 p-4 rounded-xl bg-primary/[0.04] ring-1 ring-primary/10 space-y-2">
+                  <ol className="space-y-1.5">
+                    {[
+                      'Drag Be Candid to Applications',
+                      'Try to open \u2014 click Done on the warning',
+                      'System Settings \u2192 Privacy & Security \u2192 Open Anyway',
+                    ].map((step, i) => (
+                      <li key={i} className="flex items-start gap-2 text-xs text-on-surface-variant font-body">
+                        <span className="flex-shrink-0 w-4 h-4 rounded-full bg-primary text-on-primary flex items-center justify-center text-[9px] font-bold mt-0.5">{i + 1}</span>
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </details>
+            </div>
+
+            {/* Mobile App */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/[0.08] to-primary/[0.02] rounded-2xl p-8 ring-1 ring-primary/20 hover:ring-primary/30 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+                  <MaterialIcon name="phone_iphone" className="text-primary text-3xl" />
+                </div>
+                <div>
+                  <h3 className="font-headline text-2xl font-bold text-on-surface">Mobile App</h3>
+                  <p className="font-body text-sm text-on-surface-variant">iPhone, iPad &amp; Android</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-5">
+                {[
+                  { icon: 'notifications_active', label: 'Push Notifications' },
+                  { icon: 'check_circle', label: 'Check-ins' },
+                  { icon: 'edit_note', label: 'Journal' },
+                ].map((f) => (
+                  <span key={f.label} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/[0.08] text-primary font-label text-xs font-medium">
+                    <MaterialIcon name={f.icon} className="text-sm" />
+                    {f.label}
+                  </span>
+                ))}
+              </div>
+
+              <p className="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
+                Your accountability companion on the go. Mood check-ins, guided journaling, conversation guides, and real-time alerts &mdash; all from your home screen.
+              </p>
+
+              <div className="space-y-4">
+                <div className="bg-white/60 rounded-xl p-4 ring-1 ring-primary/5">
+                  <h4 className="font-label text-[10px] font-bold uppercase tracking-wider text-primary mb-3">Install as App</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs font-label font-medium text-on-surface mb-1">iPhone / iPad</p>
+                      <p className="text-[11px] text-on-surface-variant font-body">Safari &rarr; Share &rarr; Add to Home Screen</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-label font-medium text-on-surface mb-1">Android</p>
+                      <p className="text-[11px] text-on-surface-variant font-body">Chrome &rarr; Menu (&vellip;) &rarr; Install App</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p className="font-label text-[10px] text-on-surface-variant/60 mt-3">
+                Free &middot; iOS 16.4+ &middot; Android Chrome
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Browser Extensions ───────────────────────────── */}
         <section className="px-6 lg:px-12 pb-12 max-w-screen-2xl mx-auto">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Chrome Extension */}
@@ -181,158 +299,7 @@ export default function DownloadPage() {
           </div>
         </section>
 
-        {/* ── Desktop Screen Monitor ────────────────────── */}
-        <section className="px-6 lg:px-12 pb-12 max-w-screen-2xl mx-auto">
-          <div className="relative overflow-hidden bg-gradient-to-br from-violet-500/[0.05] to-violet-500/[0.01] rounded-2xl p-8 ring-1 ring-violet-500/10 hover:ring-violet-500/20 hover:shadow-xl transition-all duration-300">
-            <div className="flex flex-col md:flex-row md:items-start gap-8">
-              <div className="flex-1">
-                <div className="flex items-center gap-4 mb-5">
-                  <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center">
-                    <MaterialIcon name="desktop_windows" className="text-violet-600 text-3xl" />
-                  </div>
-                  <div>
-                    <h3 className="font-headline text-2xl font-bold text-on-surface">Desktop Screen Monitor</h3>
-                    <p className="font-body text-sm text-on-surface-variant">macOS &amp; Windows</p>
-                  </div>
-                  <span className="ml-auto px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 font-label text-[10px] font-bold uppercase tracking-wider">
-                    New
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {[
-                    { icon: 'screenshot_monitor', label: 'Full Screen Monitoring' },
-                    { icon: 'psychology', label: 'AI Analysis' },
-                    { icon: 'login', label: 'Auto-launch' },
-                    { icon: 'visibility_off', label: 'Screenshots Never Stored' },
-                  ].map((f) => (
-                    <span key={f.label} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-500/[0.08] text-violet-600 font-label text-xs font-medium">
-                      <MaterialIcon name={f.icon} className="text-sm" />
-                      {f.label}
-                    </span>
-                  ))}
-                </div>
-
-                <p className="font-body text-sm text-on-surface-variant leading-relaxed mb-6">
-                  Goes beyond browsers &mdash; monitors your entire screen across all apps. Takes periodic screenshots every 5 minutes, analyzes them with AI to detect categories you&rsquo;re tracking, then immediately deletes the image. Runs silently in your menu bar.
-                </p>
-
-                <div className="flex flex-wrap gap-3">
-                  <a
-                    href="https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0/BeCandid-1.0.0-mac-arm64.dmg"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-violet-600 text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-violet-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
-                  >
-                    <MaterialIcon name="download" className="text-lg" />
-                    Download for Mac
-                  </a>
-                  <button
-                    disabled
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container text-on-surface-variant rounded-full font-label font-bold text-sm tracking-wide opacity-60 cursor-not-allowed"
-                  >
-                    <MaterialIcon name="download" className="text-lg" />
-                    Windows — Coming Soon
-                  </button>
-                </div>
-
-                <p className="font-label text-[10px] text-on-surface-variant/60 mt-3">
-                  Free &middot; Requires a Be Candid account &middot; macOS 12+ / Windows 10+
-                </p>
-
-                {/* macOS install help */}
-                <details className="mt-4 group">
-                  <summary className="flex items-center gap-2 cursor-pointer text-xs text-violet-600 font-label font-medium hover:underline">
-                    <MaterialIcon name="help" className="text-sm" />
-                    macOS shows a security warning?
-                  </summary>
-                  <div className="mt-3 p-4 rounded-xl bg-violet-50/50 ring-1 ring-violet-200/30 space-y-3">
-                    <p className="text-xs text-on-surface-variant font-body leading-relaxed">
-                      Because the app is new, macOS may show &ldquo;Apple could not verify&rdquo;. This is normal for apps distributed outside the App Store. To open it:
-                    </p>
-                    <ol className="space-y-2">
-                      {[
-                        'Open the DMG and drag Be Candid to Applications',
-                        'Try to open it \u2014 you\u2019ll see the warning. Click Done.',
-                        'Go to System Settings \u2192 Privacy & Security',
-                        'Scroll down \u2014 you\u2019ll see \u201cBe Candid was blocked\u201d with an Open Anyway button',
-                        'Click Open Anyway, then Open in the confirmation dialog',
-                      ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-2 text-xs text-on-surface-variant font-body">
-                          <span className="flex-shrink-0 w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center text-[10px] font-bold mt-0.5">
-                            {i + 1}
-                          </span>
-                          {step}
-                        </li>
-                      ))}
-                    </ol>
-                    <p className="text-[10px] text-on-surface-variant/60 font-label">
-                      You only need to do this once. The app is code-signed with our Apple Developer ID certificate.
-                    </p>
-                  </div>
-                </details>
-              </div>
-
-              {/* How it works mini-diagram */}
-              <div className="md:w-72 flex-shrink-0 bg-white/60 rounded-xl p-5 ring-1 ring-violet-500/5">
-                <h4 className="font-label text-[10px] font-bold uppercase tracking-wider text-violet-600 mb-4">How It Works</h4>
-                <div className="space-y-3">
-                  {[
-                    { step: '1', text: 'Takes a screenshot every 5 min' },
-                    { step: '2', text: 'Compares with previous — skips if unchanged' },
-                    { step: '3', text: 'AI classifies against your goals' },
-                    { step: '4', text: 'Creates event if flagged — deletes image' },
-                  ].map((s) => (
-                    <div key={s.step} className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center text-[10px] font-bold">
-                        {s.step}
-                      </span>
-                      <span className="font-body text-xs text-on-surface-variant leading-relaxed">{s.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Mobile Apps (Secondary) ──────────────────────── */}
-        <section className="px-6 lg:px-12 pb-12 max-w-screen-2xl mx-auto">
-          <div className="flex items-center gap-3 mb-6">
-            <MaterialIcon name="phone_iphone" className="text-primary text-xl" />
-            <h2 className="font-headline text-xl font-bold text-on-surface">Mobile Apps</h2>
-            <span className="font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant bg-surface-container px-3 py-1 rounded-full">PWA</span>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {PWA_PLATFORMS.map((card) => (
-              <div
-                key={card.title}
-                className="bg-surface-container-lowest rounded-2xl p-6 ring-1 ring-outline-variant/10 hover:ring-primary/15 hover:shadow-md transition-all duration-300"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <MaterialIcon name={card.icon} className="text-primary text-xl" />
-                  </div>
-                  <h3 className="font-headline text-lg font-bold text-on-surface">{card.title}</h3>
-                </div>
-
-                <ol className="space-y-2.5 mb-4">
-                  {card.steps.map((step, i) => (
-                    <li key={i} className="flex items-start gap-2.5">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-[10px] font-bold font-label mt-0.5">
-                        {i + 1}
-                      </span>
-                      <span className="font-body text-sm text-on-surface-variant leading-relaxed">{step}</span>
-                    </li>
-                  ))}
-                </ol>
-
-                <div className="flex items-center gap-2 pt-3 border-t border-outline-variant/10">
-                  <MaterialIcon name="info" className="text-primary text-sm" />
-                  <p className="font-label text-[10px] text-on-surface-variant">{card.note}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Old mobile apps section removed — now in primary hero grid above */}
 
         {/* ── Desktop PWA (Collapsible) ────────────────────── */}
         <section className="px-6 lg:px-12 pb-12 max-w-screen-2xl mx-auto">
