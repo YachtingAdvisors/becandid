@@ -14,7 +14,12 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const db = createServiceClient();
-  await db.from('users').update({ last_heartbeat: new Date().toISOString() }).eq('id', user.id);
+  const { error } = await db.from('users').update({ last_heartbeat: new Date().toISOString() }).eq('id', user.id);
+
+  if (error) {
+    console.error('[heartbeat] Update failed:', error.message);
+    return NextResponse.json({ ok: false, error: error.message });
+  }
 
   return NextResponse.json({ ok: true });
 }
@@ -24,11 +29,27 @@ export async function GET(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const db = createServiceClient();
-  const { data } = await db
+  const { data, error: selectError } = await db
     .from('users')
     .select('last_heartbeat, monitoring_enabled')
     .eq('id', user.id)
     .single();
+
+  if (selectError) {
+    // Column might not exist — try without last_heartbeat
+    const { data: fallback } = await db
+      .from('users')
+      .select('monitoring_enabled')
+      .eq('id', user.id)
+      .single();
+
+    return NextResponse.json({
+      app_running: false,
+      monitoring_enabled: fallback?.monitoring_enabled ?? false,
+      last_heartbeat: null,
+      error: selectError.message,
+    });
+  }
 
   const lastHeartbeat = data?.last_heartbeat ? new Date(data.last_heartbeat).getTime() : 0;
   const fiveMinAgo = Date.now() - 5 * 60 * 1000;
