@@ -236,19 +236,19 @@ export default function DownloadPage() {
 
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href="#"
+                    href="https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0/BeCandid-1.0.0-mac-arm64.dmg"
                     className="inline-flex items-center gap-2 px-8 py-4 bg-violet-600 text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-violet-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
                   >
                     <MaterialIcon name="download" className="text-lg" />
                     Download for Mac
                   </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container text-on-surface rounded-full font-label font-bold text-sm tracking-wide hover:bg-surface-container-high active:scale-95 transition-all duration-200 cursor-pointer"
+                  <button
+                    disabled
+                    className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container text-on-surface-variant rounded-full font-label font-bold text-sm tracking-wide opacity-60 cursor-not-allowed"
                   >
                     <MaterialIcon name="download" className="text-lg" />
-                    Download for Windows
-                  </a>
+                    Windows — Coming Soon
+                  </button>
                 </div>
 
                 <p className="font-label text-[10px] text-on-surface-variant/60 mt-3">
