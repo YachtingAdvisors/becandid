@@ -2,9 +2,21 @@
 // components/LegalFooter.tsx
 // ============================================================
 
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+const BACKEND_PREFIXES = ['/dashboard', '/partner', '/guardian', '/onboarding', '/checkin', '/conversation'];
 
 export default function LegalFooter() {
+  const pathname = usePathname();
+
+  // Hide footer on app backend pages (dashboard, partner, guardian, etc.)
+  if (BACKEND_PREFIXES.some((p) => pathname.startsWith(p))) {
+    return null;
+  }
+
   return (
     <footer className="ring-1 ring-outline-variant/5 bg-surface-container-lowest/80 glass-effect">
       <div className="max-w-6xl mx-auto px-6 py-8">
