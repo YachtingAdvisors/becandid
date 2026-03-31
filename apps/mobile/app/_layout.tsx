@@ -14,6 +14,8 @@ import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
+import { AuthProvider } from '../src/contexts/AuthContext';
+import { startHeartbeat, stopHeartbeat } from '../src/lib/heartbeat';
 import { setupPushNotifications, getScreenFromNotification } from '../src/lib/push/setup';
 import { startOfflineQueueListener, syncPendingEvents } from '../src/lib/offlineQueue';
 import { supabase } from '../src/lib/supabase';
@@ -45,7 +47,10 @@ export default function RootLayout() {
         return;
       }
 
-      // 2. Push notifications
+      // 2. Start heartbeat (pings server every 2 min)
+      startHeartbeat();
+
+      // 3. Push notifications
       await setupPushNotifications().catch(console.error);
 
       // 3. Offline queue — start listener + sync any pending
@@ -176,6 +181,7 @@ export default function RootLayout() {
       responseListener.current?.remove();
       subscription.unsubscribe();
       offlineCleanup?.();
+      stopHeartbeat();
       // Stop platform monitoring on unmount
       if (Platform.OS === 'android') {
         import('../src/lib/monitor.android').then(({ stopAndroidMonitoring }) => {
@@ -190,7 +196,7 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <>
+    <AuthProvider>
       <StatusBar style="dark" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
@@ -199,6 +205,6 @@ export default function RootLayout() {
         <Stack.Screen name="conversation/[alertId]" options={{ presentation: 'modal' }} />
         <Stack.Screen name="checkin/[id]" options={{ presentation: 'modal' }} />
       </Stack>
-    </>
+    </AuthProvider>
   );
 }

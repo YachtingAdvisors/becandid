@@ -7,6 +7,12 @@
     "scheme": "becandid",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "plugins": [
       "expo-router",
       [
@@ -21,17 +27,24 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "io.becandid.app",
+      "buildNumber": "1",
       "infoPlist": {
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": ["remote-notification"],
+        "NSFaceIDUsageDescription": "Use Face ID to quickly sign in to Be Candid"
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#226779"
+        "backgroundColor": "#ffffff"
       },
       "package": "io.becandid.app",
+      "versionCode": 1,
       "permissions": ["RECEIVE_BOOT_COMPLETED", "SCHEDULE_EXACT_ALARM"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
     "extra": {
       "router": {
@@ -40,6 +53,7 @@
       "eas": {
         "projectId": "your-eas-project-id"
       }
-    }
+    },
+    "owner": "becandid"
   }
 }
