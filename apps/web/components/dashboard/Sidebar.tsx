@@ -70,7 +70,7 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 pt-2 pb-4 overflow-y-auto">
+      <nav className="px-3 pt-2 pb-4 overflow-y-auto">
         {navItems.map((item) => (
           <Link
             key={item.id}
