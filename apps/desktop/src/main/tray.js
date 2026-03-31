@@ -79,6 +79,13 @@ function updateTrayMenu() {
     },
     { type: 'separator' },
     {
+      label: '🤝 Reach Out to Partner',
+      click: () => {
+        showReachOutWindow();
+      },
+    },
+    { type: 'separator' },
+    {
       label: 'Open Dashboard',
       click: () => {
         const { getAccessToken } = require('./auth');
@@ -153,6 +160,67 @@ function timeAgo(isoString) {
   if (mins < 60) return `${mins} min ago`;
   const hours = Math.floor(mins / 60);
   return `${hours}h ago`;
+}
+
+// Reach Out window — small popup for sending a message to partner
+let reachOutWindow = null;
+
+function showReachOutWindow() {
+  if (reachOutWindow) { reachOutWindow.focus(); return; }
+
+  const { BrowserWindow, ipcMain } = require('electron');
+
+  reachOutWindow = new BrowserWindow({
+    width: 380,
+    height: 300,
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    titleBarStyle: 'hiddenInset',
+    backgroundColor: '#fbf9f8',
+    alwaysOnTop: true,
+    webPreferences: {
+      preload: path.join(__dirname, '..', 'preload', 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+
+  reachOutWindow.loadFile(path.join(__dirname, '..', 'renderer', 'reach-out.html'));
+
+  // Handle the send
+  ipcMain.once('reach-out:send', async (_event, message) => {
+    const { getAccessToken } = require('./auth');
+    const token = getAccessToken();
+    if (token) {
+      try {
+        await fetch('https://becandid.io/api/reach-out', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ message: message || '' }),
+        });
+        const { Notification } = require('electron');
+        new Notification({
+          title: 'Be Candid',
+          body: 'Your partner has been notified.',
+        }).show();
+      } catch {}
+    }
+    if (reachOutWindow) { reachOutWindow.close(); }
+  });
+
+  ipcMain.once('reach-out:cancel', () => {
+    if (reachOutWindow) { reachOutWindow.close(); }
+  });
+
+  reachOutWindow.on('closed', () => {
+    reachOutWindow = null;
+    ipcMain.removeAllListeners('reach-out:send');
+    ipcMain.removeAllListeners('reach-out:cancel');
+  });
 }
 
 // Notify server when monitoring is toggled (triggers partner alert if paused)

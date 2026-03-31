@@ -9,4 +9,6 @@ contextBridge.exposeInMainWorld('becandid', {
   signIn: (email, password) => ipcRenderer.invoke('auth:signIn', email, password),
   isAuthenticated: () => ipcRenderer.invoke('auth:isAuthenticated'),
   onAuthSuccess: () => ipcRenderer.send('auth:success'),
+  sendReachOut: (message) => ipcRenderer.send('reach-out:send', message),
+  cancelReachOut: () => ipcRenderer.send('reach-out:cancel'),
 });
