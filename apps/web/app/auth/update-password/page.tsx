@@ -154,7 +154,7 @@ export default function UpdatePasswordPage() {
                 required
                 autoFocus
                 disabled={!ready}
-                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-shadow disabled:opacity-50"
+                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all duration-200 disabled:opacity-50"
               />
             </div>
 
@@ -167,14 +167,14 @@ export default function UpdatePasswordPage() {
                 placeholder="Type it again"
                 required
                 disabled={!ready}
-                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-shadow disabled:opacity-50"
+                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all duration-200 disabled:opacity-50"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading || !ready || !password || !confirm}
-              className="w-full py-5 bg-primary hover:bg-primary-dim text-on-primary text-sm font-headline font-bold rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-5 bg-primary hover:bg-primary-dim hover:brightness-110 text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl cursor-pointer transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none"
             >
               {loading ? 'Updating...' : 'Update Password'}
               {!loading && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}

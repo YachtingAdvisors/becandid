@@ -103,7 +103,7 @@ export default function EncouragePage() {
         <div className="flex flex-wrap gap-2">
           {TONE_ICONS.map((t, i) => (
             <button key={t.icon} onClick={() => setSelectedTone(i)}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                 selectedTone === i ? 'bg-primary-container ring-2 ring-primary scale-110' : 'bg-surface-container-low hover:bg-primary-container/50'
               }`}
               title={t.label}>
@@ -118,7 +118,7 @@ export default function EncouragePage() {
         <div className="space-y-2">
           {QUICK_MESSAGES.map(m => (
             <button key={m} onClick={() => setMessage(m)}
-              className={`w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all ${
+              className={`w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                 message === m ? 'border-primary bg-primary-container/30' : 'border-outline-variant/30 hover:border-primary/40'
               }`}>
               {m}
@@ -135,7 +135,7 @@ export default function EncouragePage() {
       </div>
 
       <button onClick={handleSend} disabled={sending || !message.trim()}
-        className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
+        className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold uppercase tracking-wider rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 flex items-center justify-center gap-2">
         <span className="material-symbols-outlined text-lg">{currentIcon}</span>
         {sending ? 'Sending...' : 'Send Encouragement'}
       </button>

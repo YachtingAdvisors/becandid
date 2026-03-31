@@ -252,10 +252,10 @@ export default async function DashboardPage() {
 
       {/* ── Recent Events ──────────────────────────────────── */}
       {events.length > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 overflow-hidden">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20">
             <h3 className="font-headline text-sm font-bold text-on-surface">Recent Events</h3>
-            <Link href="/dashboard/activity" className="text-xs text-primary font-label font-medium hover:underline">
+            <Link href="/dashboard/activity" className="text-xs text-primary font-label font-medium hover:underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded">
               View all
             </Link>
           </div>
@@ -301,7 +301,7 @@ export default async function DashboardPage() {
             </div>
             <Link
               href="/dashboard/conversations"
-              className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-bold rounded-full hover:opacity-90 transition-opacity flex-shrink-0 uppercase tracking-wider"
+              className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-bold rounded-full hover:opacity-90 transition-opacity flex-shrink-0 uppercase tracking-wider cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
               View
             </Link>

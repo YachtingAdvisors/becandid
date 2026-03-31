@@ -78,7 +78,7 @@ export default function NotificationsPage() {
     return (
       <div className="max-w-2xl mx-auto space-y-6 animate-pulse">
         <div className="h-8 bg-surface-container rounded w-48" />
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6"><div className="h-32 bg-surface-container-low rounded" /></div>
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6"><div className="h-32 bg-surface-container-low rounded" /></div>
       </div>
     );
   }
@@ -99,7 +99,7 @@ export default function NotificationsPage() {
       )}
 
       {SECTIONS.map(section => (
-        <div key={section.title} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4">
+        <div key={section.title} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
           <div>
             <h2 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest">{section.title}</h2>
             <p className="text-xs text-on-surface-variant font-body">{section.desc}</p>
@@ -113,11 +113,11 @@ export default function NotificationsPage() {
               </div>
               <button
                 onClick={() => toggle(item.key)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${
+                className={`relative w-11 h-6 rounded-full cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 ${
                   prefs[item.key as keyof NotifPrefs] ? 'bg-primary' : 'bg-outline-variant'
                 }`}
               >
-                <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
                   prefs[item.key as keyof NotifPrefs] ? 'translate-x-5' : ''
                 }`} />
               </button>

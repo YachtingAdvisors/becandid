@@ -51,7 +51,7 @@ export default function StreaksPage() {
       </div>
 
       {/* Streak hero */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 text-center bg-gradient-to-br from-emerald-50 to-primary-container">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 text-center bg-gradient-to-br from-emerald-50 to-primary-container">
         <div className="text-5xl font-headline font-bold text-primary mb-1">
           {data.streak.streakDays}
         </div>
@@ -78,11 +78,11 @@ export default function StreaksPage() {
 
       {/* Tracked categories */}
       {goals.length > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6">
           <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Your Rivals</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {goals.map(goal => (
-              <div key={goal} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30">
+              <div key={goal} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-surface-container-low ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
                 <span className="material-symbols-outlined text-primary text-xl">track_changes</span>
                 <div>
                   <div className="text-sm font-medium text-on-surface font-label leading-tight">{GOAL_LABELS[goal]}</div>
@@ -95,7 +95,7 @@ export default function StreaksPage() {
       )}
 
       {/* 21-day heatmap recap */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6">
         <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">21-Day Overview</h3>
         <div className="grid grid-cols-7 gap-1.5">
           {heatmap.map(day => {
@@ -105,7 +105,7 @@ export default function StreaksPage() {
 
             return (
               <div key={day.date}
-                className={`aspect-square rounded-lg flex items-center justify-center text-xs font-semibold ${
+                className={`aspect-square rounded-lg flex items-center justify-center text-xs font-semibold transition-all duration-200 hover:scale-110 ${
                   pending ? 'bg-surface-container text-on-surface-variant'
                   : bothFocused ? 'bg-emerald-400 text-white'
                   : anyDistracted ? 'bg-red-400 text-white'

@@ -160,7 +160,7 @@ export default function OnboardingPage() {
                 </p>
               </div>
               <button onClick={saveGoals} disabled={goals.length === 0 || loading}
-                className="w-full md:w-auto px-12 py-4 bg-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                className="w-full md:w-auto px-12 py-4 bg-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
                 {loading ? 'Saving...' : `Continue with ${goals.length} rival${goals.length !== 1 ? 's' : ''}`}
               </button>
             </div>
@@ -231,14 +231,14 @@ export default function OnboardingPage() {
                     if (stringerStep < STRINGER_PILLARS.length - 1) setStringerStep(stringerStep + 1);
                     else setStep('motivator');
                   }}
-                  className="bg-primary text-on-primary px-8 py-4 rounded-full font-label font-bold text-sm uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]"
+                  className="bg-primary text-on-primary px-8 py-4 rounded-full font-label font-bold text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
                 >
                   {stringerStep === STRINGER_PILLARS.length - 1 ? 'Got it \u2014 continue' : 'Next'}
                 </button>
                 {stringerStep > 0 && (
                   <button
                     onClick={() => setStringerStep(stringerStep - 1)}
-                    className="text-on-surface/60 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-colors px-4 py-2"
+                    className="text-on-surface/60 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
                   >
                     Back
                   </button>
@@ -246,7 +246,7 @@ export default function OnboardingPage() {
                 {stringerStep === 0 && (
                   <button
                     onClick={() => setStep('motivator')}
-                    className="text-on-surface/60 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-colors px-4 py-2"
+                    className="text-on-surface/60 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
                   >
                     Skip introduction
                   </button>
@@ -289,7 +289,7 @@ export default function OnboardingPage() {
               <button
                 key={key}
                 onClick={() => setMotivator(key)}
-                className={`w-full text-left px-5 py-4 rounded-2xl border-2 transition-all ${
+                className={`w-full text-left px-5 py-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                   motivator === key
                     ? 'border-primary bg-primary-container/30 ring-2 ring-primary/20'
                     : 'border-outline-variant bg-surface-container-lowest hover:border-primary/30'
@@ -304,9 +304,9 @@ export default function OnboardingPage() {
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
 
           <div className="flex gap-3">
-            <button onClick={() => setStep('stringer')} className="px-6 py-3 text-sm font-headline font-bold rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors">&larr; Back</button>
+            <button onClick={() => setStep('stringer')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">&larr; Back</button>
             <button onClick={saveMotivator} disabled={loading}
-              className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 disabled:opacity-50 transition-opacity">
+              className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               {loading ? 'Saving...' : 'Continue →'}
             </button>
           </div>
@@ -336,24 +336,24 @@ export default function OnboardingPage() {
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their name</label>
               <input type="text" value={partnerName} onChange={(e) => setPartnerName(e.target.value)}
-                placeholder="First name" className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
+                placeholder="First name" className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200" />
             </div>
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their email</label>
               <input type="email" value={partnerEmail} onChange={(e) => setPartnerEmail(e.target.value)}
-                placeholder="partner@email.com" className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
+                placeholder="partner@email.com" className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200" />
             </div>
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their phone <span className="text-on-surface-variant font-normal">(optional — for SMS alerts)</span></label>
               <input type="tel" value={partnerPhone} onChange={(e) => setPartnerPhone(e.target.value)}
-                placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" />
+                placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200" />
             </div>
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Relationship</label>
               <div className="flex flex-wrap gap-2">
                 {['friend', 'spouse', 'mentor', 'coach', 'therapist', 'pastor'].map((r) => (
                   <button key={r} onClick={() => setRelationship(r)}
-                    className={`px-4 py-2 rounded-full text-sm font-label font-medium border transition-all ${
+                    className={`px-4 py-2 rounded-full text-sm font-label font-medium border transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                       relationship === r ? 'border-primary bg-primary-container text-primary' : 'border-outline-variant text-on-surface-variant hover:border-primary/30'
                     }`}>
                     {r.charAt(0).toUpperCase() + r.slice(1)}
@@ -366,14 +366,14 @@ export default function OnboardingPage() {
           {error && <p className="text-sm text-error mt-3 font-body">{error}</p>}
 
           <div className="flex gap-3 mt-6">
-            <button onClick={() => setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors">&larr; Back</button>
+            <button onClick={() => setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">&larr; Back</button>
             <button onClick={sendInvite} disabled={!partnerName.trim() || !partnerEmail.trim() || loading}
-              className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 disabled:opacity-50 transition-opacity">
+              className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               {loading ? 'Sending invite...' : 'Send invite →'}
             </button>
           </div>
 
-          <button onClick={enableSolo} className="w-full mt-3 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body">
+          <button onClick={enableSolo} className="w-full mt-3 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body cursor-pointer transition-colors duration-200">
             I&apos;ll start in solo mode instead
           </button>
         </div>
@@ -398,7 +398,7 @@ export default function OnboardingPage() {
               { icon: 'edit_note', title: 'Write your first journal entry', desc: 'Start tracing the tributaries — before anything happens.' },
               { icon: 'notifications_active', title: 'Check-ins start tonight', desc: "You'll receive a journal prompt at your preferred time." },
             ].map((item, i) => (
-              <div key={i} className="flex gap-3 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant">
+              <div key={i} className="flex gap-3 p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant">
                 <span className="material-symbols-outlined text-primary text-lg">{item.icon}</span>
                 <div>
                   <p className="text-sm font-medium text-on-surface font-label">{item.title}</p>
@@ -409,7 +409,7 @@ export default function OnboardingPage() {
           </div>
 
           <button onClick={() => router.push('/dashboard')}
-            className="w-full py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 transition-opacity">
+            className="w-full py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
             Go to Dashboard →
           </button>
         </div>

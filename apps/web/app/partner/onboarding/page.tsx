@@ -62,7 +62,7 @@ export default function PartnerOnboardingPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 text-center">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-8 text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-primary text-4xl">{current.icon}</span>
           </div>
@@ -75,10 +75,10 @@ export default function PartnerOnboardingPage() {
 
         {/* Mutual accountability option (last step) */}
         {isLast && (
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5">
+          <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
             <button
               onClick={() => setEnableMutual(!enableMutual)}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 text-left transition-all ${
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 text-left transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                 enableMutual ? 'border-primary bg-primary-container/30' : 'border-outline-variant hover:border-primary/40'
               }`}
             >
@@ -103,18 +103,18 @@ export default function PartnerOnboardingPage() {
         {/* Navigation */}
         <div className="flex gap-3">
           {step > 0 && (
-            <button onClick={() => setStep(step - 1)} className="flex items-center gap-1 px-4 py-3 text-sm font-label font-medium text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+            <button onClick={() => setStep(step - 1)} className="flex items-center gap-1 px-4 py-3 text-sm font-label font-medium text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               <span className="material-symbols-outlined text-lg">arrow_back</span>
               Back
             </button>
           )}
           {!isLast ? (
-            <button onClick={() => setStep(step + 1)} className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:bg-primary/90 transition-colors">
+            <button onClick={() => setStep(step + 1)} className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               Continue
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           ) : (
-            <button onClick={handleComplete} disabled={loading} className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm hover:bg-primary/90 disabled:opacity-50 transition-colors">
+            <button onClick={handleComplete} disabled={loading} className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               {loading ? 'Setting up...' : enableMutual ? 'Enable & Continue' : 'I\'m Ready'}
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>

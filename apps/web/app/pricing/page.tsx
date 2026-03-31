@@ -101,7 +101,7 @@ export default function PricingPage() {
           <div className="inline-flex items-center gap-1 mt-8 bg-surface-container rounded-full p-1.5">
             <button
               onClick={() => setBilling('monthly')}
-              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all ${
+              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                 billing === 'monthly'
                   ? 'bg-surface-container-lowest text-on-surface shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]'
                   : 'text-on-surface-variant hover:text-on-surface'
@@ -111,7 +111,7 @@ export default function PricingPage() {
             </button>
             <button
               onClick={() => setBilling('annual')}
-              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all ${
+              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                 billing === 'annual'
                   ? 'bg-surface-container-lowest text-on-surface shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]'
                   : 'text-on-surface-variant hover:text-on-surface'
@@ -135,10 +135,10 @@ export default function PricingPage() {
             return (
               <div
                 key={tier.id}
-                className={`rounded-[2rem] p-7 relative transition-shadow ${
+                className={`rounded-[2rem] p-7 relative transition-all duration-300 cursor-pointer ${
                   tier.highlight
-                    ? 'bg-primary text-on-primary shadow-lg shadow-primary/20'
-                    : 'bg-surface-container-lowest shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]'
+                    ? 'bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 ring-2 ring-primary'
+                    : 'bg-surface-container-lowest shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg'
                 }`}
               >
                 {tier.badge && (
@@ -251,10 +251,10 @@ export default function PricingPage() {
 
                 <Link
                   href={tier.ctaHref}
-                  className={`block w-full py-3.5 text-sm font-headline font-bold rounded-full text-center transition-all ${
+                  className={`block w-full py-3.5 text-sm font-headline font-bold rounded-full text-center transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                     tier.highlight
-                      ? 'bg-on-primary text-primary hover:opacity-90'
-                      : 'bg-secondary-container text-on-surface hover:opacity-90'
+                      ? 'bg-on-primary text-primary shadow-lg hover:shadow-xl hover:brightness-110'
+                      : 'bg-secondary-container text-on-surface shadow-md hover:shadow-lg hover:brightness-105'
                   }`}
                 >
                   {tier.cta}

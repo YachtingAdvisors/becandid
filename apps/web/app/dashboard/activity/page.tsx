@@ -55,9 +55,9 @@ export default function ActivityPage() {
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setFilter('all')}
-          className={`px-3 py-1.5 rounded-full text-xs font-label font-medium transition-colors ${
+          className={`px-3 py-1.5 rounded-full text-xs font-label font-medium cursor-pointer transition-all duration-200 ${
             filter === 'all'
-              ? 'bg-primary text-on-primary'
+              ? 'bg-primary text-on-primary shadow-lg shadow-primary/20'
               : 'bg-surface-container text-on-surface-variant hover:bg-primary-container/30 hover:text-primary'
           }`}
         >
@@ -67,9 +67,9 @@ export default function ActivityPage() {
           <button
             key={cat}
             onClick={() => setFilter(cat)}
-            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-label font-medium transition-colors ${
+            className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-label font-medium cursor-pointer transition-all duration-200 ${
               filter === cat
-                ? 'bg-primary text-on-primary'
+                ? 'bg-primary text-on-primary shadow-lg shadow-primary/20'
                 : 'bg-surface-container text-on-surface-variant hover:bg-primary-container/30 hover:text-primary'
             }`}
           >
@@ -82,15 +82,15 @@ export default function ActivityPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 animate-pulse">
+            <div key={i} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 animate-pulse">
               <div className="h-5 bg-surface-container rounded w-48 mb-2" />
               <div className="h-3 bg-surface-container-low rounded w-32" />
             </div>
           ))}
         </div>
       ) : events.length === 0 ? (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-12 text-center">
-          <span className="material-symbols-outlined text-on-surface-variant text-4xl mb-4 block">target</span>
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
+          <span className="material-symbols-outlined text-on-surface-variant/60 text-5xl mb-4 block">target</span>
           <h3 className="font-headline text-xl font-bold text-on-surface mb-2">
             {filter === 'all' ? 'No events yet' : `No ${GOAL_LABELS[filter]} events`}
           </h3>
@@ -101,9 +101,9 @@ export default function ActivityPage() {
           </p>
         </div>
       ) : (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 divide-y divide-outline-variant/30">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 divide-y divide-outline-variant/30">
           {events.map((event) => (
-            <div key={event.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low">
+            <div key={event.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-all duration-200">
               <span className="material-symbols-outlined text-primary text-xl flex-shrink-0">monitoring</span>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-label font-medium text-on-surface">

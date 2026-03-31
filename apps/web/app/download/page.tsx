@@ -64,16 +64,16 @@ export default function DownloadPage() {
             <img src="/logo.png" alt="Be Candid" className="w-14 h-14 object-contain" />
           </Link>
           <div className="hidden md:flex items-center gap-10 font-body text-base tracking-tight">
-            <Link href="/#features" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Features</Link>
-            <Link href="/pricing" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Pricing</Link>
-            <Link href="/download" className="text-primary font-semibold transition-colors duration-300">Download</Link>
-            <Link href="/families" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300">Families</Link>
+            <Link href="/#features" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 cursor-pointer">Features</Link>
+            <Link href="/pricing" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 cursor-pointer">Pricing</Link>
+            <Link href="/download" className="text-primary font-semibold transition-colors duration-300 cursor-pointer">Download</Link>
+            <Link href="/families" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 cursor-pointer">Families</Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/auth/signin" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 font-label text-sm font-semibold">
+            <Link href="/auth/signin" className="text-on-surface opacity-80 hover:text-primary transition-colors duration-300 font-label text-sm font-semibold cursor-pointer">
               Log in
             </Link>
-            <Link href="/auth/signup" className="px-8 py-3 bg-primary text-on-primary rounded-full font-label text-sm font-semibold tracking-wide hover:brightness-110 active:scale-95 transition-all">
+            <Link href="/auth/signup" className="px-8 py-3 bg-primary text-on-primary rounded-full font-label text-sm font-semibold tracking-wide shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               Get Started
             </Link>
           </div>
@@ -105,7 +105,7 @@ export default function DownloadPage() {
             {PLATFORM_CARDS.map((card) => (
               <div
                 key={card.title}
-                className="bg-surface-container-lowest rounded-2xl p-8 border border-outline-variant/10 hover:border-primary/20 transition-colors duration-300"
+                className="bg-surface-container-lowest rounded-2xl p-8 ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg cursor-pointer transition-all duration-300"
               >
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -133,7 +133,7 @@ export default function DownloadPage() {
             ))}
 
             {/* ── Web App Card (spans full remaining width) ──── */}
-            <div className="md:col-span-2 xl:col-span-3 bg-surface-container-lowest rounded-2xl p-8 border border-outline-variant/10 hover:border-primary/20 transition-colors duration-300">
+            <div className="md:col-span-2 xl:col-span-3 bg-surface-container-lowest rounded-2xl p-8 ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -148,7 +148,7 @@ export default function DownloadPage() {
                 </div>
                 <Link
                   href="/auth/signup"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary rounded-full font-label font-bold text-sm tracking-wide hover:brightness-110 active:scale-95 transition-all whitespace-nowrap"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
                 >
                   Open Web App
                   <MaterialIcon name="arrow_forward" className="text-lg" />

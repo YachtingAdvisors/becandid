@@ -48,21 +48,21 @@ export default function FamiliesPage() {
   return (
     <div className="min-h-screen bg-[#fbf9f8]">
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-outline-variant/30">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-outline-variant/10">
         <div className="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/">
-            <img src="/logo.png" alt="Be Candid" className="h-12 w-auto" />
+          <Link href="/" className="cursor-pointer">
+            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
           </Link>
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="text-sm font-label font-medium text-on-surface-variant hover:text-on-surface transition-colors"
+              className="text-sm font-label font-medium text-on-surface-variant hover:text-on-surface transition-colors duration-200 cursor-pointer"
             >
               Home
             </Link>
             <Link
               href="/auth/signup"
-              className="px-5 py-2.5 bg-primary text-on-primary text-sm font-label font-semibold rounded-full hover:opacity-90 transition-opacity"
+              className="px-5 py-2.5 bg-primary text-on-primary text-sm font-label font-semibold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
               Get Started
             </Link>
@@ -90,7 +90,7 @@ export default function FamiliesPage() {
           </p>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container-lowest text-primary text-base font-headline font-bold rounded-full hover:opacity-90 transition-opacity shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container-lowest text-primary text-base font-headline font-bold rounded-full hover:brightness-105 hover:shadow-xl transition-all duration-200 shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30"
           >
             <span className="material-symbols-outlined text-[20px]">
               family_restroom
@@ -121,7 +121,7 @@ export default function FamiliesPage() {
             {STEPS.map((step) => (
               <div
                 key={step.num}
-                className="bg-surface-container-lowest rounded-[2rem] p-7 text-center sm:text-left shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]"
+                className="bg-surface-container-lowest rounded-[2rem] p-7 text-center sm:text-left shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300"
               >
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary-container text-primary mb-5">
                   <span className="material-symbols-outlined text-[22px]">
@@ -159,7 +159,7 @@ export default function FamiliesPage() {
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Parents see */}
-            <div className="bg-surface-container-lowest rounded-[2rem] p-8 shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
+            <div className="bg-surface-container-lowest rounded-[2rem] p-8 shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] ring-1 ring-outline-variant/10">
               <h3 className="font-headline font-bold text-lg text-on-surface mb-5 flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-[24px]">
                   visibility
@@ -187,7 +187,7 @@ export default function FamiliesPage() {
             </div>
 
             {/* Always private */}
-            <div className="bg-surface-container-lowest rounded-[2rem] p-8 border border-primary-container shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
+            <div className="bg-surface-container-lowest rounded-[2rem] p-8 ring-1 ring-primary-container shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
               <h3 className="font-headline font-bold text-lg text-on-surface mb-5 flex items-center gap-3">
                 <span className="material-symbols-outlined text-primary text-[24px]">
                   lock
@@ -234,7 +234,7 @@ export default function FamiliesPage() {
             {FEATURES.map((f) => (
               <div
                 key={f.title}
-                className="bg-surface-container-lowest rounded-[2rem] p-8 shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] hover:shadow-lg transition-shadow"
+                className="bg-surface-container-lowest rounded-[2rem] p-8 shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300"
               >
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary-container text-primary mb-5">
                   <span className="material-symbols-outlined text-[24px]">
@@ -284,7 +284,7 @@ export default function FamiliesPage() {
           </p>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container-lowest text-primary text-base font-headline font-bold rounded-full hover:opacity-90 transition-opacity shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container-lowest text-primary text-base font-headline font-bold rounded-full hover:brightness-105 hover:shadow-xl transition-all duration-200 shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30"
           >
             <span className="material-symbols-outlined text-[20px]">
               arrow_forward

@@ -99,7 +99,7 @@ export default function ConversationsPage() {
 
               {alert.ai_guide_user && (
                 <div className="mb-3 px-3 py-2 rounded-2xl bg-primary-container/30 border border-primary-container text-xs text-primary font-body">
-                  AI conversation guide available &mdash; <Link href={`/conversation/${alert.id}`} className="font-label font-semibold underline">view full guide</Link>
+                  AI conversation guide available &mdash; <Link href={`/conversation/${alert.id}`} className="font-label font-semibold underline cursor-pointer hover:text-primary/80 transition-colors duration-200">view full guide</Link>
                 </div>
               )}
 
@@ -135,7 +135,7 @@ export default function ConversationsPage() {
                 difficult: 'bg-error/5 text-error',
               };
               return (
-                <div key={alert.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low">
+                <div key={alert.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low cursor-pointer transition-all duration-200">
                   <span className="material-symbols-outlined text-on-surface-variant text-lg">flag</span>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-label font-medium text-on-surface">
@@ -158,7 +158,7 @@ export default function ConversationsPage() {
 
       {alerts.length === 0 && !loading && (
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
-          <span className="material-symbols-outlined text-on-surface-variant text-4xl mb-4 block">forum</span>
+          <span className="material-symbols-outlined text-on-surface-variant/60 text-5xl mb-4 block">forum</span>
           <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No conversations yet</h3>
           <p className="text-sm text-on-surface-variant font-body">When alerts are triggered, your conversation guides will appear here.</p>
         </div>

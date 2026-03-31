@@ -113,7 +113,8 @@ export default function ContentFilterPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">Content Filter</h1>
+        <p className="text-xs font-label font-medium text-on-surface-variant uppercase tracking-widest">Safety</p>
+        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1">Content Filter</h1>
         <p className="text-sm text-on-surface-variant font-body">
           Manage content filtering to block harmful or unwanted websites.
         </p>
@@ -126,7 +127,7 @@ export default function ContentFilterPage() {
       )}
 
       {/* Filter Level */}
-      <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
+      <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-5 space-y-4">
         <h2 className="font-headline text-lg font-bold text-on-surface">Filter Level</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {LEVEL_OPTIONS.map((opt) => (
@@ -136,10 +137,10 @@ export default function ContentFilterPage() {
               onClick={() =>
                 setData((prev) => (prev ? { ...prev, level: opt.value } : prev))
               }
-              className={`rounded-2xl px-3 py-3 text-center border transition-all ${
+              className={`rounded-2xl px-3 py-3 text-center border transition-all duration-200 ${
                 level === opt.value
-                  ? 'border-primary bg-primary-container/30'
-                  : 'border-outline-variant/50 hover:border-primary/30'
+                  ? 'border-primary bg-primary-container/30 shadow-lg shadow-primary/10'
+                  : 'border-outline-variant/50 hover:border-primary/30 hover:shadow-md'
               } ${guardianLocked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
             >
               <div
@@ -158,7 +159,7 @@ export default function ContentFilterPage() {
       </div>
 
       {/* Blocklist */}
-      <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
+      <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-5 space-y-4">
         <h2 className="font-headline text-lg font-bold text-on-surface">Custom Blocklist</h2>
         {!guardianLocked && (
           <div className="flex gap-2">
@@ -168,11 +169,11 @@ export default function ContentFilterPage() {
               value={newBlockDomain}
               onChange={(e) => setNewBlockDomain(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddBlock()}
-              className="flex-1 px-3 py-2 text-sm bg-surface-container-low border border-outline-variant/50 rounded-xl font-body focus:outline-none focus:border-primary"
+              className="flex-1 px-3 py-2 text-sm bg-surface-container-low border border-outline-variant/50 rounded-xl font-body focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
             />
             <button
               onClick={handleAddBlock}
-              className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-medium rounded-xl hover:opacity-90 transition-opacity"
+              className="px-4 py-2 min-h-[44px] bg-primary text-on-primary text-sm font-label font-medium rounded-xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200"
             >
               Add
             </button>
@@ -191,7 +192,7 @@ export default function ContentFilterPage() {
                 {!guardianLocked && (
                   <button
                     onClick={() => handleRemoveBlock(domain)}
-                    className="hover:text-error/70 ml-0.5"
+                    className="hover:text-error/70 ml-0.5 cursor-pointer transition-colors duration-200"
                   >
                     {'\u2715'}
                   </button>
@@ -203,7 +204,7 @@ export default function ContentFilterPage() {
       </div>
 
       {/* Allowlist */}
-      <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
+      <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-5 space-y-4">
         <h2 className="font-headline text-lg font-bold text-on-surface">Custom Allowlist</h2>
         {!guardianLocked && (
           <div className="flex gap-2">
@@ -213,11 +214,11 @@ export default function ContentFilterPage() {
               value={newAllowDomain}
               onChange={(e) => setNewAllowDomain(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddAllow()}
-              className="flex-1 px-3 py-2 text-sm bg-surface-container-low border border-outline-variant/50 rounded-xl font-body focus:outline-none focus:border-primary"
+              className="flex-1 px-3 py-2 text-sm bg-surface-container-low border border-outline-variant/50 rounded-xl font-body focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200"
             />
             <button
               onClick={handleAddAllow}
-              className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-medium rounded-xl hover:opacity-90 transition-opacity"
+              className="px-4 py-2 min-h-[44px] bg-primary text-on-primary text-sm font-label font-medium rounded-xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200"
             >
               Add
             </button>
@@ -236,7 +237,7 @@ export default function ContentFilterPage() {
                 {!guardianLocked && (
                   <button
                     onClick={() => handleRemoveAllow(domain)}
-                    className="hover:text-primary/70 ml-0.5"
+                    className="hover:text-primary/70 ml-0.5 cursor-pointer transition-colors duration-200"
                   >
                     {'\u2715'}
                   </button>
@@ -248,8 +249,8 @@ export default function ContentFilterPage() {
       </div>
 
       {/* Recent Filter Log */}
-      <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant overflow-hidden">
-        <div className="px-5 py-4 border-b border-outline-variant">
+      <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 overflow-hidden">
+        <div className="px-5 py-4 border-b border-outline-variant/20">
           <h2 className="font-headline text-lg font-bold text-on-surface">Recent Filter Log</h2>
         </div>
         {recentLog.length === 0 ? (
@@ -291,7 +292,7 @@ export default function ContentFilterPage() {
       <div className="text-center">
         <Link
           href="/dashboard"
-          className="text-sm text-primary font-label font-medium hover:underline"
+          className="text-sm text-primary font-label font-medium hover:underline cursor-pointer transition-colors duration-200"
         >
           Back to Dashboard
         </Link>

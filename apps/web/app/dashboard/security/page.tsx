@@ -70,7 +70,7 @@ export default function SecurityPage() {
       </div>
 
       {/* Active Sessions */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10">
         <div className="px-6 py-4 border-b border-outline-variant/30">
           <h2 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest">Login Activity</h2>
           <p className="text-xs text-on-surface-variant mt-0.5 font-body">Recent logins and active sessions</p>
@@ -106,7 +106,7 @@ export default function SecurityPage() {
                 {i > 0 && (
                   <button
                     onClick={() => revokeSession(session.id)}
-                    className="text-xs text-error hover:text-error/80 font-headline font-bold flex-shrink-0"
+                    className="text-xs text-error hover:text-error/80 font-headline font-bold flex-shrink-0 cursor-pointer transition-colors duration-200 min-h-[44px] min-w-[44px] flex items-center justify-center"
                   >
                     Revoke
                   </button>
@@ -119,23 +119,23 @@ export default function SecurityPage() {
       </div>
 
       {/* Password */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-3">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-3">
         <h2 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest">Password</h2>
         <p className="text-xs text-on-surface-variant font-body">Change your password to keep your account secure.</p>
-        <a href="/auth/reset" className="inline-flex items-center gap-1 bg-primary text-on-primary rounded-full font-headline font-bold text-sm px-4 py-2">
+        <a href="/auth/reset" className="inline-flex items-center gap-1 bg-primary text-on-primary rounded-full font-headline font-bold text-sm px-4 py-2 min-h-[44px] cursor-pointer shadow-lg shadow-primary/20 hover:shadow-xl hover:opacity-90 transition-all duration-200">
           <span className="material-symbols-outlined text-sm">key</span> Change Password
         </a>
       </div>
 
       {/* Data & Privacy */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-3">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-3">
         <h2 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest">Data & Privacy</h2>
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm font-medium text-on-surface">Export your data</div>
             <div className="text-xs text-on-surface-variant font-body">Download everything as JSON (GDPR compliant)</div>
           </div>
-          <a href="/api/account" download className="inline-flex items-center gap-1 px-4 py-2 text-xs font-headline font-bold text-primary border border-outline-variant/30 rounded-full hover:bg-primary-container/20">
+          <a href="/api/account" download className="inline-flex items-center gap-1 px-4 py-2 min-h-[44px] text-xs font-headline font-bold text-primary ring-1 ring-outline-variant/10 rounded-full hover:bg-primary-container/20 cursor-pointer transition-all duration-200">
             <span className="material-symbols-outlined text-sm">download</span> Export
           </a>
         </div>

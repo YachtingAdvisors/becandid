@@ -56,7 +56,7 @@ export default function BadgesPage() {
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="h-8 bg-surface-container rounded w-32 animate-pulse" />
         <div className="grid grid-cols-3 gap-3">
-          {[1,2,3,4,5,6].map(i => <div key={i} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 animate-pulse"><div className="h-16 bg-surface-container-low rounded" /></div>)}
+          {[1,2,3,4,5,6].map(i => <div key={i} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 animate-pulse"><div className="h-16 bg-surface-container-low rounded" /></div>)}
         </div>
       </div>
     );
@@ -74,7 +74,7 @@ export default function BadgesPage() {
       </div>
 
       {/* Progress bar */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-headline font-bold text-on-surface">{earnedCount}/{ALL_BADGES.length}</span>
           <span className="text-xs text-on-surface-variant font-label">{Math.round((earnedCount / ALL_BADGES.length) * 100)}% complete</span>
@@ -94,9 +94,9 @@ export default function BadgesPage() {
 
           return (
             <div key={badge.key}
-              className={`bg-surface-container-lowest rounded-2xl border p-4 text-center transition-all ${
+              className={`bg-surface-container-lowest rounded-2xl border p-4 text-center transition-all duration-200 ${
                 isEarned
-                  ? `${tier.bg} ${tier.border} border-2 shadow-sm`
+                  ? `${tier.bg} ${tier.border} border-2 shadow-sm hover:shadow-lg hover:scale-[1.02]`
                   : 'border-outline-variant/30 opacity-40 grayscale'
               }`}
             >

@@ -87,7 +87,8 @@ export default function ScreenTimePage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">Screen Time</h1>
+        <p className="text-xs font-label font-medium text-on-surface-variant uppercase tracking-widest">Monitoring</p>
+        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1">Screen Time</h1>
         <p className="text-sm text-on-surface-variant font-body">
           Monitor and manage screen time usage.
         </p>
@@ -100,7 +101,7 @@ export default function ScreenTimePage() {
       )}
 
       {/* Today's Overview */}
-      <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
+      <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-5 space-y-4">
         <h2 className="font-headline text-lg font-bold text-on-surface">Today</h2>
         <div className="flex items-baseline gap-2">
           <span className="font-headline text-4xl font-extrabold text-on-surface">
@@ -147,7 +148,7 @@ export default function ScreenTimePage() {
 
       {/* Weekly Trend */}
       {weeklyTrend.length > 0 && (
-        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
+        <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-5 space-y-4">
           <h2 className="font-headline text-lg font-bold text-on-surface">Weekly Trend</h2>
           <div className="flex items-end gap-2 h-40">
             {weeklyTrend.map((day, i) => {
@@ -174,7 +175,7 @@ export default function ScreenTimePage() {
       )}
 
       {/* Downtime Schedule */}
-      <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
+      <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-5 space-y-4">
         <h2 className="font-headline text-lg font-bold text-on-surface">Downtime Schedule</h2>
         {downtimeSchedules.length === 0 ? (
           <p className="text-sm text-on-surface-variant font-body">
@@ -185,7 +186,7 @@ export default function ScreenTimePage() {
             {downtimeSchedules.map((schedule) => (
               <div
                 key={schedule.id}
-                className="flex items-center justify-between bg-surface-container-low rounded-2xl px-4 py-3"
+                className="flex items-center justify-between bg-surface-container-low rounded-2xl px-4 py-3 hover:ring-1 hover:ring-primary/20 transition-all duration-200"
               >
                 <div>
                   <div className="text-sm font-label font-medium text-on-surface">
@@ -214,7 +215,7 @@ export default function ScreenTimePage() {
       <div className="text-center">
         <Link
           href="/dashboard"
-          className="text-sm text-primary font-label font-medium hover:underline"
+          className="text-sm text-primary font-label font-medium hover:underline cursor-pointer transition-colors duration-200"
         >
           Back to Dashboard
         </Link>

@@ -101,7 +101,7 @@ export default function InvitePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 animate-pulse w-80">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-8 animate-pulse w-80">
           <div className="h-6 bg-surface-container-low rounded-xl w-48 mx-auto mb-4" />
           <div className="h-4 bg-surface-container-low rounded-xl w-64 mx-auto" />
         </div>
@@ -117,7 +117,7 @@ export default function InvitePage() {
           <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
         </div>
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-8 text-center max-w-sm relative z-10">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-8 text-center max-w-sm relative z-10">
           <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-red-600 text-3xl">error</span>
           </div>
@@ -150,15 +150,15 @@ export default function InvitePage() {
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm mb-4">
+          <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-50 ring-1 ring-red-200 text-red-700 text-sm mb-4">
             <span className="material-symbols-outlined text-lg">error</span>
             {error}
           </div>
         )}
 
         {!needsAccount ? (
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4">
-            <div className="px-4 py-3 rounded-2xl bg-primary-container/30 border border-primary/20">
+          <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
+            <div className="px-4 py-3 rounded-2xl bg-primary-container/30 ring-1 ring-primary/20">
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-primary text-lg mt-0.5">info</span>
                 <p className="text-sm font-body text-primary leading-relaxed">
@@ -168,13 +168,13 @@ export default function InvitePage() {
               </div>
             </div>
             <button onClick={handleAccept} disabled={accepting}
-              className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
+              className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold uppercase tracking-wider rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 flex items-center justify-center gap-2">
               <span className="material-symbols-outlined text-lg">check_circle</span>
               {accepting ? 'Accepting...' : 'Accept Invitation'}
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSignUpAndAccept} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4">
+          <form onSubmit={handleSignUpAndAccept} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
             <p className="text-sm font-body text-on-surface-variant">Create a free account to accept this invitation.</p>
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1">Your name</label>
@@ -192,7 +192,7 @@ export default function InvitePage() {
                 className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <button type="submit" disabled={accepting}
-              className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold uppercase tracking-wider rounded-full hover:bg-primary/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
+              className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold uppercase tracking-wider rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 flex items-center justify-center gap-2">
               <span className="material-symbols-outlined text-lg">person_add</span>
               {accepting ? 'Creating account...' : 'Create Account & Accept'}
             </button>
