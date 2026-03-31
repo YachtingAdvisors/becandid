@@ -6,7 +6,7 @@
 const { store } = require('./store');
 
 const SUPABASE_URL = 'https://kiowvsemdxivuyzifmdn.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpb3d2c2VtZHhpdnV5emlmbWRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNjA3NTIsImV4cCI6MjA1OTYzNjc1Mn0.a6MHLzMsxFJolB8714peVxl3R3oRey2M0Rz01MdgOjU';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpb3d2c2VtZHhpdnV5emlmbWRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDU0NTksImV4cCI6MjA5MDMyMTQ1OX0.ffdjnAwdyvRBeOUb1S8MAbX3XTsX31xyApJTiQ-vEOs';
 const API_URL = 'https://becandid.io';
 
 async function signIn(email, password) {
