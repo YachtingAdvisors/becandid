@@ -5,6 +5,16 @@ import { GOAL_LABELS, getCategoryEmoji, timeAgo, type GoalCategory, type Severit
 import { useMilestoneToasts } from '@/components/dashboard/MilestoneToast';
 import Link from 'next/link';
 
+interface PartnerData {
+  id: string;
+  partner_name: string;
+  partner_email: string;
+  partner_phone: string | null;
+  status: 'pending' | 'active' | 'declined';
+  invited_at: string;
+  accepted_at: string | null;
+}
+
 interface AlertRow {
   id: string;
   sent_at: string;
@@ -21,29 +31,28 @@ const SEVERITY_STYLES: Record<Severity, string> = {
 
 export default function ConversationsPage() {
   const [alerts, setAlerts] = useState<AlertRow[]>([]);
+  const [partner, setPartner] = useState<PartnerData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [reinviting, setReinviting] = useState(false);
   const { ToastContainer, showMilestones } = useMilestoneToasts();
 
   useEffect(() => {
-    fetch('/api/conversations')
-      .then(r => r.json())
-      .then(d => {
-        // Restructure - get alerts with their conversations
-        fetch('/api/conversations?limit=30')
-          .then(r2 => r2.json())
-          .then(d2 => setAlerts(d2.alerts ?? d2.conversations ?? []))
-          .catch(() => setAlerts([]));
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-
-    // Actually just fetch alerts directly
-    fetch('/api/alerts?limit=30')
-      .then(r => r.json())
-      .then(d => setAlerts(d.alerts ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    // Fetch partner info + alerts in parallel
+    Promise.all([
+      fetch('/api/partners').then(r => r.json()).catch(() => ({})),
+      fetch('/api/alerts?limit=30').then(r => r.json()).catch(() => ({})),
+    ]).then(([partnerData, alertsData]) => {
+      setPartner(partnerData.partner ?? null);
+      setAlerts(alertsData.alerts ?? []);
+    }).finally(() => setLoading(false));
   }, []);
+
+  async function handleReinvite() {
+    if (!partner) return;
+    setReinviting(true);
+    await fetch('/api/partners/reinvite', { method: 'POST' }).catch(() => {});
+    setReinviting(false);
+  }
 
   async function markComplete(alertId: string, outcome: 'positive' | 'neutral' | 'difficult') {
     const res = await fetch('/api/conversations', {
@@ -73,10 +82,67 @@ export default function ConversationsPage() {
       <div className="flex items-center gap-3">
         <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>forum</span>
         <div>
-          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Conversations</h1>
-          <p className="text-sm text-on-surface-variant font-body">Alerts, AI guides, and accountability conversations.</p>
+          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Partner Conversations</h1>
+          <p className="text-sm text-on-surface-variant font-body">Your accountability partner, AI guides, and conversation history.</p>
         </div>
       </div>
+
+      {/* Partner card */}
+      {partner ? (
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary font-headline font-bold text-lg flex-shrink-0">
+              {partner.partner_name.charAt(0).toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-headline text-base font-bold text-on-surface">{partner.partner_name}</h3>
+              <p className="text-xs text-on-surface-variant font-body truncate">{partner.partner_email}</p>
+            </div>
+            <div className={`px-3 py-1 rounded-full text-[10px] font-label font-bold uppercase tracking-wider ${
+              partner.status === 'active'
+                ? 'bg-primary-container text-primary'
+                : partner.status === 'pending'
+                  ? 'bg-tertiary-container text-on-tertiary-container'
+                  : 'bg-error/10 text-error'
+            }`}>
+              {partner.status}
+            </div>
+          </div>
+          {partner.status === 'pending' && (
+            <div className="mt-3 flex items-center gap-3">
+              <p className="text-xs text-on-surface-variant font-body flex-1">
+                {partner.partner_name} hasn&apos;t accepted yet.
+              </p>
+              <button onClick={handleReinvite} disabled={reinviting}
+                className="px-4 py-1.5 text-xs font-label font-semibold text-primary border border-primary-container rounded-full hover:bg-primary-container/20 cursor-pointer disabled:opacity-50 transition-all duration-200">
+                {reinviting ? 'Sending\u2026' : 'Resend Invite'}
+              </button>
+            </div>
+          )}
+          {partner.status === 'active' && (
+            <div className="mt-3 flex gap-2">
+              <Link href="/partner/focus"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-label font-medium text-primary bg-primary-container/20 rounded-full hover:bg-primary-container/40 cursor-pointer transition-all duration-200">
+                <span className="material-symbols-outlined text-sm">center_focus_strong</span> Their Focus
+              </Link>
+              <Link href="/partner/checkins"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-label font-medium text-primary bg-primary-container/20 rounded-full hover:bg-primary-container/40 cursor-pointer transition-all duration-200">
+                <span className="material-symbols-outlined text-sm">check_circle</span> Check-ins
+              </Link>
+            </div>
+          )}
+        </div>
+      ) : !loading ? (
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 text-center">
+          <span className="material-symbols-outlined text-on-surface-variant/40 text-3xl mb-2 block">handshake</span>
+          <h3 className="font-headline text-base font-bold text-on-surface mb-1">No partner yet</h3>
+          <p className="text-xs text-on-surface-variant font-body mb-3">Invite someone you trust for accountability.</p>
+          <Link href="/onboarding"
+            className="inline-flex px-5 py-2 bg-primary text-on-primary text-xs font-label font-semibold rounded-full cursor-pointer hover:brightness-110 shadow-lg shadow-primary/20 transition-all duration-200">
+            Invite a Partner
+          </Link>
+        </div>
+      ) : null}
 
       {/* Pending conversations */}
       {pending.length > 0 && (

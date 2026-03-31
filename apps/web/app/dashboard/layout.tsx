@@ -23,9 +23,7 @@ const NAV_ITEMS = [
   { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: 'timeline', solo: true },
   { id: 'streaks', href: '/dashboard/streaks', label: 'Streaks', icon: 'local_fire_department', solo: true },
   { id: 'badges', href: '/dashboard/badges', label: 'Badges', icon: 'military_tech', solo: true },
-  { id: 'notifications', href: '/dashboard/notifications', label: 'Notifications', icon: 'notifications', solo: true },
-  { id: 'conversations', href: '/dashboard/conversations', label: 'Conversations', icon: 'forum', solo: false },
-  { id: 'partner', href: '/dashboard/partner', label: 'Partner', icon: 'handshake', solo: false },
+  { id: 'conversations', href: '/dashboard/conversations', label: 'Partner Conversations', icon: 'forum', solo: false },
   { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: 'settings', solo: true },
 ];
 
