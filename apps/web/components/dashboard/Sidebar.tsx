@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -38,6 +38,21 @@ const MOBILE_TABS_ALL = [
 export default function Sidebar({ userName, monitoringEnabled, navItems, soloMode }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [appRunning, setAppRunning] = useState<boolean | null>(null); // null = loading
+  const [showTroubleshoot, setShowTroubleshoot] = useState(false);
+
+  // Check heartbeat every 30 seconds
+  useEffect(() => {
+    const check = () => {
+      fetch('/api/heartbeat')
+        .then(r => r.json())
+        .then(d => setAppRunning(d.app_running === true))
+        .catch(() => setAppRunning(false));
+    };
+    check();
+    const interval = setInterval(check, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const isActive = (href: string) => {
     if (href === '/dashboard') return pathname === '/dashboard';
@@ -55,10 +70,57 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
 
       {/* Mode + monitoring badges */}
       <div className="px-4 space-y-2 pb-2">
-        {monitoringEnabled && (
-          <div className="px-3 py-2 rounded-2xl bg-primary-container/40 flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs text-primary font-label font-medium">Awareness active</span>
+        {appRunning === true && monitoringEnabled ? (
+          <div className="px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs text-emerald-700 font-label font-medium">Awareness Active</span>
+          </div>
+        ) : appRunning === null ? (
+          <div className="px-3 py-2 rounded-2xl bg-surface-container flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30" />
+            <span className="text-xs text-on-surface-variant font-label font-medium">Checking status...</span>
+          </div>
+        ) : (
+          <div>
+            <button
+              onClick={() => setShowTroubleshoot(!showTroubleshoot)}
+              className="w-full px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2 cursor-pointer hover:bg-red-100/50 transition-colors"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+              <span className="text-xs text-red-700 font-label font-medium flex-1 text-left">Awareness Inactive</span>
+              <span className="material-symbols-outlined text-red-400 text-sm">{showTroubleshoot ? 'expand_less' : 'help'}</span>
+            </button>
+            {showTroubleshoot && (
+              <div className="mt-2 px-3 py-3 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 space-y-2.5">
+                <p className="text-[10px] font-label font-bold uppercase tracking-wider text-on-surface-variant">Troubleshoot</p>
+                <ol className="space-y-2">
+                  {[
+                    { icon: 'download', text: 'Download the desktop app', href: '/download' },
+                    { icon: 'install_desktop', text: 'Open the app and sign in' },
+                    { icon: 'security', text: 'Grant screen recording permission' },
+                    { icon: 'check_circle', text: 'Keep the app running in your menu bar' },
+                  ].map((step, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="flex-shrink-0 w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[9px] font-bold mt-0.5">{i + 1}</span>
+                      {step.href ? (
+                        <Link href={step.href} onClick={() => setOpen(false)} className="text-[11px] text-primary font-body hover:underline cursor-pointer">
+                          {step.text}
+                        </Link>
+                      ) : (
+                        <span className="text-[11px] text-on-surface-variant font-body">{step.text}</span>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+                <Link
+                  href="/download"
+                  onClick={() => setOpen(false)}
+                  className="block w-full text-center py-2 text-[11px] font-label font-semibold text-white bg-red-500 rounded-xl hover:brightness-110 cursor-pointer transition-all"
+                >
+                  Download App
+                </Link>
+              </div>
+            )}
           </div>
         )}
         {soloMode && (

@@ -127,6 +127,22 @@ function launchMonitoring() {
 
   // Refresh settings periodically (every 30 min)
   setInterval(fetchSettings, 30 * 60 * 1000);
+
+  // Heartbeat — ping server every 2 minutes so dashboard knows app is running
+  sendHeartbeat();
+  setInterval(sendHeartbeat, 2 * 60 * 1000);
+}
+
+async function sendHeartbeat() {
+  const { getAccessToken } = require('./auth');
+  const token = getAccessToken();
+  if (!token) return;
+  try {
+    await fetch('https://becandid.io/api/heartbeat', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch {}
 }
 
 // IPC: login window signals successful auth
