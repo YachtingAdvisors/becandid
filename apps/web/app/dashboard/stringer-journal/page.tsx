@@ -212,7 +212,7 @@ export default function StringerJournalPage() {
   const renderForm = (isEdit: boolean) => (
     <div className="space-y-5 animate-fade-in">
       <button onClick={() => { if (!hasContent || confirm(isEdit ? 'Discard changes?' : 'Discard this entry?')) { resetForm(); setView(isEdit ? 'detail' : 'list'); } }}
-        className="text-sm text-on-surface-variant hover:text-on-surface font-label">{'\u2190'} Back</button>
+        className="text-sm text-on-surface-variant hover:text-on-surface font-label cursor-pointer transition-colors duration-200">{'\u2190'} Back</button>
 
       <div>
         <h2 className="text-xl font-headline font-bold text-on-surface">{isEdit ? 'Edit Entry' : 'New Entry'}</h2>
@@ -261,7 +261,7 @@ export default function StringerJournalPage() {
             return (
               <div key={prompt.id} className={`rounded-2xl border ${hasAnswer ? colors.border : 'border-outline-variant'} overflow-hidden`}>
                 <button onClick={() => setExpandedPrompts((prev) => ({ ...prev, [prompt.id]: !prev[prompt.id] }))}
-                  className={`w-full px-4 py-3 flex items-center justify-between text-left ${isOpen || hasAnswer ? colors.bg : 'bg-surface-container-lowest'}`}>
+                  className={`w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer transition-colors duration-200 ${isOpen || hasAnswer ? colors.bg : 'bg-surface-container-lowest hover:bg-surface-container-low'}`}>
                   <div className="flex items-center gap-3">
                     <span className="text-base">{['\uD83C\uDF0A', '\uD83D\uDC9B', '\uD83E\uDDED'][i]}</span>
                     <div>
@@ -299,7 +299,7 @@ export default function StringerJournalPage() {
         <div className="flex gap-2">
           {MOODS.map((m) => (
             <button key={m.v} onClick={() => setMood(mood === m.v ? null : m.v)}
-              className={`flex-1 py-2.5 rounded-2xl border text-center transition-all ${
+              className={`flex-1 py-2.5 rounded-2xl border text-center cursor-pointer transition-all duration-200 ${
                 mood === m.v ? 'border-primary bg-primary-container/30 ring-2 ring-primary/20' : 'border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low'
               }`}>
               <div className="text-lg">{m.emoji}</div>
@@ -317,7 +317,7 @@ export default function StringerJournalPage() {
         <div className="flex flex-wrap gap-1.5">
           {[...JOURNAL_TAGS, ...(triggerType === 'relapse' ? ['relapse' as const] : [])].map((tag) => (
             <button key={tag} onClick={() => setSelectedTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag])}
-              className={`px-3 py-1.5 rounded-full text-xs font-label font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-full text-xs font-label font-medium cursor-pointer transition-all duration-200 ${
                 selectedTags.includes(tag) ? 'bg-tertiary-container text-on-tertiary-container border border-tertiary-container' : 'bg-surface-container text-on-surface-variant border border-transparent hover:bg-surface-container-low'
               }`}>
               {tag}
@@ -329,10 +329,10 @@ export default function StringerJournalPage() {
       {/* Save */}
       <div className="flex gap-3 pt-4 border-t border-outline-variant">
         <button onClick={() => { if (!hasContent || confirm('Discard?')) { resetForm(); setView(isEdit ? 'detail' : 'list'); } }}
-          className="px-4 py-2.5 text-sm font-label rounded-2xl ring-1 ring-outline-variant/10 text-on-surface-variant hover:bg-surface-container-low">Cancel</button>
+          className="px-4 py-2.5 min-h-[44px] text-sm font-label rounded-2xl ring-1 ring-outline-variant/10 text-on-surface-variant hover:bg-surface-container-low cursor-pointer transition-all duration-200">Cancel</button>
         <button onClick={isEdit ? handleUpdate : handleSave} disabled={!hasContent || saving}
-          className={`flex-1 px-6 py-2.5 text-sm font-label font-medium rounded-2xl transition-all ${
-            saved ? 'bg-primary text-on-primary' : hasContent ? 'bg-primary text-on-primary hover:opacity-90' : 'bg-surface-container text-on-surface-variant cursor-not-allowed'
+          className={`flex-1 px-6 py-2.5 min-h-[44px] text-sm font-label font-medium rounded-2xl transition-all duration-200 ${
+            saved ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : hasContent ? 'bg-primary text-on-primary hover:opacity-90 cursor-pointer shadow-lg shadow-primary/20 hover:shadow-xl' : 'bg-surface-container text-on-surface-variant cursor-not-allowed'
           }`}>
           {saved ? '\u2713 Saved \u00B7 +10 pts' : saving ? 'Saving\u2026' : isEdit ? 'Update Entry' : 'Save Entry'}
         </button>
@@ -357,11 +357,11 @@ export default function StringerJournalPage() {
                   className="px-3 py-2 min-h-[44px] text-sm font-label rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant cursor-pointer transition-all duration-200">{'\u2193'} Export</button>
                 {showExport && (
                   <div className="absolute right-0 mt-2 w-56 bg-surface-container-lowest rounded-2xl shadow-lg ring-1 ring-outline-variant/10 z-20 overflow-hidden">
-                    <a href="/api/journal?export=word" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body" onClick={() => setShowExport(false)}>
+                    <a href="/api/journal?export=word" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
                       <span className="font-label font-medium">{'\uD83D\uDCC4'} Word Document</span>
                       <span className="block text-xs text-on-surface-variant mt-0.5">Download .doc file</span>
                     </a>
-                    <a href="/api/journal?export=notes" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body border-t border-outline-variant" onClick={() => setShowExport(false)}>
+                    <a href="/api/journal?export=notes" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body border-t border-outline-variant/20 cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
                       <span className="font-label font-medium">{'\uD83D\uDCDD'} Apple Notes</span>
                       <span className="block text-xs text-on-surface-variant mt-0.5">Download .txt &mdash; paste into Notes</span>
                     </a>
@@ -405,8 +405,8 @@ export default function StringerJournalPage() {
               </div>
               <div className="flex items-center gap-2">
                 {selected.mood && <span className="text-2xl">{MOODS.find((m) => m.v === selected.mood)?.emoji}</span>}
-                <button onClick={() => startEdit(selected)} className="text-xs text-primary hover:opacity-80 font-label px-2 py-1 rounded-xl ring-1 ring-outline-variant/10">Edit</button>
-                <button onClick={() => { if (confirm('Delete this entry?')) handleDelete(selected.id); }} className="text-xs text-error hover:opacity-80 font-label px-2 py-1">Delete</button>
+                <button onClick={() => startEdit(selected)} className="text-xs text-primary hover:opacity-80 font-label px-2 py-1 rounded-xl ring-1 ring-outline-variant/10 cursor-pointer transition-all duration-200 min-h-[44px] min-w-[44px]">Edit</button>
+                <button onClick={() => { if (confirm('Delete this entry?')) handleDelete(selected.id); }} className="text-xs text-error hover:opacity-80 font-label px-2 py-1 cursor-pointer transition-colors duration-200 min-h-[44px]">Delete</button>
               </div>
             </div>
             {selected.prompt_shown && (
@@ -453,7 +453,7 @@ export default function StringerJournalPage() {
                 Your patterns aren&apos;t random &mdash; they&apos;re a roadmap to alignment. Start tracing the tributaries.
               </p>
               <button onClick={() => { resetForm(); setView('write'); }}
-                className="px-5 py-2.5 text-sm font-label font-medium rounded-2xl bg-primary text-on-primary hover:opacity-90">Write Your First Entry</button>
+                className="px-5 py-2.5 min-h-[44px] text-sm font-label font-medium rounded-2xl bg-primary text-on-primary cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200">Write Your First Entry</button>
             </div>
           ) : (
             <>
@@ -462,10 +462,10 @@ export default function StringerJournalPage() {
                 className="w-full px-4 py-2.5 rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest text-on-surface text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
               {allTags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 py-1">
-                  {filterTag && <button onClick={() => setFilterTag(null)} className="text-[10px] px-2.5 py-1 rounded-full font-label border border-error/30 bg-error/5 text-error">{`Clear \u00D7`}</button>}
+                  {filterTag && <button onClick={() => setFilterTag(null)} className="text-[10px] px-2.5 py-1 rounded-full font-label border border-error/30 bg-error/5 text-error cursor-pointer transition-all duration-200 hover:bg-error/10">{`Clear \u00D7`}</button>}
                   {allTags.slice(0, 10).map(([tag, count]) => (
                     <button key={tag} onClick={() => setFilterTag(filterTag === tag ? null : tag)}
-                      className={`text-[10px] px-2.5 py-1 rounded-full font-label border ${filterTag === tag ? 'border-primary/40 bg-primary-container/30 text-primary' : 'border-outline-variant text-on-surface-variant'}`}>
+                      className={`text-[10px] px-2.5 py-1 rounded-full font-label border cursor-pointer transition-all duration-200 ${filterTag === tag ? 'border-primary/40 bg-primary-container/30 text-primary' : 'border-outline-variant text-on-surface-variant hover:border-primary/30'}`}>
                       {tag} ({count})
                     </button>
                   ))}
@@ -476,7 +476,7 @@ export default function StringerJournalPage() {
                 const preview = entry.freewrite || entry.tributaries || entry.longing || entry.roadmap || '';
                 return (
                   <button key={entry.id} onClick={() => { setSelected(entry); setView('detail'); }}
-                    className="w-full text-left p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-sm transition-all">
+                    className="w-full text-left p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-label font-medium text-on-surface">
                         {new Date(entry.created_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}

@@ -53,12 +53,19 @@ export default function FamiliesPage() {
           <Link href="/" className="cursor-pointer">
             <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-1 font-body text-sm">
+            <Link href="/" className="px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer">Home</Link>
+            <Link href="/#features" className="px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer">Features</Link>
+            <Link href="/pricing" className="px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer">Pricing</Link>
+            <Link href="/download" className="px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer">Download</Link>
+            <span className="px-4 py-2 rounded-full text-primary font-medium cursor-default">Families</span>
+          </div>
+          <div className="flex items-center gap-3">
             <Link
-              href="/"
-              className="text-sm font-label font-medium text-on-surface-variant hover:text-on-surface transition-colors duration-200 cursor-pointer"
+              href="/auth/signin"
+              className="hidden sm:inline-flex px-5 py-2.5 text-sm font-medium text-on-surface/70 hover:text-on-surface rounded-full hover:bg-surface-container-low transition-all duration-200 cursor-pointer"
             >
-              Home
+              Log in
             </Link>
             <Link
               href="/auth/signup"

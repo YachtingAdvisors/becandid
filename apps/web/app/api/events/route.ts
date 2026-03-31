@@ -14,13 +14,14 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServiceClient } from '@/lib/supabase';
+import { getUserFromRequest } from '@/lib/authFromRequest';
 import { runAlertPipeline } from '@/lib/alertPipeline';
 import { sanitizeText } from '@/lib/security';
 import { GOAL_LABELS } from '@be-candid/shared';
 
 const VALID_SEVERITIES = ['low', 'medium', 'high'];
-const VALID_PLATFORMS = ['web', 'ios', 'android'];
+const VALID_PLATFORMS = ['web', 'ios', 'android', 'extension'];
 const MAX_BATCH_SIZE = 20;
 const MAX_EVENTS_PER_HOUR = 30;
 
@@ -42,8 +43,7 @@ function checkUserRate(userId: string): boolean {
 // ── POST ────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getUserFromRequest(req);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   if (!checkUserRate(user.id)) {
@@ -130,8 +130,7 @@ export async function POST(req: NextRequest) {
 // ── GET ─────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getUserFromRequest(req);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const url = new URL(req.url);

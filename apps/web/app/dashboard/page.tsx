@@ -10,6 +10,7 @@ import SpouseImpactAwareness from '@/components/dashboard/SpouseImpactAwareness'
 import ScreenTimeCard from '@/components/dashboard/ScreenTimeCard';
 import ContentFilterStatus from '@/components/dashboard/ContentFilterStatus';
 import WalkthroughWrapper from '@/components/dashboard/WalkthroughWrapper';
+import QuickMoodCheckin from '@/components/dashboard/QuickMoodCheckin';
 import Link from 'next/link';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
@@ -89,6 +90,9 @@ export default async function DashboardPage() {
 
       {/* ── Nudges ─────────────────────────────────────────── */}
       <NudgeBanner />
+
+      {/* ── Quick Mood Check-in ────────────────────────────── */}
+      <QuickMoodCheckin />
 
       {/* ── Featured Cards Grid ────────────────────────────── */}
       <section className="grid grid-cols-2 lg:grid-cols-3 gap-4">

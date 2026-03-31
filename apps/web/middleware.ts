@@ -58,6 +58,19 @@ function timingSafeEqual(a: string, b: string): boolean {
 export async function middleware(request: NextRequest) {
   try {
     const { pathname } = request.nextUrl;
+    const origin = request.headers.get('origin') || '';
+
+    // ── 0. CORS preflight for Chrome extension ─────────────
+    if (request.method === 'OPTIONS' && pathname.startsWith('/api/')) {
+      const res = new NextResponse(null, { status: 204 });
+      if (origin.startsWith('chrome-extension://')) {
+        res.headers.set('Access-Control-Allow-Origin', origin);
+        res.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+        res.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+        res.headers.set('Access-Control-Max-Age', '86400');
+      }
+      return res;
+    }
 
     // ── 1. Public paths — skip auth entirely ────────────────
     if (pathname === '/') {
@@ -128,6 +141,18 @@ export async function middleware(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser();
 
+    // API requests with Bearer token bypass cookie auth (extension/API clients)
+    if (!user && pathname.startsWith('/api/') && request.headers.get('authorization')?.startsWith('Bearer ')) {
+      // Let the route handler validate the Bearer token via authFromRequest
+      const bearerResponse = NextResponse.next({ request });
+      applyHeaders(bearerResponse);
+      if (origin.startsWith('chrome-extension://')) {
+        bearerResponse.headers.set('Access-Control-Allow-Origin', origin);
+        bearerResponse.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+      }
+      return bearerResponse;
+    }
+
     // Unauthenticated → redirect or 401
     if (!user) {
       if (pathname.startsWith('/dashboard') || pathname.startsWith('/partner')) {
@@ -144,8 +169,12 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    // ── 6. Apply security headers and return ────────────────
+    // ── 6. Apply security headers and CORS ────────────────
     applyHeaders(response);
+    if (origin.startsWith('chrome-extension://') && pathname.startsWith('/api/')) {
+      response.headers.set('Access-Control-Allow-Origin', origin);
+      response.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    }
     return response;
 
   } catch (error) {
