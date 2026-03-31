@@ -14,20 +14,19 @@ let onSignOut = null;
 function createTray(callbacks = {}) {
   onSignOut = callbacks.onSignOut || (() => {});
 
-  // Use white C-leaf logo as template image (macOS adapts for dark/light menu bar)
-  // Must resize to exactly 16x16 logical pixels for proper menu bar alignment
-  const iconPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon.png');
-  const icon2xPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon@2x.png');
+  // Load both active (green circle) and inactive icons
+  const activeIconPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon-active@2x.png');
+  const inactiveIconPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon-inactive@2x.png');
+  const fallbackPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon@2x.png');
+
   let icon;
   try {
-    // Load @2x and resize to 16x16 logical (32x32 actual) for crisp Retina rendering
-    icon = nativeImage.createFromPath(icon2xPath);
+    icon = nativeImage.createFromPath(store.get('monitoring_enabled') ? activeIconPath : inactiveIconPath);
     icon = icon.resize({ width: 16, height: 16 });
-    icon.setTemplateImage(true);
     if (icon.isEmpty()) throw new Error('empty');
   } catch {
     try {
-      icon = nativeImage.createFromPath(iconPath);
+      icon = nativeImage.createFromPath(fallbackPath);
       icon = icon.resize({ width: 16, height: 16 });
       icon.setTemplateImage(true);
     } catch {
@@ -36,7 +35,6 @@ function createTray(callbacks = {}) {
   }
 
   tray = new Tray(icon);
-  // Don't set title — it shows as text label next to the icon on macOS
 
   updateTrayMenu();
   return tray;
@@ -47,6 +45,14 @@ function updateTrayMenu() {
 
   const stats = getCaptureStats();
   const monitoring = store.get('monitoring_enabled');
+
+  // Swap tray icon: green C when active, gray C when inactive
+  try {
+    const iconFile = monitoring ? 'tray-icon-active@2x.png' : 'tray-icon-inactive@2x.png';
+    let newIcon = nativeImage.createFromPath(path.join(__dirname, '..', '..', 'assets', iconFile));
+    newIcon = newIcon.resize({ width: 16, height: 16 });
+    tray.setImage(newIcon);
+  } catch {}
 
   const lastHeartbeat = stats.last_heartbeat_capture
     ? timeAgo(stats.last_heartbeat_capture)
