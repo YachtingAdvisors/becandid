@@ -89,6 +89,10 @@ function getAccessToken() {
   return store.get('access_token');
 }
 
+function getRefreshToken() {
+  return store.get('refresh_token');
+}
+
 function isAuthenticated() {
   const token = store.get('access_token');
   const expiresAt = store.get('expires_at');
@@ -102,4 +106,4 @@ function signOut() {
   store.set('user_id', null);
 }
 
-module.exports = { signIn, signOut, refreshToken, fetchSettings, getAccessToken, isAuthenticated };
+module.exports = { signIn, signOut, refreshToken, fetchSettings, getAccessToken, getRefreshToken, isAuthenticated };

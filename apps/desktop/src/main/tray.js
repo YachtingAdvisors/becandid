@@ -88,10 +88,10 @@ function updateTrayMenu() {
     {
       label: 'Open Dashboard',
       click: () => {
-        const { getAccessToken } = require('./auth');
+        const { getAccessToken, getRefreshToken } = require('./auth');
         const token = getAccessToken();
         const url = token
-          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&redirect=/dashboard`
+          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard`
           : 'https://becandid.io/dashboard';
         shell.openExternal(url);
       },
@@ -99,10 +99,10 @@ function updateTrayMenu() {
     {
       label: 'Open Journal',
       click: () => {
-        const { getAccessToken } = require('./auth');
+        const { getAccessToken, getRefreshToken } = require('./auth');
         const token = getAccessToken();
         const url = token
-          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&redirect=/dashboard/stringer-journal?action=write`
+          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard/stringer-journal?action=write`
           : 'https://becandid.io/dashboard/stringer-journal';
         shell.openExternal(url);
       },
@@ -110,10 +110,10 @@ function updateTrayMenu() {
     {
       label: 'Log Activity',
       click: () => {
-        const { getAccessToken } = require('./auth');
+        const { getAccessToken, getRefreshToken } = require('./auth');
         const token = getAccessToken();
         const url = token
-          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&redirect=/dashboard/activity`
+          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard/activity`
           : 'https://becandid.io/dashboard/activity';
         shell.openExternal(url);
       },
@@ -190,7 +190,7 @@ function showReachOutWindow() {
 
   // Handle the send
   ipcMain.once('reach-out:send', async (_event, message) => {
-    const { getAccessToken } = require('./auth');
+    const { getAccessToken, getRefreshToken } = require('./auth');
     const token = getAccessToken();
     if (token) {
       try {
@@ -225,7 +225,7 @@ function showReachOutWindow() {
 
 // Notify server when monitoring is toggled (triggers partner alert if paused)
 async function notifyMonitoringToggle(enabled) {
-  const { getAccessToken } = require('./auth');
+  const { getAccessToken, getRefreshToken } = require('./auth');
   const token = getAccessToken();
   if (!token) return;
   try {
