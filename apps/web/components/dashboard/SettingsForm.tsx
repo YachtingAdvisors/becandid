@@ -139,8 +139,24 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
 
       {/* ── Rivals (Goals) ──────────────────────────────────── */}
       <section className="card p-5 space-y-4">
-        <h2 className="font-display text-lg font-semibold text-ink">Your Rivals</h2>
-        <p className="text-xs text-ink-muted">Select the areas you want accountability for.</p>
+        <h2 className="font-display text-lg font-semibold text-ink flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>swords</span>
+          Your Rivals
+        </h2>
+
+        <div className="px-4 py-3 rounded-xl bg-primary-container/20 border border-primary-container/30">
+          <p className="text-xs text-on-surface leading-relaxed font-body italic">
+            &ldquo;He who has a why to live can bear almost any how.&rdquo;
+          </p>
+          <p className="text-[10px] text-on-surface-variant font-label mt-0.5 mb-2">&mdash; Viktor Frankl</p>
+          <p className="text-xs text-on-surface-variant font-body leading-relaxed">
+            We call these <strong className="text-on-surface">Rivals</strong> &mdash; not weaknesses, not failures.
+            A rival is a worthy opponent that sharpens you through the encounter.
+            Every time you face one and hold your ground, you come back stronger.
+            Name them honestly. That&rsquo;s where the power starts.
+          </p>
+        </div>
+
         <GoalSelector selected={goals} onChange={setGoals} disabled={loading} />
       </section>
 

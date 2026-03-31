@@ -147,6 +147,14 @@ export default function OnboardingPage() {
             </div>
           </div>
 
+          {/* Rivals philosophy */}
+          <div className="mb-8 px-5 py-4 rounded-2xl bg-gradient-to-br from-primary-container/30 to-emerald-50/50 ring-1 ring-primary-container/30">
+            <p className="text-sm text-on-surface leading-relaxed font-body">
+              <strong className="text-primary">Why &ldquo;Rivals&rdquo;?</strong> &mdash; A rival isn&rsquo;t a verdict on your character. It&rsquo;s a worthy opponent &mdash; something that pushes back, and in doing so, reveals where you&rsquo;re growing.
+              Every encounter you face honestly makes you sharper. Name the ones that challenge you most. That honesty is the first act of strength.
+            </p>
+          </div>
+
           <GoalSelector selected={goals} onChange={setGoals} />
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
 
