@@ -9,6 +9,7 @@ import RelationshipMini from '@/components/dashboard/RelationshipMini';
 import SpouseImpactAwareness from '@/components/dashboard/SpouseImpactAwareness';
 import ScreenTimeCard from '@/components/dashboard/ScreenTimeCard';
 import ContentFilterStatus from '@/components/dashboard/ContentFilterStatus';
+import WalkthroughWrapper from '@/components/dashboard/WalkthroughWrapper';
 import Link from 'next/link';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
@@ -37,12 +38,15 @@ export default async function DashboardPage() {
 
   const db = createServiceClient();
 
-  // Parallel data fetching
-  const [profileRes, eventsRes, alertsRes, partnerRes] = await Promise.all([
-    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at').eq('id', user.id).single(),
+  // Parallel data fetching (including walkthrough detection)
+  const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes] = await Promise.all([
+    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency').eq('id', user.id).single(),
     db.from('events').select('id, category, severity, platform, app_name, timestamp').eq('user_id', user.id).order('timestamp', { ascending: false }).limit(5),
     db.from('alerts').select('id, sent_at, conversations(id, completed_at, outcome)').eq('user_id', user.id).order('sent_at', { ascending: false }).limit(5),
     db.from('partners').select('partner_name, status').eq('user_id', user.id).eq('status', 'active').maybeSingle(),
+    db.from('focus_segments').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
+    db.from('stringer_journal').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
+    db.from('check_ins').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'completed').limit(1),
   ]);
 
   const profile = profileRes.data;
@@ -52,8 +56,25 @@ export default async function DashboardPage() {
 
   const pendingConversations = alerts.filter((a: any) => !a.conversations?.[0]?.completed_at).length;
 
+  // Walkthrough: detect which setup steps are complete
+  const showWalkthrough = !profile?.walkthrough_dismissed_at;
+  const completedSteps = {
+    checkin_configured: (profile?.check_in_hour !== 21 || profile?.check_in_frequency !== 'daily'),
+    focus_started: (focusCountRes.count ?? 0) > 0,
+    first_journal: (journalCountRes.count ?? 0) > 0,
+    first_checkin: (checkinCountRes.count ?? 0) > 0,
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      {/* ── First-Time Walkthrough ─────────────────────────── */}
+      {showWalkthrough && (
+        <WalkthroughWrapper
+          userName={profile?.name?.split(' ')[0] ?? ''}
+          completedSteps={completedSteps}
+        />
+      )}
+
       {/* ── Header ─────────────────────────────────────────── */}
       <section className="relative pb-4">
         <p className="font-label text-xs text-on-surface-variant/60 uppercase tracking-widest mb-1">Welcome back</p>
