@@ -11,8 +11,10 @@
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       background: #fbf9f8;
       color: #313333;
-      -webkit-app-region: drag;
       user-select: none;
+    }
+    .drag-region {
+      -webkit-app-region: drag;
     }
     .container {
       padding: 40px 28px 28px;
@@ -104,7 +106,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">
+    <div class="header drag-region">
       <div class="icon">🤝</div>
       <h1>Reach Out</h1>
       <p class="subtitle">Send a quick message to your partner</p>
