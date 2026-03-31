@@ -87,7 +87,7 @@ export default function SecurityPage() {
             {sessions.map((session, i) => {
               const device = parseUA(session.user_agent);
               return (
-              <div key={session.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low mx-3">
+              <div key={session.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low mx-3 transition-all duration-200">
                 <span className="material-symbols-outlined text-primary text-lg flex-shrink-0">{device.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-on-surface font-label flex items-center gap-2">

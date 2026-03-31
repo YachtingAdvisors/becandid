@@ -244,7 +244,7 @@ export default function StringerJournalPage() {
         <label className="block text-sm font-label font-medium text-on-surface mb-2">Open reflection</label>
         <textarea value={freewrite} onChange={(e) => setFreewrite(e.target.value)}
           placeholder="Write freely. What happened? What are you feeling right now?"
-          className="w-full h-28 px-4 py-3 rounded-3xl bg-secondary-container/30 border border-outline-variant text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
+          className="w-full h-28 px-4 py-3 rounded-3xl bg-secondary-container/30 ring-1 ring-outline-variant/10 text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
         {crisisCheck.detected && <CrisisResourceBanner result={crisisCheck} />}
       </div>
 
@@ -282,7 +282,7 @@ export default function StringerJournalPage() {
                     <textarea value={answers[prompt.id as keyof typeof answers]}
                       onChange={(e) => setAnswers((prev) => ({ ...prev, [prompt.id]: e.target.value }))}
                       placeholder="Take your time\u2026"
-                      className="w-full h-24 px-3 py-2.5 rounded-2xl border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
+                      className="w-full h-24 px-3 py-2.5 rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
                   </div>
                 )}
               </div>
@@ -329,7 +329,7 @@ export default function StringerJournalPage() {
       {/* Save */}
       <div className="flex gap-3 pt-4 border-t border-outline-variant">
         <button onClick={() => { if (!hasContent || confirm('Discard?')) { resetForm(); setView(isEdit ? 'detail' : 'list'); } }}
-          className="px-4 py-2.5 text-sm font-label rounded-2xl border border-outline-variant text-on-surface-variant hover:bg-surface-container-low">Cancel</button>
+          className="px-4 py-2.5 text-sm font-label rounded-2xl ring-1 ring-outline-variant/10 text-on-surface-variant hover:bg-surface-container-low">Cancel</button>
         <button onClick={isEdit ? handleUpdate : handleSave} disabled={!hasContent || saving}
           className={`flex-1 px-6 py-2.5 text-sm font-label font-medium rounded-2xl transition-all ${
             saved ? 'bg-primary text-on-primary' : hasContent ? 'bg-primary text-on-primary hover:opacity-90' : 'bg-surface-container text-on-surface-variant cursor-not-allowed'
@@ -354,7 +354,7 @@ export default function StringerJournalPage() {
             {entries.length > 0 && (
               <div className="relative">
                 <button onClick={() => setShowExport(!showExport)}
-                  className="px-3 py-2 text-sm font-label rounded-2xl border border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant">{'\u2193'} Export</button>
+                  className="px-3 py-2 text-sm font-label rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant">{'\u2193'} Export</button>
                 {showExport && (
                   <div className="absolute right-0 mt-2 w-56 bg-surface-container-lowest rounded-2xl shadow-lg border border-outline-variant z-20 overflow-hidden">
                     <a href="/api/journal?export=word" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body" onClick={() => setShowExport(false)}>
@@ -459,7 +459,7 @@ export default function StringerJournalPage() {
             <>
               {/* Search + filter */}
               <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search entries\u2026"
-                className="w-full px-4 py-2.5 rounded-2xl border border-outline-variant bg-surface-container-lowest text-on-surface text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
+                className="w-full px-4 py-2.5 rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest text-on-surface text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
               {allTags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 py-1">
                   {filterTag && <button onClick={() => setFilterTag(null)} className="text-[10px] px-2.5 py-1 rounded-full font-label border border-error/30 bg-error/5 text-error">{`Clear \u00D7`}</button>}
@@ -476,7 +476,7 @@ export default function StringerJournalPage() {
                 const preview = entry.freewrite || entry.tributaries || entry.longing || entry.roadmap || '';
                 return (
                   <button key={entry.id} onClick={() => { setSelected(entry); setView('detail'); }}
-                    className="w-full text-left p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant hover:border-primary/30 hover:shadow-sm transition-all">
+                    className="w-full text-left p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-sm transition-all">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-label font-medium text-on-surface">
                         {new Date(entry.created_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}

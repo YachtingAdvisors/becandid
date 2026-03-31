@@ -26,7 +26,8 @@ export default async function SettingsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold text-on-surface mb-1">Settings</h1>
+        <p className="text-xs font-label font-medium text-on-surface-variant uppercase tracking-widest">Account</p>
+        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1">Settings</h1>
         <p className="text-sm text-on-surface-variant font-body">
           Manage your profile, rivals, awareness preferences, and check-in schedule.
         </p>
@@ -67,10 +68,10 @@ export default async function SettingsPage() {
       <SubscriptionCard />
 
       {/* Content Filter Settings */}
-      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 border border-outline-variant shadow-sm">
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <div className="flex items-center justify-between">
           <h2 className="font-headline text-lg font-bold text-on-surface">Content Filter</h2>
-          <Link href="/dashboard/content-filter" className="text-xs text-primary font-label font-medium hover:underline">
+          <Link href="/dashboard/content-filter" className="text-xs text-primary font-label font-medium hover:underline cursor-pointer transition-colors duration-200">
             Manage
           </Link>
         </div>
@@ -85,10 +86,10 @@ export default async function SettingsPage() {
       </section>
 
       {/* Screen Time Summary */}
-      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 border border-outline-variant shadow-sm">
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <div className="flex items-center justify-between">
           <h2 className="font-headline text-lg font-bold text-on-surface">Screen Time</h2>
-          <Link href="/dashboard/screen-time" className="text-xs text-primary font-label font-medium hover:underline">
+          <Link href="/dashboard/screen-time" className="text-xs text-primary font-label font-medium hover:underline cursor-pointer transition-colors duration-200">
             View Details
           </Link>
         </div>
@@ -98,7 +99,7 @@ export default async function SettingsPage() {
       </section>
 
       {/* Account Mode */}
-      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 border border-outline-variant shadow-sm">
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <h2 className="font-headline text-lg font-bold text-on-surface">Account Mode</h2>
         <div className="flex items-center gap-3">
           <span className="inline-flex px-3 py-1 rounded-full text-xs font-label font-semibold bg-secondary-container text-on-secondary-container">
@@ -114,7 +115,7 @@ export default async function SettingsPage() {
       <PrivacySettings />
 
       {/* Data & Account */}
-      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 border border-outline-variant shadow-sm">
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <h2 className="font-headline text-lg font-bold text-on-surface">Your Data</h2>
         <div className="flex items-center justify-between">
           <div>
@@ -124,7 +125,7 @@ export default async function SettingsPage() {
           <a
             href="/api/account"
             download
-            className="px-3 py-1.5 text-xs font-label font-medium text-primary border border-primary-container rounded-2xl hover:bg-primary-container/20 transition-colors"
+            className="px-3 py-1.5 min-h-[44px] text-xs font-label font-medium text-primary border border-primary-container rounded-2xl hover:bg-primary-container/20 cursor-pointer transition-all duration-200"
           >
             Export
           </a>
@@ -132,14 +133,14 @@ export default async function SettingsPage() {
       </section>
 
       {/* Danger zone */}
-      <section className="bg-surface-container-lowest rounded-3xl p-5 border border-error/30 shadow-sm">
+      <section className="bg-surface-container-lowest rounded-3xl p-5 ring-1 ring-error/20 shadow-sm">
         <h2 className="font-headline text-lg font-bold text-error mb-3">Danger Zone</h2>
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm font-label font-medium text-on-surface">Delete account</div>
             <div className="text-xs text-on-surface-variant font-body">Permanently delete your account and all data. This cannot be undone.</div>
           </div>
-          <button className="px-3 py-1.5 text-xs font-label font-medium text-error border border-error/30 rounded-2xl hover:bg-error/5 transition-colors">
+          <button className="px-3 py-1.5 min-h-[44px] text-xs font-label font-medium text-error border border-error/30 rounded-2xl hover:bg-error/5 cursor-pointer transition-all duration-200">
             Delete Account
           </button>
         </div>
