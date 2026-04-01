@@ -87,6 +87,109 @@ function buildNotesText(entries: StringerJournalEntry[]) {
   return t;
 }
 
+// ── Markdown (Obsidian / Notion) ────────────────────────────
+
+function buildMarkdown(entries: StringerJournalEntry[]) {
+  let md = `# Be Candid — Candid Journal\n*Drawing Wisdom from the Struggle*\n\n`;
+  md += `> ${entries.length} entries · Exported ${fmtDate(new Date().toISOString())}\n\n---\n\n`;
+
+  entries.forEach((e) => {
+    md += `## ${fmtDate(e.created_at)}\n`;
+    md += `*${fmtTime(e.created_at)}*`;
+    if (e.trigger_type !== 'manual') md += ` · \`${e.trigger_type}\``;
+    md += '\n\n';
+    if (e.freewrite) md += e.freewrite + '\n\n';
+    STRINGER_PROMPTS.forEach((p) => {
+      const val = e[p.id as keyof StringerJournalEntry] as string | null;
+      if (val) md += `### ${p.label}\n> ${p.question}\n\n${val}\n\n`;
+    });
+    if (e.mood) {
+      const moods = ['', 'Heavy', 'Low', 'Neutral', 'Lighter', 'Hopeful'];
+      md += `**Mood:** ${moods[e.mood]} (${'●'.repeat(e.mood)}${'○'.repeat(5 - e.mood)})\n\n`;
+    }
+    if (e.tags?.length) md += `**Tags:** ${e.tags.map(t => `#${t.replace(/\s+/g, '-')}`).join(' ')}\n\n`;
+    md += '---\n\n';
+  });
+
+  md += `> *"Freedom is found through kindness and curiosity."*\n`;
+  return md;
+}
+
+// ── Evernote (ENEX) ─────────────────────────────────────────
+
+function buildENEX(entries: StringerJournalEntry[]) {
+  const notes = entries.map((e) => {
+    let content = '';
+    if (e.freewrite) content += `<p>${escXml(e.freewrite).replace(/\n/g, '<br/>')}</p>`;
+    STRINGER_PROMPTS.forEach((p) => {
+      const val = e[p.id as keyof StringerJournalEntry] as string | null;
+      if (val) {
+        content += `<h3>${escXml(p.label)}</h3>`;
+        content += `<p style="font-style:italic;color:#888;">${escXml(p.question)}</p>`;
+        content += `<p>${escXml(val).replace(/\n/g, '<br/>')}</p>`;
+      }
+    });
+    if (e.mood) {
+      const moods = ['', 'Heavy', 'Low', 'Neutral', 'Lighter', 'Hopeful'];
+      content += `<p><b>Mood:</b> ${moods[e.mood]}</p>`;
+    }
+    if (e.tags?.length) content += `<p><b>Tags:</b> ${e.tags.join(', ')}</p>`;
+
+    const created = new Date(e.created_at).toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+    const tagXml = (e.tags || []).map(t => `<tag>${escXml(t)}</tag>`).join('');
+
+    return `<note>
+<title>${escXml(fmtDate(e.created_at))} — Be Candid Journal</title>
+<content><![CDATA[<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd"><en-note>${content}</en-note>]]></content>
+<created>${created}</created>
+${tagXml}
+<note-attributes><source>Be Candid</source></note-attributes>
+</note>`;
+  }).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE en-export SYSTEM "http://xml.evernote.com/pub/evernote-export4.dtd">
+<en-export export-date="${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '')}" application="Be Candid">
+${notes}
+</en-export>`;
+}
+
+function escXml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── OneNote HTML ────────────────────────────────────────────
+
+function buildOneNoteHTML(entries: StringerJournalEntry[]) {
+  const rows = entries.map((e) => {
+    let ph = '';
+    STRINGER_PROMPTS.forEach((p) => {
+      const val = e[p.id as keyof StringerJournalEntry] as string | null;
+      if (val) {
+        ph += `<h3 style="color:#226779;margin-top:12px;">${p.label}</h3>
+<p style="color:#888;font-style:italic;font-size:12px;">${p.question}</p>
+<p>${val.replace(/\n/g, '<br/>')}</p>`;
+      }
+    });
+    const moodLine = e.mood
+      ? `<p style="font-size:12px;color:#999;">Mood: ${'●'.repeat(e.mood)}${'○'.repeat(5 - e.mood)}</p>` : '';
+    const tagLine = e.tags?.length
+      ? `<p style="font-size:12px;color:#999;">Tags: ${e.tags.join(', ')}</p>` : '';
+    return `<div style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #eee;">
+<h2 style="color:#333;font-size:16px;">${fmtDate(e.created_at)} · ${fmtTime(e.created_at)}</h2>
+${e.freewrite ? `<p>${e.freewrite.replace(/\n/g, '<br/>')}</p>` : ''}
+${ph}${moodLine}${tagLine}</div>`;
+  }).join('\n');
+
+  return `<html><head><meta charset="utf-8"><title>Be Candid Journal</title></head>
+<body style="font-family:Segoe UI,sans-serif;max-width:700px;margin:0 auto;padding:20px;">
+<h1 style="color:#226779;text-align:center;">Be Candid — Candid Journal</h1>
+<p style="text-align:center;color:#888;">${entries.length} entries · Exported ${fmtDate(new Date().toISOString())}</p>
+<hr/>${rows}
+<p style="text-align:center;color:#aaa;font-style:italic;margin-top:20px;">"Freedom is found through kindness and curiosity."</p>
+</body></html>`;
+}
+
 // ── GET ─────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
@@ -128,6 +231,33 @@ export async function GET(req: NextRequest) {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
         'Content-Disposition': `attachment; filename="be-candid-journal-${new Date().toISOString().slice(0, 10)}.txt"`,
+      },
+    });
+  }
+
+  if (exportType === 'markdown') {
+    return new NextResponse(buildMarkdown((entries || []) as StringerJournalEntry[]), {
+      headers: {
+        'Content-Type': 'text/markdown; charset=utf-8',
+        'Content-Disposition': `attachment; filename="be-candid-journal-${new Date().toISOString().slice(0, 10)}.md"`,
+      },
+    });
+  }
+
+  if (exportType === 'evernote') {
+    return new NextResponse(buildENEX((entries || []) as StringerJournalEntry[]), {
+      headers: {
+        'Content-Type': 'application/xml; charset=utf-8',
+        'Content-Disposition': `attachment; filename="be-candid-journal-${new Date().toISOString().slice(0, 10)}.enex"`,
+      },
+    });
+  }
+
+  if (exportType === 'onenote') {
+    return new NextResponse(buildOneNoteHTML((entries || []) as StringerJournalEntry[]), {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Disposition': `attachment; filename="be-candid-journal-${new Date().toISOString().slice(0, 10)}.html"`,
       },
     });
   }

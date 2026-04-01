@@ -356,16 +356,34 @@ export default function StringerJournalPage() {
                 <button onClick={() => setShowExport(!showExport)}
                   className="px-3 py-2 min-h-[44px] text-sm font-label rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant cursor-pointer transition-all duration-200">{'\u2193'} Export</button>
                 {showExport && (
-                  <div className="absolute right-0 mt-2 w-56 bg-surface-container-lowest rounded-2xl shadow-lg ring-1 ring-outline-variant/10 z-20 overflow-hidden">
-                    <a href="/api/journal?export=word" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
-                      <span className="font-label font-medium">{'\uD83D\uDCC4'} Word Document</span>
-                      <span className="block text-xs text-on-surface-variant mt-0.5">Download .doc file</span>
-                    </a>
-                    <a href="/api/journal?export=notes" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body border-t border-outline-variant/20 cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
-                      <span className="font-label font-medium">{'\uD83D\uDCDD'} Apple Notes</span>
-                      <span className="block text-xs text-on-surface-variant mt-0.5">Download .txt &mdash; paste into Notes</span>
-                    </a>
-                  </div>
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setShowExport(false)} />
+                    <div className="absolute right-0 mt-2 w-64 bg-surface-container-lowest rounded-2xl shadow-lg ring-1 ring-outline-variant/10 z-20 overflow-hidden">
+                      <div className="px-4 py-2 border-b border-outline-variant/10">
+                        <p className="text-[10px] text-on-surface-variant font-label uppercase tracking-widest">Export to</p>
+                      </div>
+                      <a href="/api/journal?export=markdown" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
+                        <span className="font-label font-medium">Obsidian / Notion</span>
+                        <span className="block text-xs text-on-surface-variant mt-0.5">Markdown .md &mdash; works with any Markdown app</span>
+                      </a>
+                      <a href="/api/journal?export=evernote" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body border-t border-outline-variant/20 cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
+                        <span className="font-label font-medium">Evernote</span>
+                        <span className="block text-xs text-on-surface-variant mt-0.5">ENEX format &mdash; File &rarr; Import in Evernote</span>
+                      </a>
+                      <a href="/api/journal?export=onenote" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body border-t border-outline-variant/20 cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
+                        <span className="font-label font-medium">Microsoft OneNote</span>
+                        <span className="block text-xs text-on-surface-variant mt-0.5">HTML format &mdash; Insert &rarr; File Printout</span>
+                      </a>
+                      <a href="/api/journal?export=notes" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body border-t border-outline-variant/20 cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
+                        <span className="font-label font-medium">Apple Notes</span>
+                        <span className="block text-xs text-on-surface-variant mt-0.5">Plain text .txt &mdash; paste into Notes</span>
+                      </a>
+                      <a href="/api/journal?export=word" className="block px-4 py-3 text-sm hover:bg-surface-container-low text-on-surface font-body border-t border-outline-variant/20 cursor-pointer transition-colors duration-200" onClick={() => setShowExport(false)}>
+                        <span className="font-label font-medium">Word Document</span>
+                        <span className="block text-xs text-on-surface-variant mt-0.5">Download .doc file</span>
+                      </a>
+                    </div>
+                  </>
                 )}
               </div>
             )}
