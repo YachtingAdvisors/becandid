@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next';
-import { BLOG_POSTS } from '@/content/blog/posts';
+import { getAllBlogPosts } from '@/content/blog/loader';
+
+const BLOG_POSTS = getAllBlogPosts();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';

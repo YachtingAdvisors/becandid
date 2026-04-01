@@ -1,4 +1,6 @@
-import { BLOG_POSTS } from '@/content/blog/posts';
+import { getAllBlogPosts } from '@/content/blog/loader';
+
+const BLOG_POSTS = getAllBlogPosts();
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 

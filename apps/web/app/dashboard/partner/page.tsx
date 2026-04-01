@@ -15,7 +15,16 @@ interface PartnerData {
   accepted_at: string | null;
 }
 
-const RELATIONSHIP_TYPES = ['friend', 'spouse', 'mentor', 'coach', 'therapist', 'pastor'] as const;
+const RELATIONSHIP_OPTIONS = [
+  { key: 'friend', label: 'Friend' },
+  { key: 'spouse', label: 'Spouse' },
+  { key: 'mentor', label: 'Mentor' },
+  { key: 'family', label: 'Family' },
+  { key: 'coach', label: 'Coach' },
+  { key: 'therapist', label: 'Therapist' },
+  { key: 'spiritual_leader', label: 'Spiritual Leader' },
+  { key: 'other', label: 'Other' },
+];
 
 export default function PartnerPage() {
   const [partner, setPartner] = useState<PartnerData | null>(null);
@@ -27,7 +36,11 @@ export default function PartnerPage() {
   const [partnerName, setPartnerName] = useState('');
   const [partnerEmail, setPartnerEmail] = useState('');
   const [partnerPhone, setPartnerPhone] = useState('');
-  const [relationship, setRelationship] = useState('friend');
+  const [relationships, setRelationships] = useState<string[]>(['friend']);
+  const [customRelationship, setCustomRelationship] = useState('');
+  const relationship = relationships.includes('other') && customRelationship.trim()
+    ? [...relationships.filter(r => r !== 'other'), customRelationship.trim()].join(', ')
+    : relationships.join(', ');
   const [userGoals, setUserGoals] = useState<GoalCategory[]>([]);
   const [sharedRivals, setSharedRivals] = useState<GoalCategory[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -105,7 +118,8 @@ export default function PartnerPage() {
         setPartnerName('');
         setPartnerEmail('');
         setPartnerPhone('');
-        setRelationship('friend');
+        setRelationships(['friend']);
+        setCustomRelationship('');
         setSharedRivals([]);
         setLoading(true);
         fetchPartner();
@@ -128,7 +142,8 @@ export default function PartnerPage() {
     setPartnerName('');
     setPartnerEmail('');
     setPartnerPhone('');
-    setRelationship('friend');
+    setRelationships(['friend']);
+    setCustomRelationship('');
     setSharedRivals([]);
   }
 
@@ -280,21 +295,33 @@ export default function PartnerPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Relationship</label>
+                    <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Relationship <span className="text-on-surface-variant font-normal">(select all that apply)</span></label>
                     <div className="flex flex-wrap gap-2">
-                      {RELATIONSHIP_TYPES.map((r) => (
+                      {RELATIONSHIP_OPTIONS.map(({ key, label }) => (
                         <button
-                          key={r}
-                          onClick={() => setRelationship(r)}
+                          key={key}
+                          onClick={() => setRelationships(prev =>
+                            prev.includes(key) ? prev.filter(r => r !== key) : [...prev, key]
+                          )}
                           className={`px-4 py-2 rounded-full text-sm font-label font-medium border transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                            relationship === r
+                            relationships.includes(key)
                               ? 'border-primary bg-primary-container text-primary'
                               : 'border-outline-variant text-on-surface-variant hover:border-primary/30'
                           }`}>
-                          {r.charAt(0).toUpperCase() + r.slice(1)}
+                          {label}
                         </button>
                       ))}
                     </div>
+                    {relationships.includes('other') && (
+                      <input
+                        type="text"
+                        value={customRelationship}
+                        onChange={(e) => setCustomRelationship(e.target.value)}
+                        placeholder="Describe your relationship"
+                        maxLength={50}
+                        className="mt-2 w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                      />
+                    )}
                   </div>
                 </div>
               </div>

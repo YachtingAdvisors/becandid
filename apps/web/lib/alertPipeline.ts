@@ -31,6 +31,7 @@ import { generateSelfNotificationEmail } from './email/stringerSelfNotification'
 import { SPOUSE_GUIDE_ADDITION } from './spouseExperience';
 import { generateSpouseAlertEmail } from './email/spouseAlertEmail';
 import { filterContent } from './contentFilter';
+import { sendPartnerAlertSMS, sendUserSelfNotificationSMS } from './sms';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
@@ -118,7 +119,7 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
     const solo = await isUserSolo(userId);
 
     // ── 4. Get user info ────────────────────────────────
-    const { data: user } = await db.from('users').select('name, email, goals').eq('id', userId).single();
+    const { data: user } = await db.from('users').select('name, email, phone, goals, notification_prefs').eq('id', userId).single();
     if (!user) throw new Error('User not found');
     const userName = user.name || 'there';
     const categoryLabel = GOAL_LABELS[event.category as GoalCategory] ?? event.category;
@@ -262,6 +263,19 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
             html: emailHtml,
           }).catch((e) => console.error('Partner email failed:', e));
         }
+
+        // Partner SMS (if partner has phone and user's prefs allow SMS)
+        const userPrefs = user.notification_prefs ?? {};
+        if (partner.partner_phone && userPrefs.alert_sms !== false) {
+          await sendPartnerAlertSMS({
+            partnerPhone: partner.partner_phone,
+            partnerName: partner.partner_name || 'Partner',
+            userName,
+            category: event.category,
+            severity: event.severity,
+            alertId: alertRecord.id,
+          });
+        }
       }
     }
 
@@ -283,6 +297,18 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
         subject: selfEmail.subject,
         html: selfEmail.html,
       }).catch((e) => console.error('Self-notification email failed:', e));
+    }
+
+    // ── 7b. User self-notification SMS ───────────────────
+    const userPrefsForSms = user.notification_prefs ?? {};
+    if (user.phone && userPrefsForSms.alert_sms !== false) {
+      await sendUserSelfNotificationSMS({
+        userPhone: user.phone,
+        userName,
+        category: event.category,
+        alertId: alertRecord.id,
+        hasParter: !solo,
+      });
     }
 
     // Privacy-safe push to user

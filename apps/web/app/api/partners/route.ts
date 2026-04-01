@@ -12,7 +12,7 @@ const InviteSchema = z.object({
   partner_name: z.string().min(1).max(100),
   partner_email: z.string().email().max(254),
   partner_phone: z.string().max(20).optional(),
-  relationship_type: z.enum(['friend', 'spouse', 'mentor', 'family', 'coach', 'therapist', 'pastor']),
+  relationship_type: z.string().min(1).max(50),
 });
 
 export async function GET(req: NextRequest) {
@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
         partner_email: cleanEmail,
         partner_name: cleanName,
         partner_phone: cleanPhone,
+        relationship: parsed.data.relationship_type,
         invite_token: inviteToken,
         status: 'pending',
       })

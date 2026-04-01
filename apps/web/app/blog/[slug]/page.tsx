@@ -1,4 +1,6 @@
-import { BLOG_POSTS } from '@/content/blog/posts';
+import { getAllBlogPosts } from '@/content/blog/loader';
+
+const BLOG_POSTS = getAllBlogPosts();
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
