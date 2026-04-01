@@ -237,6 +237,15 @@ export default function PartnerPage() {
             </div>
           )}
 
+          {/* Encourage adding a second partner */}
+          {partner.status === 'active' && (
+            <div className="px-4 py-3 rounded-2xl bg-primary-container/20 ring-1 ring-primary/10 mb-3">
+              <p className="text-xs text-on-surface font-body leading-relaxed">
+                <span className="font-bold text-primary">Strengthen your circle.</span> As King Solomon wrote, &ldquo;A cord of three strands is not easily broken.&rdquo; You can add another partner for free. <button onClick={() => setShowForm(true)} className="text-primary font-bold underline cursor-pointer">Invite a second partner</button>. Upgrade to Pro for a 3rd.
+              </p>
+            </div>
+          )}
+
           {partner.status === 'active' && (
             <div className="grid grid-cols-2 gap-3">
               <Link href="/partner/focus"
@@ -259,8 +268,16 @@ export default function PartnerPage() {
             <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-8 text-center">
               <div className="text-4xl mb-4">{'\uD83E\uDD1D'}</div>
               <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No partner yet</h3>
-              <p className="text-sm text-on-surface-variant font-body mb-6">
+              <p className="text-sm text-on-surface-variant font-body mb-3">
                 Invite someone you trust to be your accountability partner.
+              </p>
+              <div className="flex items-center justify-center gap-3 mb-3 px-4 py-3 rounded-2xl bg-primary-container/20">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Simeon_Solomon_-_King_Solomon.jpg/200px-Simeon_Solomon_-_King_Solomon.jpg" alt="King Solomon" className="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20 shrink-0" />
+                <p className="text-xs text-on-surface font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-on-surface-variant">&mdash; King Solomon</span></p>
+              </div>
+              <p className="text-[10px] text-primary font-label font-medium mb-6">
+                Add up to 2 partners free. Upgrade to Pro for a 3rd.
               </p>
               <button
                 onClick={() => setShowForm(true)}

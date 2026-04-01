@@ -400,8 +400,14 @@ function OnboardingContent() {
         <div className="max-w-md w-full animate-fade-in overflow-hidden">
           <div className="text-center mb-6">
             <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Step 4 of 4</p>
-            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Invite your partner</h1>
+            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Invite your partners</h1>
             <p className="text-sm text-on-surface-variant font-body">A friend, spouse, mentor, or coach who&apos;ll walk with you.</p>
+            <div className="flex items-center justify-center gap-3 mt-3 px-4 py-3 rounded-2xl bg-primary-container/20">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Simeon_Solomon_-_King_Solomon.jpg/200px-Simeon_Solomon_-_King_Solomon.jpg" alt="King Solomon" className="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20 shrink-0" />
+              <p className="text-xs text-on-surface font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-on-surface-variant">&mdash; King Solomon</span></p>
+            </div>
+            <p className="text-[10px] text-primary font-label font-medium mt-2">Add up to 2 partners free. Upgrade to Pro for a 3rd.</p>
           </div>
 
           <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-6 space-y-4">

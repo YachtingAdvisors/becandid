@@ -22,15 +22,21 @@ export async function GET(req: NextRequest) {
     if (!user) return NextResponse.json({ error: 'Please sign in to view your partner. Your session may have expired.' }, { status: 401 });
 
     const db = createServiceClient();
-    const { data: partner } = await db
+    const { data: partners } = await db
       .from('partners')
-      .select('id, partner_name, partner_email, partner_phone, status, invited_at, accepted_at')
+      .select('id, partner_name, partner_email, partner_phone, status, relationship, invited_at, accepted_at')
       .eq('user_id', user.id)
-      .order('invited_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .in('status', ['active', 'accepted', 'pending'])
+      .order('invited_at', { ascending: false });
 
-    return NextResponse.json({ partner });
+    // Also return the legacy single partner for backward compatibility
+    const partner = partners?.[0] ?? null;
+
+    const { data: userPlan } = await db
+      .from('users').select('subscription_plan').eq('id', user.id).single();
+    const isPro = userPlan?.subscription_plan === 'pro' || userPlan?.subscription_plan === 'therapy';
+
+    return NextResponse.json({ partner, partners: partners ?? [], maxPartners: isPro ? 3 : 2 });
   } catch (err) {
     return safeError('GET /api/partners', err);
   }
@@ -67,11 +73,20 @@ export async function POST(req: NextRequest) {
 
     const db = createServiceClient();
 
-    // Check for existing active partner
-    const { data: existing } = await db
-      .from('partners').select('id').eq('user_id', user.id).eq('status', 'active').maybeSingle();
-    if (existing) {
-      return NextResponse.json({ error: 'You already have an active partner' }, { status: 400 });
+    // Check partner limit: 2 for free users, 3 for Pro
+    const { data: existingPartners } = await db
+      .from('partners').select('id').eq('user_id', user.id).in('status', ['active', 'accepted', 'pending']);
+    const { data: userPlan } = await db
+      .from('users').select('subscription_plan').eq('id', user.id).single();
+    const isPro = userPlan?.subscription_plan === 'pro' || userPlan?.subscription_plan === 'therapy';
+    const maxPartners = isPro ? 3 : 2;
+    const currentCount = existingPartners?.length ?? 0;
+
+    if (currentCount >= maxPartners) {
+      const upgradeMsg = isPro
+        ? `You've reached the maximum of ${maxPartners} partners.`
+        : `You've reached the free plan limit of ${maxPartners} partners. Upgrade to Pro to add a 3rd partner.`;
+      return NextResponse.json({ error: upgradeMsg }, { status: 400 });
     }
 
     const inviteToken = crypto.randomUUID();
