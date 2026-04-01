@@ -15,6 +15,9 @@ const PUBLIC_PATHS = [
   '/pricing',
   '/guardian',
   '/onboarding',
+  '/r/',
+  '/share/',
+  '/blog',
 ];
 
 const CRON_PATHS = ['/api/cron'];

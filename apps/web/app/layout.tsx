@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { Manrope, Plus_Jakarta_Sans } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import LegalFooter from '@/components/LegalFooter';
+
+const GA_ID = 'G-CK9VDX3HKT';
 
 const fontHeadline = Manrope({
   subsets: ['latin'],
@@ -26,7 +29,7 @@ export const metadata: Metadata = {
     default: 'Be Candid — Align Your Digital Life',
     template: '%s | Be Candid',
   },
-  description: 'The most confident, inspiring people are those whose screen time matches the person they want to be. AI-powered accountability with zero shame.',
+  description: 'AI-powered screen time accountability app for digital wellness. Track habits, build streaks, and align your digital life with your values — with an accountability partner, not surveillance. Free trial.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io'),
   icons: {
     icon: [
@@ -37,7 +40,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Be Candid — Align Your Digital Life',
-    description: 'The most confident, inspiring people are those whose screen time matches the person they want to be. AI-powered accountability for teens and adults.',
+    description: 'AI-powered screen time accountability app. Track digital habits, build streaks, and align your digital life with your values — with a partner, not surveillance.',
     siteName: 'Be Candid',
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 1200, alt: 'Be Candid Logo' }],
@@ -52,6 +55,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  verification: {
+    google: 'Lgjx6bN3vT8JQZeYC0NBlF92UgzgqlGnlNhb4rhTW_k',
   },
 };
 
@@ -70,6 +76,15 @@ export default function RootLayout({
     <html lang="en" className={`${fontHeadline.variable} ${fontBody.variable} ${fontLabel.variable}`}>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
       </head>
       <body className="font-body bg-background text-on-surface">
         {children}

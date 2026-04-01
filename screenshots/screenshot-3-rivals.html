@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  body {
+    width: 1284px; height: 2778px;
+    background: linear-gradient(175deg, #f5f2ef 0%, #eef6f8 40%, #f5f2ef 100%);
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden;
+  }
+  .header {
+    text-align: center; padding: 120px 80px 60px;
+  }
+  .header h1 {
+    font-size: 72px; font-weight: 900; color: #1a1a1a;
+    line-height: 1.15; letter-spacing: -2px; margin-bottom: 24px;
+  }
+  .header h1 span { color: #226779; font-style: italic; }
+  .header p { font-size: 36px; color: #6b7280; font-weight: 500; line-height: 1.5; }
+  .phone-frame {
+    width: 920px; margin: 40px auto 0;
+    background: #fff; border-radius: 60px;
+    box-shadow: 0 40px 120px rgba(34,103,121,0.15), 0 8px 32px rgba(0,0,0,0.08);
+    padding: 48px 40px; overflow: hidden;
+    border: 3px solid rgba(0,0,0,0.06);
+  }
+  .page-title {
+    font-size: 20px; font-weight: 600; color: #226779;
+    text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px;
+  }
+  .page-heading {
+    font-size: 44px; font-weight: 800; color: #1a1a1a;
+    letter-spacing: -1px; margin-bottom: 12px;
+  }
+  .page-sub {
+    font-size: 24px; color: #6b7280; line-height: 1.5; margin-bottom: 32px;
+  }
+  .philosophy {
+    background: linear-gradient(135deg, rgba(34,103,121,0.08), rgba(16,185,129,0.06));
+    border: 2px solid rgba(34,103,121,0.15);
+    border-radius: 24px; padding: 24px 28px; margin-bottom: 32px;
+  }
+  .philosophy strong { color: #226779; }
+  .philosophy p { font-size: 21px; color: #374151; line-height: 1.6; }
+  .grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  .rival-card {
+    background: #f8f6f4; border-radius: 28px; padding: 28px 24px;
+    border: 2px solid rgba(0,0,0,0.04); position: relative;
+  }
+  .rival-card.selected {
+    background: rgba(34,103,121,0.06);
+    border: 2px solid #226779;
+  }
+  .rival-card .check {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid #d1d5db; display: flex; align-items: center; justify-content: center;
+  }
+  .rival-card.selected .check {
+    background: #226779; border-color: #226779; color: white; font-size: 18px; font-weight: 700;
+  }
+  .rival-card .emoji { font-size: 40px; margin-bottom: 12px; }
+  .rival-card h3 { font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  .rival-card p { font-size: 17px; color: #6b7280; line-height: 1.4; }
+  .footer-bar {
+    margin-top: 32px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .counter { font-size: 24px; font-weight: 700; color: #226779; }
+  .cta-btn {
+    background: #226779; color: white; font-size: 24px; font-weight: 700;
+    padding: 20px 48px; border-radius: 99px; border: none;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Name your<br><span>rivals.</span></h1>
+    <p>Identify the habits you want to master.<br>Honesty is the first act of strength.</p>
+  </div>
+
+  <div class="phone-frame">
+    <div class="page-title">Step 1 of 4</div>
+    <div class="page-heading">Choose your rivals</div>
+    <div class="page-sub">Identify the habits or behaviors you want to master.</div>
+
+    <div class="philosophy">
+      <p><strong>Why "Rivals"?</strong> &mdash; A rival isn't a verdict on your character. It's a worthy opponent &mdash; something that pushes back, and in doing so, reveals where you're growing.</p>
+    </div>
+
+    <div class="grid">
+      <div class="rival-card selected">
+        <div class="check">&#10003;</div>
+        <div class="emoji">&#128247;</div>
+        <h3>Social Media</h3>
+        <p>Compulsive scrolling & comparison</p>
+      </div>
+      <div class="rival-card selected">
+        <div class="check">&#10003;</div>
+        <div class="emoji">&#127918;</div>
+        <h3>Gaming</h3>
+        <p>Excessive gaming sessions</p>
+      </div>
+      <div class="rival-card">
+        <div class="check"></div>
+        <div class="emoji">&#128717;</div>
+        <h3>Impulse Shopping</h3>
+        <p>Compulsive online purchases</p>
+      </div>
+      <div class="rival-card selected">
+        <div class="check">&#10003;</div>
+        <div class="emoji">&#127909;</div>
+        <h3>Binge Watching</h3>
+        <p>Hours lost to streaming</p>
+      </div>
+      <div class="rival-card">
+        <div class="check"></div>
+        <div class="emoji">&#127920;</div>
+        <h3>Gambling</h3>
+        <p>Sports betting & wagering</p>
+      </div>
+      <div class="rival-card">
+        <div class="check"></div>
+        <div class="emoji">&#128200;</div>
+        <h3>Day Trading</h3>
+        <p>Compulsive market checking</p>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <div class="counter">3 Rivals Identified</div>
+      <div class="cta-btn">Continue &rarr;</div>
+    </div>
+  </div>
+</body>
+</html>

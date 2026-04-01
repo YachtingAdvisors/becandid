@@ -102,6 +102,27 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface overflow-x-hidden">
+      {/* JSON-LD Organization Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: 'Be Candid',
+            applicationCategory: 'HealthApplication',
+            operatingSystem: 'Web, iOS, Android',
+            description: 'AI-powered screen time accountability app for digital wellness. Build streaks, share with an accountability partner, and align your digital life with your values.',
+            url: 'https://becandid.io',
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'USD',
+              description: 'Free tier available',
+            },
+          }),
+        }}
+      />
       {/* ── Floating Nav ───────────────────────────────────── */}
       <header
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${

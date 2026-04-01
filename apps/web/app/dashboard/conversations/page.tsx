@@ -153,7 +153,7 @@ export default function ConversationsPage() {
           <span className="material-symbols-outlined text-on-surface-variant/40 text-3xl mb-2 block">handshake</span>
           <h3 className="font-headline text-base font-bold text-on-surface mb-1">No partner yet</h3>
           <p className="text-xs text-on-surface-variant font-body mb-3">Invite someone you trust for accountability.</p>
-          <Link href="/onboarding"
+          <Link href="/onboarding?step=partner"
             className="inline-flex px-5 py-2 bg-primary text-on-primary text-xs font-label font-semibold rounded-full cursor-pointer hover:brightness-110 shadow-lg shadow-primary/20 transition-all duration-200">
             Invite a Partner
           </Link>

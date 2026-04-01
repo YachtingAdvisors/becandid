@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GOAL_LABELS, getCategoryEmoji, type GoalCategory } from '@be-candid/shared';
+import { ALL_BADGES, TIER_STYLES } from '@/lib/badges';
+import ShareButton from '@/components/ShareButton';
 
 /* ── Types ───────────────────────────────────────────────── */
 
@@ -12,37 +14,6 @@ interface StreakData {
   milestones: Array<{ milestone: string; unlocked_at: string }>;
 }
 
-/* ── Badge definitions ───────────────────────────────────── */
-
-const ALL_BADGES = [
-  { key: 'focused_segments_10',  label: '10 Focused Segments',  icon: 'eco', tier: 'bronze' },
-  { key: 'focused_segments_25',  label: '25 Focused Segments',  icon: 'park', tier: 'bronze' },
-  { key: 'focused_segments_50',  label: '50 Focused Segments',  icon: 'forest', tier: 'silver' },
-  { key: 'focused_segments_100', label: '100 Focused Segments', icon: 'landscape', tier: 'gold' },
-  { key: 'full_days_7',          label: '7 Full Focused Days',  icon: 'star', tier: 'bronze' },
-  { key: 'full_days_14',         label: '14 Full Focused Days', icon: 'stars', tier: 'silver' },
-  { key: 'full_days_30',         label: '30 Full Focused Days', icon: 'auto_awesome', tier: 'gold' },
-  { key: 'full_days_60',         label: '60 Full Focused Days', icon: 'local_fire_department', tier: 'gold' },
-  { key: 'full_days_90',         label: '90 Full Focused Days', icon: 'crown', tier: 'platinum' },
-  { key: 'points_100',           label: '100 Trust Points',     icon: 'target', tier: 'bronze' },
-  { key: 'points_500',           label: '500 Trust Points',     icon: 'diamond', tier: 'silver' },
-  { key: 'points_1000',          label: '1,000 Trust Points',   icon: 'emoji_events', tier: 'gold' },
-  { key: 'points_5000',          label: '5,000 Trust Points',   icon: 'workspace_premium', tier: 'platinum' },
-  { key: 'conversations_5',      label: '5 Conversations',      icon: 'chat', tier: 'bronze' },
-  { key: 'conversations_10',     label: '10 Conversations',     icon: 'handshake', tier: 'silver' },
-  { key: 'conversations_25',     label: '25 Conversations',     icon: 'favorite', tier: 'gold' },
-  { key: 'streak_7',             label: '7-Day Streak',         icon: 'local_fire_department', tier: 'bronze' },
-  { key: 'streak_30',            label: '30-Day Streak',        icon: 'bolt', tier: 'gold' },
-  { key: 'streak_90',            label: '90-Day Streak',        icon: 'military_tech', tier: 'platinum' },
-];
-
-const TIER_STYLES = {
-  bronze:   { bg: 'bg-amber-50',    border: 'border-amber-300',  text: 'text-amber-800' },
-  silver:   { bg: 'bg-gray-50',     border: 'border-gray-300',   text: 'text-gray-700' },
-  gold:     { bg: 'bg-yellow-50',   border: 'border-yellow-400', text: 'text-yellow-800' },
-  platinum: { bg: 'bg-violet-50',   border: 'border-violet-300', text: 'text-violet-800' },
-};
-
 /* ── Page ────────────────────────────────────────────────── */
 
 export default function ProgressPage() {
@@ -50,6 +21,24 @@ export default function ProgressPage() {
   const [data, setData] = useState<StreakData | null>(null);
   const [goals, setGoals] = useState<GoalCategory[]>([]);
   const [loading, setLoading] = useState(true);
+  const [shareUrls, setShareUrls] = useState<Record<string, string>>({});
+
+  const handleShare = useCallback(async (milestoneKey: string) => {
+    if (shareUrls[milestoneKey]) return; // already generated
+    try {
+      const res = await fetch('/api/milestones/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ milestone: milestoneKey }),
+      });
+      if (res.ok) {
+        const { shareUrl } = await res.json();
+        setShareUrls(prev => ({ ...prev, [milestoneKey]: shareUrl }));
+      }
+    } catch {
+      // silently fail
+    }
+  }, [shareUrls]);
 
   useEffect(() => {
     Promise.all([
@@ -234,6 +223,26 @@ export default function ProgressPage() {
                   {isEarned && milestone && (
                     <div className="text-[10px] text-on-surface-variant mt-1">
                       {new Date(milestone.unlocked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </div>
+                  )}
+                  {isEarned && (
+                    <div className="mt-2">
+                      {shareUrls[badge.key] ? (
+                        <ShareButton
+                          url={shareUrls[badge.key]}
+                          title={`I earned ${badge.label} on Be Candid!`}
+                          text={`I just earned the ${badge.label} badge on my digital wellness journey with Be Candid! 🔥`}
+                          size="sm"
+                        />
+                      ) : (
+                        <button
+                          onClick={() => handleShare(badge.key)}
+                          className="p-1.5 rounded-full hover:bg-primary/10 transition-colors cursor-pointer"
+                          title="Share this achievement"
+                        >
+                          <span className="material-symbols-outlined text-base text-on-surface-variant">share</span>
+                        </button>
+                      )}
                     </div>
                   )}
                   {!isEarned && (

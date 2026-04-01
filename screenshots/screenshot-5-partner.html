@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  body {
+    width: 1284px; height: 2778px;
+    background: linear-gradient(175deg, #f5f2ef 0%, #eef6f8 40%, #f5f2ef 100%);
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden;
+  }
+  .header { text-align: center; padding: 120px 80px 60px; }
+  .header h1 {
+    font-size: 72px; font-weight: 900; color: #1a1a1a;
+    line-height: 1.15; letter-spacing: -2px; margin-bottom: 24px;
+  }
+  .header h1 span { color: #226779; font-style: italic; }
+  .header p { font-size: 36px; color: #6b7280; font-weight: 500; line-height: 1.5; }
+  .phone-frame {
+    width: 920px; margin: 40px auto 0;
+    background: #fff; border-radius: 60px;
+    box-shadow: 0 40px 120px rgba(34,103,121,0.15), 0 8px 32px rgba(0,0,0,0.08);
+    padding: 48px 40px; overflow: hidden;
+    border: 3px solid rgba(0,0,0,0.06);
+  }
+  .page-title {
+    font-size: 20px; font-weight: 600; color: #226779;
+    text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px;
+  }
+  .page-heading {
+    font-size: 44px; font-weight: 800; color: #1a1a1a;
+    letter-spacing: -1px; margin-bottom: 32px;
+  }
+  .transparency-card {
+    background: #f8f6f4; border-radius: 32px; padding: 36px 32px;
+    border: 2px solid rgba(0,0,0,0.04); margin-bottom: 24px;
+  }
+  .section-title {
+    font-size: 26px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px;
+  }
+  .tab-toggle {
+    display: flex; background: #e8e5e2; border-radius: 99px; padding: 4px; margin-bottom: 24px;
+  }
+  .tab {
+    flex: 1; text-align: center; padding: 14px; border-radius: 99px;
+    font-size: 22px; font-weight: 600; color: #6b7280;
+  }
+  .tab.active { background: white; color: #1a1a1a; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .sees-item {
+    display: flex; align-items: flex-start; gap: 16px; padding: 18px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .sees-item:last-child { border-bottom: none; }
+  .sees-item .icon {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: #d5eef3; color: #226779;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .sees-item h4 { font-size: 22px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+  .sees-item p { font-size: 18px; color: #6b7280; line-height: 1.4; }
+
+  .alert-preview {
+    background: rgba(34,103,121,0.06); border-radius: 32px; padding: 32px;
+    border: 2px solid rgba(34,103,121,0.12); margin-bottom: 24px;
+  }
+  .alert-label {
+    font-size: 16px; color: #6b7280; text-transform: uppercase;
+    letter-spacing: 2px; font-weight: 600; margin-bottom: 16px;
+  }
+  .alert-mock {
+    background: white; border-radius: 24px; padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.06);
+  }
+  .alert-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+  }
+  .alert-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: #226779; color: white; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800;
+  }
+  .alert-name { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+  .alert-time { font-size: 16px; color: #9ca3af; margin-left: auto; }
+  .alert-body { font-size: 20px; color: #374151; line-height: 1.4; }
+  .alert-sub { font-size: 17px; color: #9ca3af; margin-top: 4px; }
+  .alert-note {
+    text-align: center; font-size: 17px; color: #6b7280; font-style: italic; margin-top: 16px;
+  }
+
+  .partner-card {
+    background: #f8f6f4; border-radius: 32px; padding: 36px 32px;
+    border: 2px solid rgba(0,0,0,0.04);
+  }
+  .partner-info {
+    display: flex; align-items: center; gap: 20px; margin-bottom: 24px;
+  }
+  .avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: #d5eef3; color: #226779;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 800;
+  }
+  .partner-name { font-size: 28px; font-weight: 700; color: #1a1a1a; }
+  .partner-role { font-size: 20px; color: #6b7280; }
+  .partner-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #d1fae5; color: #059669; font-size: 18px; font-weight: 700;
+    padding: 8px 18px; border-radius: 99px;
+  }
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+  .action-card {
+    background: white; border-radius: 24px; padding: 24px; text-align: center;
+    border: 2px solid rgba(0,0,0,0.04);
+  }
+  .action-card .emoji { font-size: 36px; margin-bottom: 8px; }
+  .action-card .label { font-size: 20px; font-weight: 600; color: #1a1a1a; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Accountability<br><span>built on trust.</span></h1>
+    <p>Your partner supports you without surveillance.<br>Full transparency. Zero shame.</p>
+  </div>
+
+  <div class="phone-frame">
+    <div class="page-title">Transparency</div>
+    <div class="page-heading">What your partner sees</div>
+
+    <div class="transparency-card">
+      <div class="tab-toggle">
+        <div class="tab active">They can see</div>
+        <div class="tab">They never see</div>
+      </div>
+      <div class="sees-item">
+        <div class="icon">&#9873;</div>
+        <div><h4>Flag triggered</h4><p>Category and severity &mdash; never what you viewed</p></div>
+      </div>
+      <div class="sees-item">
+        <div class="icon">&#128337;</div>
+        <div><h4>When it happened</h4><p>Date and time only. No URLs or history.</p></div>
+      </div>
+      <div class="sees-item">
+        <div class="icon">&#128488;</div>
+        <div><h4>Conversation guide</h4><p>AI-generated, grounded in clinical frameworks</p></div>
+      </div>
+      <div class="sees-item">
+        <div class="icon">&#128200;</div>
+        <div><h4>Your focus streak</h4><p>Days in a row you've stayed focused</p></div>
+      </div>
+    </div>
+
+    <div class="alert-preview">
+      <div class="alert-label">Example partner notification</div>
+      <div class="alert-mock">
+        <div class="alert-header">
+          <div class="alert-icon">C</div>
+          <span class="alert-name">Be Candid</span>
+          <span class="alert-time">2m ago</span>
+        </div>
+        <div class="alert-body">Your partner could use your support.</div>
+        <div class="alert-sub">Open the app to start a conversation.</div>
+      </div>
+      <div class="alert-note">No category, no details, no timestamps on lock screen.</div>
+    </div>
+
+    <div class="partner-card">
+      <div class="partner-info">
+        <div class="avatar">S</div>
+        <div>
+          <div class="partner-name">Sarah M.</div>
+          <div class="partner-role">Spouse</div>
+        </div>
+        <div class="partner-status" style="margin-left:auto;">Active</div>
+      </div>
+      <div class="action-grid">
+        <div class="action-card"><div class="emoji">&#127919;</div><div class="label">Focus Board</div></div>
+        <div class="action-card"><div class="emoji">&#128172;</div><div class="label">Conversations</div></div>
+        <div class="action-card"><div class="emoji">&#128203;</div><div class="label">Check-ins</div></div>
+        <div class="action-card"><div class="emoji">&#128588;</div><div class="label">Encourage</div></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,22 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
-import AgeGate from '@/components/auth/AgeGate';
 import SignupConsent from '@/components/auth/SignupConsent';
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
+
+  const referralCode = searchParams.get('ref') ?? '';
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [ageVerified, setAgeVerified] = useState(false);
   const [consented, setConsented] = useState(false);
 
   async function handleSignUp(e: React.FormEvent) {
@@ -41,7 +42,7 @@ export default function SignUpPage() {
       await fetch('/api/auth/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim() }),
+        body: JSON.stringify({ name: name.trim(), referral_code: referralCode || undefined }),
       }).catch(() => {});
     }
 
@@ -68,10 +69,16 @@ export default function SignUpPage() {
 
       {/* Main Card */}
       <div className="w-full max-w-xl bg-surface-container-lowest rounded-[2rem] p-8 md:p-12 shadow-[0_4px_40px_rgba(45,112,130,0.06)] relative z-10 ring-1 ring-outline-variant/10 transition-all duration-200 hover:shadow-md hover:shadow-on-surface/[0.04]">
-        {!ageVerified ? (
-          <AgeGate onVerified={() => setAgeVerified(true)} />
-        ) : (
-          <>
+            {/* Referral banner */}
+            {referralCode && (
+              <div className="mb-6 px-4 py-3 rounded-2xl bg-primary-container/30 ring-1 ring-primary/10 flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>card_giftcard</span>
+                <p className="text-sm font-body text-on-surface">
+                  A friend invited you! Sign up and <span className="font-bold text-primary">both of you get 30 days free</span>.
+                </p>
+              </div>
+            )}
+
             {/* Signup Form Header */}
             <div className="mb-10 text-center md:text-left">
               <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-surface-container-low">
@@ -133,10 +140,16 @@ export default function SignUpPage() {
               Already have an account?{' '}
               <Link href="/auth/signin" className="text-primary font-medium hover:underline cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-1 py-0.5">Sign in</Link>
             </p>
-          </>
-        )}
       </div>
 
     </main>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpForm />
+    </Suspense>
   );
 }

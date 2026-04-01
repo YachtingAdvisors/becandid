@@ -22,6 +22,7 @@ const NAV_ITEMS = [
   { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: 'edit_note', solo: true },
   { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: 'timeline', solo: true },
   { id: 'progress', href: '/dashboard/progress', label: 'Progress', icon: 'trending_up', solo: true },
+  { id: 'fasting', href: '/dashboard/fasting', label: 'Fasting', icon: 'self_improvement', solo: true },
   { id: 'conversations', href: '/dashboard/conversations', label: 'Partner Conversations', icon: 'forum', solo: false },
   { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: 'settings', solo: true },
 ];

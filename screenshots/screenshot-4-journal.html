@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  body {
+    width: 1284px; height: 2778px;
+    background: linear-gradient(175deg, #f5f2ef 0%, #eef6f8 40%, #f5f2ef 100%);
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden;
+  }
+  .header { text-align: center; padding: 120px 80px 60px; }
+  .header h1 {
+    font-size: 72px; font-weight: 900; color: #1a1a1a;
+    line-height: 1.15; letter-spacing: -2px; margin-bottom: 24px;
+  }
+  .header h1 span { color: #226779; font-style: italic; }
+  .header p { font-size: 36px; color: #6b7280; font-weight: 500; line-height: 1.5; }
+  .phone-frame {
+    width: 920px; margin: 40px auto 0;
+    background: #fff; border-radius: 60px;
+    box-shadow: 0 40px 120px rgba(34,103,121,0.15), 0 8px 32px rgba(0,0,0,0.08);
+    padding: 48px 40px; overflow: hidden;
+    border: 3px solid rgba(0,0,0,0.06);
+  }
+  .page-title {
+    font-size: 20px; font-weight: 600; color: #226779;
+    text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px;
+  }
+  .page-heading {
+    font-size: 44px; font-weight: 800; color: #1a1a1a;
+    letter-spacing: -1px; margin-bottom: 32px;
+  }
+  .summary-card {
+    background: linear-gradient(135deg, rgba(34,103,121,0.1), rgba(16,185,129,0.08));
+    border-radius: 32px; padding: 36px 32px; margin-bottom: 28px;
+    border: 2px solid rgba(34,103,121,0.12);
+  }
+  .summary-card p {
+    font-size: 24px; color: #374151; line-height: 1.7;
+  }
+  .summary-card strong { color: #226779; font-weight: 800; }
+  .metrics-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px;
+  }
+  .metric {
+    background: #f8f6f4; border-radius: 28px; padding: 28px 24px;
+    text-align: center; border: 2px solid rgba(0,0,0,0.04);
+  }
+  .metric .num { font-size: 52px; font-weight: 900; color: #226779; }
+  .metric .lbl {
+    font-size: 18px; color: #6b7280; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px;
+  }
+  .mood-section {
+    background: #f8f6f4; border-radius: 32px; padding: 32px;
+    border: 2px solid rgba(0,0,0,0.04); margin-bottom: 28px;
+  }
+  .mood-title {
+    font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px;
+  }
+  .mood-bars { display: flex; align-items: flex-end; gap: 8px; height: 160px; }
+  .mood-bar {
+    flex: 1; border-radius: 8px 8px 0 0; min-height: 20px;
+  }
+  .mood-bar.high { background: #34d399; }
+  .mood-bar.mid { background: #fbbf24; }
+  .mood-bar.low { background: #fb7185; }
+  .reflections {
+    background: #f8f6f4; border-radius: 32px; padding: 32px;
+    border: 2px solid rgba(0,0,0,0.04);
+  }
+  .reflection {
+    padding: 20px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .reflection:last-child { border-bottom: none; }
+  .reflection .mood-icon { font-size: 28px; margin-right: 12px; }
+  .reflection .date { font-size: 16px; color: #9ca3af; font-weight: 600; margin-bottom: 6px; }
+  .reflection .text { font-size: 22px; color: #374151; font-style: italic; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Your private<br><span>growth journal.</span></h1>
+    <p>Reflect honestly. Your entries are never shared.</p>
+  </div>
+
+  <div class="phone-frame">
+    <div class="page-title">Growth Journal</div>
+    <div class="page-heading">Your Story in Data</div>
+
+    <div class="summary-card">
+      <p>Over the last 21 days, you maintained a <strong>89% focus rate</strong> with a current streak of <strong>12 days</strong>. Mornings are your strongest at <strong>94%</strong>. You completed <strong>8 of 10</strong> check-ins and your average mood is <strong>4.2/5</strong>.</p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="num">89%</div>
+        <div class="lbl">Focus Rate</div>
+      </div>
+      <div class="metric">
+        <div class="num">12</div>
+        <div class="lbl">Current Streak</div>
+      </div>
+      <div class="metric">
+        <div class="num">847</div>
+        <div class="lbl">Trust Points</div>
+      </div>
+      <div class="metric">
+        <div class="num">6</div>
+        <div class="lbl">Milestones</div>
+      </div>
+    </div>
+
+    <div class="mood-section">
+      <div class="mood-title">Mood Timeline</div>
+      <div class="mood-bars">
+        <div class="mood-bar high" style="height:80%"></div>
+        <div class="mood-bar high" style="height:90%"></div>
+        <div class="mood-bar mid" style="height:60%"></div>
+        <div class="mood-bar high" style="height:85%"></div>
+        <div class="mood-bar high" style="height:95%"></div>
+        <div class="mood-bar mid" style="height:55%"></div>
+        <div class="mood-bar low" style="height:35%"></div>
+        <div class="mood-bar high" style="height:75%"></div>
+        <div class="mood-bar high" style="height:90%"></div>
+        <div class="mood-bar high" style="height:85%"></div>
+        <div class="mood-bar mid" style="height:65%"></div>
+        <div class="mood-bar high" style="height:80%"></div>
+        <div class="mood-bar high" style="height:100%"></div>
+        <div class="mood-bar high" style="height:90%"></div>
+        <div class="mood-bar mid" style="height:50%"></div>
+        <div class="mood-bar high" style="height:85%"></div>
+        <div class="mood-bar high" style="height:95%"></div>
+        <div class="mood-bar high" style="height:80%"></div>
+        <div class="mood-bar high" style="height:90%"></div>
+        <div class="mood-bar mid" style="height:60%"></div>
+        <div class="mood-bar high" style="height:85%"></div>
+      </div>
+    </div>
+
+    <div class="reflections">
+      <div class="mood-title">Recent Reflections</div>
+      <div class="reflection">
+        <div class="date"><span class="mood-icon">&#128522;</span> Mar 30</div>
+        <div class="text">"Felt present today. Had a real conversation with Sarah about last week."</div>
+      </div>
+      <div class="reflection">
+        <div class="date"><span class="mood-icon">&#128524;</span> Mar 29</div>
+        <div class="text">"Morning was solid. Evening was harder after the stressful call."</div>
+      </div>
+      <div class="reflection">
+        <div class="date"><span class="mood-icon">&#128578;</span> Mar 28</div>
+        <div class="text">"Best day this week. The streak is motivating me."</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

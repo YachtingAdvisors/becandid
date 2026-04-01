@@ -12,6 +12,8 @@ import ContentFilterStatus from '@/components/dashboard/ContentFilterStatus';
 import WalkthroughWrapper from '@/components/dashboard/WalkthroughWrapper';
 import QuickMoodCheckin from '@/components/dashboard/QuickMoodCheckin';
 import GrowthJournalWidget from '@/components/dashboard/GrowthJournalWidget';
+import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
+import ReferralCard from '@/components/dashboard/ReferralCard';
 import Link from 'next/link';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
@@ -42,7 +44,7 @@ export default async function DashboardPage() {
 
   // Parallel data fetching (including walkthrough detection)
   const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes] = await Promise.all([
-    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency').eq('id', user.id).single(),
+    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator').eq('id', user.id).single(),
     db.from('events').select('id, category, severity, platform, app_name, timestamp').eq('user_id', user.id).order('timestamp', { ascending: false }).limit(5),
     db.from('alerts').select('id, sent_at, conversations(id, completed_at, outcome)').eq('user_id', user.id).order('sent_at', { ascending: false }).limit(5),
     db.from('partners').select('partner_name, status').eq('user_id', user.id).eq('status', 'active').maybeSingle(),
@@ -94,6 +96,12 @@ export default async function DashboardPage() {
 
       {/* ── Quick Mood Check-in ────────────────────────────── */}
       <QuickMoodCheckin />
+
+      {/* ── Quote of the Day ──────────────────────────────── */}
+      <QuoteOfTheDay motivator={profile?.foundational_motivator ?? null} />
+
+      {/* ── Referral Card ────────────────────────────────── */}
+      <ReferralCard />
 
       {/* ── Featured Cards Grid ────────────────────────────── */}
       <section className="grid grid-cols-2 lg:grid-cols-3 gap-4">

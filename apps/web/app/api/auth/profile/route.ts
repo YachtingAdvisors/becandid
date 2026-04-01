@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { UpdateProfileSchema } from '@be-candid/shared';
 import { safeError, sanitizeName, sanitizePhone, auditLog } from '@/lib/security';
+import { generateReferralCode, applyReferralReward } from '@/lib/referral';
 
 export async function GET(req: NextRequest) {
   try {
@@ -76,15 +77,38 @@ export async function POST(req: NextRequest) {
     const { data: existing } = await db.from('users').select('id').eq('id', user.id).maybeSingle();
     if (existing) return NextResponse.json({ success: true }); // Already exists
 
+    // Generate a unique referral code for this user
+    const refCode = generateReferralCode();
+
     const { error } = await db.from('users').insert({
       id: user.id,
       email: user.email!,
       name: sanitizeName(body.name),
+      referral_code: refCode,
     });
 
     if (error) return safeError('POST /api/auth/profile', error);
 
     auditLog({ action: 'auth.signup', userId: user.id });
+
+    // Process referral if a code was provided
+    if (body.referral_code && typeof body.referral_code === 'string') {
+      const { data: referrer } = await db
+        .from('users')
+        .select('id')
+        .eq('referral_code', body.referral_code)
+        .maybeSingle();
+
+      if (referrer && referrer.id !== user.id) {
+        await db
+          .from('users')
+          .update({ referred_by: referrer.id })
+          .eq('id', user.id);
+
+        await applyReferralReward(db, referrer.id, user.id, body.referral_code);
+        auditLog({ action: 'referral.applied', userId: user.id, metadata: { referrerId: referrer.id } });
+      }
+    }
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (err) {

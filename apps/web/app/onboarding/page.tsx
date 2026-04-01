@@ -11,8 +11,8 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import GoalSelector from '@/components/onboarding/GoalSelector';
 import PartnerPreview from '@/components/onboarding/PartnerPreview';
@@ -30,16 +30,18 @@ const STRINGER_PILLARS = [
   { icon: 'explore', heading: 'the journey', title: 'Follow the Roadmap', body: "Your patterns are a sign pointing to where your story needs attention. Instead of asking 'How do I stop?' — ask 'What is this revealing about the person I want to become?'", image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=400&fit=crop' },
 ];
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const router = useRouter();
-  const [step, setStep] = useState<Step>('goals');
+  const searchParams = useSearchParams();
+  const initialStep = searchParams.get('step');
+  const [step, setStep] = useState<Step>(initialStep === 'partner' ? 'partner' : 'goals');
   const [goals, setGoals] = useState<GoalCategory[]>([]);
   const [stringerStep, setStringerStep] = useState(0);
   const [partnerName, setPartnerName] = useState('');
   const [partnerEmail, setPartnerEmail] = useState('');
   const [partnerPhone, setPartnerPhone] = useState('');
   const [relationship, setRelationship] = useState('friend');
-  const [motivator, setMotivator] = useState<FoundationalMotivator>('general');
+  const [motivators, setMotivators] = useState<FoundationalMotivator[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -114,16 +116,24 @@ export default function OnboardingPage() {
 
   // ── Save motivator ──────────────────────────────────────
   const saveMotivator = async () => {
+    if (motivators.length === 0) return;
     setLoading(true);
     try {
       await fetch('/api/auth/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ foundational_motivator: motivator }),
+        body: JSON.stringify({ foundational_motivator: motivators.join(',') }),
       });
       setStep('preview');
     } catch (e) { setError('Failed to save motivator'); }
     setLoading(false);
+  };
+
+  // ── Toggle motivator selection ────────────────────────────
+  const toggleMotivator = (key: FoundationalMotivator) => {
+    setMotivators((prev) =>
+      prev.includes(key) ? prev.filter((m) => m !== key) : [...prev, key]
+    );
   };
 
   // ── Progress bar ──────────────────────────────────────
@@ -202,7 +212,7 @@ export default function OnboardingPage() {
             <div className="h-1.5 w-12 rounded-full bg-surface-container-high" />
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full max-w-5xl overflow-hidden">
             {/* Illustration side */}
             <div className="lg:col-span-5 relative order-2 lg:order-1">
               <div className="aspect-[2/1] w-full bg-surface-container-low rounded-2xl overflow-hidden relative shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
@@ -303,32 +313,48 @@ export default function OnboardingPage() {
             <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Step 2b of 4</p>
             <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">What grounds you?</h1>
             <p className="text-sm text-on-surface-variant font-body leading-relaxed">
-              Choose the perspective that resonates most. We&apos;ll tailor quotes and reflections to match.
+              Pick as many as you like — we&apos;ll blend quotes and reflections to match your selection.
             </p>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 mt-3 rounded-full bg-primary-container/40 text-primary text-xs font-label font-semibold">
+              <span className="material-symbols-outlined text-sm">checklist</span>
+              Select multiple
+            </div>
           </div>
 
           <div className="space-y-3 mb-4">
-            {(Object.keys(MOTIVATOR_LABELS) as FoundationalMotivator[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => setMotivator(key)}
-                className={`w-full text-left px-5 py-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                  motivator === key
-                    ? 'border-primary bg-primary-container/30 ring-2 ring-primary/20'
-                    : 'border-outline-variant bg-surface-container-lowest hover:border-primary/30'
-                }`}
-              >
-                <span className="text-sm font-label font-semibold text-on-surface">{MOTIVATOR_LABELS[key]}</span>
-                <p className="text-xs text-on-surface-variant font-body mt-1 leading-relaxed">{MOTIVATOR_DESCRIPTIONS[key]}</p>
-              </button>
-            ))}
+            {(Object.keys(MOTIVATOR_LABELS) as FoundationalMotivator[]).map((key) => {
+              const isSelected = motivators.includes(key);
+              return (
+                <button
+                  key={key}
+                  onClick={() => toggleMotivator(key)}
+                  className={`w-full text-left px-5 py-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                    isSelected
+                      ? 'border-primary bg-primary-container/30 ring-2 ring-primary/20'
+                      : 'border-outline-variant bg-surface-container-lowest hover:border-primary/30'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-label font-semibold text-on-surface">{MOTIVATOR_LABELS[key]}</span>
+                    {isSelected && (
+                      <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-on-surface-variant font-body mt-1 leading-relaxed">{MOTIVATOR_DESCRIPTIONS[key]}</p>
+                </button>
+              );
+            })}
           </div>
+
+          <p className={`text-xs font-label text-center mb-1 transition-colors duration-200 ${motivators.length > 0 ? 'text-primary font-semibold' : 'text-on-surface-variant'}`}>
+            {motivators.length} of {Object.keys(MOTIVATOR_LABELS).length} selected
+          </p>
 
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
 
           <div className="flex gap-3">
             <button onClick={() => setStep('stringer')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">&larr; Back</button>
-            <button onClick={saveMotivator} disabled={loading}
+            <button onClick={saveMotivator} disabled={motivators.length === 0 || loading}
               className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               {loading ? 'Saving...' : 'Continue →'}
             </button>
@@ -389,7 +415,7 @@ export default function OnboardingPage() {
           {error && <p className="text-sm text-error mt-3 font-body">{error}</p>}
 
           <div className="flex gap-3 mt-6">
-            <button onClick={() => setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">&larr; Back</button>
+            <button onClick={() => initialStep === 'partner' ? router.push('/dashboard') : setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">{initialStep === 'partner' ? '\u2190 Dashboard' : '\u2190 Back'}</button>
             <button onClick={sendInvite} disabled={!partnerName.trim() || !partnerEmail.trim() || loading}
               className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
               {loading ? 'Sending invite...' : 'Send invite →'}
@@ -427,5 +453,13 @@ export default function OnboardingPage() {
         .animate-fade-in { animation: fadeUp 0.4s ease; }
       `}</style>
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><p className="text-on-surface-variant">Loading...</p></div>}>
+      <OnboardingContent />
+    </Suspense>
   );
 }

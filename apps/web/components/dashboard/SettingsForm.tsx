@@ -254,6 +254,24 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
         <GoalSelector selected={goals} onChange={setGoals} disabled={loading} />
       </section>
 
+      {/* ── Fasting ───────────────────────────────────────── */}
+      <section className="card p-5 space-y-3">
+        <h2 className="font-display text-lg font-semibold text-ink flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>self_improvement</span>
+          Fasting
+        </h2>
+        <p className="text-xs text-ink-muted">
+          Intentionally step away from specific activities for a set period of time.
+        </p>
+        <a
+          href="/dashboard/fasting"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+        >
+          Manage your fasts
+          <span className="material-symbols-outlined text-base">arrow_forward</span>
+        </a>
+      </section>
+
       {/* ── Streak Mode ─────────────────────────────────────── */}
       <section className="card p-5 space-y-4">
         <h2 className="font-display text-lg font-semibold text-ink">Focus Streak Mode</h2>

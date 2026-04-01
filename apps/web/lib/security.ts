@@ -107,7 +107,8 @@ export type AuditAction =
   | 'data_purge'
   | 'retention_updated'
   | 'payment_failed'
-  | 'solo_mode_toggled';
+  | 'solo_mode_toggled'
+  | 'referral.applied';
 
 interface AuditEntry {
   action: AuditAction;

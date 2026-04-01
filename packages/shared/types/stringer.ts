@@ -133,6 +133,7 @@ export interface MotivatorQuote {
   author: string;
   ref: string;
   motivator: FoundationalMotivator;
+  image?: string;
 }
 
 export const SPIRITUAL_QUOTES: MotivatorQuote[] = [
@@ -329,9 +330,50 @@ export const RELATIONAL_QUOTES: MotivatorQuote[] = [
   },
 ];
 
+export const GENERAL_QUOTES: MotivatorQuote[] = [
+  {
+    text: "Anything that's human is mentionable, and anything that is mentionable can be more manageable. When we can talk about our feelings, they become less overwhelming, less upsetting, and less scary. The people we trust with that important talk can help us know that we are not alone.",
+    author: 'Fred Rogers',
+    ref: "The World According to Mister Rogers",
+    motivator: 'general',
+    image: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/authors/1208803867i/32106._UX200_CR0,1,200,200_.jpg',
+  },
+  {
+    text: 'The curious paradox is that when I accept myself just as I am, then I can change.',
+    author: 'Carl Rogers',
+    ref: 'On Becoming a Person',
+    motivator: 'general',
+  },
+  {
+    text: 'Between stimulus and response there is a space. In that space is our freedom and power to choose our response.',
+    author: 'Viktor Frankl',
+    ref: "Man's Search for Meaning",
+    motivator: 'general',
+  },
+  {
+    text: 'What lies behind us and what lies before us are tiny matters compared to what lies within us.',
+    author: 'Ralph Waldo Emerson',
+    ref: 'Attributed',
+    motivator: 'general',
+  },
+  {
+    text: 'The only journey is the one within.',
+    author: 'Rainer Maria Rilke',
+    ref: 'Letters',
+    motivator: 'general',
+  },
+  {
+    text: "You don't have to control your thoughts. You just have to stop letting them control you.",
+    author: 'Dan Millman',
+    ref: 'Way of the Peaceful Warrior',
+    motivator: 'general',
+  },
+];
+
 // ─── Quote Selector ─────────────────────────────────────────
 // Returns quotes matching the user's motivator, falling back to
 // Stringer quotes (which are always included).
+// The Mr. Rogers quote is ALWAYS first in every pool.
 
 export function getQuotesForMotivator(motivator: FoundationalMotivator | null | undefined): MotivatorQuote[] {
   // Stringer quotes are always the base (convert to MotivatorQuote format)
@@ -342,20 +384,22 @@ export function getQuotesForMotivator(motivator: FoundationalMotivator | null | 
     motivator: 'psychological' as FoundationalMotivator,
   }));
 
+  // Mr. Rogers is always first, then motivator-specific quotes follow
+  const mrRogers = MR_ROGERS_QUOTE;
+
   if (!motivator || motivator === 'general') {
-    // Mix of everything
-    return [...stringerConverted, ...SPIRITUAL_QUOTES.slice(0, 4), ...PSYCHOLOGICAL_QUOTES.slice(0, 3), ...RELATIONAL_QUOTES.slice(0, 3)];
+    return [mrRogers, ...stringerConverted, ...GENERAL_QUOTES.filter(q => q.text !== mrRogers.text), ...SPIRITUAL_QUOTES.slice(0, 4), ...PSYCHOLOGICAL_QUOTES.slice(0, 3), ...RELATIONAL_QUOTES.slice(0, 3)];
   }
 
   switch (motivator) {
     case 'spiritual':
-      return [...SPIRITUAL_QUOTES, ...stringerConverted];
+      return [mrRogers, ...SPIRITUAL_QUOTES, ...stringerConverted];
     case 'psychological':
-      return [...PSYCHOLOGICAL_QUOTES, ...stringerConverted];
+      return [mrRogers, ...PSYCHOLOGICAL_QUOTES, ...stringerConverted];
     case 'relational':
-      return [...RELATIONAL_QUOTES, ...stringerConverted];
+      return [mrRogers, ...RELATIONAL_QUOTES, ...stringerConverted];
     default:
-      return stringerConverted;
+      return [mrRogers, ...stringerConverted];
   }
 }
 
@@ -363,3 +407,42 @@ export function getRandomQuote(motivator: FoundationalMotivator | null | undefin
   const quotes = getQuotesForMotivator(motivator);
   return quotes[Math.floor(Math.random() * quotes.length)];
 }
+
+// ─── All Quotes ─────────────────────────────────────────────
+// Returns every quote from every array, each tagged with its motivator.
+
+export function getAllQuotes(): MotivatorQuote[] {
+  const stringerConverted: MotivatorQuote[] = STRINGER_QUOTES.map(q => ({
+    text: q.text,
+    author: 'Jay Stringer',
+    ref: q.ref,
+    motivator: 'psychological' as FoundationalMotivator,
+  }));
+  const mrRogers = MR_ROGERS_QUOTE;
+  return [
+    mrRogers,
+    ...stringerConverted,
+    ...SPIRITUAL_QUOTES,
+    ...PSYCHOLOGICAL_QUOTES,
+    ...RELATIONAL_QUOTES,
+    ...GENERAL_QUOTES.filter(q => q.text !== mrRogers.text),
+  ];
+}
+
+// ─── Quote of the Day ───────────────────────────────────────
+// Deterministically picks a quote based on the current date so
+// every user on the same motivator sees the same quote that day.
+
+export function getQuoteOfTheDay(motivator?: FoundationalMotivator | null): MotivatorQuote {
+  const quotes = motivator ? getQuotesForMotivator(motivator) : getAllQuotes();
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = ((hash << 5) - hash) + today.charCodeAt(i);
+    hash |= 0;
+  }
+  return quotes[Math.abs(hash) % quotes.length];
+}
+
+// The Mr. Rogers quote specifically, used as default for new users
+export const MR_ROGERS_QUOTE: MotivatorQuote = GENERAL_QUOTES[0];
