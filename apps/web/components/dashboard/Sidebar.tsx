@@ -74,31 +74,46 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
 
       {/* Mode + monitoring badges */}
       <div className="px-4 space-y-2 pb-2">
-        {appRunning === true && monitoringEnabled ? (
+        {/* Monitoring status (from DB setting) */}
+        {monitoringEnabled && (
+          <div className="px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs text-emerald-700 font-label font-bold flex-1 text-left">Monitoring Active</span>
+          </div>
+        )}
+        {!monitoringEnabled && (
+          <div className="px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+            <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">Monitoring Inactive</span>
+          </div>
+        )}
+
+        {/* Desktop app connection status */}
+        {appRunning === true ? (
           <button
             onClick={checkConnection}
-            className="w-full px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2 cursor-pointer hover:bg-emerald-500/15 transition-colors"
+            className="w-full px-3 py-2 rounded-2xl bg-emerald-500/5 flex items-center gap-2 cursor-pointer hover:bg-emerald-500/10 transition-colors"
           >
-            <div className={`w-1.5 h-1.5 rounded-full bg-emerald-500 ${checking ? '' : 'animate-pulse'}`} />
-            <span className="text-xs text-emerald-700 font-label font-medium flex-1 text-left">
-              {checking ? 'Checking...' : 'Awareness Active'}
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="text-xs text-emerald-600 font-label font-medium flex-1 text-left">
+              {checking ? 'Checking...' : 'Desktop App Connected'}
             </span>
-            <span className="material-symbols-outlined text-emerald-500 text-sm">refresh</span>
+            <span className="material-symbols-outlined text-emerald-400 text-sm">refresh</span>
           </button>
         ) : appRunning === null ? (
           <div className="px-3 py-2 rounded-2xl bg-surface-container flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30" />
-            <span className="text-xs text-on-surface-variant font-label font-medium">Checking status...</span>
+            <span className="text-xs text-on-surface-variant font-label font-medium">Checking connection...</span>
           </div>
         ) : (
           <div>
             <button
               onClick={() => setShowTroubleshoot(!showTroubleshoot)}
-              className="w-full px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2 cursor-pointer hover:bg-red-100/50 transition-colors"
+              className="w-full px-3 py-2 rounded-2xl bg-amber-50 ring-1 ring-amber-200/50 flex items-center gap-2 cursor-pointer hover:bg-amber-100/50 transition-colors"
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-              <span className="text-xs text-red-700 font-label font-medium flex-1 text-left">Awareness Inactive</span>
-              <span className="material-symbols-outlined text-red-400 text-sm">{showTroubleshoot ? 'expand_less' : 'help'}</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              <span className="text-xs text-amber-700 font-label font-medium flex-1 text-left">Desktop App Not Connected</span>
+              <span className="material-symbols-outlined text-amber-400 text-sm">{showTroubleshoot ? 'expand_less' : 'help'}</span>
             </button>
             {showTroubleshoot && (
               <div className="mt-2 px-3 py-3 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 space-y-2.5">
