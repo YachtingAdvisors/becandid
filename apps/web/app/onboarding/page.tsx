@@ -164,7 +164,7 @@ function OnboardingContent() {
   const progress = STEPS.indexOf(step) / (STEPS.length - 1);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12 overflow-x-hidden w-full max-w-full">
       {/* Logo */}
       <div className="mb-6">
         <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto" />
@@ -235,7 +235,7 @@ function OnboardingContent() {
             <div className="h-1.5 w-12 rounded-full bg-surface-container-high" />
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full max-w-5xl overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full max-w-5xl overflow-hidden">
             {/* Illustration side */}
             <div className="lg:col-span-5 relative order-2 lg:order-1">
               <div className="aspect-[2/1] w-full bg-surface-container-low rounded-2xl overflow-hidden relative shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
@@ -397,7 +397,7 @@ function OnboardingContent() {
 
       {/* ═══════ STEP 4: Partner Invite ═══════ */}
       {step === 'partner' && (
-        <div className="max-w-md w-full animate-fade-in">
+        <div className="max-w-md w-full animate-fade-in overflow-hidden">
           <div className="text-center mb-6">
             <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Step 4 of 4</p>
             <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Invite your partner</h1>
