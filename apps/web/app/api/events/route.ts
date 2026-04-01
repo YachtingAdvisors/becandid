@@ -84,6 +84,8 @@ export async function POST(req: NextRequest) {
           severity: event.severity,
           platform: event.platform || 'unknown',
           timestamp: event.timestamp || new Date().toISOString(),
+          app_name: event.app_name || event.metadata?.domain || undefined,
+          duration_seconds: event.duration_seconds || event.metadata?.duration_seconds || undefined,
           metadata: event.metadata,
         });
 
@@ -114,6 +116,8 @@ export async function POST(req: NextRequest) {
       severity: body.severity,
       platform: body.platform || 'unknown',
       timestamp: body.timestamp || new Date().toISOString(),
+      app_name: body.app_name || body.metadata?.domain || undefined,
+      duration_seconds: body.duration_seconds || body.metadata?.duration_seconds || undefined,
       metadata: body.metadata,
     });
 
