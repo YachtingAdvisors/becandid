@@ -14,14 +14,25 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const db = createServiceClient();
-  const { error } = await db.from('users').update({ last_heartbeat: new Date().toISOString() }).eq('id', user.id);
+  const now = new Date().toISOString();
+  const { data, error, count } = await db
+    .from('users')
+    .update({ last_heartbeat: now })
+    .eq('id', user.id)
+    .select('id, email');
 
   if (error) {
-    console.error('[heartbeat] Update failed:', error.message);
-    return NextResponse.json({ ok: false, error: error.message });
+    console.error('[heartbeat POST] Update failed for user', user.id, ':', error.message);
+    return NextResponse.json({ ok: false, error: error.message, user_id: user.id });
   }
 
-  return NextResponse.json({ ok: true });
+  const rowsUpdated = data?.length ?? 0;
+  if (rowsUpdated === 0) {
+    console.error('[heartbeat POST] No rows updated. User ID:', user.id, 'Email:', user.email);
+    return NextResponse.json({ ok: false, error: 'User not found in public.users', user_id: user.id, email: user.email });
+  }
+
+  return NextResponse.json({ ok: true, user_id: user.id, rows_updated: rowsUpdated });
 }
 
 export async function GET(req: NextRequest) {
