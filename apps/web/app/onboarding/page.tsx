@@ -470,6 +470,12 @@ function OnboardingContent() {
           <button onClick={enableSolo} className="w-full mt-3 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body cursor-pointer transition-colors duration-200">
             I&apos;ll start in solo mode instead
           </button>
+
+          <div className="mt-4 px-4 py-3 rounded-2xl bg-primary-container/20 ring-1 ring-primary/10">
+            <p className="text-xs text-on-surface font-body leading-relaxed">
+              <span className="font-bold text-primary">Why invite a partner?</span> Users with a confirmed partner get <span className="font-bold">30 free days</span>, the ability to <span className="font-bold">challenge false flags</span> to protect their streaks, and eligibility for <span className="font-bold">physical and digital awards</span> tied to streak milestones.
+            </p>
+          </div>
         </div>
       )}
 
