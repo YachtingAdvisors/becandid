@@ -34,7 +34,8 @@ function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialStep = searchParams.get('step');
-  const [step, setStep] = useState<Step>(initialStep === 'partner' ? 'partner' : 'goals');
+  const [step, setStepRaw] = useState<Step>(initialStep === 'partner' ? 'partner' : 'goals');
+  const setStep = (s: Step) => { setStepRaw(s); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const [goals, setGoals] = useState<GoalCategory[]>([]);
   const [stringerStep, setStringerStep] = useState(0);
   const [partnerName, setPartnerName] = useState('');
