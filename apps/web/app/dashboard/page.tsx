@@ -43,14 +43,20 @@ export default async function DashboardPage() {
   const db = createServiceClient();
 
   // Parallel data fetching (including walkthrough detection)
-  const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes] = await Promise.all([
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes, todayEventsRes, weekEventsRes, streakRes] = await Promise.all([
     db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator, login_count').eq('id', user.id).single(),
     db.from('events').select('id, category, severity, platform, app_name, timestamp').eq('user_id', user.id).order('timestamp', { ascending: false }).limit(5),
     db.from('alerts').select('id, sent_at, conversations(id, completed_at, outcome)').eq('user_id', user.id).order('sent_at', { ascending: false }).limit(5),
-    db.from('partners').select('partner_name, status').eq('user_id', user.id).eq('status', 'active').maybeSingle(),
+    db.from('partners').select('partner_name, status, relationship').eq('user_id', user.id).in('status', ['active', 'accepted']).maybeSingle(),
     db.from('focus_segments').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
     db.from('stringer_journal').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
     db.from('check_ins').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'completed').limit(1),
+    db.from('events').select('id, severity', { count: 'exact', head: false }).eq('user_id', user.id).gte('timestamp', todayStart.toISOString()),
+    db.from('events').select('id, severity, category').eq('user_id', user.id).gte('timestamp', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
+    db.from('milestones').select('milestone').eq('user_id', user.id).order('unlocked_at', { ascending: false }).limit(1),
   ]);
 
   const profile = profileRes.data;
@@ -59,6 +65,16 @@ export default async function DashboardPage() {
   const partner = partnerRes.data;
 
   const pendingConversations = alerts.filter((a: any) => !a.conversations?.[0]?.completed_at).length;
+
+  // Dashboard card data
+  const todayEvents = todayEventsRes.data ?? [];
+  const todayFlags = todayEvents.length;
+  const todayHighFlags = todayEvents.filter((e: any) => e.severity === 'high').length;
+  const weekEvents = weekEventsRes.data ?? [];
+  const weekFlags = weekEvents.length;
+  const weekCategories = [...new Set(weekEvents.map((e: any) => e.category))];
+  const journalCount = journalCountRes.count ?? 0;
+  const latestMilestone = streakRes.data?.[0]?.milestone ?? null;
 
   // Walkthrough: detect which setup steps are complete
   // Show walkthrough only for first 2 logins, unless manually dismissed
@@ -113,33 +129,72 @@ export default async function DashboardPage() {
 
       {/* ── Featured Cards Grid ────────────────────────────── */}
       <section className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Crisis Detection — full width */}
+        {/* Crisis Detection — full width with real data */}
         <Link href="/dashboard/activity" className="col-span-2 lg:col-span-3 group bg-surface-container-low rounded-2xl overflow-hidden shadow-sm ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer p-5">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-2.5 bg-surface-container-lowest rounded-xl shadow-sm">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+          <div className="flex justify-between items-start mb-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-surface-container-lowest rounded-xl shadow-sm">
+                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+              </div>
+              <div>
+                <h3 className="font-headline font-bold text-lg text-on-surface">Crisis Detection</h3>
+                <p className="text-xs text-on-surface-variant">Real-time activity monitoring</p>
+              </div>
             </div>
-            <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${
+            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
               profile?.monitoring_enabled
-                ? 'bg-primary-container text-primary'
-                : 'bg-surface-container text-on-surface-variant'
+                ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/50'
+                : 'bg-red-50 text-red-700 ring-1 ring-red-200/50'
             }`}>
               {profile?.monitoring_enabled ? 'Active' : 'Inactive'}
             </span>
           </div>
-          <div className="flex gap-4">
-            <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.crisis} alt="Crisis Detection" className="w-full h-full object-cover" />
+          {/* Live stats bar */}
+          <div className="flex gap-3 mt-3">
+            <div className="flex-1 bg-surface-container-lowest rounded-xl p-3 text-center">
+              <div className={`text-2xl font-headline font-bold ${todayFlags > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>{todayFlags}</div>
+              <div className="text-[10px] text-on-surface-variant font-label">Flags Today</div>
             </div>
-            <div>
-              <h3 className="font-headline font-bold text-lg text-on-surface">Crisis Detection</h3>
-              <p className="text-xs text-on-surface-variant leading-tight mt-1">Real-time sentiment monitoring and support resources.</p>
+            <div className="flex-1 bg-surface-container-lowest rounded-xl p-3 text-center">
+              <div className={`text-2xl font-headline font-bold ${todayHighFlags > 0 ? 'text-red-600' : 'text-emerald-600'}`}>{todayHighFlags}</div>
+              <div className="text-[10px] text-on-surface-variant font-label">High Severity</div>
+            </div>
+            <div className="flex-1 bg-surface-container-lowest rounded-xl p-3 text-center">
+              <div className="text-2xl font-headline font-bold text-on-surface">{weekFlags}</div>
+              <div className="text-[10px] text-on-surface-variant font-label">This Week</div>
+            </div>
+            <div className="flex-1 bg-surface-container-lowest rounded-xl p-3 text-center">
+              <div className="text-2xl font-headline font-bold text-primary">{pendingConversations}</div>
+              <div className="text-[10px] text-on-surface-variant font-label">Pending Talks</div>
             </div>
           </div>
+          {/* Mini 7-day bar chart */}
+          {weekFlags > 0 && (
+            <div className="flex items-end gap-1 mt-3 h-8">
+              {Array.from({ length: 7 }).map((_, i) => {
+                const day = new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000);
+                const dayStr = day.toISOString().split('T')[0];
+                const dayCount = weekEvents.filter((e: any) => e.timestamp?.startsWith(dayStr)).length;
+                const maxDay = Math.max(...Array.from({ length: 7 }).map((_, j) => {
+                  const d = new Date(Date.now() - (6 - j) * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+                  return weekEvents.filter((e: any) => e.timestamp?.startsWith(d)).length;
+                }), 1);
+                const height = Math.max(4, (dayCount / maxDay) * 32);
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+                    <div
+                      className={`w-full rounded-sm transition-all ${dayCount > 0 ? 'bg-primary/60' : 'bg-surface-container'}`}
+                      style={{ height: `${height}px` }}
+                    />
+                    <span className="text-[8px] text-on-surface-variant/50">{['S','M','T','W','T','F','S'][day.getDay()]}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </Link>
 
-        {/* Guardian Hub — half width */}
+        {/* Guardian Hub — with partner status */}
         <Link href="/guardian" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
@@ -147,15 +202,21 @@ export default async function DashboardPage() {
             </div>
             <span className="bg-primary/10 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Admin</span>
           </div>
-          <div className="w-full aspect-square rounded-lg overflow-hidden mb-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={IMAGES.guardian} alt="Guardian Dashboard" className="w-full h-full object-cover" />
+          <div className="bg-surface-container-lowest rounded-xl p-4 mb-3 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${profile?.monitoring_enabled ? 'bg-emerald-500 animate-pulse' : 'bg-red-400'}`} />
+              <span className="text-xs font-label text-on-surface">{profile?.monitoring_enabled ? 'Monitoring Active' : 'Monitoring Off'}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm text-on-surface-variant">person</span>
+              <span className="text-xs font-label text-on-surface-variant">{(profile?.goals ?? []).length} rivals tracked</span>
+            </div>
           </div>
           <h3 className="font-headline font-bold text-sm text-on-surface">Guardian Hub</h3>
           <p className="text-[10px] text-on-surface-variant leading-tight mt-1">Central safety oversight.</p>
         </Link>
 
-        {/* Screen Time */}
+        {/* Screen Time — with today's stats */}
         <Link href="/dashboard/screen-time" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
@@ -163,15 +224,24 @@ export default async function DashboardPage() {
             </div>
             <span className="bg-tertiary-container text-on-tertiary-container text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Monitor</span>
           </div>
-          <div className="w-full aspect-square rounded-lg overflow-hidden mb-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={IMAGES.screenTime} alt="Screen Time" className="w-full h-full object-cover" />
+          <div className="bg-surface-container-lowest rounded-xl p-4 mb-3 text-center">
+            <div className="text-3xl font-headline font-bold text-on-surface">{todayFlags}</div>
+            <div className="text-[10px] text-on-surface-variant font-label">events today</div>
+            {weekCategories.length > 0 && (
+              <div className="flex flex-wrap justify-center gap-1 mt-2">
+                {weekCategories.slice(0, 3).map((cat: string) => (
+                  <span key={cat} className="text-[8px] px-1.5 py-0.5 rounded-full bg-primary/5 text-primary font-label">
+                    {GOAL_LABELS[cat as GoalCategory]?.split(' ')[0] ?? cat}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <h3 className="font-headline font-bold text-sm text-on-surface">Screen Time</h3>
           <p className="text-[10px] text-on-surface-variant leading-tight mt-1">Conscious digital limits.</p>
         </Link>
 
-        {/* Candid Journal */}
+        {/* Candid Journal — with entry count */}
         <Link href="/dashboard/stringer-journal" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
@@ -179,32 +249,45 @@ export default async function DashboardPage() {
             </div>
             <span className="bg-primary/10 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Reflect</span>
           </div>
-          <div className="w-full aspect-square rounded-lg overflow-hidden mb-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={IMAGES.journal} alt="Candid Journal" className="w-full h-full object-cover" />
+          <div className="bg-surface-container-lowest rounded-xl p-4 mb-3 text-center">
+            <div className="text-3xl font-headline font-bold text-primary">{journalCount}</div>
+            <div className="text-[10px] text-on-surface-variant font-label">{journalCount === 1 ? 'entry' : 'entries'} written</div>
+            {journalCount === 0 && (
+              <p className="text-[9px] text-primary mt-1 font-label font-medium">Start your first entry &rarr;</p>
+            )}
           </div>
           <h3 className="font-headline font-bold text-sm text-on-surface">Candid Journal</h3>
           <p className="text-[10px] text-on-surface-variant leading-tight mt-1">Private space for reflective growth.</p>
         </Link>
 
-        {/* Partner Awareness — full width */}
-        <Link href="/dashboard/partner" className="col-span-2 lg:col-span-3 group bg-surface-container-low rounded-2xl ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer p-5 flex items-center gap-4">
-          <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={IMAGES.partner} alt="Partner Awareness" className="w-full h-full object-cover" />
-          </div>
-          <div className="flex-1">
-            <div className="flex justify-between items-center mb-1">
-              <h3 className="font-headline font-bold text-base text-on-surface">Partner Awareness</h3>
-              <div className="p-1.5 bg-surface-container-lowest rounded-lg shadow-sm shrink-0">
-                <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>handshake</span>
-              </div>
+        {/* Partner Awareness — full width with real partner data */}
+        <Link href="/dashboard/partner" className="col-span-2 lg:col-span-3 group bg-surface-container-low rounded-2xl ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer p-5">
+          <div className="flex items-center gap-4">
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${
+              partner ? 'bg-emerald-50 ring-1 ring-emerald-200/50' : 'bg-surface-container'
+            }`}>
+              <span className={`material-symbols-outlined text-2xl ${partner ? 'text-emerald-600' : 'text-on-surface-variant/40'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                {partner ? 'handshake' : 'person_add'}
+              </span>
             </div>
-            <p className="text-[11px] text-on-surface-variant leading-relaxed">
-              {partner
-                ? `Connected with ${partner.partner_name}. Mutual trust insights active.`
-                : 'Mutual trust insights without compromising privacy.'}
-            </p>
+            <div className="flex-1">
+              <h3 className="font-headline font-bold text-base text-on-surface">
+                {partner ? `Partner: ${partner.partner_name}` : 'Invite a Partner'}
+              </h3>
+              <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                {partner
+                  ? <>
+                      <span className="inline-flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Connected
+                      </span>
+                      {partner.relationship && <> &middot; {(partner.relationship as string).charAt(0).toUpperCase() + (partner.relationship as string).slice(1)}</>}
+                      {pendingConversations > 0 && <> &middot; <span className="text-primary font-bold">{pendingConversations} conversation{pendingConversations !== 1 ? 's' : ''} waiting</span></>}
+                    </>
+                  : 'Get 30 free days + false flag verification. Invite someone you trust.'}
+              </p>
+            </div>
+            <span className="material-symbols-outlined text-on-surface-variant/40 group-hover:text-primary transition-colors">chevron_right</span>
           </div>
         </Link>
       </section>
