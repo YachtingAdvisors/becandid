@@ -122,6 +122,21 @@ export async function POST(req: NextRequest) {
       // Non-fatal — partner was created, user update failed
     }
 
+    // If user is on a trial, extend to 30 days from now (bonus for adding a partner)
+    const { data: trialUser } = await db
+      .from('users')
+      .select('subscription_status, trial_ends_at, created_at')
+      .eq('id', user.id)
+      .single();
+
+    if (trialUser?.subscription_status === 'trialing') {
+      const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      await db
+        .from('users')
+        .update({ trial_ends_at: thirtyDaysFromNow })
+        .eq('id', user.id);
+    }
+
     auditLog({
       action: 'partner.invite',
       userId: user.id,

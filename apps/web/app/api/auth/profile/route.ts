@@ -80,11 +80,17 @@ export async function POST(req: NextRequest) {
     // Generate a unique referral code for this user
     const refCode = generateReferralCode();
 
+    // Set trial: 15 days standard, will become 30 if they add a partner in session
+    const trialDays = 15;
+    const trialEnds = new Date(Date.now() + trialDays * 24 * 60 * 60 * 1000).toISOString();
+
     const { error } = await db.from('users').insert({
       id: user.id,
       email: user.email!,
       name: sanitizeName(body.name),
       referral_code: refCode,
+      trial_ends_at: trialEnds,
+      subscription_status: 'trialing',
     });
 
     if (error) return safeError('POST /api/auth/profile', error);
