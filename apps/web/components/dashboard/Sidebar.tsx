@@ -75,33 +75,25 @@ export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItem
 
       {/* Mode + monitoring badges */}
       <div className="px-4 space-y-2 pb-2">
-        {/* Monitoring status (from DB setting) */}
+        {/* Combined monitoring + connection status */}
         {!hasGoals ? (
           <div className="px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
             <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">No Rivals Identified</span>
           </div>
-        ) : monitoringEnabled ? (
-          <div className="px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs text-emerald-700 font-label font-bold flex-1 text-left">Monitoring Active</span>
-          </div>
-        ) : (
+        ) : !monitoringEnabled ? (
           <div className="px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
             <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">Monitoring Inactive</span>
           </div>
-        )}
-
-        {/* Desktop app connection status */}
-        {appRunning === true ? (
+        ) : appRunning === true ? (
           <button
             onClick={checkConnection}
-            className="w-full px-3 py-2 rounded-2xl bg-emerald-500/5 flex items-center gap-2 cursor-pointer hover:bg-emerald-500/10 transition-colors"
+            className="w-full px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2 cursor-pointer hover:bg-emerald-500/15 transition-colors"
           >
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span className="text-xs text-emerald-600 font-label font-medium flex-1 text-left">
-              {checking ? 'Checking...' : 'Desktop App Connected'}
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs text-emerald-700 font-label font-bold flex-1 text-left">
+              {checking ? 'Checking...' : 'Monitoring Active'}
             </span>
             <span className="material-symbols-outlined text-emerald-400 text-sm">refresh</span>
           </button>
