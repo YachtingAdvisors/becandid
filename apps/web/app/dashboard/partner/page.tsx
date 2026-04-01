@@ -41,6 +41,22 @@ export default function PartnerPage() {
   const relationship = relationships.includes('other') && customRelationship.trim()
     ? [...relationships.filter(r => r !== 'other'), customRelationship.trim()].join(', ')
     : relationships.join(', ');
+
+  const formatPhone = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    if (digits.length === 0) return '';
+    const d = digits.startsWith('1') ? digits : '1' + digits;
+    if (d.length <= 1) return '+1';
+    if (d.length <= 4) return `+1 (${d.slice(1)}`;
+    if (d.length <= 7) return `+1 (${d.slice(1, 4)}) ${d.slice(4)}`;
+    return `+1 (${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7, 11)}`;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === '' || raw === '+') { setPartnerPhone(''); return; }
+    setPartnerPhone(formatPhone(raw));
+  };
   const [userGoals, setUserGoals] = useState<GoalCategory[]>([]);
   const [sharedRivals, setSharedRivals] = useState<GoalCategory[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -289,7 +305,7 @@ export default function PartnerPage() {
                     <input
                       type="tel"
                       value={partnerPhone}
-                      onChange={(e) => setPartnerPhone(e.target.value)}
+                      onChange={handlePhoneChange}
                       placeholder="+1 (555) 123-4567"
                       className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                     />

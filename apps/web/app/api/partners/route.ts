@@ -90,12 +90,22 @@ export async function POST(req: NextRequest) {
       .select()
       .single();
 
-    if (error) return safeError('POST /api/partners', error);
+    if (error) {
+      console.error('Partner insert error:', JSON.stringify(error));
+      return NextResponse.json({ error: `Partner invite failed: ${error.message}` }, { status: 400 });
+    }
 
-    await db.from('users').update({
-      relationship_type: parsed.data.relationship_type,
+    // Store primary relationship type on user (first selected value)
+    const primaryRelationship = parsed.data.relationship_type.split(',')[0].trim();
+    const { error: userUpdateError } = await db.from('users').update({
+      relationship_type: primaryRelationship,
       partner_id: partner.id,
     }).eq('id', user.id);
+
+    if (userUpdateError) {
+      console.error('User update error:', JSON.stringify(userUpdateError));
+      // Non-fatal — partner was created, user update failed
+    }
 
     auditLog({
       action: 'partner.invite',

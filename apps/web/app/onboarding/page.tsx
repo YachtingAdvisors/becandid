@@ -43,6 +43,24 @@ function OnboardingContent() {
   const [relationships, setRelationships] = useState<string[]>(['friend']);
   const [customRelationship, setCustomRelationship] = useState('');
   const relationship = relationships.join(', ');
+
+  // Format phone as +1 (XXX) XXX-XXXX
+  const formatPhone = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    if (digits.length === 0) return '';
+    // Assume US if no country code and starts with area code
+    const d = digits.startsWith('1') ? digits : '1' + digits;
+    if (d.length <= 1) return '+1';
+    if (d.length <= 4) return `+1 (${d.slice(1)}`;
+    if (d.length <= 7) return `+1 (${d.slice(1, 4)}) ${d.slice(4)}`;
+    return `+1 (${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7, 11)}`;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === '' || raw === '+') { setPartnerPhone(''); return; }
+    setPartnerPhone(formatPhone(raw));
+  };
   const [motivators, setMotivators] = useState<FoundationalMotivator[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -114,7 +132,7 @@ function OnboardingContent() {
       } else {
         setStep('done');
       }
-    } catch (e) { setError('Failed to send invite'); }
+    } catch (e: any) { setError(e?.message || 'Network error — please try again.'); }
     setLoading(false);
   };
 
@@ -398,7 +416,7 @@ function OnboardingContent() {
             </div>
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their phone <span className="text-on-surface-variant font-normal">(optional — for SMS alerts)</span></label>
-              <input type="tel" value={partnerPhone} onChange={(e) => setPartnerPhone(e.target.value)}
+              <input type="tel" value={partnerPhone} onChange={handlePhoneChange}
                 placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200" />
             </div>
             <div>
