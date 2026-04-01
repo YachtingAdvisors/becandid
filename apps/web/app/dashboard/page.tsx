@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+  description: 'Your accountability command center. Track progress, view insights, and stay aligned with your goals.',
+};
 import { GOAL_LABELS, getCategoryEmoji, timeAgo } from '@be-candid/shared';
 import type { GoalCategory, Severity } from '@be-candid/shared';
 import { Suspense } from 'react';

@@ -80,38 +80,38 @@ export default function JournalSettings() {
   };
 
   if (loading || !prefs) return (
-    <div className="card p-5">
-      <div className="h-32 animate-pulse bg-gray-50 rounded-lg" />
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
+      <div className="h-32 animate-pulse bg-surface-container-low rounded-lg" />
     </div>
   );
 
   return (
-    <div className="card p-5">
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
           <span className="material-symbols-outlined text-lg">edit_note</span>
-          <h3 className="text-sm font-semibold text-ink">Candid Journal Reminders</h3>
+          <h3 className="text-sm font-semibold text-on-surface">Candid Journal Reminders</h3>
         </div>
         {saved && (
           <span className="text-xs text-emerald-600 font-medium animate-fade-in flex items-center gap-0.5"><span className="material-symbols-outlined text-sm">check</span> Saved</span>
         )}
       </div>
 
-      <p className="text-xs text-ink-muted mb-4 leading-relaxed">
+      <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
         Get nudged to reflect with a guided prompt. Each notification includes a different
         question to help you trace the tributaries, name unmet longings, or follow the roadmap.
       </p>
 
       {/* Reminder toggle */}
-      <div className="flex items-center justify-between py-3 border-b border-surface-border">
+      <div className="flex items-center justify-between py-3 border-b border-outline-variant">
         <div>
-          <p className="text-sm font-medium text-ink">Scheduled reminders</p>
-          <p className="text-xs text-ink-muted">Receive a journal prompt on a regular schedule</p>
+          <p className="text-sm font-medium text-on-surface">Scheduled reminders</p>
+          <p className="text-xs text-on-surface-variant">Receive a journal prompt on a regular schedule</p>
         </div>
         <button
           onClick={() => save({ reminder_enabled: !prefs.reminder_enabled })}
           className={`relative w-11 h-6 rounded-full transition-colors ${
-            prefs.reminder_enabled ? 'bg-brand' : 'bg-gray-200'
+            prefs.reminder_enabled ? 'bg-primary' : 'bg-surface-container'
           }`}
         >
           <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
@@ -122,13 +122,13 @@ export default function JournalSettings() {
 
       {/* Frequency + time (only if enabled) */}
       {prefs.reminder_enabled && (
-        <div className="py-3 border-b border-surface-border space-y-3">
+        <div className="py-3 border-b border-outline-variant space-y-3">
           <div className="flex items-center gap-3">
-            <label className="text-xs text-ink-muted w-20 shrink-0">Frequency</label>
+            <label className="text-xs text-on-surface-variant w-20 shrink-0">Frequency</label>
             <select
               value={prefs.frequency}
               onChange={(e) => save({ frequency: e.target.value })}
-              className="flex-1 text-sm border border-surface-border rounded-lg px-3 py-2 bg-white text-ink focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="flex-1 text-sm border border-outline-variant rounded-lg px-3 py-2 bg-white text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
             >
               {FREQUENCIES.map((f) => (
                 <option key={f.value} value={f.value}>{f.label}</option>
@@ -136,11 +136,11 @@ export default function JournalSettings() {
             </select>
           </div>
           <div className="flex items-center gap-3">
-            <label className="text-xs text-ink-muted w-20 shrink-0">Time</label>
+            <label className="text-xs text-on-surface-variant w-20 shrink-0">Time</label>
             <select
               value={prefs.preferred_hour}
               onChange={(e) => save({ preferred_hour: parseInt(e.target.value) })}
-              className="flex-1 text-sm border border-surface-border rounded-lg px-3 py-2 bg-white text-ink focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="flex-1 text-sm border border-outline-variant rounded-lg px-3 py-2 bg-white text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
             >
               {HOURS.map((h) => (
                 <option key={h.value} value={h.value}>{h.label}</option>
@@ -148,11 +148,11 @@ export default function JournalSettings() {
             </select>
           </div>
           <div className="flex items-center gap-3">
-            <label className="text-xs text-ink-muted w-20 shrink-0">Timezone</label>
+            <label className="text-xs text-on-surface-variant w-20 shrink-0">Timezone</label>
             <select
               value={prefs.timezone}
               onChange={(e) => save({ timezone: e.target.value })}
-              className="flex-1 text-sm border border-surface-border rounded-lg px-3 py-2 bg-white text-ink focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="flex-1 text-sm border border-outline-variant rounded-lg px-3 py-2 bg-white text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
             >
               {TIMEZONES.map((tz) => (
                 <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>
@@ -163,15 +163,15 @@ export default function JournalSettings() {
       )}
 
       {/* After-relapse toggle */}
-      <div className="flex items-center justify-between py-3 border-b border-surface-border">
+      <div className="flex items-center justify-between py-3 border-b border-outline-variant">
         <div>
-          <p className="text-sm font-medium text-ink">Journal after relapse</p>
-          <p className="text-xs text-ink-muted">Get a reflection prompt after a flagged event</p>
+          <p className="text-sm font-medium text-on-surface">Journal after relapse</p>
+          <p className="text-xs text-on-surface-variant">Get a reflection prompt after a flagged event</p>
         </div>
         <button
           onClick={() => save({ after_relapse: !prefs.after_relapse })}
           className={`relative w-11 h-6 rounded-full transition-colors ${
-            prefs.after_relapse ? 'bg-brand' : 'bg-gray-200'
+            prefs.after_relapse ? 'bg-primary' : 'bg-surface-container'
           }`}
         >
           <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
@@ -184,18 +184,18 @@ export default function JournalSettings() {
       {prefs.after_relapse && (
         <div className="py-3 space-y-1">
           <div className="flex items-center gap-3">
-            <label className="text-xs text-ink-muted w-20 shrink-0">Wait time</label>
+            <label className="text-xs text-on-surface-variant w-20 shrink-0">Wait time</label>
             <select
               value={prefs.relapse_delay_min}
               onChange={(e) => save({ relapse_delay_min: parseInt(e.target.value) })}
-              className="flex-1 text-sm border border-surface-border rounded-lg px-3 py-2 bg-white text-ink focus:outline-none focus:ring-2 focus:ring-brand/20"
+              className="flex-1 text-sm border border-outline-variant rounded-lg px-3 py-2 bg-white text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
             >
               {DELAYS.map((d) => (
                 <option key={d.value} value={d.value}>{d.label}</option>
               ))}
             </select>
           </div>
-          <p className="text-[11px] text-ink-muted pl-[92px]">
+          <p className="text-[11px] text-on-surface-variant pl-[92px]">
             How long to wait before prompting — gives you time to settle before reflecting
           </p>
         </div>

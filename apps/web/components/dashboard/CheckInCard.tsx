@@ -45,7 +45,7 @@ const PARTNER_MOODS: { value: PartnerMood; emoji: string; label: string }[] = [
 ];
 
 const STATUS_CONFIG = {
-  pending:   { label: 'Waiting for both',     bg: 'bg-gray-50',    border: 'border-gray-200',   dot: 'bg-gray-400' },
+  pending:   { label: 'Waiting for both',     bg: 'bg-surface-container-low',    border: 'border-outline-variant',   dot: 'bg-gray-400' },
   partial:   { label: 'Waiting for one more', bg: 'bg-amber-50',   border: 'border-amber-200',  dot: 'bg-amber-400' },
   completed: { label: 'Completed',            bg: 'bg-emerald-50', border: 'border-emerald-200', dot: 'bg-emerald-500' },
   expired:   { label: 'Expired',              bg: 'bg-red-50',     border: 'border-red-200',    dot: 'bg-red-400' },
@@ -129,11 +129,11 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
       <div className="px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${config.dot}`} />
-          <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
+          <span className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
             {config.label}
           </span>
         </div>
-        <div className="text-xs text-ink-muted">
+        <div className="text-xs text-on-surface-variant">
           {timeAgo(checkIn.sent_at)}
           {checkIn.due_at && checkIn.status !== 'completed' && checkIn.status !== 'expired' && (
             <> · <span className="font-medium">{timeUntil(checkIn.due_at)}</span></>
@@ -143,7 +143,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
 
       {/* Prompt */}
       <div className="px-4 pb-3">
-        <p className="text-sm text-ink leading-relaxed">{checkIn.prompt}</p>
+        <p className="text-sm text-on-surface leading-relaxed">{checkIn.prompt}</p>
       </div>
 
       {/* Dual confirmation progress */}
@@ -153,7 +153,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
           <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
             userDone
               ? 'bg-emerald-100 text-emerald-700'
-              : 'bg-gray-100 text-gray-500'
+              : 'bg-surface-container-low text-gray-500'
           }`}>
             {userDone ? <span className="material-symbols-outlined text-sm">check</span> : <span className="material-symbols-outlined text-sm">radio_button_unchecked</span>} You{role === 'partner' ? 'r partner' : ''}
             {userDone && checkIn.user_mood && (
@@ -165,14 +165,14 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
 
           {/* Connection line */}
           <div className={`flex-1 h-0.5 rounded-full ${
-            userDone && partnerDone ? 'bg-emerald-400' : 'bg-gray-200'
+            userDone && partnerDone ? 'bg-emerald-400' : 'bg-surface-container'
           }`} />
 
           {/* Partner indicator */}
           <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
             partnerDone
               ? 'bg-emerald-100 text-emerald-700'
-              : 'bg-gray-100 text-gray-500'
+              : 'bg-surface-container-low text-gray-500'
           }`}>
             {partnerDone ? <span className="material-symbols-outlined text-sm">check</span> : <span className="material-symbols-outlined text-sm">radio_button_unchecked</span>} {role === 'user' ? (partnerName ?? 'Partner') : 'You'}
             {partnerDone && checkIn.partner_mood && (
@@ -186,8 +186,8 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
 
       {/* Confirmation form */}
       {canConfirm && (
-        <div className="px-4 pb-4 pt-2 border-t border-surface-border/50">
-          <div className="text-xs font-medium text-ink mb-2">
+        <div className="px-4 pb-4 pt-2 border-t border-outline-variant/50">
+          <div className="text-xs font-medium text-on-surface mb-2">
             {role === 'user' ? 'How are you feeling?' : `How do you feel about ${partnerName ?? 'their'} progress?`}
           </div>
 
@@ -199,12 +199,12 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
                 onClick={() => setSelectedMood(m.value)}
                 className={`flex-1 flex flex-col items-center gap-1 px-2 py-2 rounded-xl border-2 transition-all text-center ${
                   selectedMood === m.value
-                    ? 'border-brand-500 bg-brand-50'
-                    : 'border-transparent bg-white hover:border-brand-200'
+                    ? 'border-primary bg-primary-container/30'
+                    : 'border-transparent bg-white hover:border-primary/20'
                 }`}
               >
                 <span className="material-symbols-outlined text-lg">{m.emoji}</span>
-                <span className="text-[10px] font-medium text-ink-muted">{m.label}</span>
+                <span className="text-[10px] font-medium text-on-surface-variant">{m.label}</span>
               </button>
             ))}
           </div>
@@ -215,7 +215,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
             onChange={(e) => setResponse(e.target.value)}
             placeholder="Anything you want to share? (optional)"
             rows={2}
-            className="w-full px-3 py-2 rounded-xl border border-surface-border text-sm resize-none focus:outline-none focus:ring-2 focus:ring-brand-500 mb-3"
+            className="w-full px-3 py-2 rounded-xl border border-outline-variant text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 mb-3"
           />
 
           {error && (
@@ -225,7 +225,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
           <button
             onClick={handleConfirm}
             disabled={loading || !selectedMood}
-            className="w-full py-2.5 bg-brand-600 text-white text-sm font-medium rounded-xl hover:bg-brand-700 transition-colors disabled:opacity-50"
+            className="w-full py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary transition-colors disabled:opacity-50"
           >
             {loading ? 'Confirming…' : 'Confirm Check-in'}
           </button>
@@ -234,8 +234,8 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
 
       {/* Already confirmed message */}
       {alreadyConfirmed && checkIn.status !== 'completed' && (
-        <div className="px-4 pb-3 pt-2 border-t border-surface-border/50">
-          <p className="text-xs text-ink-muted text-center">
+        <div className="px-4 pb-3 pt-2 border-t border-outline-variant/50">
+          <p className="text-xs text-on-surface-variant text-center">
             <span className="material-symbols-outlined text-sm align-middle">check</span> You've confirmed. Waiting for {role === 'user' ? (partnerName ?? 'your partner') : 'them'} to complete their side.
           </p>
         </div>

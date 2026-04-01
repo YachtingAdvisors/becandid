@@ -91,33 +91,33 @@ export default function ConversationOutcome({
     setSaving(false);
   };
 
-  if (loading) return <div className="card p-5 animate-pulse"><div className="h-24 bg-gray-50 rounded-lg" /></div>;
+  if (loading) return <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 animate-pulse"><div className="h-24 bg-surface-container-low rounded-lg" /></div>;
 
   // Already submitted
   if (myCompleted) {
     return (
-      <div className="card p-5">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <div className="flex items-center gap-2.5 mb-3">
           <span className="material-symbols-outlined text-lg">forum</span>
-          <h3 className="text-sm font-semibold text-ink">Conversation Outcome</h3>
+          <h3 className="text-sm font-semibold text-on-surface">Conversation Outcome</h3>
           <span className="text-xs text-emerald-600 font-medium ml-auto flex items-center gap-0.5"><span className="material-symbols-outlined text-sm">check</span> Submitted</span>
         </div>
 
         <div className="flex items-center gap-4 mb-3">
           <div>
-            <p className="text-xs text-ink-muted">Your rating</p>
-            <p className="text-lg font-display font-semibold text-ink">{role === 'user' ? existing?.user_rating : existing?.partner_rating}/5</p>
+            <p className="text-xs text-on-surface-variant">Your rating</p>
+            <p className="text-lg font-headline font-semibold text-on-surface">{role === 'user' ? existing?.user_rating : existing?.partner_rating}/5</p>
           </div>
           {(role === 'user' ? existing?.user_felt : existing?.partner_felt) && (
             <div>
-              <p className="text-xs text-ink-muted">You felt</p>
-              <p className="text-sm font-medium text-ink capitalize">{role === 'user' ? existing?.user_felt : existing?.partner_felt}</p>
+              <p className="text-xs text-on-surface-variant">You felt</p>
+              <p className="text-sm font-medium text-on-surface capitalize">{role === 'user' ? existing?.user_felt : existing?.partner_felt}</p>
             </div>
           )}
         </div>
 
         {!otherCompleted && (
-          <p className="text-xs text-ink-muted italic">Waiting for the other person to submit their rating…</p>
+          <p className="text-xs text-on-surface-variant italic">Waiting for the other person to submit their rating…</p>
         )}
 
         {existing?.ai_reflection && (
@@ -132,12 +132,12 @@ export default function ConversationOutcome({
 
   // Rating form
   return (
-    <div className="card p-5">
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
       <div className="flex items-center gap-2.5 mb-1">
         <span className="material-symbols-outlined text-lg">forum</span>
-        <h3 className="text-sm font-semibold text-ink">How did the conversation go?</h3>
+        <h3 className="text-sm font-semibold text-on-surface">How did the conversation go?</h3>
       </div>
-      <p className="text-xs text-ink-muted mb-4">
+      <p className="text-xs text-on-surface-variant mb-4">
         {role === 'user'
           ? 'Your honest assessment helps track growth over time.'
           : 'Your perspective helps improve future conversations.'}
@@ -145,15 +145,15 @@ export default function ConversationOutcome({
 
       {/* Rating */}
       <div className="mb-4">
-        <p className="text-xs font-medium text-ink-muted mb-2">Overall</p>
+        <p className="text-xs font-medium text-on-surface-variant mb-2">Overall</p>
         <div className="flex gap-2">
           {RATINGS.map((r) => (
             <button key={r.v} onClick={() => setRating(r.v)}
               className={`flex-1 py-3 rounded-lg border text-center transition-all ${
-                rating === r.v ? 'border-brand bg-brand/5 ring-2 ring-brand/20' : 'border-surface-border bg-white hover:bg-gray-50'
+                rating === r.v ? 'border-brand bg-primary/5 ring-2 ring-primary/20' : 'border-outline-variant bg-white hover:bg-surface-container-low'
               }`}>
-              <div className="text-lg font-display font-semibold text-ink">{r.v}</div>
-              <div className="text-[10px] text-ink-muted">{r.label}</div>
+              <div className="text-lg font-headline font-semibold text-on-surface">{r.v}</div>
+              <div className="text-[10px] text-on-surface-variant">{r.label}</div>
             </button>
           ))}
         </div>
@@ -161,12 +161,12 @@ export default function ConversationOutcome({
 
       {/* Feeling */}
       <div className="mb-4">
-        <p className="text-xs font-medium text-ink-muted mb-2">How did you feel?</p>
+        <p className="text-xs font-medium text-on-surface-variant mb-2">How did you feel?</p>
         <div className="flex flex-wrap gap-1.5">
           {feelings.map((f) => (
             <button key={f.value} onClick={() => setFelt(felt === f.value ? null : f.value)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                felt === f.value ? 'bg-brand/10 text-brand border border-brand/30' : 'bg-gray-50 text-ink-muted border border-transparent hover:bg-gray-100'
+                felt === f.value ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-surface-container-low text-on-surface-variant border border-transparent hover:bg-surface-container-low'
               }`}>
               <span className="material-symbols-outlined text-sm">{f.emoji}</span> {f.label}
             </button>
@@ -176,15 +176,15 @@ export default function ConversationOutcome({
 
       {/* Notes */}
       <div className="mb-4">
-        <p className="text-xs font-medium text-ink-muted mb-2">Anything else? <span className="font-normal">(optional)</span></p>
+        <p className="text-xs font-medium text-on-surface-variant mb-2">Anything else? <span className="font-normal">(optional)</span></p>
         <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
           placeholder="What stood out? What would you do differently?"
-          className="w-full h-16 px-3 py-2 rounded-lg border border-surface-border bg-white text-ink text-sm resize-none focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand placeholder:text-ink-muted/50" />
+          className="w-full h-16 px-3 py-2 rounded-lg border border-outline-variant bg-white text-on-surface text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
       </div>
 
       <button onClick={submit} disabled={!rating || saving}
         className={`w-full py-2.5 text-sm font-medium rounded-lg transition-all ${
-          saved ? 'bg-emerald-500 text-white' : rating ? 'bg-brand text-white hover:bg-brand-dark' : 'bg-gray-100 text-ink-muted cursor-not-allowed'
+          saved ? 'bg-emerald-500 text-white' : rating ? 'bg-primary text-white hover:bg-primary' : 'bg-surface-container-low text-on-surface-variant cursor-not-allowed'
         }`}>
         {saved ? <><span className="material-symbols-outlined text-sm align-middle">check</span> Submitted +10 pts</> : saving ? 'Saving...' : 'Submit'}
       </button>

@@ -101,16 +101,16 @@ export default function PrivacySettings() {
     setShowPurge(false);
   };
 
-  if (loading) return <div className="card p-5"><div className="h-48 animate-pulse bg-gray-50 rounded-lg" /></div>;
+  if (loading) return <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5"><div className="h-48 animate-pulse bg-surface-container-low rounded-lg" /></div>;
 
   return (
     <div className="space-y-4">
       {/* Active Sessions */}
-      <div className="card p-5">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
             <span className="material-symbols-outlined text-lg">enhanced_encryption</span>
-            <h3 className="text-sm font-semibold text-ink">Active Sessions</h3>
+            <h3 className="text-sm font-semibold text-on-surface">Active Sessions</h3>
           </div>
           {sessions.length > 1 && (
             <button onClick={logoutAll}
@@ -121,12 +121,12 @@ export default function PrivacySettings() {
         </div>
         <div className="space-y-2">
           {sessions.map((s, i) => (
-            <div key={s.id} className="flex items-center justify-between py-2.5 px-3 rounded-lg bg-gray-50 border border-surface-border">
+            <div key={s.id} className="flex items-center justify-between py-2.5 px-3 rounded-lg bg-surface-container-low border border-outline-variant">
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-lg">{PLATFORM_ICONS[s.platform] || 'computer'}</span>
                 <div>
-                  <p className="text-sm font-medium text-ink">{s.device}</p>
-                  <p className="text-xs text-ink-muted">
+                  <p className="text-sm font-medium text-on-surface">{s.device}</p>
+                  <p className="text-xs text-on-surface-variant">
                     {s.ip} · {new Date(s.lastActive).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     {i === 0 && <span className="text-emerald-600 ml-1">· This device</span>}
                   </p>
@@ -141,58 +141,58 @@ export default function PrivacySettings() {
             </div>
           ))}
           {sessions.length === 0 && (
-            <p className="text-sm text-ink-muted text-center py-4">No active sessions found</p>
+            <p className="text-sm text-on-surface-variant text-center py-4">No active sessions found</p>
           )}
         </div>
       </div>
 
       {/* Data Retention */}
-      <div className="card p-5">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <div className="flex items-center gap-2.5 mb-3">
           <span className="material-symbols-outlined text-lg">calendar_month</span>
-          <h3 className="text-sm font-semibold text-ink">Data Retention</h3>
+          <h3 className="text-sm font-semibold text-on-surface">Data Retention</h3>
           {saved && <span className="text-xs text-emerald-600 font-medium flex items-center gap-0.5"><span className="material-symbols-outlined text-sm">check</span> Saved</span>}
         </div>
-        <p className="text-xs text-ink-muted mb-4 leading-relaxed">
+        <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
           Flagged events older than this will be automatically deleted. Journal entries are never auto-deleted — they're your reflection work.
         </p>
         <div className="flex items-center gap-4">
           <input
             type="range" min={30} max={365} step={30} value={retention}
             onChange={(e) => updateRetention(parseInt(e.target.value))}
-            className="flex-1 h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-brand"
+            className="flex-1 h-2 bg-surface-container rounded-full appearance-none cursor-pointer accent-primary"
           />
-          <span className="text-sm font-medium text-ink w-20 text-right">
+          <span className="text-sm font-medium text-on-surface w-20 text-right">
             {retention} days
           </span>
         </div>
-        <div className="flex justify-between text-[10px] text-ink-muted mt-1 px-0.5">
+        <div className="flex justify-between text-[10px] text-on-surface-variant mt-1 px-0.5">
           <span>30 days</span>
           <span>1 year</span>
         </div>
       </div>
 
       {/* Data Export & Purge */}
-      <div className="card p-5">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <div className="flex items-center gap-2.5 mb-3">
           <span className="material-symbols-outlined text-lg">inventory_2</span>
-          <h3 className="text-sm font-semibold text-ink">Your Data</h3>
+          <h3 className="text-sm font-semibold text-on-surface">Your Data</h3>
         </div>
         <div className="space-y-2">
           <button onClick={exportData} disabled={exporting}
-            className="w-full flex items-center justify-between p-3 rounded-lg border border-surface-border hover:bg-gray-50 transition-colors">
+            className="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors">
             <div>
-              <p className="text-sm font-medium text-ink">Export all data</p>
-              <p className="text-xs text-ink-muted">Download everything as JSON</p>
+              <p className="text-sm font-medium text-on-surface">Export all data</p>
+              <p className="text-xs text-on-surface-variant">Download everything as JSON</p>
             </div>
-            <span className="text-sm text-ink-muted">{exporting ? 'Preparing…' : '→'}</span>
+            <span className="text-sm text-on-surface-variant">{exporting ? 'Preparing…' : '→'}</span>
           </button>
 
           <button onClick={() => setShowPurge(!showPurge)}
             className="w-full flex items-center justify-between p-3 rounded-lg border border-red-100 hover:bg-red-50 transition-colors">
             <div>
               <p className="text-sm font-medium text-red-600">Delete data</p>
-              <p className="text-xs text-ink-muted">Permanently remove specific data</p>
+              <p className="text-xs text-on-surface-variant">Permanently remove specific data</p>
             </div>
             <span className="material-symbols-outlined text-sm text-red-400">{showPurge ? 'expand_more' : 'chevron_right'}</span>
           </button>

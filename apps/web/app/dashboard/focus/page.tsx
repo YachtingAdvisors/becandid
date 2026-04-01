@@ -1,7 +1,13 @@
 // /dashboard/focus — Focus Board page
 // Shows the 21-day morning/evening heatmap, trust points, milestones
 
+import type { Metadata } from 'next';
 import FocusBoard from '@/components/dashboard/FocusBoard';
+
+export const metadata: Metadata = {
+  title: 'Focus Board',
+  description: 'Track your 21-day morning and evening focus streaks. Earn trust points and hit milestones on your path to digital wellness.',
+};
 
 export default function FocusPage() {
   return (

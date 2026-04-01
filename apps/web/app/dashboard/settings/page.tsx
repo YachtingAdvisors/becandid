@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+
+export const metadata: Metadata = {
+  title: 'Settings',
+  description: 'Manage your Be Candid account settings, privacy preferences, notification controls, and subscription details.',
+};
 import SettingsForm from '@/components/dashboard/SettingsForm';
 import VulnerabilityWindows from '@/components/dashboard/VulnerabilityWindows';
 import BillingSection from '@/components/dashboard/BillingSection';

@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import PublicNav from '@/components/PublicNav';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Families — Digital Safety for Every Age',
+  description:
+    'Protect your family online with AI-powered content filtering, screen time limits, real-time alerts, and focus tracking designed for every age.',
+};
 
 const FEATURES = [
   {

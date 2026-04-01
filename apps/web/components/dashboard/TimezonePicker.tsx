@@ -33,17 +33,17 @@ interface TimezonePickerProps {
 export default function TimezonePicker({ value, onChange, disabled }: TimezonePickerProps) {
   return (
     <div>
-      <label className="block text-sm font-medium text-ink mb-1.5">
+      <label className="block text-sm font-medium text-on-surface mb-1.5">
         Your Timezone
       </label>
-      <p className="text-xs text-ink-muted mb-2">
+      <p className="text-xs text-on-surface-variant mb-2">
         This determines when your morning (5 AM–5 PM) and evening (5 PM–5 AM) focus segments start.
       </p>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="w-full px-3 py-2.5 rounded-xl border border-surface-border bg-white text-sm text-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors disabled:opacity-50"
+        className="w-full px-3 py-2.5 rounded-xl border border-outline-variant bg-white text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors disabled:opacity-50"
       >
         {TIMEZONES.map((tz) => (
           <option key={tz.value} value={tz.value}>

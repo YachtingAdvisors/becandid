@@ -28,7 +28,7 @@ const TRUST_LABELS: Record<string, { label: string; color: string; emoji: string
   rebuilding: { label: 'Trust rebuilding', color: 'text-emerald-600', emoji: 'trending_up' },
   stable: { label: 'Trust holding steady', color: 'text-amber-600', emoji: 'trending_flat' },
   declining: { label: 'Trust declining', color: 'text-red-600', emoji: 'trending_down' },
-  unknown: { label: 'Not enough data yet', color: 'text-ink-muted', emoji: 'remove' },
+  unknown: { label: 'Not enough data yet', color: 'text-on-surface-variant', emoji: 'remove' },
 };
 
 export default function SpouseImpactAwareness() {
@@ -43,20 +43,20 @@ export default function SpouseImpactAwareness() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="card p-5"><div className="h-32 animate-pulse bg-gray-50 rounded-lg" /></div>;
+  if (loading) return <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5"><div className="h-32 animate-pulse bg-surface-container-low rounded-lg" /></div>;
   if (!data || !data.is_spouse_relationship) return null;
 
   const trust = TRUST_LABELS[data.trust_trend] || TRUST_LABELS.unknown;
 
   return (
-    <div className="card p-0 overflow-hidden">
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-0 overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-rose-50 to-amber-50 px-5 py-4 border-b border-rose-100">
         <div className="flex items-center gap-2.5">
           <span className="material-symbols-outlined text-lg">loyalty</span>
           <div>
-            <h3 className="text-sm font-semibold text-ink">How {data.spouse_name} is doing</h3>
-            <p className="text-xs text-ink-muted">Your spouse's experience matters in this journey</p>
+            <h3 className="text-sm font-semibold text-on-surface">How {data.spouse_name} is doing</h3>
+            <p className="text-xs text-on-surface-variant">Your spouse's experience matters in this journey</p>
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function SpouseImpactAwareness() {
       <div className="p-5 space-y-4">
         {/* Trust trend */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-ink">Trust trend</span>
+          <span className="text-sm text-on-surface">Trust trend</span>
           <span className={`text-sm font-medium ${trust.color}`}>
             <span className="material-symbols-outlined text-base align-middle">{trust.emoji}</span> {trust.label}
           </span>
@@ -73,10 +73,10 @@ export default function SpouseImpactAwareness() {
         {/* Recent feelings (aggregated from consented impact check-ins) */}
         {data.recent_feelings && data.recent_feelings.length > 0 && (
           <div>
-            <p className="text-xs text-ink-muted mb-2">What they've been feeling recently</p>
+            <p className="text-xs text-on-surface-variant mb-2">What they've been feeling recently</p>
             <div className="flex flex-wrap gap-1.5">
               {data.recent_feelings.map((feeling: string) => (
-                <span key={feeling} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-gray-50 text-ink border border-surface-border">
+                <span key={feeling} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-surface-container-low text-on-surface border border-outline-variant">
                   <span className="material-symbols-outlined text-sm">{FEELING_EMOJIS[feeling] || 'circle'}</span> {feeling}
                 </span>
               ))}
@@ -87,13 +87,13 @@ export default function SpouseImpactAwareness() {
         {/* Shared journal entries */}
         {data.shared_entries && data.shared_entries.length > 0 && (
           <div>
-            <p className="text-xs text-ink-muted mb-2">{data.spouse_name} chose to share this with you</p>
+            <p className="text-xs text-on-surface-variant mb-2">{data.spouse_name} chose to share this with you</p>
             {data.shared_entries.slice(0, 2).map((entry: any) => (
               <div key={entry.id} className="p-3 rounded-lg bg-rose-50/50 border border-rose-100 mb-2">
-                <p className="text-xs text-ink-muted mb-1">
+                <p className="text-xs text-on-surface-variant mb-1">
                   {new Date(entry.shared_at || entry.created_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                 </p>
-                <p className="text-sm text-ink leading-relaxed">
+                <p className="text-sm text-on-surface leading-relaxed">
                   {(entry.freewrite || entry.impact || entry.needs || '').slice(0, 200)}
                   {(entry.freewrite || entry.impact || entry.needs || '').length > 200 ? '…' : ''}
                 </p>

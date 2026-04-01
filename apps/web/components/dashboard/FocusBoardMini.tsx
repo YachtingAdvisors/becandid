@@ -18,7 +18,7 @@ interface MiniStats {
 const STATUS_COLORS = {
   focused: 'bg-emerald-400',
   distracted: 'bg-red-400',
-  pending: 'bg-gray-200',
+  pending: 'bg-surface-container',
 };
 
 function getDayLabel(dateStr: string): string {
@@ -40,8 +40,8 @@ export default function FocusBoardMini() {
 
   if (loading) {
     return (
-      <div className="card p-4 animate-pulse">
-        <div className="h-16 bg-gray-100 rounded" />
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 animate-pulse">
+        <div className="h-16 bg-surface-container-low rounded" />
       </div>
     );
   }
@@ -74,27 +74,27 @@ export default function FocusBoardMini() {
           : 'warning';
 
   return (
-    <Link href="/dashboard/focus" className="card p-4 hover:shadow-md transition-shadow block">
+    <Link href="/dashboard/focus" className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 hover:shadow-md transition-shadow block">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-display text-sm font-semibold text-ink">
+        <h3 className="font-headline text-sm font-semibold text-on-surface">
           Focus Board
         </h3>
-        <span className="text-xs text-brand-600 font-medium">View full →</span>
+        <span className="text-xs text-primary font-medium">View full →</span>
       </div>
 
       {/* Top stats row */}
       <div className="flex items-center gap-4 mb-3">
         <div className="text-center">
-          <div className="text-xl font-bold text-brand-600">{stats.balance.toLocaleString()}</div>
-          <div className="text-[10px] text-ink-muted">Trust Pts</div>
+          <div className="text-xl font-bold text-primary">{stats.balance.toLocaleString()}</div>
+          <div className="text-[10px] text-on-surface-variant">Trust Pts</div>
         </div>
         <div className="text-center">
           <div className="text-xl font-bold text-emerald-600">{stats.streak.streakDays}</div>
-          <div className="text-[10px] text-ink-muted">Day Streak</div>
+          <div className="text-[10px] text-on-surface-variant">Day Streak</div>
         </div>
         <div className="text-center flex-1">
           <span className="material-symbols-outlined text-xl">{todayIcon}</span>
-          <div className="text-[10px] text-ink-muted">{todayLabel}</div>
+          <div className="text-[10px] text-on-surface-variant">{todayLabel}</div>
         </div>
       </div>
 
@@ -102,14 +102,14 @@ export default function FocusBoardMini() {
       <div className="grid grid-cols-7 gap-1">
         {last7.map((day) => (
           <div key={day.date} className="text-center">
-            <div className="text-[9px] text-ink-muted mb-0.5">{getDayLabel(day.date)}</div>
+            <div className="text-[9px] text-on-surface-variant mb-0.5">{getDayLabel(day.date)}</div>
             <div className={`h-3 rounded-t-sm ${STATUS_COLORS[day.morning]}`} />
             <div className={`h-3 rounded-b-sm mt-px ${STATUS_COLORS[day.evening]}`} />
           </div>
         ))}
       </div>
 
-      <div className="flex items-center gap-3 mt-2 text-[9px] text-ink-muted">
+      <div className="flex items-center gap-3 mt-2 text-[9px] text-on-surface-variant">
         <span className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-sm bg-emerald-400 inline-block" /> Focused
         </span>

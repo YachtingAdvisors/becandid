@@ -43,7 +43,7 @@ export default async function WeeklyReflection({ userId }: { userId: string }) {
   const weekEndLabel = weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
   return (
-    <div className="card p-0 overflow-hidden mb-6">
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-0 overflow-hidden mb-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-violet-50 to-amber-50 px-5 py-4 border-b border-violet-100">
         <div className="flex items-center justify-between">
@@ -57,7 +57,7 @@ export default async function WeeklyReflection({ userId }: { userId: string }) {
           {data.mood_avg && (
             <div className="text-right">
               <p className="text-xs text-violet-500">Avg mood</p>
-              <p className="text-lg font-display font-semibold text-violet-800">{data.mood_avg.toFixed(1)}/5</p>
+              <p className="text-lg font-headline font-semibold text-violet-800">{data.mood_avg.toFixed(1)}/5</p>
             </div>
           )}
         </div>
@@ -65,13 +65,13 @@ export default async function WeeklyReflection({ userId }: { userId: string }) {
 
       {/* Narrative */}
       <div className="px-5 py-4">
-        <p className="text-sm text-ink leading-relaxed whitespace-pre-line">{reflection.narrative}</p>
+        <p className="text-sm text-on-surface leading-relaxed whitespace-pre-line">{reflection.narrative}</p>
       </div>
 
       {/* Themes */}
       {reflection.themes?.length > 0 && (
         <div className="px-5 pb-3">
-          <p className="text-xs font-medium text-ink-muted uppercase tracking-wider mb-2">Themes this week</p>
+          <p className="text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-2">Themes this week</p>
           <div className="flex flex-wrap gap-1.5">
             {reflection.themes.map((theme: string, i: number) => (
               <span key={i} className="px-3 py-1 rounded-full text-xs bg-violet-50 text-violet-700 border border-violet-100 font-medium">
@@ -100,9 +100,9 @@ export default async function WeeklyReflection({ userId }: { userId: string }) {
 
       {/* Looking ahead */}
       {reflection.looking_ahead && (
-        <div className="px-5 pb-4 pt-2 border-t border-surface-border">
-          <p className="text-xs text-ink-muted mb-1">Looking ahead</p>
-          <p className="text-sm text-ink font-medium">{reflection.looking_ahead}</p>
+        <div className="px-5 pb-4 pt-2 border-t border-outline-variant">
+          <p className="text-xs text-on-surface-variant mb-1">Looking ahead</p>
+          <p className="text-sm text-on-surface font-medium">{reflection.looking_ahead}</p>
         </div>
       )}
     </div>

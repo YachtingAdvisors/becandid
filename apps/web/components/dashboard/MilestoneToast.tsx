@@ -93,7 +93,7 @@ export function useMilestoneToasts() {
               <div className="text-xs font-semibold text-amber-600 uppercase tracking-wider">
                 Milestone Unlocked!
               </div>
-              <div className="text-sm font-display font-bold text-ink mt-0.5">
+              <div className="text-sm font-headline font-bold text-on-surface mt-0.5">
                 {toast.label}
               </div>
               <div className="text-xs text-emerald-600 font-medium mt-0.5">

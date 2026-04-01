@@ -47,15 +47,15 @@ export default function SoloModeToggle() {
   if (loading) return null;
 
   return (
-    <div className="card p-5">
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <span className="material-symbols-outlined text-lg">{solo ? 'explore' : 'handshake'}</span>
           <div>
-            <h3 className="text-sm font-semibold text-ink">
+            <h3 className="text-sm font-semibold text-on-surface">
               {solo ? 'Solo Mode' : 'Partner Mode'}
             </h3>
-            <p className="text-xs text-ink-muted">
+            <p className="text-xs text-on-surface-variant">
               {solo
                 ? 'Using Be Candid without a partner. Self-reflection guides and journal prompts are your primary tools.'
                 : 'Alerts, conversation guides, and check-ins are shared with your accountability partner.'}
@@ -66,7 +66,7 @@ export default function SoloModeToggle() {
           onClick={toggle}
           disabled={toggling}
           className={`relative w-11 h-6 rounded-full transition-colors ${
-            solo ? 'bg-amber-500' : 'bg-brand'
+            solo ? 'bg-amber-500' : 'bg-primary'
           }`}
         >
           <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${

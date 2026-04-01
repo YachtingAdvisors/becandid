@@ -60,14 +60,14 @@ export default function Paywall({
   };
 
   return (
-    <div className="card p-0 overflow-hidden border-brand/20">
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-0 overflow-hidden border-primary/20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-brand/5 to-violet-50 px-5 py-5 border-b border-brand/10">
+      <div className="bg-gradient-to-r from-primary/5 to-violet-50 px-5 py-5 border-b border-primary/10">
         <div className="flex items-center gap-3 mb-2">
           <span className="material-symbols-outlined text-2xl">{info.emoji}</span>
           <div>
-            <h3 className="text-base font-display font-semibold text-ink">{info.title}</h3>
-            <p className="text-sm text-ink-muted">{info.description}</p>
+            <h3 className="text-base font-headline font-semibold text-on-surface">{info.title}</h3>
+            <p className="text-sm text-on-surface-variant">{info.description}</p>
           </div>
         </div>
         <div className="mt-3 px-3 py-2 rounded-lg bg-amber-50 border border-amber-100">
@@ -84,11 +84,11 @@ export default function Paywall({
         <div className="flex items-center justify-center gap-3 mb-4">
           <button onClick={() => setBilling('monthly')}
             className={`text-xs font-medium px-3 py-1 rounded-full transition-all ${
-              billing === 'monthly' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              billing === 'monthly' ? 'bg-primary text-white' : 'text-on-surface-variant hover:text-on-surface'
             }`}>Monthly</button>
           <button onClick={() => setBilling('annual')}
             className={`text-xs font-medium px-3 py-1 rounded-full transition-all ${
-              billing === 'annual' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              billing === 'annual' ? 'bg-primary text-white' : 'text-on-surface-variant hover:text-on-surface'
             }`}>
             Annual <span className="text-[10px] opacity-80">save 17%</span>
           </button>
@@ -98,19 +98,19 @@ export default function Paywall({
         <div className="text-center mb-4">
           {requiredPlan === 'pro' ? (
             <>
-              <p className="text-3xl font-display font-bold text-ink">
+              <p className="text-3xl font-headline font-bold text-on-surface">
                 {billing === 'monthly' ? '$9.99' : '$99'}
               </p>
-              <p className="text-xs text-ink-muted">
+              <p className="text-xs text-on-surface-variant">
                 {billing === 'monthly' ? '/month' : '/year ($8.25/month)'}
               </p>
             </>
           ) : (
             <>
-              <p className="text-3xl font-display font-bold text-ink">
+              <p className="text-3xl font-headline font-bold text-on-surface">
                 {billing === 'monthly' ? '$19.99' : '$179'}
               </p>
-              <p className="text-xs text-ink-muted">
+              <p className="text-xs text-on-surface-variant">
                 {billing === 'monthly' ? '/month' : '/year ($14.92/month)'}
               </p>
             </>
@@ -136,7 +136,7 @@ export default function Paywall({
           ]).map((item, i) => (
             <div key={i} className="flex items-center gap-2">
               <span className="material-symbols-outlined text-emerald-500 text-sm">check</span>
-              <span className="text-xs text-ink">{item}</span>
+              <span className="text-xs text-on-surface">{item}</span>
             </div>
           ))}
         </div>
@@ -151,12 +151,12 @@ export default function Paywall({
             checkout(key);
           }}
           disabled={loading}
-          className="w-full py-3 text-sm font-medium rounded-xl bg-brand text-white hover:bg-brand-dark disabled:opacity-50 transition-colors"
+          className="w-full py-3 text-sm font-medium rounded-xl bg-primary text-white hover:bg-primary disabled:opacity-50 transition-colors"
         >
           {loading ? 'Opening checkout…' : requiredPlan === 'pro' ? 'Start 14-Day Free Trial' : 'Upgrade to Therapy'}
         </button>
 
-        <p className="text-center text-[10px] text-ink-muted mt-2">Cancel anytime. No commitment.</p>
+        <p className="text-center text-[10px] text-on-surface-variant mt-2">Cancel anytime. No commitment.</p>
       </div>
     </div>
   );
