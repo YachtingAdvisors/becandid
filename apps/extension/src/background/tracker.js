@@ -57,7 +57,13 @@ async function endCurrentTab() {
 
   if (duration >= 3) { // Minimum 3 seconds
     const filter = checkDomain(domain);
-    const category = filter.category || 'social_media';
+
+    // Only track domains that are blocked, flagged, or have a known category.
+    // Unrecognized domains (category: null) are NOT tracked — this prevents
+    // normal browsing (email, dev tools, your own apps) from being flagged.
+    if (!filter.category && !filter.blocked && !filter.flagged) return;
+
+    const category = filter.category;
 
     if (!domainStats[domain]) {
       domainStats[domain] = {

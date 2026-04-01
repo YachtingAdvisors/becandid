@@ -54,6 +54,25 @@ const FLAGGED_DOMAINS = new Map([
   ['amazon.com', { category: 'impulse_shopping', confidence: 0.30 }],
   ['ebay.com', { category: 'impulse_shopping', confidence: 0.30 }],
   ['shein.com', { category: 'impulse_shopping', confidence: 0.50 }],
+  // News sites (social_media category covers "Social Media & News")
+  ['cnn.com', { category: 'social_media', confidence: 0.40 }],
+  ['foxnews.com', { category: 'social_media', confidence: 0.40 }],
+  ['msnbc.com', { category: 'social_media', confidence: 0.40 }],
+  ['bbc.com', { category: 'social_media', confidence: 0.30 }],
+  ['nytimes.com', { category: 'social_media', confidence: 0.30 }],
+  ['washingtonpost.com', { category: 'social_media', confidence: 0.30 }],
+  ['zerohedge.com', { category: 'social_media', confidence: 0.50 }],
+  ['dailymail.co.uk', { category: 'social_media', confidence: 0.40 }],
+  ['huffpost.com', { category: 'social_media', confidence: 0.40 }],
+  ['breitbart.com', { category: 'social_media', confidence: 0.50 }],
+  ['drudgereport.com', { category: 'social_media', confidence: 0.40 }],
+  ['news.ycombinator.com', { category: 'social_media', confidence: 0.40 }],
+  ['threads.net', { category: 'social_media', confidence: 0.50 }],
+  ['bsky.app', { category: 'social_media', confidence: 0.50 }],
+  ['mastodon.social', { category: 'social_media', confidence: 0.50 }],
+  ['pinterest.com', { category: 'social_media', confidence: 0.40 }],
+  ['linkedin.com', { category: 'social_media', confidence: 0.30 }],
+  ['tumblr.com', { category: 'social_media', confidence: 0.50 }],
 ]);
 
 let cachedUserRules = null;
