@@ -40,6 +40,15 @@ export default async function SettingsPage() {
     foundational_motivator: raw.foundational_motivator ?? 'general',
   };
 
+  // Check if user has an active partner
+  const { data: partnerData } = await db
+    .from('partners')
+    .select('id')
+    .eq('user_id', user.id)
+    .in('status', ['active', 'accepted'])
+    .maybeSingle();
+  const hasPartner = !!partnerData;
+
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <div>
@@ -51,6 +60,7 @@ export default async function SettingsPage() {
       </div>
 
       <SettingsForm
+        hasPartner={hasPartner}
         profile={{
           name: profile.name ?? '',
           phone: profile.phone ?? '',

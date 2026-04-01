@@ -27,9 +27,10 @@ interface SettingsFormProps {
     check_in_frequency?: CheckInFrequency;
     foundational_motivator?: string;
   };
+  hasPartner?: boolean;
 }
 
-export default function SettingsForm({ profile }: SettingsFormProps) {
+export default function SettingsForm({ profile, hasPartner = false }: SettingsFormProps) {
   const router = useRouter();
   const [name, setName] = useState(profile.name || '');
   const [phone, setPhone] = useState(profile.phone || '');
@@ -288,9 +289,36 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
         </a>
       </section>
 
+      {/* ── Invite Partner (above Streak Mode) ─────────────── */}
+      {!hasPartner && (
+        <section className="card p-5 space-y-3 border-l-4 border-primary">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary-container rounded-xl">
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>group_add</span>
+            </div>
+            <div>
+              <h2 className="font-display text-lg font-semibold text-ink">Invite an Accountability Partner</h2>
+              <p className="text-xs text-ink-muted">A partner can verify false flags and protect your streak.</p>
+            </div>
+          </div>
+          <a
+            href="/dashboard/partner"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-on-primary text-sm font-label font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20"
+          >
+            <span className="material-symbols-outlined text-base">person_add</span>
+            Invite Partner
+          </a>
+        </section>
+      )}
+
       {/* ── Streak Mode ─────────────────────────────────────── */}
       <section className="card p-5 space-y-4">
-        <h2 className="font-display text-lg font-semibold text-ink">Focus Streak Mode</h2>
+        <div>
+          <h2 className="font-display text-lg font-semibold text-ink">Focus Streak Mode</h2>
+          <p className="text-xs text-ink-muted mt-1">
+            Focus Streaks show how long you&apos;ve been staying strong — the number of consecutive days without a flag. Choose how strictly flags affect your streak.
+          </p>
+        </div>
 
         <div className="space-y-2">
           {(['no_failures', 'conversation_required'] as StreakMode[]).map((mode) => (
@@ -305,9 +333,24 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
             >
               <span className="font-semibold text-ink">{STREAK_MODE_LABELS[mode]}</span>
               <p className="text-xs text-ink-muted mt-0.5">{STREAK_MODE_SHORT[mode]}</p>
+              {mode === 'no_failures' && (
+                <p className="text-xs text-ink-muted mt-1 italic">
+                  Your partner can mark a flag as a false positive — keeping your streak intact. A real relapse resets it.
+                </p>
+              )}
             </button>
           ))}
         </div>
+
+        {/* No partner warning */}
+        {!hasPartner && (
+          <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-orange-50 ring-1 ring-orange-200/50">
+            <span className="material-symbols-outlined text-orange-600 text-lg mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+            <p className="text-xs text-orange-800 leading-relaxed">
+              <strong>No partner identified.</strong> Without an accountability partner, all flags will count against your streak since there&apos;s no third party to verify false flags. <a href="/dashboard/partner" className="underline font-semibold hover:text-orange-900">Invite a partner</a> to unlock false flag verification.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* ── Foundational Motivator ──────────────────────────── */}

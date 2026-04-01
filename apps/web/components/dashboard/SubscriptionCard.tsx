@@ -137,9 +137,10 @@ export default function SubscriptionCard() {
       ) : (
         <div className="space-y-2">
           <button onClick={() => openCheckout('annual')} disabled={actionLoading}
-            className="w-full py-2.5 text-sm font-medium rounded-lg bg-brand text-white hover:bg-brand-dark disabled:opacity-50 transition-colors">
+            className="w-full py-3 text-sm font-bold rounded-lg bg-brand text-white hover:bg-brand-dark disabled:opacity-50 transition-colors shadow-lg shadow-brand/20">
             {actionLoading ? 'Opening…' : 'Upgrade to Pro — $99/year'}
           </button>
+          <p className="text-center text-xs font-semibold text-orange-600">$20 off — normally $119/year</p>
           <button onClick={() => openCheckout('monthly')} disabled={actionLoading}
             className="w-full py-2 text-xs text-ink-muted hover:text-ink transition-colors">
             or $9.99/month

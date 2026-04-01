@@ -179,13 +179,13 @@ export const SEVERITY_COLORS: Record<Severity, string> = {
 // ─── Streak Mode ─────────────────────────────────────────────
 
 export const STREAK_MODE_LABELS: Record<StreakMode, string> = {
-  no_failures:           'No Failures (stricter)',
-  conversation_required: 'Had an Accountability Conversation (modified)',
+  no_failures:           'Spartan (High Intensity)',
+  conversation_required: 'Accountable (Modified)',
 };
 
 export const STREAK_MODE_SHORT: Record<StreakMode, string> = {
-  no_failures:           'Strict — zero flags',
-  conversation_required: 'Modified — flags ok if you talk it through',
+  no_failures:           'Any flag resets your streak — unless your partner marks it as a false flag',
+  conversation_required: 'Flags are ok if you talk it through with your partner',
 };
 
 // ─── All category keys (for validation) ──────────────────────
