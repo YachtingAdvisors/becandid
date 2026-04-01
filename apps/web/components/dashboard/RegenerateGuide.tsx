@@ -40,11 +40,11 @@ export default function RegenerateGuide({ alertId }: RegenerateGuideProps) {
       <button
         onClick={handleRegenerate}
         disabled={loading}
-        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-brand-600 border border-brand-300 rounded-xl hover:bg-brand-50 transition-colors disabled:opacity-50"
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary border border-primary/30 rounded-xl hover:bg-primary-container/30 transition-colors disabled:opacity-50"
       >
         {loading ? (
           <>
-            <span className="w-4 h-4 border-2 border-brand-300 border-t-brand-600 rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
             Regenerating…
           </>
         ) : (

@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
             session.subscription as string
           );
           await syncSubscription(subscription);
-          console.log(`[Stripe] Checkout completed: ${subscription.id}`);
+          console.info(`[stripe] Checkout completed: ${subscription.id}`);
         }
         break;
       }
@@ -59,14 +59,14 @@ export async function POST(req: NextRequest) {
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
         await syncSubscription(subscription);
-        console.log(`[Stripe] Subscription updated: ${subscription.id} -> ${subscription.status}`);
+        console.info(`[stripe] Subscription updated: ${subscription.id} -> ${subscription.status}`);
         break;
       }
 
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription;
         await syncSubscription(subscription);
-        console.log(`[Stripe] Subscription canceled: ${subscription.id}`);
+        console.info(`[stripe] Subscription canceled: ${subscription.id}`);
         break;
       }
 
@@ -100,13 +100,13 @@ export async function POST(req: NextRequest) {
             },
           });
 
-          console.log(`[Stripe] Payment failed for user ${user.id}, attempt ${invoice.attempt_count}`);
+          console.info(`[stripe] Payment failed for user ${user.id}, attempt ${invoice.attempt_count}`);
         }
         break;
       }
 
       default:
-        console.log(`[Stripe] Unhandled event: ${event.type}`);
+        console.info(`[stripe] Unhandled event: ${event.type}`);
     }
   } catch (error) {
     console.error(`[Stripe] Webhook handler error for ${event.type}:`, error);

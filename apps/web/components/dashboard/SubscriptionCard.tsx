@@ -14,8 +14,8 @@
 import { useState, useEffect } from 'react';
 
 const PLAN_DISPLAY: Record<string, { name: string; emoji: string; color: string }> = {
-  free: { name: 'Free', emoji: 'eco', color: 'text-ink-muted' },
-  pro: { name: 'Pro', emoji: 'bolt', color: 'text-brand' },
+  free: { name: 'Free', emoji: 'eco', color: 'text-on-surface-variant' },
+  pro: { name: 'Pro', emoji: 'bolt', color: 'text-primary' },
   therapy: { name: 'Therapy', emoji: 'medical_services', color: 'text-violet-600' },
 };
 
@@ -60,7 +60,7 @@ export default function SubscriptionCard() {
     setActionLoading(false);
   };
 
-  if (loading) return <div className="card p-5"><div className="h-24 animate-pulse bg-gray-50 rounded-lg" /></div>;
+  if (loading) return <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5"><div className="h-24 animate-pulse bg-surface-container-low rounded-lg" /></div>;
   if (!data) return null;
 
   const planInfo = PLAN_DISPLAY[data.plan] || PLAN_DISPLAY.free;
@@ -68,12 +68,12 @@ export default function SubscriptionCard() {
   const isPastDue = data.status === 'past_due';
 
   return (
-    <div className="card p-5">
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <span className="material-symbols-outlined text-lg">{planInfo.emoji}</span>
           <div>
-            <h3 className="text-sm font-semibold text-ink">Subscription</h3>
+            <h3 className="text-sm font-semibold text-on-surface">Subscription</h3>
             <p className={`text-xs font-medium ${planInfo.color}`}>{planInfo.name} Plan</p>
           </div>
         </div>
@@ -86,11 +86,11 @@ export default function SubscriptionCard() {
 
       {/* Trial banner */}
       {data.trial?.active && (
-        <div className="mb-3 p-3 rounded-lg bg-brand/5 border border-brand/10">
-          <p className="text-xs text-brand font-medium">
+        <div className="mb-3 p-3 rounded-lg bg-primary/5 border border-primary/10">
+          <p className="text-xs text-primary font-medium">
             Free trial — {data.trial.days_left} day{data.trial.days_left !== 1 ? 's' : ''} left
           </p>
-          <p className="text-[10px] text-ink-muted mt-0.5">
+          <p className="text-[10px] text-on-surface-variant mt-0.5">
             Your card won't be charged until {new Date(data.trial.ends_at).toLocaleDateString()}.
           </p>
         </div>
@@ -113,14 +113,14 @@ export default function SubscriptionCard() {
       {/* AI guide usage (free users) */}
       {!isPaid && data.usage?.ai_guides_limit && (
         <div className="mb-3">
-          <div className="flex justify-between text-xs text-ink-muted mb-1">
+          <div className="flex justify-between text-xs text-on-surface-variant mb-1">
             <span>AI Guides this month</span>
             <span>{data.usage.ai_guides_used}/{data.usage.ai_guides_limit}</span>
           </div>
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-2 bg-surface-container-low rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all ${
-                data.usage.ai_guides_used >= data.usage.ai_guides_limit ? 'bg-red-400' : 'bg-brand'
+                data.usage.ai_guides_used >= data.usage.ai_guides_limit ? 'bg-red-400' : 'bg-primary'
               }`}
               style={{ width: `${Math.min(100, (data.usage.ai_guides_used / data.usage.ai_guides_limit) * 100)}%` }}
             />
@@ -131,18 +131,18 @@ export default function SubscriptionCard() {
       {/* Actions */}
       {isPaid ? (
         <button onClick={openPortal} disabled={actionLoading}
-          className="w-full py-2.5 text-sm font-medium rounded-lg border border-surface-border text-ink hover:bg-gray-50 disabled:opacity-50 transition-colors">
+          className="w-full py-2.5 text-sm font-medium rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-low disabled:opacity-50 transition-colors">
           {actionLoading ? 'Opening…' : 'Manage Billing'}
         </button>
       ) : (
         <div className="space-y-2">
           <button onClick={() => openCheckout('annual')} disabled={actionLoading}
-            className="w-full py-3 text-sm font-bold rounded-lg bg-brand text-white hover:bg-brand-dark disabled:opacity-50 transition-colors shadow-lg shadow-brand/20">
+            className="w-full py-3 text-sm font-bold rounded-lg bg-primary text-white hover:bg-primary disabled:opacity-50 transition-colors shadow-lg shadow-primary/20">
             {actionLoading ? 'Opening…' : 'Upgrade to Pro — $99/year'}
           </button>
           <p className="text-center text-xs font-semibold text-orange-600">$20 off — normally $119/year</p>
           <button onClick={() => openCheckout('monthly')} disabled={actionLoading}
-            className="w-full py-2 text-xs text-ink-muted hover:text-ink transition-colors">
+            className="w-full py-2 text-xs text-on-surface-variant hover:text-on-surface transition-colors">
             or $9.99/month
           </button>
         </div>

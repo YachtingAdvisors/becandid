@@ -16,5 +16,4 @@ export async function sendPush(
   payload: PushPayload
 ): Promise<void> {
   // TODO: Implement with expo-server-sdk when push tokens are stored
-  console.log(`[push] Would send to ${platform}/${token.slice(0, 8)}...: ${payload.title}`);
 }

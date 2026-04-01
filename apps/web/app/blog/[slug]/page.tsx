@@ -106,7 +106,7 @@ export default async function BlogPostPage({ params }: Props) {
           prose-p:font-body prose-p:text-on-surface-variant prose-p:leading-relaxed prose-p:mb-4
           prose-em:text-primary prose-em:not-italic prose-em:font-medium
           prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
-        dangerouslySetInnerHTML={{ __html: post.content }}
+        dangerouslySetInnerHTML={{ __html: post.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').replace(/on\w+="[^"]*"/gi, '') }}
       />
 
       {/* Share footer */}

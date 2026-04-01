@@ -57,7 +57,6 @@ export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItem
       })
       .then(d => {
         if (d) {
-          console.log('[heartbeat]', d);
           setAppRunning(d.app_running === true);
           setMismatchEmail(d.mismatch_email ?? null);
         }
@@ -305,7 +304,7 @@ export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItem
       {open && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div className="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-[#fbf9f8]/95 backdrop-blur-xl flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
+          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#fbf9f8]/95 backdrop-blur-xl flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
             <button onClick={() => setOpen(false)}
               aria-label="Close menu"
               className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30">

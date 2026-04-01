@@ -19,7 +19,7 @@ export default function PartnerNav({ monitoredName }: PartnerNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-30 bg-white border-b border-surface-border">
+    <nav className="sticky top-0 z-30 bg-white border-b border-outline-variant">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between py-3">
           <div className="flex items-center gap-3">
@@ -27,12 +27,12 @@ export default function PartnerNav({ monitoredName }: PartnerNavProps) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
             </Link>
-            <span className="text-ink-muted text-xs">·</span>
-            <span className="text-xs font-medium text-brand-600">{monitoredName}</span>
+            <span className="text-on-surface-variant text-xs">·</span>
+            <span className="text-xs font-medium text-primary">{monitoredName}</span>
           </div>
 
           <Link href="/dashboard"
-            className="px-3 py-1.5 text-xs font-medium text-ink-muted hover:text-ink hover:bg-surface-muted rounded-lg transition-colors duration-200 hidden sm:inline-flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full">
+            className="px-3 py-1.5 text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-muted rounded-lg transition-colors duration-200 hidden sm:inline-flex items-center gap-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full">
             <span className="material-symbols-outlined text-sm">arrow_back</span> My Dashboard
           </Link>
         </div>

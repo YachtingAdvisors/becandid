@@ -25,8 +25,8 @@ export default function CheckInMini() {
 
   if (loading) {
     return (
-      <div className="card p-4 animate-pulse">
-        <div className="h-12 bg-gray-100 rounded" />
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 animate-pulse">
+        <div className="h-12 bg-surface-container-low rounded" />
       </div>
     );
   }
@@ -40,10 +40,10 @@ export default function CheckInMini() {
   if (checkIns.length === 0) return null;
 
   return (
-    <Link href="/dashboard/checkins" className="card p-4 hover:shadow-md transition-shadow block">
+    <Link href="/dashboard/checkins" className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 hover:shadow-md transition-shadow block">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-display text-sm font-semibold text-ink">Check-ins</h3>
-        <span className="text-xs text-brand-600 font-medium">View all →</span>
+        <h3 className="font-headline text-sm font-semibold text-on-surface">Check-ins</h3>
+        <span className="text-xs text-primary font-medium">View all →</span>
       </div>
 
       {actionNeeded.length > 0 ? (
@@ -52,10 +52,10 @@ export default function CheckInMini() {
             <span className="material-symbols-outlined">checklist</span>
           </div>
           <div className="flex-1">
-            <div className="text-sm font-medium text-ink">
+            <div className="text-sm font-medium text-on-surface">
               {actionNeeded.length} check-in{actionNeeded.length !== 1 ? 's' : ''} need your response
             </div>
-            <div className="text-xs text-ink-muted mt-0.5">
+            <div className="text-xs text-on-surface-variant mt-0.5">
               {actionNeeded[0]?.status === 'partial'
                 ? 'Your partner already confirmed — your turn!'
                 : 'Both sides still need to confirm'}
@@ -69,8 +69,8 @@ export default function CheckInMini() {
             <span className="material-symbols-outlined">check_circle</span>
           </div>
           <div className="flex-1">
-            <div className="text-sm font-medium text-ink">All caught up</div>
-            <div className="text-xs text-ink-muted mt-0.5">
+            <div className="text-sm font-medium text-on-surface">All caught up</div>
+            <div className="text-xs text-on-surface-variant mt-0.5">
               {recentCompleted} completed recently
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function CheckInMini() {
               ci.status === 'completed' ? 'bg-emerald-400'
               : ci.status === 'partial' ? 'bg-amber-400'
               : ci.status === 'expired' ? 'bg-red-300'
-              : 'bg-gray-200'
+              : 'bg-surface-container'
             }`}
             title={ci.status}
           />

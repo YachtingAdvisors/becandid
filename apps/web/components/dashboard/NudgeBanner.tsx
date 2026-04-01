@@ -47,7 +47,7 @@ export default function NudgeBanner() {
             <p className={`text-sm ${style.text} flex-1 leading-relaxed`}>{nudge.message}</p>
             <button
               onClick={() => dismiss(nudge.id)}
-              className="text-ink-muted hover:text-ink text-xs font-medium flex-shrink-0 mt-0.5"
+              className="text-on-surface-variant hover:text-on-surface text-xs font-medium flex-shrink-0 mt-0.5"
             >
               <span className="material-symbols-outlined text-sm">close</span>
             </button>

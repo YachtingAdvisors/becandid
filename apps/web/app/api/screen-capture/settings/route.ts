@@ -116,7 +116,7 @@ async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createService
 
     if (tokens && tokens.length > 0) {
       // Push notification handled by existing alert pipeline
-      console.log(`[monitoring] Partner notified: ${userName} paused monitoring`);
+      // Partner notification handled by alert pipeline
     }
   }
 

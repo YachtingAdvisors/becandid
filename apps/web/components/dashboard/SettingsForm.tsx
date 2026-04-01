@@ -116,27 +116,27 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
   return (
     <div className="space-y-8">
       {/* ── Profile ─────────────────────────────────────────── */}
-      <section className="card p-5 space-y-4">
-        <h2 className="font-display text-lg font-semibold text-ink">Profile</h2>
+      <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-4">
+        <h2 className="font-headline text-lg font-semibold text-on-surface">Profile</h2>
 
         <div>
-          <label className="block text-sm font-medium text-ink mb-1.5">Name</label>
+          <label className="block text-sm font-medium text-on-surface mb-1.5">Name</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="w-full px-3 py-2.5 rounded-xl border border-outline-variant text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-ink mb-1.5">Phone <span className="text-ink-muted">(optional)</span></label>
+          <label className="block text-sm font-medium text-on-surface mb-1.5">Phone <span className="text-on-surface-variant">(optional)</span></label>
           <input
             type="tel"
             value={phone}
             onChange={handlePhoneChange}
             placeholder="+1 (555) 000-0000"
-            className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="w-full px-3 py-2.5 rounded-xl border border-outline-variant text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
 
@@ -144,18 +144,18 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
       </section>
 
       {/* ── Monitoring ──────────────────────────────────────── */}
-      <section className="card p-5 space-y-4">
-        <h2 className="font-display text-lg font-semibold text-ink">Monitoring</h2>
+      <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-4">
+        <h2 className="font-headline text-lg font-semibold text-on-surface">Monitoring</h2>
 
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${monitoringEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-red-400'}`} />
-              <div className="text-sm font-medium text-ink">
+              <div className="text-sm font-medium text-on-surface">
                 {monitoringEnabled ? 'Monitoring Active' : 'Monitoring Paused'}
               </div>
             </div>
-            <div className="text-xs text-ink-muted mt-0.5">
+            <div className="text-xs text-on-surface-variant mt-0.5">
               {monitoringEnabled
                 ? 'Screen activity detection is running. Your partner can see your status.'
                 : 'Monitoring is off. Your partner has been notified.'}
@@ -249,8 +249,8 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
       )}
 
       {/* ── Rivals (Goals) ──────────────────────────────────── */}
-      <section className="card p-5 space-y-4">
-        <h2 className="font-display text-lg font-semibold text-ink flex items-center gap-2">
+      <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-4">
+        <h2 className="font-headline text-lg font-semibold text-on-surface flex items-center gap-2">
           <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>swords</span>
           Your Rivals
         </h2>
@@ -272,17 +272,17 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
       </section>
 
       {/* ── Fasting ───────────────────────────────────────── */}
-      <section className="card p-5 space-y-3">
-        <h2 className="font-display text-lg font-semibold text-ink flex items-center gap-2">
+      <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-3">
+        <h2 className="font-headline text-lg font-semibold text-on-surface flex items-center gap-2">
           <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>self_improvement</span>
           Fasting
         </h2>
-        <p className="text-xs text-ink-muted">
+        <p className="text-xs text-on-surface-variant">
           Intentionally step away from specific activities for a set period of time.
         </p>
         <a
           href="/dashboard/fasting"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary transition-colors"
         >
           Manage your fasts
           <span className="material-symbols-outlined text-base">arrow_forward</span>
@@ -291,14 +291,14 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
 
       {/* ── Invite Partner (above Streak Mode) ─────────────── */}
       {!hasPartner && (
-        <section className="card p-5 space-y-3 border-l-4 border-primary">
+        <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-3 border-l-4 border-primary">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary-container rounded-xl">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>group_add</span>
             </div>
             <div>
-              <h2 className="font-display text-lg font-semibold text-ink">Invite an Accountability Partner</h2>
-              <p className="text-xs text-ink-muted">A partner can verify false flags and protect your streak.</p>
+              <h2 className="font-headline text-lg font-semibold text-on-surface">Invite an Accountability Partner</h2>
+              <p className="text-xs text-on-surface-variant">A partner can verify false flags and protect your streak.</p>
             </div>
           </div>
           <a
@@ -312,10 +312,10 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
       )}
 
       {/* ── Streak Mode ─────────────────────────────────────── */}
-      <section className="card p-5 space-y-4">
+      <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-4">
         <div>
-          <h2 className="font-display text-lg font-semibold text-ink">Focus Streak Mode</h2>
-          <p className="text-xs text-ink-muted mt-1">
+          <h2 className="font-headline text-lg font-semibold text-on-surface">Focus Streak Mode</h2>
+          <p className="text-xs text-on-surface-variant mt-1">
             Focus Streaks show how long you&apos;ve been staying strong — the number of consecutive days without a flag. Choose how strictly flags affect your streak.
           </p>
         </div>
@@ -327,14 +327,14 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
               onClick={() => setStreakMode(mode)}
               className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all text-sm ${
                 streakMode === mode
-                  ? 'border-brand-500 bg-brand-50'
-                  : 'border-surface-border hover:border-brand-300'
+                  ? 'border-primary bg-primary-container/30'
+                  : 'border-outline-variant hover:border-primary/30'
               }`}
             >
-              <span className="font-semibold text-ink">{STREAK_MODE_LABELS[mode]}</span>
-              <p className="text-xs text-ink-muted mt-0.5">{STREAK_MODE_SHORT[mode]}</p>
+              <span className="font-semibold text-on-surface">{STREAK_MODE_LABELS[mode]}</span>
+              <p className="text-xs text-on-surface-variant mt-0.5">{STREAK_MODE_SHORT[mode]}</p>
               {mode === 'no_failures' && (
-                <p className="text-xs text-ink-muted mt-1 italic">
+                <p className="text-xs text-on-surface-variant mt-1 italic">
                   Your partner can mark a flag as a false positive — keeping your streak intact. A real relapse resets it.
                 </p>
               )}
@@ -354,9 +354,9 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
       </section>
 
       {/* ── Foundational Motivator ──────────────────────────── */}
-      <section className="card p-5 space-y-4">
-        <h2 className="font-display text-lg font-semibold text-ink">Foundational Motivator</h2>
-        <p className="text-xs text-ink-muted">Choose the perspective that grounds your journey. Quotes and reflections are tailored to match.</p>
+      <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-4">
+        <h2 className="font-headline text-lg font-semibold text-on-surface">Foundational Motivator</h2>
+        <p className="text-xs text-on-surface-variant">Choose the perspective that grounds your journey. Quotes and reflections are tailored to match.</p>
 
         <div className="space-y-2">
           {(Object.keys(MOTIVATOR_LABELS) as FoundationalMotivator[]).map((key) => (
@@ -365,32 +365,32 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
               onClick={() => setFoundationalMotivator(key)}
               className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all text-sm ${
                 foundationalMotivator === key
-                  ? 'border-brand-500 bg-brand-50'
-                  : 'border-surface-border hover:border-brand-300'
+                  ? 'border-primary bg-primary-container/30'
+                  : 'border-outline-variant hover:border-primary/30'
               }`}
             >
-              <span className="font-semibold text-ink">{MOTIVATOR_LABELS[key]}</span>
-              <p className="text-xs text-ink-muted mt-0.5">{MOTIVATOR_DESCRIPTIONS[key]}</p>
+              <span className="font-semibold text-on-surface">{MOTIVATOR_LABELS[key]}</span>
+              <p className="text-xs text-on-surface-variant mt-0.5">{MOTIVATOR_DESCRIPTIONS[key]}</p>
             </button>
           ))}
         </div>
 
-        <p className="text-xs text-ink-muted leading-relaxed">You can change this anytime.</p>
+        <p className="text-xs text-on-surface-variant leading-relaxed">You can change this anytime.</p>
       </section>
 
       {/* ── Check-ins & Nudges ──────────────────────────────── */}
-      <section className="card p-5 space-y-4">
-        <h2 className="font-display text-lg font-semibold text-ink">Check-ins & Nudges</h2>
+      <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-4">
+        <h2 className="font-headline text-lg font-semibold text-on-surface">Check-ins & Nudges</h2>
 
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-sm font-medium text-ink">Check-ins</div>
-            <div className="text-xs text-ink-muted">Both you and your partner confirm each check-in</div>
+            <div className="text-sm font-medium text-on-surface">Check-ins</div>
+            <div className="text-xs text-on-surface-variant">Both you and your partner confirm each check-in</div>
           </div>
           <button
             onClick={() => setCheckInEnabled(!checkInEnabled)}
             className={`relative w-11 h-6 rounded-full transition-colors ${
-              checkInEnabled ? 'bg-brand-600' : 'bg-gray-300'
+              checkInEnabled ? 'bg-primary' : 'bg-surface-container'
             }`}
           >
             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
@@ -400,7 +400,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
         </div>
 
         {checkInEnabled && (
-          <div className="space-y-4 pl-1 border-l-2 border-brand-200 ml-1">
+          <div className="space-y-4 pl-1 border-l-2 border-primary/20 ml-1">
             <div className="pl-4">
               <FrequencyPicker
                 value={checkInFrequency}
@@ -410,11 +410,11 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
             </div>
 
             <div className="pl-4">
-              <label className="block text-sm font-medium text-ink mb-1.5">Check-in time</label>
+              <label className="block text-sm font-medium text-on-surface mb-1.5">Check-in time</label>
               <select
                 value={checkInHour}
                 onChange={(e) => setCheckInHour(parseInt(e.target.value))}
-                className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm"
+                className="w-full px-3 py-2.5 rounded-xl border border-outline-variant text-sm"
               >
                 {Array.from({ length: 24 }, (_, i) => (
                   <option key={i} value={i}>
@@ -425,7 +425,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
             </div>
 
             <div className="pl-4">
-              <div className="px-3 py-2.5 rounded-xl bg-brand-50 border border-brand-200 text-xs text-brand-700 leading-relaxed">
+              <div className="px-3 py-2.5 rounded-xl bg-primary-container/30 border border-primary/20 text-xs text-primary leading-relaxed">
                 <strong>How it works:</strong> A check-in is sent at your chosen time and frequency. Both you and your partner must confirm for it to count as completed. You each share how you're feeling, and both earn +5 trust points when complete.
               </div>
             </div>
@@ -434,13 +434,13 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
 
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-sm font-medium text-ink">Proactive nudges</div>
-            <div className="text-xs text-ink-muted">Get a heads-up when patterns are detected</div>
+            <div className="text-sm font-medium text-on-surface">Proactive nudges</div>
+            <div className="text-xs text-on-surface-variant">Get a heads-up when patterns are detected</div>
           </div>
           <button
             onClick={() => setNudgeEnabled(!nudgeEnabled)}
             className={`relative w-11 h-6 rounded-full transition-colors ${
-              nudgeEnabled ? 'bg-brand-600' : 'bg-gray-300'
+              nudgeEnabled ? 'bg-primary' : 'bg-surface-container'
             }`}
           >
             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${

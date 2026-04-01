@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
             plan_expires_at: null, // Active subscription
           }).eq('id', userId);
 
-          console.log(`[webhook] User ${userId} upgraded to Pro`);
+          console.info(`[stripe] User ${userId} upgraded to Pro`);
         }
         break;
       }
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
             plan_expires_at: isActive ? null : new Date(subscription.current_period_end * 1000).toISOString(),
           }).eq('id', user.id);
 
-          console.log(`[webhook] User ${user.id} subscription ${subscription.status}`);
+          console.info(`[stripe] User ${user.id} subscription ${subscription.status}`);
         }
         break;
       }
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
             plan_expires_at: new Date(subscription.current_period_end * 1000).toISOString(),
           }).eq('id', user.id);
 
-          console.log(`[webhook] User ${user.id} subscription cancelled, access until ${new Date(subscription.current_period_end * 1000).toISOString()}`);
+          console.info(`[stripe] User ${user.id} subscription cancelled, access until ${new Date(subscription.current_period_end * 1000).toISOString()}`);
         }
         break;
       }
@@ -113,14 +113,14 @@ export async function POST(req: NextRequest) {
           .maybeSingle();
 
         if (user) {
-          console.log(`[webhook] Payment failed for user ${user.id} (${user.email})`);
+          console.info(`[stripe] Payment failed for user ${user.id} (${user.email})`);
           // Could send a payment failed email here
         }
         break;
       }
 
       default:
-        console.log(`[webhook] Unhandled event type: ${event.type}`);
+        console.info(`[stripe] Unhandled event type: ${event.type}`);
     }
   } catch (err) {
     console.error(`[webhook] Error processing ${event.type}:`, err);

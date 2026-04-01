@@ -137,6 +137,63 @@ export async function POST(req: NextRequest) {
         .eq('id', user.id);
     }
 
+    // Send invite email to partner
+    try {
+      const { Resend } = await import('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY!);
+      const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+      const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
+
+      const { data: profile } = await db.from('users').select('name').eq('id', user.id).single();
+      const inviterName = profile?.name ?? 'Someone';
+
+      await resend.emails.send({
+        from: FROM,
+        to: cleanEmail,
+        subject: `${inviterName} invited you to Be Candid`,
+        html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#fbf9f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<div style="max-width:520px;margin:0 auto;padding:40px 20px;">
+  <div style="text-align:center;margin-bottom:24px;">
+    <div style="display:inline-block;background:#226779;color:white;padding:6px 18px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Be Candid</div>
+  </div>
+  <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center;">
+    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Hey ${cleanName},</h2>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:15px;line-height:1.6;">
+      <strong>${inviterName}</strong> is on a journey to align their digital life with who they want to be &mdash; and they&rsquo;ve chosen <strong>you</strong> as someone they trust to walk with them.
+    </p>
+    <p style="margin:0 0 24px;color:#6b7280;font-size:14px;line-height:1.6;">
+      No setup required &mdash; just accept and you&rsquo;re connected. You can optionally start your own journey too and get <strong>30 free days</strong>.
+    </p>
+    <a href="${APP_URL}/invite/${inviteToken}" style="display:inline-block;background:#226779;color:white;padding:14px 32px;border-radius:100px;text-decoration:none;font-weight:700;font-size:15px;">
+      Accept Invitation &rarr;
+    </a>
+    <p style="margin:20px 0 0;color:#9ca3af;font-size:12px;font-style:italic;">
+      &ldquo;A cord of three strands is not easily broken.&rdquo; &mdash; King Solomon
+    </p>
+  </div>
+</div></body></html>`,
+      });
+    } catch (emailErr) {
+      console.error('Partner invite email failed:', emailErr);
+      // Non-fatal — invite was created, email just failed to send
+    }
+
+    // Send SMS if partner has phone number
+    if (cleanPhone) {
+      try {
+        const { sendPartnerInviteSMS } = await import('@/lib/sms');
+        const { data: profile } = await db.from('users').select('name').eq('id', user.id).single();
+        await sendPartnerInviteSMS({
+          partnerPhone: cleanPhone,
+          inviterName: profile?.name ?? 'Someone',
+          inviteToken,
+        });
+      } catch (smsErr) {
+        console.error('Partner invite SMS failed:', smsErr);
+      }
+    }
+
     auditLog({
       action: 'partner.invite',
       userId: user.id,

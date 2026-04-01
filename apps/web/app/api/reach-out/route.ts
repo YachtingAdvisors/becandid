@@ -118,7 +118,6 @@ export async function POST(req: NextRequest) {
         .eq('user_id', partnership.partner_user_id);
 
       if (tokens && tokens.length > 0) {
-        console.log(`[reach-out] Would push to ${tokens.length} devices`);
         // Push notification handled by existing notification infrastructure
       }
     }

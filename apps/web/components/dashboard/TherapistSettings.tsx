@@ -87,49 +87,49 @@ export default function TherapistSettings() {
     fetchConnections();
   };
 
-  if (loading) return <div className="card p-5"><div className="h-32 animate-pulse bg-gray-50 rounded-lg" /></div>;
+  if (loading) return <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5"><div className="h-32 animate-pulse bg-surface-container-low rounded-lg" /></div>;
 
   const active = connections.filter((c) => c.status === 'accepted');
   const pending = connections.filter((c) => c.status === 'pending');
 
   return (
-    <div className="card p-5">
+    <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
           <span className="material-symbols-outlined text-lg">medical_services</span>
-          <h3 className="text-sm font-semibold text-ink">Therapist Access</h3>
+          <h3 className="text-sm font-semibold text-on-surface">Therapist Access</h3>
         </div>
         {connections.length < 3 && (
           <button onClick={() => setShowInvite(!showInvite)}
-            className="text-xs text-brand hover:text-brand-dark font-medium">
+            className="text-xs text-primary hover:text-primary font-medium">
             {showInvite ? 'Cancel' : '+ Invite therapist'}
           </button>
         )}
       </div>
 
-      <p className="text-xs text-ink-muted mb-4 leading-relaxed">
+      <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
         Give your therapist or counselor read-only access to your journal, moods, and progress.
         You control exactly what they can see, and you can revoke access anytime.
       </p>
 
       {/* Invite form */}
       {showInvite && (
-        <div className="mb-4 p-4 rounded-xl bg-gray-50 border border-surface-border space-y-3">
+        <div className="mb-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant space-y-3">
           <div>
-            <label className="block text-xs font-medium text-ink mb-1">Their email</label>
+            <label className="block text-xs font-medium text-on-surface mb-1">Their email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
               placeholder="therapist@practice.com"
-              className="w-full px-3 py-2 rounded-lg border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand" />
+              className="w-full px-3 py-2 rounded-lg border border-outline-variant text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-ink mb-1">Their name <span className="text-ink-muted font-normal">(optional)</span></label>
+            <label className="block text-xs font-medium text-on-surface mb-1">Their name <span className="text-on-surface-variant font-normal">(optional)</span></label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="Dr. Smith"
-              className="w-full px-3 py-2 rounded-lg border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand" />
+              className="w-full px-3 py-2 rounded-lg border border-outline-variant text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
           </div>
           {error && <p className="text-xs text-red-500">{error}</p>}
           <button onClick={sendInvite} disabled={!email.trim() || sending}
-            className="w-full py-2 text-sm font-medium rounded-lg bg-brand text-white hover:bg-brand-dark disabled:opacity-50">
+            className="w-full py-2 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary disabled:opacity-50">
             {sending ? 'Sending…' : 'Send invite'}
           </button>
         </div>
@@ -137,11 +137,11 @@ export default function TherapistSettings() {
 
       {/* Active connections with consent toggles */}
       {active.map((conn) => (
-        <div key={conn.id} className="mb-3 p-4 rounded-xl border border-surface-border">
+        <div key={conn.id} className="mb-3 p-4 rounded-xl border border-outline-variant">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-sm font-medium text-ink">{conn.therapist_name || conn.therapist_email}</p>
-              <p className="text-xs text-ink-muted">{conn.therapist_email}</p>
+              <p className="text-sm font-medium text-on-surface">{conn.therapist_name || conn.therapist_email}</p>
+              <p className="text-xs text-on-surface-variant">{conn.therapist_email}</p>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 font-medium">Connected</span>
@@ -149,18 +149,18 @@ export default function TherapistSettings() {
             </div>
           </div>
 
-          <p className="text-xs text-ink-muted mb-2 font-medium">What they can see:</p>
+          <p className="text-xs text-on-surface-variant mb-2 font-medium">What they can see:</p>
           <div className="space-y-1.5">
             {CONSENT_ITEMS.map((item) => (
               <div key={item.key} className="flex items-center justify-between py-1.5">
                 <div>
-                  <p className="text-xs text-ink">{item.label}</p>
-                  <p className="text-[10px] text-ink-muted">{item.desc}</p>
+                  <p className="text-xs text-on-surface">{item.label}</p>
+                  <p className="text-[10px] text-on-surface-variant">{item.desc}</p>
                 </div>
                 <button
                   onClick={() => updateConsent(conn.id, item.key, !(conn as any)[item.key])}
                   className={`relative w-9 h-5 rounded-full transition-colors ${
-                    (conn as any)[item.key] ? 'bg-brand' : 'bg-gray-200'
+                    (conn as any)[item.key] ? 'bg-primary' : 'bg-surface-container'
                   }`}
                 >
                   <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
@@ -185,7 +185,7 @@ export default function TherapistSettings() {
       ))}
 
       {connections.length === 0 && !showInvite && (
-        <p className="text-sm text-ink-muted text-center py-2">No therapist connections yet</p>
+        <p className="text-sm text-on-surface-variant text-center py-2">No therapist connections yet</p>
       )}
     </div>
   );

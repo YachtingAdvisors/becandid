@@ -141,16 +141,16 @@ export default function FocusBoard() {
 
   if (loading) {
     return (
-      <div className="card p-8 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-48 mb-4" />
-        <div className="h-32 bg-gray-100 rounded" />
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-8 animate-pulse">
+        <div className="h-6 bg-surface-container rounded w-48 mb-4" />
+        <div className="h-32 bg-surface-container-low rounded" />
       </div>
     );
   }
 
   if (!stats) {
     return (
-      <div className="card p-6 text-center text-ink-muted">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 text-center text-on-surface-variant">
         Unable to load focus data.
       </div>
     );
@@ -176,26 +176,26 @@ export default function FocusBoard() {
       {/* ─── Top Stats Row ─────────────────────────────────── */}
       <div className="grid grid-cols-3 gap-3">
         {/* Trust Points */}
-        <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold text-brand-600">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
+          <div className="text-2xl font-headline font-bold text-primary">
             {balance.toLocaleString()}
           </div>
-          <div className="text-xs text-ink-muted mt-0.5">Trust Points</div>
+          <div className="text-xs text-on-surface-variant mt-0.5">Trust Points</div>
         </div>
 
         {/* Focus Streak */}
-        <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold text-emerald-600">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
+          <div className="text-2xl font-headline font-bold text-emerald-600">
             {streak.streakDays}
           </div>
-          <div className="text-xs text-ink-muted mt-0.5">
+          <div className="text-xs text-on-surface-variant mt-0.5">
             Day Streak
           </div>
         </div>
 
         {/* Today */}
-        <div className="card px-4 py-3 text-center">
-          <div className="text-2xl font-display font-bold">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
+          <div className="text-2xl font-headline font-bold">
             {today?.morning === 'pending' && today?.evening === 'pending'
               ? '—'
               : todayFocusedCount === 2
@@ -204,7 +204,7 @@ export default function FocusBoard() {
                   ? <span className="material-symbols-outlined text-amber-500">bolt</span>
                   : <span className="material-symbols-outlined text-red-500">warning</span>}
           </div>
-          <div className="text-xs text-ink-muted mt-0.5">
+          <div className="text-xs text-on-surface-variant mt-0.5">
             {today?.morning === 'pending' && today?.evening === 'pending'
               ? 'Day Starting'
               : todayFocusedCount === 2
@@ -217,12 +217,12 @@ export default function FocusBoard() {
       </div>
 
       {/* ─── 21-Day Heatmap ────────────────────────────────── */}
-      <div className="card p-4">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-display text-sm font-semibold text-ink">
+          <h3 className="font-headline text-sm font-semibold text-on-surface">
             3-Week Focus Map
           </h3>
-          <div className="flex items-center gap-3 text-xs text-ink-muted">
+          <div className="flex items-center gap-3 text-xs text-on-surface-variant">
             <span className="flex items-center gap-1">
               <span className="w-3 h-3 rounded-sm bg-emerald-400 inline-block" /> Focused
             </span>
@@ -230,14 +230,14 @@ export default function FocusBoard() {
               <span className="w-3 h-3 rounded-sm bg-red-400 inline-block" /> Distracted
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-3 h-3 rounded-sm bg-gray-200 inline-block" /> Pending
+              <span className="w-3 h-3 rounded-sm bg-surface-container inline-block" /> Pending
             </span>
           </div>
         </div>
 
         {weeks.map((week, wi) => (
-          <div key={wi} className={wi > 0 ? 'mt-3 pt-3 border-t border-gray-100' : ''}>
-            <div className="text-xs text-ink-muted mb-1.5 font-medium">
+          <div key={wi} className={wi > 0 ? 'mt-3 pt-3 border-t border-outline-variant/10' : ''}>
+            <div className="text-xs text-on-surface-variant mb-1.5 font-medium">
               Week {wi + 1}
             </div>
             <div className="grid grid-cols-7 gap-1.5">
@@ -246,7 +246,7 @@ export default function FocusBoard() {
                 const isDistracted = day.morning === 'distracted' || day.evening === 'distracted';
                 return (
                   <div key={day.date} className="text-center">
-                    <div className="text-[10px] text-ink-muted mb-1">
+                    <div className="text-[10px] text-on-surface-variant mb-1">
                       {getDayLabel(day.date)}
                     </div>
                     <button
@@ -262,7 +262,7 @@ export default function FocusBoard() {
                             ? 'bg-emerald-400'
                             : day.morning === 'distracted'
                               ? 'bg-red-400'
-                              : 'bg-gray-200'
+                              : 'bg-surface-container'
                         }`}
                         title={`${formatDateShort(day.date)} AM: ${day.morning}`}
                       />
@@ -273,12 +273,12 @@ export default function FocusBoard() {
                             ? 'bg-emerald-400'
                             : day.evening === 'distracted'
                               ? 'bg-red-400'
-                              : 'bg-gray-200'
+                              : 'bg-surface-container'
                         }`}
                         title={`${formatDateShort(day.date)} PM: ${day.evening}`}
                       />
                     </button>
-                    <div className="text-[9px] text-ink-muted mt-0.5">
+                    <div className="text-[9px] text-on-surface-variant mt-0.5">
                       {formatDateShort(day.date).split(' ')[1]}
                     </div>
                   </div>
@@ -366,7 +366,7 @@ export default function FocusBoard() {
         ))}
 
         {/* Row labels */}
-        <div className="flex items-center gap-4 mt-2 text-[10px] text-ink-muted">
+        <div className="flex items-center gap-4 mt-2 text-[10px] text-on-surface-variant">
           <span>Top row = Morning (5AM–5PM)</span>
           <span>Bottom row = Evening (5PM–5AM)</span>
         </div>
@@ -374,8 +374,8 @@ export default function FocusBoard() {
 
       {/* ─── Milestones ────────────────────────────────────── */}
       {milestones.length > 0 && (
-        <div className="card p-4">
-          <h3 className="font-display text-sm font-semibold text-ink mb-3">
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4">
+          <h3 className="font-headline text-sm font-semibold text-on-surface mb-3">
             Milestones Unlocked
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -397,25 +397,25 @@ export default function FocusBoard() {
       )}
 
       {/* ─── Points History ────────────────────────────────── */}
-      <div className="card">
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10">
         <button
           onClick={() => setShowHistory(!showHistory)}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-ink hover:bg-gray-50 transition-colors"
+          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors"
         >
           <span>Recent Points Activity</span>
-          <span className="material-symbols-outlined text-ink-muted text-lg">{showHistory ? 'expand_less' : 'expand_more'}</span>
+          <span className="material-symbols-outlined text-on-surface-variant text-lg">{showHistory ? 'expand_less' : 'expand_more'}</span>
         </button>
 
         {showHistory && (
-          <div className="border-t border-gray-100 divide-y divide-gray-50">
+          <div className="border-t border-outline-variant/10 divide-y divide-outline-variant/5">
             {recentActions.map((action, i) => (
               <div key={i} className="flex items-center justify-between px-4 py-2.5">
                 <div>
-                  <div className="text-sm text-ink">
+                  <div className="text-sm text-on-surface">
                     {ACTION_LABELS[action.action] || action.action}
                   </div>
                   {action.note && (
-                    <div className="text-xs text-ink-muted">{action.note}</div>
+                    <div className="text-xs text-on-surface-variant">{action.note}</div>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
@@ -424,7 +424,7 @@ export default function FocusBoard() {
                   }`}>
                     {action.points > 0 ? '+' : ''}{action.points}
                   </span>
-                  <span className="text-xs text-ink-muted">
+                  <span className="text-xs text-on-surface-variant">
                     {timeAgo(action.created_at)}
                   </span>
                 </div>
@@ -432,7 +432,7 @@ export default function FocusBoard() {
             ))}
 
             {recentActions.length === 0 && (
-              <div className="px-4 py-6 text-center text-sm text-ink-muted">
+              <div className="px-4 py-6 text-center text-sm text-on-surface-variant">
                 No points activity yet. Stay focused to start earning!
               </div>
             )}
