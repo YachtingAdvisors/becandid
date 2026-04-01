@@ -84,7 +84,7 @@ export default function PartnerPreview({
           ))}
           <div className="mt-3 p-3 rounded-2xl bg-secondary-container/50 border border-secondary/10">
             <p className="text-xs text-on-secondary-container italic leading-relaxed font-body">
-              Your journal is your space for honest self-understanding. The person you are online is the person you are \u2014 and this space helps you explore that with integrity. It&apos;s never shared.
+              Your journal is your space for honest self-understanding. The person you are online is the person you are, and this space helps you explore that with integrity. It&apos;s never shared.
             </p>
           </div>
         </div>
