@@ -15,6 +15,8 @@ interface EventRow {
   severity: Severity;
   platform: string;
   app_name?: string;
+  duration_seconds?: number;
+  contested?: boolean;
   timestamp: string;
 }
 
@@ -167,15 +169,44 @@ export default function ActivityPage() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-label font-medium text-on-surface">
                       {GOAL_LABELS[event.category] ?? event.category}
+                      {event.app_name && (
+                        <span className="text-on-surface-variant font-normal"> — {event.app_name}</span>
+                      )}
                     </div>
                     <div className="text-xs text-on-surface-variant font-label">
-                      {event.app_name && `${event.app_name} \u00B7 `}
-                      {event.platform} &middot; {timeAgo(event.timestamp)}
+                      {event.platform}
+                      {event.duration_seconds ? ` · ${Math.round(event.duration_seconds / 60)}m` : ''}
+                      {' · '}{timeAgo(event.timestamp)}
                     </div>
                   </div>
-                  <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${SEVERITY_STYLES[event.severity]}`}>
-                    {event.severity}
-                  </span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {event.contested ? (
+                      <span className="text-[10px] font-label font-medium text-amber-600 px-2 py-0.5 rounded-full bg-amber-50 ring-1 ring-amber-200/50">Under Review</span>
+                    ) : (
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const reason = prompt('Why is this flag incorrect? Describe briefly:');
+                          if (!reason?.trim()) return;
+                          const res = await fetch('/api/events/contest', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ event_id: event.id, reason: reason.trim() }),
+                          });
+                          if (res.ok) {
+                            setEvents(prev => prev.map(ev => ev.id === event.id ? { ...ev, contested: true } : ev));
+                          }
+                        }}
+                        className="text-[10px] font-label font-medium text-on-surface-variant/60 hover:text-primary px-2 py-0.5 rounded-full hover:bg-primary/5 cursor-pointer transition-colors"
+                        title="Contest this flag"
+                      >
+                        Contest
+                      </button>
+                    )}
+                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${SEVERITY_STYLES[event.severity]}`}>
+                      {event.severity}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

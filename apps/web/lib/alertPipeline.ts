@@ -76,6 +76,8 @@ interface AlertEvent {
   platform: string;
   timestamp: string;
   metadata?: Record<string, any>;
+  app_name?: string;
+  duration_seconds?: number;
 }
 
 export async function runAlertPipeline(userId: string, event: AlertEvent) {
@@ -88,6 +90,8 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
       category: event.category,
       severity: event.severity,
       platform: event.platform,
+      app_name: event.app_name || event.metadata?.domain || event.metadata?.app_name || null,
+      duration_seconds: event.duration_seconds || event.metadata?.duration_seconds || null,
       timestamp: event.timestamp,
       metadata: event.metadata ? encrypt(JSON.stringify(event.metadata), userId) : null,
     }).select().single();
@@ -106,6 +110,68 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
     // Auto-escalate severity if content filter flags it as blocked
     if (filterResult?.blocked && event.severity !== 'high') {
       event.severity = 'high';
+    }
+
+    // ── Step 0b: Check category time limits ─────────────
+    try {
+      const { data: limit } = await db
+        .from('category_time_limits')
+        .select('daily_limit_minutes, warning_minutes')
+        .eq('user_id', userId)
+        .eq('category', event.category)
+        .eq('enabled', true)
+        .maybeSingle();
+
+      if (limit) {
+        // Sum today's usage for this category
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const { data: todayEvents } = await db
+          .from('events')
+          .select('duration_seconds')
+          .eq('user_id', userId)
+          .eq('category', event.category)
+          .gte('timestamp', todayStart.toISOString());
+
+        const totalMinutes = (todayEvents ?? []).reduce(
+          (sum: number, e: any) => sum + ((e.duration_seconds ?? 0) / 60), 0
+        );
+
+        const limitMinutes = limit.daily_limit_minutes;
+        const warningAt = limitMinutes - (limit.warning_minutes ?? 5);
+
+        if (totalMinutes >= limitMinutes) {
+          // Over limit — escalate to high severity flag
+          event.severity = 'high';
+        } else if (totalMinutes >= warningAt && event.severity === 'low') {
+          // Approaching limit — escalate to medium as a warning
+          event.severity = 'medium';
+        }
+      }
+    } catch (e) {
+      console.error('Time limit check failed (non-fatal):', e);
+    }
+
+    // ── Step 0c: Softcore pornography escalation ────────
+    if (event.category === 'pornography' && event.severity === 'low') {
+      try {
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const { count } = await db
+          .from('events')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .eq('category', 'pornography')
+          .eq('severity', 'low')
+          .gte('timestamp', todayStart.toISOString());
+
+        // 3+ softcore alerts today → escalate to medium (warning notification)
+        if ((count ?? 0) >= 3) {
+          event.severity = 'medium';
+        }
+      } catch (e) {
+        console.error('Softcore escalation check failed (non-fatal):', e);
+      }
     }
 
     // ── 2. Mark focus segment distracted ────────────────

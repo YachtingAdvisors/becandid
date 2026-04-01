@@ -139,7 +139,7 @@ export async function GET(req: NextRequest) {
   const category = url.searchParams.get('category');
 
   const db = createServiceClient();
-  let query = db.from('events').select('id, category, severity, platform, timestamp, created_at')
+  let query = db.from('events').select('id, category, severity, platform, app_name, duration_seconds, contested, timestamp, created_at')
     .eq('user_id', user.id)
     .order('timestamp', { ascending: false })
     .range(offset, offset + limit - 1);
