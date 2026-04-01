@@ -41,7 +41,7 @@ export default async function DashboardLayout({
 
   const db = createServiceClient();
   const { data: profile } = await db.from('users')
-    .select('name, monitoring_enabled, solo_mode')
+    .select('name, monitoring_enabled, solo_mode, goals')
     .eq('id', user.id)
     .single();
 
@@ -70,6 +70,7 @@ export default async function DashboardLayout({
       <Sidebar
         userName={profile?.name ?? user.email ?? 'User'}
         monitoringEnabled={profile?.monitoring_enabled ?? true}
+        hasGoals={(profile?.goals ?? []).length > 0}
         navItems={visibleNav}
         soloMode={isSolo}
       />

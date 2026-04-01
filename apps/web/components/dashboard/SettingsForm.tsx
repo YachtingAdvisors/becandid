@@ -67,7 +67,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
 
   async function handleSave() {
     if (!name.trim()) { setError('Name is required.'); return; }
-    if (goals.length === 0) { setError('Select at least one area to monitor.'); return; }
+    // Goals are optional — if none selected, awareness stays inactive
 
     setLoading(true);
     setError('');

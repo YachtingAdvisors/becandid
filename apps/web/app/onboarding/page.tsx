@@ -67,7 +67,7 @@ function OnboardingContent() {
 
   // ── Save goals ────────────────────────────────────────
   const saveGoals = async () => {
-    if (goals.length === 0) return;
+    // Allow proceeding with no goals — awareness will show as inactive
     setLoading(true);
     try {
       await fetch('/api/auth/profile', {
@@ -214,7 +214,7 @@ function OnboardingContent() {
                   {goals.length === 0 ? 'No rivals selected' : `${goals.length} Rival${goals.length !== 1 ? 's' : ''} Identified`}
                 </p>
               </div>
-              <button onClick={saveGoals} disabled={goals.length === 0 || loading}
+              <button onClick={saveGoals} disabled={loading}
                 className="w-full md:w-auto px-12 py-4 bg-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
                 {loading ? 'Saving...' : `Continue with ${goals.length} rival${goals.length !== 1 ? 's' : ''}`}
               </button>

@@ -23,6 +23,7 @@ interface NavItem {
 interface SidebarProps {
   userName: string;
   monitoringEnabled: boolean;
+  hasGoals: boolean;
   navItems: NavItem[];
   soloMode: boolean;
 }
@@ -35,7 +36,7 @@ const MOBILE_TABS_ALL = [
   { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Journal', icon: 'edit_note', solo: true },
 ];
 
-export default function Sidebar({ userName, monitoringEnabled, navItems, soloMode }: SidebarProps) {
+export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItems, soloMode }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [appRunning, setAppRunning] = useState<boolean | null>(null); // null = loading
@@ -75,13 +76,17 @@ export default function Sidebar({ userName, monitoringEnabled, navItems, soloMod
       {/* Mode + monitoring badges */}
       <div className="px-4 space-y-2 pb-2">
         {/* Monitoring status (from DB setting) */}
-        {monitoringEnabled && (
+        {!hasGoals ? (
+          <div className="px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+            <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">No Rivals Identified</span>
+          </div>
+        ) : monitoringEnabled ? (
           <div className="px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-xs text-emerald-700 font-label font-bold flex-1 text-left">Monitoring Active</span>
           </div>
-        )}
-        {!monitoringEnabled && (
+        ) : (
           <div className="px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
             <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">Monitoring Inactive</span>
