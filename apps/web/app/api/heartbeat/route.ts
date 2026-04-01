@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'User not found in public.users', user_id: user.id, email: user.email });
   }
 
-  return NextResponse.json({ ok: true, user_id: user.id, rows_updated: rowsUpdated });
+  return NextResponse.json({ ok: true, user_id: user.id, email: user.email, rows_updated: rowsUpdated });
 }
 
 export async function GET(req: NextRequest) {
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
   // Try with last_heartbeat column
   const { data, error } = await db
     .from('users')
-    .select('last_heartbeat, monitoring_enabled')
+    .select('email, last_heartbeat, monitoring_enabled')
     .eq('id', userId)
     .single();
 
@@ -77,9 +77,30 @@ export async function GET(req: NextRequest) {
   const fiveMinAgo = Date.now() - 5 * 60 * 1000;
   const appRunning = lastHeartbeat > fiveMinAgo;
 
+  // Check if another account under same email domain has a more recent heartbeat
+  // This detects the "logged into different accounts" mismatch
+  const userEmail = data?.email ?? '';
+  let mismatchEmail: string | null = null;
+
+  if (!appRunning) {
+    // Check if any other user with a recent heartbeat exists (same person, different account)
+    const { data: otherUsers } = await db
+      .from('users')
+      .select('email, last_heartbeat')
+      .neq('id', userId)
+      .not('last_heartbeat', 'is', null)
+      .gt('last_heartbeat', new Date(Date.now() - 5 * 60 * 1000).toISOString())
+      .limit(1);
+
+    if (otherUsers && otherUsers.length > 0) {
+      mismatchEmail = otherUsers[0].email;
+    }
+  }
+
   return NextResponse.json({
     app_running: appRunning,
     monitoring_enabled: data?.monitoring_enabled ?? false,
     last_heartbeat: data?.last_heartbeat ?? null,
+    mismatch_email: mismatchEmail,
   });
 }

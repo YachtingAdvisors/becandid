@@ -40,6 +40,7 @@ export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItem
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [appRunning, setAppRunning] = useState<boolean | null>(null); // null = loading
+  const [mismatchEmail, setMismatchEmail] = useState<string | null>(null);
   const [showTroubleshoot, setShowTroubleshoot] = useState(false);
   const [checking, setChecking] = useState(false);
 
@@ -58,6 +59,7 @@ export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItem
         if (d) {
           console.log('[heartbeat]', d);
           setAppRunning(d.app_running === true);
+          setMismatchEmail(d.mismatch_email ?? null);
         }
       })
       .catch((e) => {
@@ -165,6 +167,18 @@ export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItem
                 </Link>
               </div>
             )}
+          </div>
+        )}
+        {/* Account mismatch warning */}
+        {mismatchEmail && !appRunning && (
+          <div className="px-3 py-2.5 rounded-2xl bg-orange-50 ring-1 ring-orange-200/50 space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-orange-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+              <span className="text-[11px] text-orange-800 font-label font-bold">Account Mismatch</span>
+            </div>
+            <p className="text-[10px] text-orange-700 font-body leading-relaxed">
+              Your desktop app is signed in as <span className="font-bold">{mismatchEmail}</span> but you&apos;re browsing as a different account. Sign into the same account on both to sync monitoring.
+            </p>
           </div>
         )}
         {soloMode && (
