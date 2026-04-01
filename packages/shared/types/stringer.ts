@@ -219,12 +219,14 @@ export const SPIRITUAL_QUOTES: MotivatorQuote[] = [
     author: 'Charles Swindoll',
     ref: 'The Grace Awakening',
     motivator: 'spiritual',
+    image: 'https://images.gr-assets.com/authors/1281556736p5/5139.jpg',
   },
   {
     text: 'Freedom is an often paradoxical and unexpected path that is found through kindness and curiosity. What would it mean for you to bless instead of curse your body for experiencing what it felt? Will you cry out with agony for how your desire was misused instead of remaining silent in your shame? Honesty and kindness change the human heart. Contempt for arousal and silence in our shame lead to continual pursuit of unwanted sexual behavior.',
     author: 'Jay Stringer',
     ref: 'Unwanted',
     motivator: 'spiritual',
+    image: 'https://images.gr-assets.com/authors/1760377897p5/17973424.jpg',
   },
   // ── Buddhist ────────────────────────────────────────────
   {
@@ -232,12 +234,14 @@ export const SPIRITUAL_QUOTES: MotivatorQuote[] = [
     author: 'The Buddha',
     ref: 'Dhammapada',
     motivator: 'spiritual',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg/200px-Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg',
   },
   {
     text: 'You yourself must strive. The Buddhas only point the way.',
     author: 'The Buddha',
     ref: 'Dhammapada 276',
     motivator: 'spiritual',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg/200px-Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg',
   },
   // ── Jewish tradition (via modern voices) ────────────────
   {
@@ -260,6 +264,7 @@ export const SPIRITUAL_QUOTES: MotivatorQuote[] = [
     author: 'Eknath Easwaran',
     ref: 'Conquest of Mind',
     motivator: 'spiritual',
+    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/0f/Eknath_Easwaran_courtesy_of_the_Blue_Mountain_Center_of_Meditation.jpg/200px-Eknath_Easwaran_courtesy_of_the_Blue_Mountain_Center_of_Meditation.jpg',
   },
   // ── Sikh tradition (via modern voices) ──────────────────
   {
@@ -335,12 +340,14 @@ export const RELATIONAL_QUOTES: MotivatorQuote[] = [
     author: 'Harriet Lerner',
     ref: 'The Dance of Anger',
     motivator: 'relational',
+    image: 'https://images.gr-assets.com/authors/1337262358p5/84497.jpg',
   },
   {
     text: 'Are you there for me? Can I reach you? Will you respond when I need you? These are the fundamental questions of attachment.',
     author: 'Sue Johnson',
     ref: 'Hold Me Tight',
     motivator: 'relational',
+    image: 'https://upload.wikimedia.org/wikipedia/en/a/a3/Sue_Johnson.png',
   },
   {
     text: 'Connection is the energy that is created between people when they feel seen, heard, and valued.',
@@ -392,6 +399,7 @@ export const GENERAL_QUOTES: MotivatorQuote[] = [
     author: 'Dan Millman',
     ref: 'Way of the Peaceful Warrior',
     motivator: 'general',
+    image: 'https://images.gr-assets.com/authors/1327194022p5/1539.jpg',
   },
 ];
 

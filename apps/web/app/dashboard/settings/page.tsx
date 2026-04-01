@@ -7,6 +7,8 @@ import JournalSettings from '@/components/dashboard/JournalSettings';
 import PrivacySettings from '@/components/dashboard/PrivacySettings';
 import SoloModeToggle from '@/components/dashboard/SoloModeToggle';
 import TherapistSettings from '@/components/dashboard/TherapistSettings';
+import CategoryTimeLimits from '@/components/dashboard/CategoryTimeLimits';
+import SiteListsManager from '@/components/dashboard/SiteListsManager';
 import Link from 'next/link';
 
 export default async function SettingsPage() {
@@ -76,6 +78,9 @@ export default async function SettingsPage() {
         }}
       />
 
+      {/* Daily Time Limits */}
+      <CategoryTimeLimits />
+
       {/* Solo Mode */}
       <SoloModeToggle />
 
@@ -111,6 +116,9 @@ export default async function SettingsPage() {
           </span>
         </div>
       </section>
+
+      {/* Site Whitelist / Blacklist */}
+      <SiteListsManager />
 
       {/* Screen Time Summary */}
       <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
