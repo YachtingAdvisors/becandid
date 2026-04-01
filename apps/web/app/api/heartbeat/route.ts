@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
-import { createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -25,29 +25,40 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const user = await getUserFromRequest(req);
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Try cookie auth first (web dashboard), then Bearer token
+  let userId: string | null = null;
+
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) userId = user.id;
+  } catch {}
+
+  if (!userId) {
+    const user = await getUserFromRequest(req);
+    if (user) userId = user.id;
+  }
+
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized', app_running: false }, { status: 401 });
+  }
 
   const db = createServiceClient();
-  const { data, error: selectError } = await db
+
+  // Try with last_heartbeat column
+  const { data, error } = await db
     .from('users')
     .select('last_heartbeat, monitoring_enabled')
-    .eq('id', user.id)
+    .eq('id', userId)
     .single();
 
-  if (selectError) {
-    // Column might not exist — try without last_heartbeat
-    const { data: fallback } = await db
-      .from('users')
-      .select('monitoring_enabled')
-      .eq('id', user.id)
-      .single();
-
+  if (error) {
+    console.error('[heartbeat GET] Query error:', error.message);
     return NextResponse.json({
       app_running: false,
-      monitoring_enabled: fallback?.monitoring_enabled ?? false,
+      monitoring_enabled: true,
       last_heartbeat: null,
-      error: selectError.message,
+      debug: error.message,
     });
   }
 

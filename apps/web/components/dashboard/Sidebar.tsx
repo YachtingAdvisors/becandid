@@ -46,9 +46,24 @@ export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItem
   const checkConnection = () => {
     setChecking(true);
     fetch('/api/heartbeat')
-      .then(r => r.json())
-      .then(d => setAppRunning(d.app_running === true))
-      .catch(() => setAppRunning(false))
+      .then(r => {
+        if (!r.ok) {
+          console.warn('[heartbeat] Response not ok:', r.status);
+          setAppRunning(false);
+          return null;
+        }
+        return r.json();
+      })
+      .then(d => {
+        if (d) {
+          console.log('[heartbeat]', d);
+          setAppRunning(d.app_running === true);
+        }
+      })
+      .catch((e) => {
+        console.warn('[heartbeat] Fetch failed:', e);
+        setAppRunning(false);
+      })
       .finally(() => setTimeout(() => setChecking(false), 500));
   };
 
