@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return safeError('GET /api/partners', 'Unauthorized', 401);
+    if (!user) return NextResponse.json({ error: 'Please sign in to view your partner. Your session may have expired.' }, { status: 401 });
 
     const db = createServiceClient();
     const { data: partner } = await db
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return safeError('POST /api/partners', 'Unauthorized', 401);
+    if (!user) return NextResponse.json({ error: 'Please sign in to invite a partner. Your session may have expired — try refreshing the page.' }, { status: 401 });
 
     const blocked = checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
