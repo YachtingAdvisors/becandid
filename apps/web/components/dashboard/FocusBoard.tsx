@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 
 // ─── Types ────────────────────────────────────────────────────
 interface HeatmapDay {
@@ -89,10 +90,22 @@ function timeAgo(ts: string): string {
 
 // ─── Component ────────────────────────────────────────────────
 
+interface DayEvent {
+  id: string;
+  category: string;
+  severity: string;
+  app_name?: string;
+  platform: string;
+  timestamp: string;
+}
+
 export default function FocusBoard() {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [dayEvents, setDayEvents] = useState<DayEvent[]>([]);
+  const [loadingEvents, setLoadingEvents] = useState(false);
 
   useEffect(() => {
     fetch('/api/trust-points/stats')
@@ -101,6 +114,30 @@ export default function FocusBoard() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  const handleDayClick = useCallback(async (date: string) => {
+    if (selectedDate === date) {
+      setSelectedDate(null);
+      return;
+    }
+
+    setSelectedDate(date);
+    setLoadingEvents(true);
+    try {
+      const res = await fetch(`/api/events?limit=100`);
+      if (res.ok) {
+        const data = await res.json();
+        const filtered = (data.events ?? []).filter((e: DayEvent) =>
+          e.timestamp.startsWith(date)
+        );
+        setDayEvents(filtered);
+      }
+    } catch {
+      setDayEvents([]);
+    } finally {
+      setLoadingEvents(false);
+    }
+  }, [selectedDate]);
 
   if (loading) {
     return (
@@ -204,39 +241,127 @@ export default function FocusBoard() {
               Week {wi + 1}
             </div>
             <div className="grid grid-cols-7 gap-1.5">
-              {week.map((day) => (
-                <div key={day.date} className="text-center">
-                  <div className="text-[10px] text-ink-muted mb-1">
-                    {getDayLabel(day.date)}
+              {week.map((day) => {
+                const isSelected = selectedDate === day.date;
+                const isDistracted = day.morning === 'distracted' || day.evening === 'distracted';
+                return (
+                  <div key={day.date} className="text-center">
+                    <div className="text-[10px] text-ink-muted mb-1">
+                      {getDayLabel(day.date)}
+                    </div>
+                    <button
+                      onClick={() => handleDayClick(day.date)}
+                      className={`w-full cursor-pointer transition-all duration-200 rounded-md ${
+                        isSelected ? 'ring-2 ring-primary ring-offset-1 scale-105' : 'hover:scale-105 hover:ring-1 hover:ring-primary/30'
+                      }`}
+                    >
+                      {/* Morning cell */}
+                      <div
+                        className={`h-5 rounded-t-md ${
+                          day.morning === 'focused'
+                            ? 'bg-emerald-400'
+                            : day.morning === 'distracted'
+                              ? 'bg-red-400'
+                              : 'bg-gray-200'
+                        }`}
+                        title={`${formatDateShort(day.date)} AM: ${day.morning}`}
+                      />
+                      {/* Evening cell */}
+                      <div
+                        className={`h-5 rounded-b-md mt-0.5 ${
+                          day.evening === 'focused'
+                            ? 'bg-emerald-400'
+                            : day.evening === 'distracted'
+                              ? 'bg-red-400'
+                              : 'bg-gray-200'
+                        }`}
+                        title={`${formatDateShort(day.date)} PM: ${day.evening}`}
+                      />
+                    </button>
+                    <div className="text-[9px] text-ink-muted mt-0.5">
+                      {formatDateShort(day.date).split(' ')[1]}
+                    </div>
                   </div>
-                  {/* Morning cell */}
-                  <div
-                    className={`h-5 rounded-t-md ${
-                      day.morning === 'focused'
-                        ? 'bg-emerald-400'
-                        : day.morning === 'distracted'
-                          ? 'bg-red-400'
-                          : 'bg-gray-200'
-                    }`}
-                    title={`${formatDateShort(day.date)} AM: ${day.morning}`}
-                  />
-                  {/* Evening cell */}
-                  <div
-                    className={`h-5 rounded-b-md mt-0.5 ${
-                      day.evening === 'focused'
-                        ? 'bg-emerald-400'
-                        : day.evening === 'distracted'
-                          ? 'bg-red-400'
-                          : 'bg-gray-200'
-                    }`}
-                    title={`${formatDateShort(day.date)} PM: ${day.evening}`}
-                  />
-                  <div className="text-[9px] text-ink-muted mt-0.5">
-                    {formatDateShort(day.date).split(' ')[1]}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
+
+            {/* Day detail panel — shows below the week that contains the selected day */}
+            {week.some(d => d.date === selectedDate) && selectedDate && (
+              <div className="mt-3 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 animate-fade-in">
+                {(() => {
+                  const day = week.find(d => d.date === selectedDate)!;
+                  const isDistracted = day.morning === 'distracted' || day.evening === 'distracted';
+                  const bothFocused = day.morning === 'focused' && day.evening === 'focused';
+                  return (
+                    <>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className={`material-symbols-outlined text-lg ${isDistracted ? 'text-red-500' : 'text-emerald-500'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                            {isDistracted ? 'warning' : 'check_circle'}
+                          </span>
+                          <div>
+                            <h4 className="text-sm font-headline font-bold text-on-surface">
+                              {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                            </h4>
+                            <p className="text-[10px] text-on-surface-variant font-label">
+                              AM: <span className={day.morning === 'focused' ? 'text-emerald-600 font-bold' : day.morning === 'distracted' ? 'text-red-500 font-bold' : ''}>{day.morning}</span>
+                              {' · '}
+                              PM: <span className={day.evening === 'focused' ? 'text-emerald-600 font-bold' : day.evening === 'distracted' ? 'text-red-500 font-bold' : ''}>{day.evening}</span>
+                            </p>
+                          </div>
+                        </div>
+                        <button onClick={() => setSelectedDate(null)} className="p-1 rounded-full hover:bg-surface-container-low cursor-pointer">
+                          <span className="material-symbols-outlined text-on-surface-variant text-sm">close</span>
+                        </button>
+                      </div>
+
+                      {loadingEvents ? (
+                        <div className="flex items-center justify-center py-4">
+                          <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                        </div>
+                      ) : dayEvents.length > 0 ? (
+                        <div className="space-y-2">
+                          <p className="text-[10px] text-on-surface-variant font-label uppercase tracking-widest font-bold mb-2">
+                            {dayEvents.length} event{dayEvents.length !== 1 ? 's' : ''} flagged
+                          </p>
+                          {dayEvents.map(ev => (
+                            <div key={ev.id} className="flex items-center gap-3 px-3 py-2 bg-surface-container-low rounded-xl">
+                              <span className={`w-2 h-2 rounded-full shrink-0 ${
+                                ev.severity === 'high' ? 'bg-red-500' : ev.severity === 'medium' ? 'bg-amber-500' : 'bg-yellow-400'
+                              }`} />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-label font-medium text-on-surface truncate">
+                                  {GOAL_LABELS[ev.category as GoalCategory] ?? ev.category}
+                                  {ev.app_name && <span className="text-on-surface-variant font-normal"> — {ev.app_name}</span>}
+                                </p>
+                                <p className="text-[10px] text-on-surface-variant font-label">
+                                  {ev.platform} · {new Date(ev.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                                </p>
+                              </div>
+                              <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                                ev.severity === 'high' ? 'bg-red-100 text-red-700' : ev.severity === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-yellow-100 text-yellow-700'
+                              }`}>{ev.severity}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : bothFocused ? (
+                        <div className="text-center py-4">
+                          <span className="material-symbols-outlined text-3xl text-emerald-400 mb-2 block" style={{ fontVariationSettings: "'FILL' 1" }}>celebration</span>
+                          <p className="text-sm font-headline font-bold text-emerald-700">All clear!</p>
+                          <p className="text-xs text-on-surface-variant font-body mt-1">No flags this day. You stayed fully focused.</p>
+                        </div>
+                      ) : (
+                        <div className="text-center py-4">
+                          <span className="material-symbols-outlined text-2xl text-on-surface-variant/40 mb-1 block">event_available</span>
+                          <p className="text-xs text-on-surface-variant font-body">No events recorded for this day.</p>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            )}
           </div>
         ))}
 
