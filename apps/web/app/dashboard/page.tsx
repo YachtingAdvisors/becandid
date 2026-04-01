@@ -44,7 +44,7 @@ export default async function DashboardPage() {
 
   // Parallel data fetching (including walkthrough detection)
   const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes] = await Promise.all([
-    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator').eq('id', user.id).single(),
+    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator, login_count').eq('id', user.id).single(),
     db.from('events').select('id, category, severity, platform, app_name, timestamp').eq('user_id', user.id).order('timestamp', { ascending: false }).limit(5),
     db.from('alerts').select('id, sent_at, conversations(id, completed_at, outcome)').eq('user_id', user.id).order('sent_at', { ascending: false }).limit(5),
     db.from('partners').select('partner_name, status').eq('user_id', user.id).eq('status', 'active').maybeSingle(),
@@ -61,7 +61,15 @@ export default async function DashboardPage() {
   const pendingConversations = alerts.filter((a: any) => !a.conversations?.[0]?.completed_at).length;
 
   // Walkthrough: detect which setup steps are complete
-  const showWalkthrough = !profile?.walkthrough_dismissed_at;
+  // Show walkthrough only for first 2 logins, unless manually dismissed
+  const loginCount = profile?.login_count ?? 0;
+  const showWalkthrough = !profile?.walkthrough_dismissed_at && loginCount <= 2;
+
+  // Increment login count (fire-and-forget, non-blocking)
+  db.from('users')
+    .update({ login_count: loginCount + 1 })
+    .eq('id', user.id)
+    .then(() => {});
   const completedSteps = {
     checkin_configured: (profile?.check_in_hour !== 21 || profile?.check_in_frequency !== 'daily'),
     focus_started: (focusCountRes.count ?? 0) > 0,

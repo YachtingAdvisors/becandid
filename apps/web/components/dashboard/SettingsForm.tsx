@@ -48,6 +48,22 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
 
+  const formatPhone = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    if (digits.length === 0) return '';
+    const d = digits.startsWith('1') ? digits : '1' + digits;
+    if (d.length <= 1) return '+1';
+    if (d.length <= 4) return `+1 (${d.slice(1)}`;
+    if (d.length <= 7) return `+1 (${d.slice(1, 4)}) ${d.slice(4)}`;
+    return `+1 (${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7, 11)}`;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === '' || raw === '+') { setPhone(''); return; }
+    setPhone(formatPhone(raw));
+  };
+
   async function handleSave() {
     if (!name.trim()) { setError('Name is required.'); return; }
     if (goals.length === 0) { setError('Select at least one area to monitor.'); return; }
@@ -117,8 +133,8 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
           <input
             type="tel"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+1 555 000 0000"
+            onChange={handlePhoneChange}
+            placeholder="+1 (555) 000-0000"
             className="w-full px-3 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         </div>
