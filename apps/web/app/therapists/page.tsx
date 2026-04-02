@@ -60,7 +60,7 @@ const TESTIMONIALS = [
 
 export default function TherapistsPage() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-dark-sanctuary">
       <JsonLd data={{
         '@context': 'https://schema.org',
         '@type': 'Product',
@@ -70,14 +70,14 @@ export default function TherapistsPage() {
       }} />
 
       {/* Nav */}
-      <header className="sticky top-0 z-50 bg-background/70 backdrop-blur-md border-b border-outline-variant/10">
+      <header className="sticky top-0 z-50 bg-stone-950/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-5xl mx-auto flex items-center justify-between px-6 h-16">
           <Link href="/" className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="h-9 w-auto" />
+            <img src="/logo.png" alt="Be Candid" className="h-9 w-auto brightness-[10]" />
           </Link>
           <nav className="flex items-center gap-4">
-            <Link href="/pricing" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors hidden sm:block">Pricing</Link>
+            <Link href="/pricing" className="font-label text-sm text-stone-500 hover:text-primary transition-colors hidden sm:block">Pricing</Link>
             <Link href="/auth/signup?plan=therapy" className="px-5 py-2.5 rounded-full bg-primary text-on-primary text-sm font-label font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20">
               Start Free Trial
             </Link>
@@ -87,18 +87,18 @@ export default function TherapistsPage() {
 
       {/* Hero */}
       <section className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-container/30 text-primary text-sm font-label font-bold mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 text-primary text-sm font-label font-bold mb-6">
           <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>local_hospital</span>
           For Licensed Therapists & Counselors
         </div>
 
-        <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-on-surface max-w-4xl mx-auto leading-[1.1] mb-6">
+        <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-100 max-w-4xl mx-auto leading-[1.1] mb-6">
           Inpatient-level insights.
           <br />
           <span className="text-primary">Outpatient setting.</span>
         </h1>
 
-        <p className="font-body text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-8">
+        <p className="font-body text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
           See your client&rsquo;s real-time patterns, journal entries, and digital triggers &mdash; so you walk into every session as the most present and insightful therapist they&rsquo;ve ever had.
         </p>
 
@@ -107,33 +107,33 @@ export default function TherapistsPage() {
             Start 14-Day Free Trial
             <span className="material-symbols-outlined">arrow_forward</span>
           </Link>
-          <Link href="#features" className="px-6 py-4 rounded-full text-on-surface-variant font-label font-medium hover:text-primary transition-colors flex items-center gap-2">
+          <Link href="#features" className="px-6 py-4 rounded-full text-slate-400 font-label font-medium hover:text-primary transition-colors flex items-center gap-2">
             <span className="material-symbols-outlined">play_circle</span>
             See How It Works
           </Link>
         </div>
 
-        <p className="text-sm text-on-surface-variant font-label">
+        <p className="text-sm text-stone-500 font-label">
           No credit card required &middot; HIPAA-ready &middot; $19.99/mo after trial
         </p>
       </section>
 
       {/* The Problem */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-8 md:p-12">
+        <div className="rounded-3xl p-8 md:p-12" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <p className="text-xs font-label font-bold text-primary uppercase tracking-widest mb-3">The Problem</p>
-              <h2 className="font-headline text-2xl md:text-3xl font-bold text-on-surface mb-4">
+              <h2 className="font-headline text-2xl md:text-3xl font-bold text-slate-100 mb-4">
                 You&rsquo;re treating clients with <span className="text-primary">one session per week</span> of visibility.
               </h2>
-              <p className="font-body text-on-surface-variant leading-relaxed">
+              <p className="font-body text-slate-400 leading-relaxed">
                 Between sessions, your clients face 167 hours of triggers, temptations, and emotional turbulence &mdash; and you only hear about what they remember (or choose) to share. That&rsquo;s not a clinical limitation. It&rsquo;s a data gap.
               </p>
             </div>
-            <div className="bg-gradient-to-br from-red-50 to-amber-50 rounded-2xl p-6 text-center">
-              <div className="text-5xl font-headline font-bold text-red-600 mb-2">167</div>
-              <p className="text-sm font-label text-on-surface-variant">hours between sessions where you have zero visibility into your client&rsquo;s digital behavior</p>
+            <div className="rounded-2xl p-6 text-center" style={{ background: 'rgba(127, 29, 29, 0.15)', border: '1px solid rgba(239, 68, 68, 0.1)' }}>
+              <div className="text-5xl font-headline font-bold text-red-400 mb-2">167</div>
+              <p className="text-sm font-label text-slate-400">hours between sessions where you have zero visibility into your client&rsquo;s digital behavior</p>
             </div>
           </div>
         </div>
@@ -141,18 +141,18 @@ export default function TherapistsPage() {
 
       {/* The Solution */}
       <section className="max-w-4xl mx-auto px-6 py-8">
-        <div className="bg-gradient-to-br from-primary-container/20 to-emerald-50/30 rounded-3xl ring-1 ring-primary/10 p-8 md:p-12">
+        <div className="rounded-3xl p-8 md:p-12" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="bg-emerald-50 rounded-2xl p-6 text-center order-2 md:order-1">
-              <div className="text-5xl font-headline font-bold text-emerald-600 mb-2">24/7</div>
-              <p className="text-sm font-label text-on-surface-variant">continuous visibility into patterns, moods, journal entries, and digital triggers</p>
+            <div className="rounded-2xl p-6 text-center order-2 md:order-1" style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+              <div className="text-5xl font-headline font-bold text-emerald-400 mb-2">24/7</div>
+              <p className="text-sm font-label text-slate-400">continuous visibility into patterns, moods, journal entries, and digital triggers</p>
             </div>
             <div className="order-1 md:order-2">
-              <p className="text-xs font-label font-bold text-emerald-700 uppercase tracking-widest mb-3">The Solution</p>
-              <h2 className="font-headline text-2xl md:text-3xl font-bold text-on-surface mb-4">
+              <p className="text-xs font-label font-bold text-emerald-400 uppercase tracking-widest mb-3">The Solution</p>
+              <h2 className="font-headline text-2xl md:text-3xl font-bold text-slate-100 mb-4">
                 Be Candid gives you <span className="text-primary">inpatient-level data</span> in an outpatient world.
               </h2>
-              <p className="font-body text-on-surface-variant leading-relaxed">
+              <p className="font-body text-slate-400 leading-relaxed">
                 Your clients use Be Candid daily &mdash; journaling, tracking moods, monitoring screen time. With their consent, you see it all. No more guessing. No more reconstructing timelines from memory.
               </p>
             </div>
@@ -164,17 +164,17 @@ export default function TherapistsPage() {
       <section id="features" className="max-w-5xl mx-auto px-6 py-16">
         <div className="text-center mb-12">
           <p className="text-xs font-label font-bold text-primary uppercase tracking-widest mb-2">Therapist Portal Features</p>
-          <h2 className="font-headline text-3xl font-bold text-on-surface">Everything you need between sessions</h2>
+          <h2 className="font-headline text-3xl font-bold text-slate-100">Everything you need between sessions</h2>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((f) => (
-            <div key={f.title} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 hover:ring-primary/20 hover:shadow-lg transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+            <div key={f.title} className="rounded-2xl p-6 hover:shadow-lg transition-all duration-300" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+              <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center mb-4">
                 <span className="material-symbols-outlined text-primary text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{f.icon}</span>
               </div>
-              <h3 className="font-headline text-base font-bold text-on-surface mb-2">{f.title}</h3>
-              <p className="font-body text-sm text-on-surface-variant leading-relaxed">{f.description}</p>
+              <h3 className="font-headline text-base font-bold text-slate-100 mb-2">{f.title}</h3>
+              <p className="font-body text-sm text-slate-400 leading-relaxed">{f.description}</p>
             </div>
           ))}
         </div>
@@ -184,18 +184,18 @@ export default function TherapistsPage() {
       <section className="max-w-4xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
           <p className="text-xs font-label font-bold text-primary uppercase tracking-widest mb-2">From Clinicians</p>
-          <h2 className="font-headline text-2xl font-bold text-on-surface">What therapists are saying</h2>
+          <h2 className="font-headline text-2xl font-bold text-slate-100">What therapists are saying</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           {TESTIMONIALS.map((t, i) => (
-            <div key={i} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 border-l-4 border-primary-container">
-              <p className="font-body text-sm text-on-surface italic leading-relaxed mb-4">
+            <div key={i} className="rounded-2xl p-6 border-l-4 border-cyan-400/30" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)', borderLeft: '4px solid rgba(34, 211, 238, 0.3)' }}>
+              <p className="font-body text-sm text-slate-400 italic leading-relaxed mb-4">
                 &ldquo;{t.quote}&rdquo;
               </p>
               <div>
-                <p className="font-label text-sm font-bold text-on-surface">{t.author}</p>
-                <p className="font-label text-xs text-on-surface-variant">{t.context}</p>
+                <p className="font-label text-sm font-bold text-slate-100">{t.author}</p>
+                <p className="font-label text-xs text-stone-500">{t.context}</p>
               </div>
             </div>
           ))}
@@ -204,19 +204,19 @@ export default function TherapistsPage() {
 
       {/* Consent Model */}
       <section className="max-w-4xl mx-auto px-6 py-16">
-        <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-8 md:p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-6">
-            <span className="material-symbols-outlined text-emerald-600 text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
+        <div className="rounded-3xl p-8 md:p-12 text-center" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <div className="w-16 h-16 rounded-2xl bg-teal-500/10 flex items-center justify-center mx-auto mb-6">
+            <span className="material-symbols-outlined text-emerald-400 text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
           </div>
-          <h2 className="font-headline text-2xl font-bold text-on-surface mb-4">Client-Controlled Consent</h2>
-          <p className="font-body text-on-surface-variant max-w-xl mx-auto leading-relaxed mb-8">
+          <h2 className="font-headline text-2xl font-bold text-slate-100 mb-4">Client-Controlled Consent</h2>
+          <p className="font-body text-slate-400 max-w-xl mx-auto leading-relaxed mb-8">
             Your client chooses exactly what you can see. Five independent toggles &mdash; journal, moods, streaks, outcomes, and patterns. They can revoke access anytime. Trust is the foundation.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             {['Journal Entries', 'Mood Data', 'Focus Streaks', 'Conversation Outcomes', 'Pattern Detection'].map((item) => (
-              <div key={item} className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 ring-1 ring-emerald-200/50">
-                <span className="material-symbols-outlined text-emerald-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                <span className="text-sm font-label font-medium text-emerald-800">{item}</span>
+              <div key={item} className="flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 ring-1 ring-teal-500/20">
+                <span className="material-symbols-outlined text-emerald-400 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                <span className="text-sm font-label font-medium text-slate-300">{item}</span>
               </div>
             ))}
           </div>
@@ -225,7 +225,7 @@ export default function TherapistsPage() {
 
       {/* Pricing CTA */}
       <section className="max-w-3xl mx-auto px-6 py-16">
-        <div className="bg-gradient-to-br from-primary to-primary/80 rounded-3xl p-8 md:p-12 text-center text-white">
+        <div className="bg-gradient-to-br from-primary to-primary-container rounded-3xl p-8 md:p-12 text-center text-white">
           <h2 className="font-headline text-3xl font-bold mb-4">Start your 14-day free trial</h2>
           <p className="font-body text-white/80 max-w-lg mx-auto mb-2">
             Everything in Pro, plus therapist portal access with granular consent controls.
@@ -245,13 +245,13 @@ export default function TherapistsPage() {
 
       {/* Referral CTA */}
       <section className="max-w-4xl mx-auto px-6 py-12 pb-20">
-        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 flex flex-col sm:flex-row items-center gap-6">
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+        <div className="rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-6" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <div className="w-14 h-14 rounded-2xl bg-teal-500/10 flex items-center justify-center shrink-0">
             <span className="material-symbols-outlined text-primary text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>card_giftcard</span>
           </div>
           <div className="flex-1 text-center sm:text-left">
-            <h3 className="font-headline text-base font-bold text-on-surface mb-1">Refer clients to Be Candid</h3>
-            <p className="font-body text-sm text-on-surface-variant">Give your clients a referral code. When they sign up, both of you get 30 free days.</p>
+            <h3 className="font-headline text-base font-bold text-slate-100 mb-1">Refer clients to Be Candid</h3>
+            <p className="font-body text-sm text-slate-400">Give your clients a referral code. When they sign up, both of you get 30 free days.</p>
           </div>
           <Link href="/auth/signup?plan=therapy" className="px-6 py-3 rounded-full bg-primary text-on-primary text-sm font-label font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20 shrink-0">
             Get Your Code

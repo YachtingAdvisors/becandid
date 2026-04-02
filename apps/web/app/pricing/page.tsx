@@ -90,24 +90,24 @@ export default function PricingPage() {
   const [billing, setBilling] = useState<'monthly' | 'annual'>('annual');
 
   return (
-    <div className="min-h-screen bg-[#fbf9f8]">
+    <div className="min-h-screen bg-[#0c1214]">
       {/* Nav */}
-      <header className="sticky top-0 z-50 bg-[#fbf9f8]/70 backdrop-blur-md border-b border-outline-variant/10">
+      <header className="sticky top-0 z-50 bg-stone-950/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-5xl mx-auto flex items-center justify-between px-6 h-16">
           <a href="/" className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="h-9 w-auto" />
+            <img src="/logo.png" alt="Be Candid" className="h-9 w-auto brightness-[10]" />
           </a>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="/#features" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors">Features</a>
-            <a href="/#journey" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors">How It Works</a>
-            <a href="/download" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors">Download</a>
-            <a href="/families" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors">Families</a>
-            <a href="/pricing" className="font-label text-sm text-primary font-bold">Pricing</a>
+            <a href="/#features" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors">Features</a>
+            <a href="/#journey" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors">How It Works</a>
+            <a href="/download" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors">Download</a>
+            <a href="/families" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors">Families</a>
+            <a href="/pricing" className="font-label text-sm text-cyan-400 font-bold">Pricing</a>
           </nav>
           <div className="flex items-center gap-4">
-            <a href="/auth/signin" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors hidden sm:block">Log in</a>
-            <a href="/auth/signup" className="px-5 py-2.5 rounded-full bg-primary text-on-primary text-sm font-label font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20">
+            <a href="/auth/signin" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors hidden sm:block">Log in</a>
+            <a href="/auth/signup" className="px-5 py-2.5 rounded-full bg-gradient-to-r from-cyan-500 to-teal-400 text-stone-950 text-sm font-label font-bold hover:brightness-110 transition-all shadow-lg shadow-cyan-500/20">
               Get Started
             </a>
           </div>
@@ -117,38 +117,38 @@ export default function PricingPage() {
       <div className="max-w-screen-2xl mx-auto px-6 py-24">
         {/* Header */}
         <div className="text-center mb-16 max-w-5xl mx-auto">
-          <p className="font-label text-xs uppercase tracking-widest text-primary mb-4">
+          <p className="font-label text-xs uppercase tracking-widest text-cyan-400 mb-4">
             Pricing
           </p>
-          <h1 className="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-4">
+          <h1 className="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-slate-100 mb-4">
             Invest in your integrity
           </h1>
-          <p className="text-base text-on-surface-variant max-w-lg mx-auto font-body leading-relaxed">
+          <p className="text-base text-slate-400 max-w-lg mx-auto font-body leading-relaxed">
             Start free. Upgrade when you&apos;re ready. Cancel anytime.
           </p>
 
           {/* Billing toggle */}
-          <div className="inline-flex items-center gap-1 mt-8 bg-surface-container rounded-full p-1.5">
+          <div className="inline-flex items-center gap-1 mt-8 bg-stone-800 rounded-full p-1.5">
             <button
               onClick={() => setBilling('monthly')}
-              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
                 billing === 'monthly'
-                  ? 'bg-surface-container-lowest text-on-surface shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]'
-                  : 'text-on-surface-variant hover:text-on-surface'
+                  ? 'bg-stone-700 text-slate-100 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.3)]'
+                  : 'text-stone-400 hover:text-slate-200'
               }`}
             >
               Monthly
             </button>
             <button
               onClick={() => setBilling('annual')}
-              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
                 billing === 'annual'
-                  ? 'bg-surface-container-lowest text-on-surface shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]'
-                  : 'text-on-surface-variant hover:text-on-surface'
+                  ? 'bg-stone-700 text-slate-100 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.3)]'
+                  : 'text-stone-400 hover:text-slate-200'
               }`}
             >
               Annual{' '}
-              <span className="text-primary text-xs font-bold ml-1">
+              <span className="text-cyan-400 text-xs font-bold ml-1">
                 save 17%
               </span>
             </button>
@@ -167,12 +167,12 @@ export default function PricingPage() {
                 key={tier.id}
                 className={`rounded-[2rem] p-7 relative transition-all duration-300 cursor-pointer ${
                   tier.highlight
-                    ? 'bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 ring-2 ring-primary'
-                    : 'bg-surface-container-lowest shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg'
+                    ? 'bg-gradient-to-b from-primary to-primary-container text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 ring-2 ring-primary'
+                    : 'bg-white/[0.03] backdrop-blur-md border border-white/5 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.3)] hover:border-white/10 hover:shadow-lg'
                 }`}
               >
                 {tier.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-tertiary-container text-tertiary text-[10px] font-bold font-label uppercase tracking-wider">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-cyan-400/20 text-cyan-300 text-[10px] font-bold font-label uppercase tracking-wider border border-cyan-400/30">
                     {tier.badge}
                   </div>
                 )}
@@ -186,7 +186,7 @@ export default function PricingPage() {
                   ) : (
                     <span
                       className={`material-symbols-outlined text-3xl ${
-                        tier.highlight ? 'text-on-primary' : 'text-primary'
+                        tier.highlight ? 'text-on-primary' : 'text-cyan-400'
                       }`}
                     >
                       {TIER_ICONS[tier.id]}
@@ -194,7 +194,7 @@ export default function PricingPage() {
                   )}
                   <h3
                     className={`text-xl font-headline font-bold mt-3 ${
-                      tier.highlight ? 'text-on-primary' : 'text-on-surface'
+                      tier.highlight ? 'text-on-primary' : 'text-slate-100'
                     }`}
                   >
                     {tier.name}
@@ -203,7 +203,7 @@ export default function PricingPage() {
                     className={`text-xs font-body mt-1 ${
                       tier.highlight
                         ? 'text-on-primary/70'
-                        : 'text-on-surface-variant'
+                        : 'text-slate-400'
                     }`}
                   >
                     {tier.description}
@@ -212,7 +212,7 @@ export default function PricingPage() {
                     {price === 0 ? (
                       <p
                         className={`text-4xl font-headline font-extrabold tracking-tight ${
-                          tier.highlight ? 'text-on-primary' : 'text-on-surface'
+                          tier.highlight ? 'text-on-primary' : 'text-slate-100'
                         }`}
                       >
                         Free
@@ -223,7 +223,7 @@ export default function PricingPage() {
                           className={`text-4xl font-headline font-extrabold tracking-tight ${
                             tier.highlight
                               ? 'text-on-primary'
-                              : 'text-on-surface'
+                              : 'text-slate-100'
                           }`}
                         >
                           ${price}
@@ -232,7 +232,7 @@ export default function PricingPage() {
                           className={`text-xs mt-1 ${
                             tier.highlight
                               ? 'text-on-primary/70'
-                              : 'text-on-surface-variant'
+                              : 'text-slate-400'
                           }`}
                         >
                           {period}
@@ -242,7 +242,7 @@ export default function PricingPage() {
                             className={`text-[10px] mt-0.5 ${
                               tier.highlight
                                 ? 'text-on-primary/60'
-                                : 'text-on-surface-variant'
+                                : 'text-stone-500'
                             }`}
                           >
                             ${(tier.annualPrice / 12).toFixed(2)}/month
@@ -263,8 +263,8 @@ export default function PricingPage() {
                               ? 'text-on-primary'
                               : 'text-on-primary/30'
                             : f.included
-                              ? 'text-primary'
-                              : 'text-outline-variant'
+                              ? 'text-cyan-400'
+                              : 'text-stone-600'
                         }`}
                       >
                         {f.included ? 'check' : 'remove'}
@@ -276,8 +276,8 @@ export default function PricingPage() {
                               ? 'text-on-primary'
                               : 'text-on-primary/40'
                             : f.included
-                              ? 'text-on-surface'
-                              : 'text-on-surface-variant/50'
+                              ? 'text-slate-300'
+                              : 'text-stone-600'
                         }`}
                       >
                         {f.text}
@@ -288,10 +288,10 @@ export default function PricingPage() {
 
                 <Link
                   href={tier.ctaHref}
-                  className={`block w-full py-3.5 text-sm font-headline font-bold rounded-full text-center transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                  className={`block w-full py-3.5 text-sm font-headline font-bold rounded-full text-center transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
                     tier.highlight
                       ? 'bg-on-primary text-primary shadow-lg hover:shadow-xl hover:brightness-110'
-                      : 'bg-secondary-container text-on-surface shadow-md hover:shadow-lg hover:brightness-105'
+                      : 'bg-gradient-to-r from-cyan-500/20 to-teal-400/20 text-cyan-300 border border-cyan-400/20 shadow-md hover:shadow-lg hover:border-cyan-400/40 hover:brightness-110'
                   }`}
                 >
                   {tier.cta}
@@ -303,8 +303,8 @@ export default function PricingPage() {
 
         {/* Footer note */}
         <div className="max-w-5xl mx-auto mt-12 text-center">
-          <div className="inline-flex items-center gap-2 text-on-surface-variant">
-            <span className="material-symbols-outlined text-[18px] text-primary">
+          <div className="inline-flex items-center gap-2 text-stone-500">
+            <span className="material-symbols-outlined text-[18px] text-cyan-400">
               lock
             </span>
             <p className="text-xs font-body">
@@ -316,7 +316,7 @@ export default function PricingPage() {
         </div>
 
         <div className="text-center mt-14">
-          <p className="text-sm text-on-surface-variant italic font-body">
+          <p className="text-sm text-stone-500 italic font-body">
             &ldquo;Freedom is found through kindness and curiosity.&rdquo;
           </p>
         </div>

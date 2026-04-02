@@ -19,6 +19,7 @@ const PUBLIC_PATHS = [
   '/share/',
   '/blog',
   '/therapists',
+  '/how-it-works',
 ];
 
 const CRON_PATHS = ['/api/cron'];

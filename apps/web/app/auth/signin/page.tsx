@@ -37,40 +37,40 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-background flex items-center justify-center px-4 overflow-hidden">
+    <div className="relative min-h-screen bg-dark-sanctuary flex items-center justify-center px-4 overflow-hidden">
       {/* Ambient blur backgrounds */}
-      <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-primary-container/20 blur-[100px]" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-tertiary-container/10 blur-[100px]" />
+      <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[100px]" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-teal-500/5 blur-[100px]" />
 
       {/* Fixed top nav */}
-      <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/70 border-b border-outline-variant/10">
+      <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-dark-sanctuary/70 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-lg">
-            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
+            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto brightness-[10]" />
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-[13px] font-label text-on-surface-variant hover:text-on-surface cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Privacy</Link>
-            <Link href="/security" className="text-[13px] font-label text-on-surface-variant hover:text-on-surface cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Security</Link>
+            <Link href="/privacy" className="text-[13px] font-label text-stone-400 hover:text-slate-100 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Privacy</Link>
+            <Link href="/security" className="text-[13px] font-label text-stone-400 hover:text-slate-100 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Security</Link>
           </div>
         </div>
       </nav>
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-xl">
-        <div className="bg-surface-container-lowest rounded-[2rem] shadow-[0_4px_40px_rgba(45,112,130,0.06)] ring-1 ring-outline-variant/10 p-10 sm:p-12 transition-all duration-200 hover:shadow-md hover:shadow-on-surface/[0.04]">
+        <div className="bg-white/[0.03] backdrop-blur-xl rounded-[2rem] shadow-[0_4px_40px_rgba(0,0,0,0.3)] ring-1 ring-white/[0.06] p-10 sm:p-12 transition-all duration-200 hover:ring-white/[0.1]">
           {/* Icon badge */}
           <div className="flex justify-center mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-surface-container-low flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-[28px]">login</span>
+            <div className="w-14 h-14 rounded-2xl bg-white/[0.05] flex items-center justify-center">
+              <span className="material-symbols-outlined text-cyan-400 text-[28px]">login</span>
             </div>
           </div>
 
           {/* Heading */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl sm:text-3xl font-headline font-bold text-on-surface">
+            <h1 className="text-2xl sm:text-3xl font-headline font-bold text-slate-100">
               Welcome <em className="text-primary not-italic font-bold italic">back.</em>
             </h1>
-            <p className="text-sm text-on-surface-variant mt-2 font-label">
+            <p className="text-sm text-stone-400 mt-2 font-label">
               Sign in to continue your journey
             </p>
           </div>
@@ -86,31 +86,31 @@ export default function SignInPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Email</label>
+              <label className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
                 placeholder="you@example.com"
-                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all duration-200"
+                className="w-full bg-stone-800 border-none rounded-xl py-4 px-4 text-sm font-body text-slate-100 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Password</label>
+              <label className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
                 placeholder="Enter your password"
-                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all duration-200"
+                className="w-full bg-stone-800 border-none rounded-xl py-4 px-4 text-sm font-body text-slate-100 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
               />
             </div>
 
             <div className="flex justify-end">
-              <Link href="/auth/reset" className="text-xs text-primary hover:text-primary-dim font-label font-medium cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-1 py-0.5">
+              <Link href="/auth/reset" className="text-xs text-cyan-400 hover:text-cyan-300 font-label font-medium cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-1 py-0.5">
                 Forgot password?
               </Link>
             </div>
@@ -118,7 +118,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-5 bg-primary hover:bg-primary-dim hover:brightness-110 text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl cursor-pointer transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none"
+              className="w-full py-5 bg-gradient-to-r from-primary to-primary-container hover:brightness-110 text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl cursor-pointer transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none"
             >
               {loading ? 'Signing in...' : 'Sign In'}
               {!loading && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}
@@ -126,9 +126,9 @@ export default function SignInPage() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-on-surface-variant mt-8 font-label">
+        <p className="text-center text-sm text-stone-400 mt-8 font-label">
           Don&apos;t have an account?{' '}
-          <Link href="/auth/signup" className="text-primary font-semibold hover:text-primary-dim cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-1 py-0.5">Sign up</Link>
+          <Link href="/auth/signup" className="text-cyan-400 font-semibold hover:text-cyan-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-1 py-0.5">Sign up</Link>
         </p>
       </div>
     </div>
