@@ -152,7 +152,7 @@ export default function PricingPage() {
 
                 <div className="text-center mb-8 pt-2">
                   {(tier as any).logo ? (
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto shadow-lg ring-1 ring-outline-variant/10">
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto shadow-lg ring-1 ring-outline-variant/10">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={(tier as any).logo} alt={`${tier.name} logo`} className="w-full h-full object-cover" />
                     </div>
