@@ -179,9 +179,9 @@ export default function PricingPage() {
 
                 <div className="text-center mb-8 pt-2">
                   {(tier as any).logo ? (
-                    <div className={`rounded-2xl overflow-hidden mx-auto shadow-lg ${tier.id === 'free' ? 'w-[70px] h-[70px]' : 'w-[88px] h-[88px]'}`}>
+                    <div className={`rounded-2xl overflow-hidden mx-auto shadow-lg ${tier.id === 'free' ? 'w-[88px] h-[88px] bg-[#1a3a42] p-4' : 'w-[88px] h-[88px]'}`}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={(tier as any).logo} alt={`${tier.name} logo`} className="w-full h-full object-cover" />
+                      <img src={(tier as any).logo} alt={`${tier.name} logo`} className={`w-full h-full ${tier.id === 'free' ? 'object-contain brightness-0 invert' : 'object-cover'}`} />
                     </div>
                   ) : (
                     <span
