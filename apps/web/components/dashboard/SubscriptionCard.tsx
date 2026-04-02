@@ -23,6 +23,11 @@ export default function SubscriptionCard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [promoError, setPromoError] = useState('');
+  const [promoSuccess, setPromoSuccess] = useState('');
+  const [applyingPromo, setApplyingPromo] = useState(false);
+  const [showPromo, setShowPromo] = useState(false);
 
   useEffect(() => {
     fetch('/api/billing')
@@ -153,6 +158,61 @@ export default function SubscriptionCard() {
             className="w-full py-2 text-xs text-on-surface-variant hover:text-on-surface transition-colors">
             or $9.99/month
           </button>
+        </div>
+      )}
+
+      {/* Promo code */}
+      {!isPaid && (
+        <div className="mt-3">
+          {!showPromo ? (
+            <button onClick={() => setShowPromo(true)} className="w-full text-xs text-on-surface-variant hover:text-primary font-label transition-colors cursor-pointer">
+              Have a promo code?
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={e => { setPromoCode(e.target.value); setPromoError(''); setPromoSuccess(''); }}
+                  placeholder="Enter promo code"
+                  className="flex-1 px-3 py-2 text-sm rounded-lg border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/30 font-body"
+                />
+                <button
+                  onClick={async () => {
+                    if (!promoCode.trim()) return;
+                    setApplyingPromo(true);
+                    setPromoError('');
+                    setPromoSuccess('');
+                    try {
+                      const res = await fetch('/api/billing/promo', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code: promoCode.trim() }),
+                      });
+                      const d = await res.json();
+                      if (res.ok) {
+                        setPromoSuccess(d.message);
+                        setTimeout(() => window.location.reload(), 1500);
+                      } else {
+                        setPromoError(d.error || 'Invalid code');
+                      }
+                    } catch {
+                      setPromoError('Failed to apply code');
+                    } finally {
+                      setApplyingPromo(false);
+                    }
+                  }}
+                  disabled={applyingPromo || !promoCode.trim()}
+                  className="px-4 py-2 text-sm font-label font-bold rounded-lg bg-primary text-on-primary hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
+                >
+                  {applyingPromo ? '...' : 'Apply'}
+                </button>
+              </div>
+              {promoError && <p className="text-xs text-error font-label">{promoError}</p>}
+              {promoSuccess && <p className="text-xs text-emerald-600 font-label font-bold">{promoSuccess}</p>}
+            </div>
+          )}
         </div>
       )}
 
