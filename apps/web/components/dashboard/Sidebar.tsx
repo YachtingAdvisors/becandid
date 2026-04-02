@@ -8,9 +8,9 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface NavItem {
   id: string;
@@ -22,6 +22,8 @@ interface NavItem {
 
 interface SidebarProps {
   userName: string;
+  userEmail: string;
+  avatarUrl: string | null;
   monitoringEnabled: boolean;
   hasGoals: boolean;
   navItems: NavItem[];
@@ -36,13 +38,38 @@ const MOBILE_TABS_ALL = [
   { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Journal', icon: 'edit_note', solo: true },
 ];
 
-export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItems, soloMode }: SidebarProps) {
+export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnabled, hasGoals, navItems, soloMode }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [appRunning, setAppRunning] = useState<boolean | null>(null); // null = loading
   const [mismatchEmail, setMismatchEmail] = useState<string | null>(null);
   const [showTroubleshoot, setShowTroubleshoot] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      const res = await fetch('/api/auth/avatar', { method: 'POST', body: formData });
+      if (res.ok) {
+        setShowProfileMenu(false);
+        router.refresh();
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setUploadingAvatar(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = '';
+    }
+  };
 
   const checkConnection = () => {
     setChecking(true);
@@ -264,17 +291,74 @@ export default function Sidebar({ userName, monitoringEnabled, hasGoals, navItem
         </Link>
       </div>
 
-      {/* User */}
-      <div className="px-5 py-4 border-t border-outline-variant">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-            <span className="text-sm font-headline font-bold text-primary">{userName.charAt(0).toUpperCase()}</span>
-          </div>
-          <div className="min-w-0">
+      {/* User profile + logout */}
+      <div className="px-3 py-3 border-t border-outline-variant relative">
+        <button
+          onClick={() => setShowProfileMenu(!showProfileMenu)}
+          className="w-full flex items-center gap-3 px-2 py-2 rounded-2xl hover:bg-surface-container cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30"
+        >
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatarUrl} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <span className="text-sm font-headline font-bold text-primary">{userName.charAt(0).toUpperCase()}</span>
+            </div>
+          )}
+          <div className="min-w-0 flex-1 text-left">
             <p className="text-sm font-headline font-bold text-on-surface truncate">{userName}</p>
-            <Link href="/dashboard/settings" className="text-xs text-on-surface-variant hover:text-primary font-label cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30 rounded">Settings</Link>
+            <p className="text-[10px] text-on-surface-variant font-label truncate">{userEmail}</p>
           </div>
-        </div>
+          <span className="material-symbols-outlined text-on-surface-variant/40 text-base">
+            {showProfileMenu ? 'expand_less' : 'expand_more'}
+          </span>
+        </button>
+
+        {/* Profile dropdown menu */}
+        {showProfileMenu && (
+          <div className="absolute bottom-full left-3 right-3 mb-1 bg-surface-container-lowest rounded-2xl shadow-lg ring-1 ring-outline-variant/20 overflow-hidden z-50">
+            <Link
+              href="/dashboard/settings"
+              onClick={() => { setShowProfileMenu(false); setOpen(false); }}
+              className="flex items-center gap-3 px-4 py-3 text-sm font-body text-on-surface hover:bg-surface-container cursor-pointer transition-colors"
+            >
+              <span className="material-symbols-outlined text-base text-on-surface-variant">settings</span>
+              Settings
+            </Link>
+            <button
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={uploadingAvatar}
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-body text-on-surface hover:bg-surface-container cursor-pointer transition-colors disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-base text-on-surface-variant">photo_camera</span>
+              {uploadingAvatar ? 'Uploading...' : 'Change avatar'}
+            </button>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleAvatarUpload}
+              className="hidden"
+            />
+            <div className="border-t border-outline-variant/20" />
+            <button
+              onClick={async () => {
+                setLoggingOut(true);
+                try {
+                  await fetch('/api/auth/signout', { method: 'POST' });
+                  window.location.href = '/auth/signin';
+                } catch {
+                  setLoggingOut(false);
+                }
+              }}
+              disabled={loggingOut}
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-body text-error hover:bg-error/5 cursor-pointer transition-colors disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-base">logout</span>
+              {loggingOut ? 'Signing out...' : 'Sign out'}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Clinical expertise note */}

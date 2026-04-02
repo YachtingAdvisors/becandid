@@ -1,10 +1,5 @@
 import type { Metadata } from 'next';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-
-export const metadata: Metadata = {
-  title: 'Settings',
-  description: 'Manage your Be Candid account settings, privacy preferences, notification controls, and subscription details.',
-};
 import SettingsForm from '@/components/dashboard/SettingsForm';
 import VulnerabilityWindows from '@/components/dashboard/VulnerabilityWindows';
 import BillingSection from '@/components/dashboard/BillingSection';
@@ -15,7 +10,13 @@ import SoloModeToggle from '@/components/dashboard/SoloModeToggle';
 import TherapistSettings from '@/components/dashboard/TherapistSettings';
 import CategoryTimeLimits from '@/components/dashboard/CategoryTimeLimits';
 import SiteListsManager from '@/components/dashboard/SiteListsManager';
+import SettingsTabs from '@/components/dashboard/SettingsTabs';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Settings',
+  description: 'Manage your Be Candid account settings, privacy preferences, notification controls, and subscription details.',
+};
 
 export default async function SettingsPage() {
   const supabase = await createServerSupabaseClient();
@@ -23,8 +24,6 @@ export default async function SettingsPage() {
   if (!user) return null;
 
   const db = createServiceClient();
-
-  // Use select('*') to avoid failing on missing columns from un-run migrations
   const { data: raw } = await db
     .from('users')
     .select('*')
@@ -33,7 +32,6 @@ export default async function SettingsPage() {
 
   if (!raw) return null;
 
-  // Apply safe defaults for any columns that might not exist yet
   const profile = {
     name: raw.name ?? '',
     phone: raw.phone ?? '',
@@ -48,7 +46,6 @@ export default async function SettingsPage() {
     foundational_motivator: raw.foundational_motivator ?? 'general',
   };
 
-  // Check if user has an active partner
   const { data: partnerData } = await db
     .from('partners')
     .select('id')
@@ -57,55 +54,35 @@ export default async function SettingsPage() {
     .maybeSingle();
   const hasPartner = !!partnerData;
 
-  return (
-    <div className="max-w-2xl mx-auto space-y-8">
-      <div>
-        <p className="text-xs font-label font-medium text-on-surface-variant uppercase tracking-widest">Account</p>
-        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1">Settings</h1>
-        <p className="text-sm text-on-surface-variant font-body">
-          Manage your profile, rivals, awareness preferences, and check-in schedule.
-        </p>
-      </div>
+  /* ── Tab content sections ───────────────────────────────────── */
 
+  const profileTab = (
+    <>
       <SettingsForm
         hasPartner={hasPartner}
-        profile={{
-          name: profile.name ?? '',
-          phone: profile.phone ?? '',
-          goals: profile.goals ?? [],
-          monitoring_enabled: profile.monitoring_enabled ?? true,
-          streak_mode: profile.streak_mode ?? 'no_failures',
-          timezone: profile.timezone ?? 'America/New_York',
-          nudge_enabled: profile.nudge_enabled ?? true,
-          check_in_enabled: profile.check_in_enabled ?? true,
-          check_in_hour: profile.check_in_hour ?? 21,
-          check_in_frequency: profile.check_in_frequency ?? 'daily',
-          foundational_motivator: profile.foundational_motivator ?? 'general',
-        }}
+        profile={profile}
       />
-
-      {/* Daily Time Limits */}
-      <CategoryTimeLimits />
-
-      {/* Solo Mode */}
       <SoloModeToggle />
+      {/* Account Mode */}
+      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
+        <h2 className="font-headline text-lg font-bold text-on-surface">Account Mode</h2>
+        <div className="flex items-center gap-3">
+          <span className="inline-flex px-3 py-1 rounded-full text-xs font-label font-semibold bg-secondary-container text-on-secondary-container">
+            Adult
+          </span>
+          <span className="text-xs text-on-surface-variant font-body">
+            Self-directed awareness with optional partner support
+          </span>
+        </div>
+      </section>
+    </>
+  );
 
-      {/* Journal Settings */}
-      <JournalSettings />
-
-      {/* Therapist Portal */}
-      <TherapistSettings />
-
-      {/* Vulnerability Windows */}
+  const awarenessTab = (
+    <>
+      <CategoryTimeLimits />
       <VulnerabilityWindows />
-
-      {/* Plan & Billing */}
-      <BillingSection />
-
-      {/* Subscription Details */}
-      <SubscriptionCard />
-
-      {/* Content Filter Settings */}
+      {/* Content Filter */}
       <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <div className="flex items-center justify-between">
           <h2 className="font-headline text-lg font-bold text-on-surface">Content Filter</h2>
@@ -122,11 +99,8 @@ export default async function SettingsPage() {
           </span>
         </div>
       </section>
-
-      {/* Site Whitelist / Blacklist */}
       <SiteListsManager />
-
-      {/* Screen Time Summary */}
+      {/* Screen Time */}
       <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <div className="flex items-center justify-between">
           <h2 className="font-headline text-lg font-bold text-on-surface">Screen Time</h2>
@@ -138,24 +112,27 @@ export default async function SettingsPage() {
           Monitor and manage screen time usage, set limits by category, and configure downtime schedules.
         </p>
       </section>
+    </>
+  );
 
-      {/* Account Mode */}
-      <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
-        <h2 className="font-headline text-lg font-bold text-on-surface">Account Mode</h2>
-        <div className="flex items-center gap-3">
-          <span className="inline-flex px-3 py-1 rounded-full text-xs font-label font-semibold bg-secondary-container text-on-secondary-container">
-            Adult
-          </span>
-          <span className="text-xs text-on-surface-variant font-body">
-            Self-directed accountability with optional partner support
-          </span>
-        </div>
-      </section>
+  const journalTab = (
+    <>
+      <JournalSettings />
+      <TherapistSettings />
+    </>
+  );
 
-      {/* Privacy & Security */}
+  const billingTab = (
+    <>
+      <BillingSection />
+      <SubscriptionCard />
+    </>
+  );
+
+  const privacyTab = (
+    <>
       <PrivacySettings />
-
-      {/* Data & Account */}
+      {/* Data Export */}
       <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <h2 className="font-headline text-lg font-bold text-on-surface">Your Data</h2>
         <div className="flex items-center justify-between">
@@ -172,7 +149,6 @@ export default async function SettingsPage() {
           </a>
         </div>
       </section>
-
       {/* Danger zone */}
       <section className="bg-surface-container-lowest rounded-3xl p-5 ring-1 ring-error/20 shadow-sm">
         <h2 className="font-headline text-lg font-bold text-error mb-3">Danger Zone</h2>
@@ -186,6 +162,26 @@ export default async function SettingsPage() {
           </button>
         </div>
       </section>
+    </>
+  );
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      <div>
+        <p className="text-xs font-label font-medium text-on-surface-variant uppercase tracking-widest">Account</p>
+        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1">Settings</h1>
+        <p className="text-sm text-on-surface-variant font-body">
+          Manage your profile, rivals, awareness preferences, and check-in schedule.
+        </p>
+      </div>
+
+      <SettingsTabs
+        profile={profileTab}
+        awareness={awarenessTab}
+        journal={journalTab}
+        billing={billingTab}
+        privacy={privacyTab}
+      />
     </div>
   );
 }

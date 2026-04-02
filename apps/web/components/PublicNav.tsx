@@ -10,7 +10,7 @@ export default function PublicNav() {
 
   const links = [
     { href: '/', label: 'Sanctuary' },
-    { href: '/how-it-works', label: 'Methodology' },
+    { href: '/methodology', label: 'Methodology' },
     { href: '/pricing', label: 'Pricing' },
     { href: '/therapists', label: 'Therapists' },
     { href: '/blog', label: 'Blog' },

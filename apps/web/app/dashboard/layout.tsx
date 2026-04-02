@@ -24,6 +24,7 @@ const NAV_ITEMS = [
   { id: 'progress', href: '/dashboard/progress', label: 'Progress', icon: 'trending_up', solo: true },
   { id: 'fasting', href: '/dashboard/fasting', label: 'Fasting', icon: 'self_improvement', solo: true },
   { id: 'conversations', href: '/dashboard/conversations', label: 'Partner Conversations', icon: 'forum', solo: false },
+  { id: 'downloads', href: '/dashboard/downloads', label: 'Downloads', icon: 'download', solo: true },
   { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: 'settings', solo: true },
 ];
 
@@ -41,7 +42,7 @@ export default async function DashboardLayout({
 
   const db = createServiceClient();
   const { data: profile } = await db.from('users')
-    .select('name, monitoring_enabled, solo_mode, goals')
+    .select('*')
     .eq('id', user.id)
     .single();
 
@@ -69,6 +70,8 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen bg-background">
       <Sidebar
         userName={profile?.name ?? user.email ?? 'User'}
+        userEmail={user.email ?? ''}
+        avatarUrl={profile?.avatar_url ?? null}
         monitoringEnabled={profile?.monitoring_enabled ?? true}
         hasGoals={(profile?.goals ?? []).length > 0}
         navItems={visibleNav}
