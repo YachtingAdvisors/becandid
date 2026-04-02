@@ -241,7 +241,7 @@ export default function PartnerPage() {
           {partner.status === 'active' && (
             <div className="px-4 py-3 rounded-2xl bg-primary-container/20 ring-1 ring-primary/10 mb-3">
               <p className="text-xs text-on-surface font-body leading-relaxed">
-                <span className="font-bold text-primary">Strengthen your circle.</span> As King Solomon wrote, &ldquo;A cord of three strands is not easily broken.&rdquo; You can add another partner for free. <button onClick={() => setShowForm(true)} className="text-primary font-bold underline cursor-pointer">Invite a second partner</button>. Upgrade to Pro for a 3rd.
+                <span className="font-bold text-primary">Strengthen your circle.</span> As King Solomon wrote, &ldquo;A cord of three strands is not easily broken.&rdquo; You can add another partner for free. <button onClick={() => setShowForm(true)} className="text-primary font-bold underline cursor-pointer">Invite a second partner</button>. Upgrade to Pro for up to 5.
               </p>
             </div>
           )}
@@ -277,7 +277,7 @@ export default function PartnerPage() {
                 <p className="text-xs text-on-surface font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-on-surface-variant">&mdash; King Solomon</span></p>
               </div>
               <p className="text-[10px] text-primary font-label font-medium mb-6">
-                Add up to 2 partners free. Upgrade to Pro for a 3rd.
+                Add up to 2 partners free. Upgrade to Pro for up to 5.
               </p>
               <button
                 onClick={() => setShowForm(true)}

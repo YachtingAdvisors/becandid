@@ -59,7 +59,7 @@ export const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
   },
   pro: {
     aiGuidesPerMonth: Infinity,
-    maxPartners: 3,
+    maxPartners: 5,
     journalReminders: true,
     weeklyReflection: true,
     vulnerabilityWindows: true,
@@ -73,7 +73,7 @@ export const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
   },
   therapy: {
     aiGuidesPerMonth: Infinity,
-    maxPartners: 3,
+    maxPartners: 5,
     journalReminders: true,
     weeklyReflection: true,
     vulnerabilityWindows: true,

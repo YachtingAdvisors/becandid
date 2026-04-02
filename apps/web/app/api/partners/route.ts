@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
       .from('users').select('subscription_plan').eq('id', user.id).single();
     const isPro = userPlan?.subscription_plan === 'pro' || userPlan?.subscription_plan === 'therapy';
 
-    return NextResponse.json({ partner, partners: partners ?? [], maxPartners: isPro ? 3 : 2 });
+    return NextResponse.json({ partner, partners: partners ?? [], maxPartners: isPro ? 5 : 2 });
   } catch (err) {
     return safeError('GET /api/partners', err);
   }
@@ -79,13 +79,13 @@ export async function POST(req: NextRequest) {
     const { data: userPlan } = await db
       .from('users').select('subscription_plan').eq('id', user.id).single();
     const isPro = userPlan?.subscription_plan === 'pro' || userPlan?.subscription_plan === 'therapy';
-    const maxPartners = isPro ? 3 : 2;
+    const maxPartners = isPro ? 5 : 2;
     const currentCount = existingPartners?.length ?? 0;
 
     if (currentCount >= maxPartners) {
       const upgradeMsg = isPro
         ? `You've reached the maximum of ${maxPartners} partners.`
-        : `You've reached the free plan limit of ${maxPartners} partners. Upgrade to Pro to add a 3rd partner.`;
+        : `You've reached the free plan limit of ${maxPartners} partners. Upgrade to Pro for up to 5 partners.`;
       return NextResponse.json({ error: upgradeMsg }, { status: 400 });
     }
 

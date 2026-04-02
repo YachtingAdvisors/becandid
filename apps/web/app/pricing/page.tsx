@@ -37,8 +37,8 @@ const TIERS = [
   {
     id: 'pro',
     name: 'Pro',
-    monthlyPrice: 9.99,
-    annualPrice: 99,
+    monthlyPrice: 13.99,
+    annualPrice: 129,
     description: 'Full alignment',
     cta: 'Start Free Trial',
     ctaHref: '/auth/signup?plan=pro',
@@ -47,7 +47,7 @@ const TIERS = [
     features: [
       { text: 'Everything in Free', included: true },
       { text: 'Unlimited AI conversation guides', included: true },
-      { text: 'Up to 3 accountability partners', included: true },
+      { text: 'Up to 5 accountability partners', included: true },
       { text: 'Scheduled journal reminders', included: true },
       { text: 'Weekly AI reflection', included: true },
       { text: 'Vulnerability windows', included: true },

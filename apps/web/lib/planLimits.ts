@@ -31,7 +31,7 @@ const LIMITS: Record<Plan, PlanLimits> = {
   pro: {
     aiGuidesPerMonth: -1,
     regenerationsPerMonth: -1,
-    maxPartners: 3,
+    maxPartners: 5,
     vulnerabilityWindows: 10,
     patternDetection: true,
     contextualPrompts: true,
