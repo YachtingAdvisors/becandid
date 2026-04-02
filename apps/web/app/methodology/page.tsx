@@ -297,7 +297,7 @@ export default function MethodologyPage() {
       {/* ── Disclaimer ─────────────────────────────────────────── */}
       <div className="px-6 pb-12">
         <p className="max-w-3xl mx-auto text-center text-xs text-stone-500 leading-relaxed">
-          Be Candid is not affiliated with or endorsed by Jay Stringer. Our methodology is independently developed and informed by publicly available research.
+          Be Candid is not affiliated with Jay Stringer. Our methodology is independently developed and informed by publicly available research.
         </p>
       </div>
 
