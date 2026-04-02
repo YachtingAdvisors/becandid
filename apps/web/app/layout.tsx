@@ -43,13 +43,13 @@ export const metadata: Metadata = {
     description: 'AI-powered screen time accountability app. Track digital habits, build streaks, and align your digital life with your values — with a partner, not surveillance.',
     siteName: 'Be Candid',
     type: 'website',
-    images: [{ url: '/og-image.png', width: 1200, height: 1200, alt: 'Be Candid Logo' }],
+    images: [{ url: '/api/og', width: 1200, height: 630, alt: 'Be Candid — Align Your Digital Life' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Be Candid — Align Your Digital Life',
     description: 'AI-powered accountability. Your screen time should match who you want to be.',
-    images: ['/og-image.png'],
+    images: ['/api/og'],
   },
   manifest: '/manifest.json',
   robots: {
