@@ -72,6 +72,28 @@ export async function sendUserSelfNotificationSMS(params: {
 }
 
 /**
+ * Send nudge SMS to partner when user reports feeling low or in crisis.
+ */
+export async function sendNudgeSMS(params: {
+  partnerPhone: string;
+  partnerName: string;
+  userName: string;
+  moodLabel: string;
+}) {
+  const { partnerPhone, partnerName, userName, moodLabel } = params;
+  if (!partnerPhone) return;
+
+  const url = `${APP_URL}/dashboard/conversations`;
+  const body = `Be Candid: Hey ${partnerName}, ${userName} is feeling ${moodLabel} right now and could use your support. A simple check-in can make all the difference. ${url}`;
+
+  try {
+    return await getClient().messages.create({ body, from: FROM_NUMBER(), to: partnerPhone });
+  } catch (e) {
+    console.error('Nudge SMS failed:', e);
+  }
+}
+
+/**
  * Send partner invite via SMS.
  */
 export async function sendPartnerInviteSMS(params: {

@@ -74,6 +74,8 @@ export default function DashboardScreen() {
   const [stats, setStats] = useState<Stats>({});
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [recentAlerts, setRecentAlerts] = useState<AlertItem[]>([]);
+  const [nudging, setNudging] = useState(false);
+  const [nudged, setNudged] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -169,11 +171,45 @@ export default function DashboardScreen() {
         console.warn('[Dashboard] Mood POST error:', e);
       }
 
-      // Reset selection after a moment
-      setTimeout(() => setSelectedMood(null), 2000);
+      // Reset selection after a moment (only for non-crisis moods)
+      if (mood.severity < 7) {
+        setTimeout(() => setSelectedMood(null), 2000);
+      }
     },
     []
   );
+
+  const handleNudge = useCallback(async () => {
+    if (nudging || nudged) return;
+    setNudging(true);
+    try {
+      const session = await getSession();
+      if (!session) return;
+
+      const moodLabel = selectedMood !== null ? MOODS[selectedMood] : null;
+      const mood = moodLabel?.severity === 10 ? 'crisis' : 'low';
+
+      await fetch(`${API_URL}/api/nudge`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mood }),
+      });
+      setNudged(true);
+    } catch (e) {
+      console.warn('[Dashboard] Nudge error:', e);
+      Alert.alert('Could not send nudge', 'Please try again later.');
+    } finally {
+      setNudging(false);
+    }
+  }, [nudging, nudged, selectedMood]);
+
+  const dismissNudgeBanner = useCallback(() => {
+    setSelectedMood(null);
+    setNudged(false);
+  }, []);
 
   if (loading) {
     return (
@@ -276,6 +312,78 @@ export default function DashboardScreen() {
             ))}
           </View>
         </View>
+
+        {/* Nudge Banner — shown when mood is Struggling or Crisis */}
+        {selectedMood !== null && MOODS[selectedMood]?.severity >= 7 && (
+          <View style={[styles.card, { borderColor: MOODS[selectedMood].severity === 10 ? '#fecaca' : '#fde68a' }]}>
+            <View style={{ alignItems: 'center', marginBottom: 12 }}>
+              <Text style={[styles.cardTitle, { textAlign: 'center', marginBottom: 4 }]}>
+                {MOODS[selectedMood].severity === 10
+                  ? 'You deserve support right now.'
+                  : 'You mentioned feeling low. You are not alone.'}
+              </Text>
+              <Text style={{ fontSize: 12, color: C.onSurfaceVariant, textAlign: 'center' }}>
+                {MOODS[selectedMood].severity === 10
+                  ? 'Please reach out -- these services are free and confidential.'
+                  : 'Your courage to be honest matters.'}
+              </Text>
+            </View>
+
+            <Pressable
+              style={[styles.nudgeButton, nudged && { backgroundColor: C.emerald }]}
+              onPress={handleNudge}
+              disabled={nudging || nudged}
+            >
+              {nudging ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <>
+                  <Ionicons name="notifications-outline" size={16} color="#fff" />
+                  <Text style={styles.nudgeButtonText}>
+                    {nudged ? 'Partner Nudged' : 'Nudge Your Partner'}
+                  </Text>
+                </>
+              )}
+            </Pressable>
+
+            {MOODS[selectedMood].severity === 10 && (
+              <View style={{ marginTop: 10, gap: 8 }}>
+                <Pressable
+                  style={styles.crisisRow}
+                  onPress={() => Alert.alert(
+                    '988 Suicide & Crisis Lifeline',
+                    'Call or text 988 -- available 24/7',
+                    [{ text: 'OK', style: 'default' }]
+                  )}
+                >
+                  <Ionicons name="call-outline" size={18} color={C.error} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.onSurface }}>988 Crisis Lifeline</Text>
+                    <Text style={{ fontSize: 11, color: C.onSurfaceVariant }}>Call or text 988 -- 24/7</Text>
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={styles.crisisRow}
+                  onPress={() => Alert.alert(
+                    'Crisis Text Line',
+                    'Text HOME to 741741 -- available 24/7',
+                    [{ text: 'OK', style: 'default' }]
+                  )}
+                >
+                  <Ionicons name="chatbubble-outline" size={18} color={C.error} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.onSurface }}>Crisis Text Line</Text>
+                    <Text style={{ fontSize: 11, color: C.onSurfaceVariant }}>Text HOME to 741741 -- 24/7</Text>
+                  </View>
+                </Pressable>
+              </View>
+            )}
+
+            <Pressable onPress={dismissNudgeBanner} style={{ marginTop: 8, alignItems: 'center' }}>
+              <Text style={{ fontSize: 12, color: C.primary, fontWeight: '600' }}>Dismiss</Text>
+            </Pressable>
+          </View>
+        )}
 
         {/* Growth Stats */}
         <View style={styles.card}>
@@ -682,5 +790,30 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: C.onSurface,
     textAlign: 'center',
+  },
+  // Nudge button & crisis resources
+  nudgeButton: {
+    backgroundColor: C.primary,
+    borderRadius: 24,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  nudgeButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  crisisRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    padding: 12,
+    backgroundColor: '#fef2f2',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#fecaca',
   },
 });
