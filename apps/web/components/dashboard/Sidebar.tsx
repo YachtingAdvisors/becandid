@@ -120,15 +120,19 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       <div className="px-4 space-y-2 pb-2">
         {/* Combined monitoring + connection status */}
         {!hasGoals ? (
-          <div className="px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2">
+          <Link href="/dashboard/settings" onClick={() => setOpen(false)}
+            className="block px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2 hover:bg-red-100/60 cursor-pointer transition-colors">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
             <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">No Rivals Identified</span>
-          </div>
+            <span className="material-symbols-outlined text-red-400 text-sm">arrow_forward</span>
+          </Link>
         ) : !monitoringEnabled ? (
-          <div className="px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2">
+          <Link href="/dashboard/settings" onClick={() => setOpen(false)}
+            className="block px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2 hover:bg-red-100/60 cursor-pointer transition-colors">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
             <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">Monitoring Inactive</span>
-          </div>
+            <span className="material-symbols-outlined text-red-400 text-sm">arrow_forward</span>
+          </Link>
         ) : appRunning === true ? (
           <button
             onClick={checkConnection}

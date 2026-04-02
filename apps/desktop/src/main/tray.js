@@ -20,10 +20,13 @@ function createTray(callbacks = {}) {
   const fallbackPath = path.join(__dirname, '..', '..', 'assets', 'tray-icon@2x.png');
 
   let icon;
+  const monitoring = store.get('monitoring_enabled');
   try {
-    icon = nativeImage.createFromPath(store.get('monitoring_enabled') ? activeIconPath : inactiveIconPath);
+    icon = nativeImage.createFromPath(monitoring ? activeIconPath : inactiveIconPath);
     icon = icon.resize({ width: 16, height: 16 });
     if (icon.isEmpty()) throw new Error('empty');
+    // Active icon keeps green color; inactive adapts to macOS light/dark
+    icon.setTemplateImage(!monitoring);
   } catch {
     try {
       icon = nativeImage.createFromPath(fallbackPath);

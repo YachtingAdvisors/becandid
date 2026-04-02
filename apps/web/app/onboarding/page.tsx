@@ -43,6 +43,8 @@ const STEP_TRANSITION_TEXT: Partial<Record<Step, string>> = {
   partner: 'the light',
 };
 
+const FULL_PHRASE_LINES = ['Come out', 'of darkness', 'and into', 'the light'];
+
 const STRINGER_PILLARS = [
   { icon: 'water_drop', heading: 'alignment', title: 'Trace the Tributaries', body: "Your patterns are never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen. Understanding yourself is the first step to alignment.", image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=400&fit=crop' },
   { icon: 'favorite', heading: 'truth', title: 'Name the Longing', body: "Beneath every pattern is something legitimate you need — belonging, rest, tenderness, significance. Naming it honestly is how you build congruence between who you are and who you want to be.", image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=400&fit=crop' },
@@ -56,7 +58,18 @@ function OnboardingContent() {
   const [step, setStepRaw] = useState<Step>(initialStep === 'partner' ? 'partner' : 'goals');
   const [showTransition, setShowTransition] = useState(false);
   const [transitionText, setTransitionText] = useState('');
+  const [showFullPhrase, setShowFullPhrase] = useState(false);
   const setStep = (s: Step) => {
+    // When transitioning to 'done', show the full phrase animation first
+    if (s === 'done') {
+      setShowFullPhrase(true);
+      setTimeout(() => {
+        setShowFullPhrase(false);
+        setStepRaw(s);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 4000);
+      return;
+    }
     const text = STEP_TRANSITION_TEXT[s];
     if (text) {
       setTransitionText(text);
@@ -223,6 +236,27 @@ function OnboardingContent() {
           <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-white animate-shatter text-center">
             {transitionText}
           </h1>
+        </div>
+      )}
+
+      {/* Full phrase reveal — "Come out of darkness and into the light" */}
+      {showFullPhrase && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: 'linear-gradient(to bottom, #111820, #253542, #fbf9f8)' }}>
+          <div className="text-center space-y-2">
+            {FULL_PHRASE_LINES.map((line, i) => (
+              <h1
+                key={i}
+                className="font-headline text-4xl md:text-6xl font-extrabold tracking-tight"
+                style={{
+                  animation: `phraseReveal 0.6s ease both`,
+                  animationDelay: `${i * 0.6}s`,
+                  color: i < 2 ? 'white' : i === 2 ? '#94a3b8' : '#226779',
+                }}
+              >
+                {line}
+              </h1>
+            ))}
+          </div>
         </div>
       )}
 
@@ -463,15 +497,15 @@ function OnboardingContent() {
       {step === 'partner' && (
         <div className="max-w-md w-full animate-fade-slide overflow-hidden">
           <div className="text-center mb-6">
-            <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Step 4 of 4</p>
+            <p className="text-xs text-cyan-400 font-label font-medium uppercase tracking-widest mb-2">Step 4 of 4</p>
             <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">Invite your partners</h1>
             <p className="text-sm text-slate-400 font-body">A friend, spouse, mentor, or coach who&apos;ll walk with you.</p>
             <div className="flex items-center justify-center gap-3 mt-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Simeon_Solomon_-_King_Solomon.jpg/200px-Simeon_Solomon_-_King_Solomon.jpg" alt="King Solomon" className="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20 shrink-0" />
-              <p className="text-xs text-slate-300 font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-slate-400">&mdash; King Solomon</span></p>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Tissot_The_Judgment_of_Solomon.jpg/320px-Tissot_The_Judgment_of_Solomon.jpg" alt="King Solomon" className="w-10 h-10 rounded-full object-cover ring-1 ring-cyan-400/20 shrink-0" />
+              <p className="text-xs text-slate-200 font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-cyan-400">&mdash; King Solomon</span></p>
             </div>
-            <p className="text-[10px] text-primary font-label font-medium mt-2">Add up to 2 partners free. Upgrade to Pro for up to 5.</p>
+            <p className="text-[10px] text-cyan-400 font-label font-medium mt-2">Add up to 2 partners free. Upgrade to Pro for up to 5.</p>
           </div>
 
           {/* Invited partners list */}
@@ -590,7 +624,7 @@ function OnboardingContent() {
 
           <div className="mt-4 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/5 ring-1 ring-primary/10">
             <p className="text-xs text-slate-300 font-body leading-relaxed">
-              <span className="font-bold text-primary">Why invite a partner?</span> Users with a confirmed partner get <span className="font-bold text-slate-100">30 free days</span>, the ability to <span className="font-bold text-slate-100">challenge false flags</span> to protect their streaks, and eligibility for <span className="font-bold text-slate-100">physical and digital awards</span> tied to streak milestones.
+              <span className="font-bold text-cyan-400">Why invite a partner?</span> Users with a confirmed partner get <span className="font-bold text-slate-100">30 free days</span>, the ability to <span className="font-bold text-slate-100">challenge false flags</span> to protect their streaks, and eligibility for <span className="font-bold text-slate-100">physical and digital awards</span> tied to streak milestones.
             </p>
           </div>
         </div>
@@ -609,16 +643,17 @@ function OnboardingContent() {
               : "You're starting in solo mode. Your journal and self-reflection guides are ready."}
           </p>
 
-          <button onClick={() => router.push('/dashboard')}
-            className="w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
+          <a href="/dashboard"
+            className="block w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 text-center">
             Go to Dashboard →
-          </button>
+          </a>
         </div>
       )}
 
       <style jsx>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeUp 0.4s ease; }
+        @keyframes phraseReveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </div>
   );

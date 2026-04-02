@@ -20,25 +20,18 @@ const STEPS: Step[] = [
     href: '/dashboard/settings',
   },
   {
-    key: 'focus_started',
-    title: 'Start your Focus Board',
-    description: 'Begin tracking your daily morning and evening focus.',
-    icon: 'center_focus_strong',
-    href: '/dashboard/focus',
-  },
-  {
-    key: 'first_journal',
-    title: 'Write your first journal entry',
-    description: 'Reflect on your day in the Candid Journal.',
-    icon: 'edit_note',
-    href: '/dashboard/stringer-journal',
-  },
-  {
     key: 'first_checkin',
     title: 'Complete your first check-in',
     description: 'Log how you\'re doing to build your streak.',
     icon: 'check_circle',
     href: '/dashboard/checkins',
+  },
+  {
+    key: 'first_journal',
+    title: 'Write your first journal entry',
+    description: 'Why did you decide this was the time to start this journey towards freedom and integrity?',
+    icon: 'edit_note',
+    href: '/dashboard/stringer-journal',
   },
 ];
 

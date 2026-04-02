@@ -30,12 +30,12 @@ export default function PartnerPreview({
   return (
     <div className="max-w-md w-full mx-auto">
       <div className="text-center mb-6">
-        <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Transparency</p>
-        <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">
+        <p className="text-xs text-cyan-400 font-label font-medium uppercase tracking-widest mb-2">Transparency</p>
+        <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">
           What your partner will see
         </h1>
-        <p className="text-sm text-on-surface-variant leading-relaxed font-body">
-          Accountability is clarity. You should know exactly what your partner can see, because congruence starts with honesty.
+        <p className="text-sm text-slate-300 leading-relaxed font-body">
+          Awareness is clarity. You should know exactly what your partner can see, because congruence starts with honesty.
         </p>
       </div>
 
@@ -91,8 +91,8 @@ export default function PartnerPreview({
       )}
 
       {/* Mock alert preview */}
-      <div className="mt-5 p-4 rounded-2xl bg-secondary-container/30 border border-outline-variant">
-        <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-label font-medium mb-2">Example alert your partner receives</p>
+      <div className="mt-5 p-4 rounded-2xl bg-white/[0.04] border border-white/10">
+        <p className="text-[10px] text-slate-400 uppercase tracking-wider font-label font-medium mb-2">Example alert your partner receives</p>
         <div className="bg-surface-container-lowest rounded-2xl p-3 border border-outline-variant shadow-sm">
           <div className="flex items-center gap-2 mb-1.5">
             <div className="w-6 h-6 rounded-lg bg-primary flex items-center justify-center">
@@ -116,12 +116,12 @@ export default function PartnerPreview({
           Got it — invite a partner
         </button>
         <button onClick={onSolo}
-          className="w-full py-3 text-sm font-headline font-bold rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-colors">
+          className="w-full py-3 text-sm font-headline font-bold rounded-full border border-white/20 text-slate-300 hover:bg-white/5 transition-colors">
           I&apos;ll start in solo mode for now
         </button>
       </div>
 
-      <p className="text-center text-[11px] text-on-surface-variant/60 mt-3 font-body">
+      <p className="text-center text-[11px] text-slate-400/60 mt-3 font-body">
         You can always invite a partner later from Settings
       </p>
     </div>
