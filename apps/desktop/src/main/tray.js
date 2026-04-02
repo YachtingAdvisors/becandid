@@ -130,6 +130,17 @@ function updateTrayMenu() {
         shell.openExternal(url);
       },
     },
+    {
+      label: 'Health Check',
+      click: () => {
+        const { getAccessToken, getRefreshToken } = require('./auth');
+        const token = getAccessToken();
+        const url = token
+          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard`
+          : 'https://becandid.io/dashboard';
+        shell.openExternal(url);
+      },
+    },
     { type: 'separator' },
     {
       label: 'Start on Login',

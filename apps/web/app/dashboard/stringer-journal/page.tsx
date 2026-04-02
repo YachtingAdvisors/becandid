@@ -273,7 +273,7 @@ export default function StringerJournalPage() {
                       )}
                     </div>
                   </div>
-                  <span className="text-on-surface-variant text-xs">{isOpen ? '\u25BE' : '\u25B8'}</span>
+                  <span className="text-on-surface-variant text-lg">{isOpen ? '\u25BE' : '\u25B8'}</span>
                 </button>
                 {isOpen && (
                   <div className="px-4 pb-4 pt-1">

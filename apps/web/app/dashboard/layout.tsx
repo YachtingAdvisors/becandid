@@ -9,7 +9,7 @@
 // ============================================================
 
 import { redirect } from 'next/navigation';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '@/lib/supabase';
 import Sidebar from '@/components/dashboard/Sidebar';
 import EmailVerificationBanner from '@/components/dashboard/EmailVerificationBanner';
 import WebTrackingProvider from '@/components/dashboard/WebTrackingProvider';
@@ -41,10 +41,7 @@ export default async function DashboardLayout({
   }
 
   const db = createServiceClient();
-  const { data: profile } = await db.from('users')
-    .select('*')
-    .eq('id', user.id)
-    .single();
+  const profile = await ensureUserRow(db, user);
 
   const isSolo = profile?.solo_mode ?? false;
   const isVerified = !!user.email_confirmed_at;

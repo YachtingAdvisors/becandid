@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 // POST /api/partners — invite a partner
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '@/lib/supabase';
 import { z } from 'zod';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError, sanitizeName, sanitizeEmail, sanitizePhone, auditLog } from '@/lib/security';
@@ -72,6 +72,10 @@ export async function POST(req: NextRequest) {
     const cleanPhone = parsed.data.partner_phone ? sanitizePhone(parsed.data.partner_phone) : null;
 
     const db = createServiceClient();
+
+    // Ensure public.users row exists (signup profile creation is fire-and-forget,
+    // so it may not have completed yet when the user reaches the partner step)
+    await ensureUserRow(db, user);
 
     // Check partner limit: 2 for free users, 3 for Pro
     const { data: existingPartners } = await db

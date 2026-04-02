@@ -215,6 +215,13 @@ export const SPIRITUAL_QUOTES: MotivatorQuote[] = [
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/CS_Lewis_photo_on_dust_jacket.jpg/200px-CS_Lewis_photo_on_dust_jacket.jpg',
   },
   {
+    text: 'A live body is not one that never gets hurt, but one that can to some extent repair itself. In the same way a Christian is not a man who never goes wrong, but a man who is enabled to repent and pick himself up and begin over again after each stumble\u2014because the Christ-life is inside him, repairing him all the time, enabling him to repeat (in some degree) the kind of voluntary death which Christ Himself carried out.',
+    author: 'C.S. Lewis',
+    ref: 'Mere Christianity',
+    motivator: 'spiritual',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/CS_Lewis_photo_on_dust_jacket.jpg/200px-CS_Lewis_photo_on_dust_jacket.jpg',
+  },
+  {
     text: 'Integrity is doing the right thing, even when no one is watching. But accountability is inviting someone to watch.',
     author: 'Charles Swindoll',
     ref: 'The Grace Awakening',

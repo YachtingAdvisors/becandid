@@ -66,7 +66,7 @@ export default function MethodologyPage() {
       <section className="px-6 py-28 max-w-7xl mx-auto">
         {/* Section header */}
         <div className="flex items-center gap-6 mb-4">
-          <h2 className="text-3xl md:text-4xl font-bold whitespace-nowrap">The Stringer Framework</h2>
+          <h2 className="text-3xl md:text-4xl font-bold whitespace-nowrap">Framework Informed by Jay Stringer&apos;s Research</h2>
           <div className="flex-1 h-px bg-stone-800/60" />
         </div>
         <p className="text-slate-400 text-lg mb-16 max-w-2xl">
@@ -293,6 +293,13 @@ export default function MethodologyPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Disclaimer ─────────────────────────────────────────── */}
+      <div className="px-6 pb-12">
+        <p className="max-w-3xl mx-auto text-center text-xs text-stone-500 leading-relaxed">
+          Be Candid is not affiliated with or endorsed by Jay Stringer. Our methodology is independently developed and informed by publicly available research.
+        </p>
+      </div>
 
       {/* ── Footer ──────────────────────────────────────────────── */}
       <footer className="bg-stone-950 border-t border-stone-800/30 px-6 py-16">

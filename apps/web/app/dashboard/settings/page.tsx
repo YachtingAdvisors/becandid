@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '@/lib/supabase';
 import SettingsForm from '@/components/dashboard/SettingsForm';
 import VulnerabilityWindows from '@/components/dashboard/VulnerabilityWindows';
 import BillingSection from '@/components/dashboard/BillingSection';
@@ -24,12 +24,7 @@ export default async function SettingsPage() {
   if (!user) return null;
 
   const db = createServiceClient();
-  const { data: raw } = await db
-    .from('users')
-    .select('*')
-    .eq('id', user.id)
-    .single();
-
+  const raw = await ensureUserRow(db, user);
   if (!raw) return null;
 
   const profile = {

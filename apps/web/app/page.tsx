@@ -169,7 +169,7 @@ export default function LandingPage() {
                   <MaterialIcon name="arrow_forward" className="text-lg group-hover:translate-x-0.5 transition-transform duration-200" />
                 </Link>
                 <a
-                  href="#journey"
+                  href="/methodology"
                   className="px-8 py-4 rounded-full font-label font-bold text-base text-stone-300 hover:text-white glass-card hover:bg-white/[0.06] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
                 >
                   <MaterialIcon name="play_circle" className="text-xl text-cyan-400" filled />
@@ -314,10 +314,10 @@ export default function LandingPage() {
 
                 {/* Floating glass quote card */}
                 <div className="absolute bottom-8 left-8 right-8 glass-card rounded-2xl p-6">
-                  <MaterialIcon name="format_quote" className="text-2xl text-cyan-400/50 mb-2" />
                   <p className="font-body text-sm text-stone-300 italic leading-relaxed">
-                    &ldquo;Integrity is choosing courage over comfort.&rdquo;
+                    {"\u201C"}Integrity is choosing courage over comfort; choosing what is right over what is fun, fast, or easy; and choosing to practice our values rather than simply professing them.{"\u201D"}
                   </p>
+                  <p className="font-label text-xs text-stone-500 mt-2">{"\u2014"} Bren&#233; Brown</p>
                 </div>
               </div>
             </div>
@@ -393,9 +393,8 @@ export default function LandingPage() {
               {/* Gradient line at top */}
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
 
-              <MaterialIcon name="format_quote" className="text-5xl text-cyan-400/20 mb-6" />
               <blockquote className="font-body text-xl lg:text-2xl text-stone-300 leading-relaxed">
-                &ldquo;Integrity is choosing courage over comfort; choosing what is right over what is fun, fast, or easy; and choosing to practice our values rather than simply professing them.&rdquo;
+                {"\u201C"}Integrity is choosing courage over comfort; choosing what is right over what is fun, fast, or easy; and choosing to practice our values rather than simply professing them.{"\u201D"}
               </blockquote>
               <div className="mt-8 flex items-center gap-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

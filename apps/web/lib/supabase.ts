@@ -52,3 +52,27 @@ export function createServiceClient() {
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 }
+
+// ─── Ensure public.users row exists ─────────────────────────
+// Signup profile creation is fire-and-forget and may not have
+// completed when the user first reaches the dashboard.
+// Call this before any query that depends on the users table.
+export async function ensureUserRow(
+  db: ReturnType<typeof createServiceClient>,
+  user: { id: string; email?: string; user_metadata?: Record<string, any> },
+) {
+  const { data } = await db.from('users').select('*').eq('id', user.id).single();
+  if (data) return data;
+
+  const trialEnds = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString();
+  await db.from('users').insert({
+    id: user.id,
+    email: user.email!,
+    name: user.user_metadata?.name ?? 'User',
+    subscription_status: 'trialing',
+    trial_ends_at: trialEnds,
+  });
+
+  const { data: created } = await db.from('users').select('*').eq('id', user.id).single();
+  return created;
+}

@@ -25,25 +25,28 @@ import {
 type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done';
 
 const STEP_BACKGROUNDS: Record<Step, string> = {
-  goals: '#141a1f',
-  stringer: '#1e2a30', // overridden by STRINGER_SUB_BACKGROUNDS
-  motivator: '#2a3640',
-  preview: '#3a4a58',
-  partner: '#4a5a68',
+  goals: '#0f1218',
+  stringer: '#1a1520',
+  motivator: '#2d1f2e',
+  preview: '#5c3a2e',
+  partner: '#c47a4a',
   done: '#fbf9f8',
 };
 
 // Progressive lightening through the Stringer pillars (alignment → truth → journey)
-const STRINGER_SUB_BACKGROUNDS = ['#111820', '#1a2730', '#253542'];
-
-const STEP_TRANSITION_TEXT: Partial<Record<Step, string>> = {
-  goals: 'Come out',
-  stringer: 'of darkness',
-  motivator: 'and into',
-  partner: 'the light',
-};
+const STRINGER_SUB_BACKGROUNDS = ['#12101a', '#1a1422', '#22182a'];
 
 const FULL_PHRASE_LINES = ['Come out', 'of darkness', 'and into', 'the light'];
+
+// Rising sun: maps each step to translateY offset, opacity, and color
+const SUN_STATES: Record<Step, { y: number; opacity: number; color: string; glow: string }> = {
+  goals:     { y: 60,  opacity: 0.08, color: '#4a2010', glow: 'none' },
+  stringer:  { y: 45,  opacity: 0.15, color: '#6b3020', glow: 'none' },
+  motivator: { y: 30,  opacity: 0.3,  color: '#a04820', glow: 'none' },
+  preview:   { y: 15,  opacity: 0.55, color: '#d4803a', glow: '0 0 20px rgba(212,128,58,0.3)' },
+  partner:   { y: 4,   opacity: 0.8,  color: '#e8a84c', glow: '0 0 30px rgba(232,168,76,0.4)' },
+  done:      { y: -8,  opacity: 1,    color: '#f0c060', glow: '0 0 40px rgba(240,192,96,0.5)' },
+};
 
 const STRINGER_PILLARS = [
   { icon: 'water_drop', heading: 'alignment', title: 'Trace the Tributaries', body: "Your patterns are never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen. Understanding yourself is the first step to alignment.", image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=400&fit=crop' },
@@ -56,8 +59,6 @@ function OnboardingContent() {
   const searchParams = useSearchParams();
   const initialStep = searchParams.get('step');
   const [step, setStepRaw] = useState<Step>(initialStep === 'partner' ? 'partner' : 'goals');
-  const [showTransition, setShowTransition] = useState(false);
-  const [transitionText, setTransitionText] = useState('');
   const [showFullPhrase, setShowFullPhrase] = useState(false);
   const setStep = (s: Step) => {
     // When transitioning to 'done', show the full phrase animation first
@@ -70,19 +71,8 @@ function OnboardingContent() {
       }, 4000);
       return;
     }
-    const text = STEP_TRANSITION_TEXT[s];
-    if (text) {
-      setTransitionText(text);
-      setShowTransition(true);
-      setTimeout(() => {
-        setShowTransition(false);
-        setStepRaw(s);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 1500);
-    } else {
-      setStepRaw(s);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    setStepRaw(s);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   const [goals, setGoals] = useState<GoalCategory[]>([]);
   const [stringerStep, setStringerStep] = useState(0);
@@ -230,18 +220,9 @@ function OnboardingContent() {
       className="min-h-screen flex flex-col items-center justify-center px-4 py-12 overflow-x-hidden w-full max-w-full transition-colors duration-1000"
       style={{ backgroundColor: currentBg }}
     >
-      {/* Shattering text transition overlay */}
-      {showTransition && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ backgroundColor: currentBg }}>
-          <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-white animate-shatter text-center">
-            {transitionText}
-          </h1>
-        </div>
-      )}
-
       {/* Full phrase reveal — "Come out of darkness and into the light" */}
       {showFullPhrase && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: 'linear-gradient(to bottom, #111820, #253542, #fbf9f8)' }}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: 'linear-gradient(to bottom, #0f1218, #2d1f2e, #c47a4a, #fbf9f8)' }}>
           <div className="text-center space-y-2">
             {FULL_PHRASE_LINES.map((line, i) => (
               <h1
@@ -250,7 +231,7 @@ function OnboardingContent() {
                 style={{
                   animation: `phraseReveal 0.6s ease both`,
                   animationDelay: `${i * 0.6}s`,
-                  color: i < 2 ? 'white' : i === 2 ? '#94a3b8' : '#226779',
+                  color: i < 2 ? 'white' : i === 2 ? '#e8a84c' : '#f0c060',
                 }}
               >
                 {line}
@@ -269,6 +250,32 @@ function OnboardingContent() {
       <div className="w-full max-w-md mb-8">
         <div className={`h-1.5 rounded-full overflow-hidden ${isDoneStep ? 'bg-surface-container' : 'bg-white/10'}`}>
           <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${progress * 100}%` }} />
+        </div>
+      </div>
+
+      {/* Rising sun */}
+      <div className="relative w-full max-w-md mb-4 flex justify-center overflow-hidden" style={{ height: '48px' }}>
+        <div
+          className="transition-all duration-1000 ease-out"
+          style={{
+            transform: `translateY(${SUN_STATES[step].y}px)`,
+            opacity: SUN_STATES[step].opacity,
+            filter: SUN_STATES[step].glow !== 'none' ? `drop-shadow(${SUN_STATES[step].glow})` : 'none',
+          }}
+        >
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            {/* Rays */}
+            <line x1="20" y1="2" x2="20" y2="7" stroke={SUN_STATES[step].color} strokeWidth="2" strokeLinecap="round" className="transition-colors duration-1000" />
+            <line x1="20" y1="33" x2="20" y2="38" stroke={SUN_STATES[step].color} strokeWidth="2" strokeLinecap="round" className="transition-colors duration-1000" />
+            <line x1="7" y1="20" x2="2" y2="20" stroke={SUN_STATES[step].color} strokeWidth="2" strokeLinecap="round" className="transition-colors duration-1000" />
+            <line x1="33" y1="20" x2="38" y2="20" stroke={SUN_STATES[step].color} strokeWidth="2" strokeLinecap="round" className="transition-colors duration-1000" />
+            <line x1="9.4" y1="9.4" x2="5.9" y2="5.9" stroke={SUN_STATES[step].color} strokeWidth="2" strokeLinecap="round" className="transition-colors duration-1000" />
+            <line x1="30.6" y1="30.6" x2="34.1" y2="34.1" stroke={SUN_STATES[step].color} strokeWidth="2" strokeLinecap="round" className="transition-colors duration-1000" />
+            <line x1="9.4" y1="30.6" x2="5.9" y2="34.1" stroke={SUN_STATES[step].color} strokeWidth="2" strokeLinecap="round" className="transition-colors duration-1000" />
+            <line x1="30.6" y1="9.4" x2="34.1" y2="5.9" stroke={SUN_STATES[step].color} strokeWidth="2" strokeLinecap="round" className="transition-colors duration-1000" />
+            {/* Sun circle */}
+            <circle cx="20" cy="20" r="8" fill={SUN_STATES[step].color} className="transition-colors duration-1000" />
+          </svg>
         </div>
       </div>
 
@@ -541,17 +548,17 @@ function OnboardingContent() {
             <div>
               <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their name</label>
               <input type="text" value={partnerName} onChange={(e) => setPartnerName(e.target.value)}
-                placeholder="First name" className="w-full px-4 py-3 rounded-2xl bg-stone-800 border-none text-slate-100 placeholder:text-stone-500 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
+                placeholder="First name" className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 text-slate-100 placeholder:text-slate-400 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their email</label>
               <input type="email" value={partnerEmail} onChange={(e) => setPartnerEmail(e.target.value)}
-                placeholder="partner@email.com" className="w-full px-4 py-3 rounded-2xl bg-stone-800 border-none text-slate-100 placeholder:text-stone-500 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
+                placeholder="partner@email.com" className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 text-slate-100 placeholder:text-slate-400 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their phone <span className="text-slate-400 font-normal">(optional — for SMS alerts)</span></label>
               <input type="tel" value={partnerPhone} onChange={handlePhoneChange}
-                placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl bg-stone-800 border-none text-slate-100 placeholder:text-stone-500 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
+                placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 text-slate-100 placeholder:text-slate-400 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Relationship <span className="text-slate-400 font-normal">(select all that apply)</span></label>
@@ -585,7 +592,7 @@ function OnboardingContent() {
                   onChange={(e) => setCustomRelationship(e.target.value)}
                   placeholder="Describe your relationship"
                   maxLength={50}
-                  className="mt-2 w-full px-4 py-3 rounded-2xl bg-stone-800 border-none text-slate-100 placeholder:text-stone-500 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
+                  className="mt-2 w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 text-slate-100 placeholder:text-slate-400 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
                 />
               )}
             </div>
@@ -643,10 +650,11 @@ function OnboardingContent() {
               : "You're starting in solo mode. Your journal and self-reflection guides are ready."}
           </p>
 
-          <a href="/dashboard"
+          <button
+            onClick={() => router.push('/dashboard')}
             className="block w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 text-center">
             Go to Dashboard →
-          </a>
+          </button>
         </div>
       )}
 
