@@ -14,13 +14,15 @@ import {
 } from '@/lib/focusSegments';
 import { onFocusedSegment } from '@/lib/relationshipHooks';
 import { updateRelationshipStreaks } from '@/lib/relationshipEngine';
+import { verifyCronAuth } from '@/lib/cronAuth';
 
-export async function POST(req: NextRequest) {
-  // Verify cron secret
-  const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+// Vercel Crons send GET requests
+export async function GET(req: NextRequest) { return handleCron(req); }
+export async function POST(req: NextRequest) { return handleCron(req); }
+
+async function handleCron(req: NextRequest) {
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   const db = createServiceClient();
 

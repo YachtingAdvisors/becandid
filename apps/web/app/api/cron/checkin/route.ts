@@ -12,13 +12,15 @@ import {
   type CheckInFrequency,
 } from '@/lib/checkInEngine';
 import { generateContextualPrompt } from '@/lib/checkInPrompts';
+import { verifyCronAuth } from '@/lib/cronAuth';
 
-export async function POST(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  const secret = req.headers.get('x-cron-secret') ?? authHeader?.replace('Bearer ', '');
-  if (!process.env.CRON_SECRET || secret !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+// Vercel Crons send GET requests
+export async function GET(req: NextRequest) { return handleCron(req); }
+export async function POST(req: NextRequest) { return handleCron(req); }
+
+async function handleCron(req: NextRequest) {
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   const db = createServiceClient();
   const results = { sent: 0, skipped: 0, expired: 0, errors: 0 };

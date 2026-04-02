@@ -12,6 +12,7 @@
     "@anthropic-ai/sdk": "^0.30.0",
     "@be-candid/shared": "*",
     "@google/generative-ai": "^0.24.1",
+    "@sentry/nextjs": "^10.47.0",
     "@supabase/ssr": "^0.5.0",
     "@supabase/supabase-js": "^2.45.0",
     "next": "^14.2.0",

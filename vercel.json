@@ -4,12 +4,12 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "crons": [
-    { "path": "/api/cron/focus-segments", "schedule": "30 5 * * *" },
     { "path": "/api/cron/checkin", "schedule": "0 * * * *" },
-    { "path": "/api/cron/journal-reminders", "schedule": "15 * * * *" },
-    { "path": "/api/cron/patterns", "schedule": "0 6 * * *" },
     { "path": "/api/cron/digest", "schedule": "0 8 * * 1" },
     { "path": "/api/cron/reengagement", "schedule": "0 10 * * *" },
-    { "path": "/api/cron/weekly-reflection", "schedule": "0 7 * * 0" }
+    { "path": "/api/cron/patterns", "schedule": "0 */6 * * *" },
+    { "path": "/api/cron/journal-reminders", "schedule": "0 8,10,12,14,16,18,20 * * *" },
+    { "path": "/api/cron/weekly-reflection", "schedule": "0 19 * * 0" },
+    { "path": "/api/cron/focus-segments", "schedule": "0 5,17 * * *" }
   ]
 }

@@ -20,6 +20,7 @@ import {
   JOURNAL_NOTIFICATION_PROMPTS,
   STRINGER_QUOTES,
 } from '@be-candid/shared';
+import { verifyCronAuth } from '@/lib/cronAuth';
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@becandid.io>';
@@ -45,12 +46,9 @@ function getCurrentHourInTimezone(tz: string): number {
 }
 
 export async function GET(req: NextRequest) {
-  // Verify cron secret
-  const secret = req.headers.get('authorization')?.replace('Bearer ', '')
-    || req.headers.get('x-cron-secret');
-  if (secret !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  // Verify cron secret (supports Vercel Crons Bearer header + custom x-cron-secret)
+  const authError = verifyCronAuth(req);
+  if (authError) return authError;
 
   const db = createServiceClient();
   const now = new Date();
