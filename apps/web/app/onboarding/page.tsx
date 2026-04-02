@@ -26,12 +26,15 @@ type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done';
 
 const STEP_BACKGROUNDS: Record<Step, string> = {
   goals: '#141a1f',
-  stringer: '#1e2a30',
+  stringer: '#1e2a30', // overridden by STRINGER_SUB_BACKGROUNDS
   motivator: '#2a3640',
   preview: '#3a4a58',
   partner: '#4a5a68',
   done: '#fbf9f8',
 };
+
+// Progressive lightening through the Stringer pillars (alignment → truth → journey)
+const STRINGER_SUB_BACKGROUNDS = ['#111820', '#1a2730', '#253542'];
 
 const STEP_TRANSITION_TEXT: Partial<Record<Step, string>> = {
   goals: 'Come out',
@@ -204,14 +207,19 @@ function OnboardingContent() {
 
   const isDoneStep = step === 'done';
 
+  // Compute background — within the stringer step, progressively lighten
+  const currentBg = step === 'stringer'
+    ? STRINGER_SUB_BACKGROUNDS[stringerStep] ?? STEP_BACKGROUNDS.stringer
+    : STEP_BACKGROUNDS[step];
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-4 py-12 overflow-x-hidden w-full max-w-full transition-colors duration-1000"
-      style={{ backgroundColor: STEP_BACKGROUNDS[step] }}
+      style={{ backgroundColor: currentBg }}
     >
       {/* Shattering text transition overlay */}
       {showTransition && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ backgroundColor: STEP_BACKGROUNDS[step] }}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ backgroundColor: currentBg }}>
           <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-white animate-shatter text-center">
             {transitionText}
           </h1>
