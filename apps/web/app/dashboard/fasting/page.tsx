@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { GOAL_LABELS, getCategoryEmoji, type GoalCategory, ALL_GOAL_CATEGORIES } from '@be-candid/shared';
 
 /* ── Types ───────────────────────────────────────────────── */
 
@@ -254,19 +255,54 @@ export default function FastingPage() {
             </button>
           </div>
 
-          {/* Label */}
+          {/* Category selector */}
           <div>
-            <label className="block text-sm font-label font-medium text-on-surface-variant mb-1.5">
+            <label className="block text-sm font-label font-medium text-on-surface-variant mb-2">
               What are you fasting from?
             </label>
-            <input
-              type="text"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              placeholder="e.g. Reading the news, Reddit, Twitter, YouTube"
-              maxLength={200}
-              className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
-            />
+            <div className="flex flex-wrap gap-2 mb-3">
+              {ALL_GOAL_CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => {
+                    setLabel(GOAL_LABELS[cat]);
+                  }}
+                  className={`px-3 py-2 rounded-full text-xs font-label font-medium transition-all cursor-pointer ${
+                    label === GOAL_LABELS[cat]
+                      ? 'bg-primary text-on-primary shadow-md shadow-primary/20'
+                      : 'bg-surface-container-low text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30'
+                  }`}
+                >
+                  {getCategoryEmoji(cat)} {GOAL_LABELS[cat]}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setLabel('')}
+                className={`px-3 py-2 rounded-full text-xs font-label font-medium transition-all cursor-pointer ${
+                  label !== '' && !Object.values(GOAL_LABELS).includes(label)
+                    ? 'bg-primary text-on-primary shadow-md shadow-primary/20'
+                    : 'bg-surface-container-low text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30'
+                }`}
+              >
+                Other
+              </button>
+            </div>
+            {/* Custom input shown when no category matches or "Other" selected */}
+            {!Object.values(GOAL_LABELS).includes(label) && (
+              <input
+                type="text"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder="e.g. Reading the news, Reddit, YouTube"
+                maxLength={200}
+                className="w-full px-4 py-3 rounded-2xl border border-outline-variant text-sm font-body text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+            )}
+            <p className="text-[10px] text-on-surface-variant/60 font-label mt-1.5">
+              Fasts tied to your rivals are actively monitored — any flagged activity during a fast will be highlighted.
+            </p>
           </div>
 
           {/* Duration */}
