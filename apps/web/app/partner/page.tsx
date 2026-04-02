@@ -82,7 +82,7 @@ export default function PartnerIndexPage() {
           </h1>
         </div>
         <p className="text-sm font-body text-on-surface-variant">
-          You're their accountability partner. Here's how they're doing.
+          You&apos;re their contender &mdash; someone willing to be candid because you care about who they&apos;ll be tomorrow, not just how they feel today.
         </p>
       </div>
 

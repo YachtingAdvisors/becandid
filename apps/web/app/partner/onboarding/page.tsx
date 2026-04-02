@@ -8,13 +8,19 @@ const STEPS = [
   {
     icon: 'favorite',
     title: 'You Matter Here',
-    body: 'Someone chose you because they trust you. Being an accountability partner isn\'t about policing — it\'s about showing up. Your presence alone makes a difference.',
+    body: 'Someone chose you because they trust you. Being a partner isn\'t about policing — it\'s about showing up with honesty and care. Your presence alone makes a difference.',
     highlight: 'You don\'t need to fix anything. Just be present.',
+  },
+  {
+    icon: 'shield_person',
+    title: 'You\'re a Contender',
+    body: 'A contender is someone willing to be candid — to ask the questions that show you care about not just how they feel today, but who they\'ll be tomorrow and across a lifetime. That takes courage.',
+    highlight: 'Support them by telling them the truth with love.',
   },
   {
     icon: 'forum',
     title: 'When Alerts Come',
-    body: 'If your partner gets flagged, you\'ll receive a notification with an AI-generated conversation guide. It tells you what to say, what NOT to say, and how to lead with curiosity instead of judgment. Read it before you talk.',
+    body: 'If your partner gets flagged, you\'ll receive a notification with an AI conversation guide. It tells you what to say, what NOT to say, and how to lead with curiosity instead of judgment. Read it before you talk.',
     highlight: 'The guide is your playbook. Use it.',
   },
   {

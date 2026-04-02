@@ -250,9 +250,12 @@ function OnboardingContent() {
 
           {/* Rivals philosophy */}
           <div className="mb-8 px-5 py-4 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/5 ring-1 ring-primary/10">
-            <p className="text-sm text-slate-300 leading-relaxed font-body">
-              <strong className="text-primary">Why &ldquo;Rivals&rdquo;?</strong> &mdash; A rival isn&rsquo;t a verdict on your character. It&rsquo;s a worthy opponent &mdash; something that pushes back, and in doing so, reveals where you&rsquo;re growing.
+            <p className="text-sm text-slate-300 leading-relaxed font-body mb-3">
+              <strong className="text-cyan-400">Why &ldquo;Rivals&rdquo;?</strong> &mdash; A rival isn&rsquo;t a verdict on your character. It&rsquo;s a worthy opponent &mdash; something that pushes back, and in doing so, reveals where you&rsquo;re growing.
               Every encounter you face honestly makes you sharper. Name the ones that challenge you most. That honesty is the first act of strength.
+            </p>
+            <p className="text-xs text-cyan-400/80 font-label italic">
+              Shine a light on the things that far too often stay in the dark.
             </p>
           </div>
 

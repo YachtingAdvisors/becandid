@@ -435,7 +435,7 @@ export default function LandingPage() {
                     href="/auth/signup"
                     className="group px-10 py-4 bg-white text-primary rounded-full font-label font-bold text-base shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
                   >
-                    Start Your Sanctuary Now
+                    Begin Your Journey
                     <MaterialIcon name="arrow_forward" className="text-lg group-hover:translate-x-0.5 transition-transform duration-200" />
                   </Link>
                 </div>

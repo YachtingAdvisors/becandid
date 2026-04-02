@@ -17,7 +17,7 @@ export default function SignupConsent({ checked, onChange }: SignupConsentProps)
         className="mt-0.5 w-4 h-4 rounded border-stone-600 text-primary focus:ring-2 focus:ring-cyan-500/20 shrink-0 accent-primary cursor-pointer transition-all duration-200"
       />
       <span className="text-xs text-stone-400 leading-relaxed font-body group-hover:text-stone-300 transition-colors duration-200">
-        I am at least 18 years old and agree to the{' '}
+        I agree to the{' '}
         <Link href="/legal/terms" target="_blank" className="text-cyan-400 hover:underline font-medium transition-colors duration-200">Terms of Service</Link>
         {' '}and{' '}
         <Link href="/legal/privacy" target="_blank" className="text-cyan-400 hover:underline font-medium transition-colors duration-200">Privacy Policy</Link>.

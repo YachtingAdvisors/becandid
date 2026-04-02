@@ -54,26 +54,32 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
               type="button"
               onClick={() => toggleGoal(cat.id)}
               disabled={disabled}
-              className={`group relative flex flex-col p-5 rounded-xl text-left transition-all hover:bg-surface-container-low active:scale-[0.98] outline-none disabled:opacity-50 ${
+              className={`group relative flex flex-col p-5 rounded-xl text-left transition-all active:scale-[0.98] outline-none disabled:opacity-50 ${
                 isSelected
-                  ? 'bg-primary-container/20 shadow-[0_0_0_2px_#226779]'
-                  : 'bg-surface-container-lowest'
+                  ? 'bg-white shadow-[0_0_0_2px_#22d3ee] shadow-lg'
+                  : 'bg-white/[0.06] backdrop-blur-md border border-white/10 hover:bg-white/[0.1]'
               }`}
             >
               <div className="mb-4 flex justify-between items-start">
-                <div className="w-11 h-11 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+                <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
+                  isSelected ? 'bg-primary/10 text-primary' : 'bg-white/10 text-slate-400'
+                }`}>
                   <span className="material-symbols-outlined text-xl">{cat.icon}</span>
                 </div>
                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                  isSelected ? 'border-primary' : 'border-outline-variant'
+                  isSelected ? 'border-primary' : 'border-white/20'
                 }`}>
                   <div className={`w-3 h-3 rounded-full bg-primary transition-opacity ${
                     isSelected ? 'opacity-100' : 'opacity-0'
                   }`} />
                 </div>
               </div>
-              <h3 className="font-headline font-bold text-sm text-on-surface mb-1">{GOAL_LABELS[cat.id]}</h3>
-              <p className="font-body text-xs text-on-surface-variant leading-snug">{GOAL_DESCRIPTIONS[cat.id]}</p>
+              <h3 className={`font-headline font-bold text-sm mb-1 transition-colors ${
+                isSelected ? 'text-on-surface' : 'text-slate-200'
+              }`}>{GOAL_LABELS[cat.id]}</h3>
+              <p className={`font-body text-xs leading-snug transition-colors ${
+                isSelected ? 'text-on-surface-variant' : 'text-slate-400'
+              }`}>{GOAL_DESCRIPTIONS[cat.id]}</p>
             </button>
           );
         })}
@@ -84,10 +90,10 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
         type="button"
         onClick={() => toggleGoal('custom')}
         disabled={disabled}
-        className={`w-full mt-4 flex items-center gap-4 p-5 rounded-xl text-left transition-all hover:bg-surface-container-low active:scale-[0.98] outline-none disabled:opacity-50 ${
+        className={`w-full mt-4 flex items-center gap-4 p-5 rounded-xl text-left transition-all active:scale-[0.98] outline-none disabled:opacity-50 ${
           selected.includes('custom')
-            ? 'bg-primary-container/20 shadow-[0_0_0_2px_#226779]'
-            : 'bg-surface-container-lowest border-2 border-dashed border-outline-variant'
+            ? 'bg-white shadow-[0_0_0_2px_#22d3ee] shadow-lg'
+            : 'bg-white/[0.06] backdrop-blur-md border-2 border-dashed border-white/10 hover:bg-white/[0.1]'
         }`}
       >
         <div className="w-11 h-11 rounded-full bg-secondary-container flex items-center justify-center text-primary">
