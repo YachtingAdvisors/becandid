@@ -133,14 +133,6 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
         </div>
       </div>
 
-      {/* Selection summary */}
-      <div className="text-center pt-4">
-        <span className={`text-sm font-medium font-label ${selected.length > 0 ? 'text-primary' : 'text-on-surface-variant'}`}>
-          {selected.length === 0
-            ? 'Select at least one area to monitor'
-            : `${selected.length} area${selected.length !== 1 ? 's' : ''} selected`}
-        </span>
-      </div>
     </div>
   );
 }
