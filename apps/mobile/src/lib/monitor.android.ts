@@ -8,9 +8,18 @@
 // Package name → GoalCategory mapping for ~20 common apps.
 // ============================================================
 
-import { NativeModules, PermissionsAndroid } from 'react-native';
 import { checkUrlOnDevice } from './contentFilter.client';
 import { recordAppUsage } from './screenTime.client';
+
+// Import the native module from the local Expo module.
+// Falls back to null when running in Expo Go (no native code).
+let UsageStatsModule: typeof import('../../modules/usage-stats').default | null = null;
+try {
+  UsageStatsModule = require('../../modules/usage-stats').default;
+} catch {
+  // Native module not available (e.g. Expo Go)
+  UsageStatsModule = null;
+}
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -81,18 +90,18 @@ export async function requestUsageStatsPermission(): Promise<boolean> {
     // PACKAGE_USAGE_STATS is not a runtime permission — it must be
     // granted via the Settings UI. We use the native module to check
     // and open the settings page if needed.
-    if (NativeModules.UsageStats && typeof NativeModules.UsageStats.hasPermission === 'function') {
-      const hasPermission: boolean = await NativeModules.UsageStats.hasPermission();
-      if (!hasPermission && typeof NativeModules.UsageStats.requestPermission === 'function') {
-        await NativeModules.UsageStats.requestPermission();
+    if (UsageStatsModule) {
+      const hasPermission: boolean = await UsageStatsModule.hasPermission();
+      if (!hasPermission) {
+        await UsageStatsModule.requestPermission();
       }
       return hasPermission;
     }
 
     // Expo Go fallback — native module not available
     console.warn(
-      '[Monitor:Android] NativeModules.UsageStats not available. ' +
-      'Run `expo prebuild` and implement the native module to enable usage stats.'
+      '[Monitor:Android] UsageStats native module not available. ' +
+      'Run `expo prebuild` to enable usage stats.'
     );
     return false;
   } catch (e) {
@@ -107,13 +116,13 @@ export async function requestUsageStatsPermission(): Promise<boolean> {
  */
 export async function getAndroidUsageStats(hours: number): Promise<UsageStat[]> {
   try {
-    if (NativeModules.UsageStats && typeof NativeModules.UsageStats.queryUsageStats === 'function') {
-      const stats: UsageStat[] = await NativeModules.UsageStats.queryUsageStats(hours);
+    if (UsageStatsModule) {
+      const stats: UsageStat[] = await UsageStatsModule.queryUsageStats(hours);
       return Array.isArray(stats) ? stats : [];
     }
 
     console.warn(
-      '[Monitor:Android] NativeModules.UsageStats.queryUsageStats not available — returning empty array.'
+      '[Monitor:Android] UsageStats native module not available — returning empty array.'
     );
     return [];
   } catch (e) {

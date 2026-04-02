@@ -37,19 +37,42 @@ const PROMPTS = [
   {
     key: 'tributaries',
     title: 'Trace the Tributaries',
+    subtitle: 'The Stringer Framework',
     placeholder: 'What feelings or events led to where you are right now?',
+    icon: 'water-outline' as const,
   },
   {
     key: 'longing',
     title: 'Name the Longing',
+    subtitle: 'Beneath the surface',
     placeholder: 'What is it you truly want or need beneath the surface?',
+    icon: 'heart-outline' as const,
   },
   {
     key: 'roadmap',
     title: 'Follow the Roadmap',
+    subtitle: 'One step forward',
     placeholder: 'What is one small step you can take forward from here?',
+    icon: 'map-outline' as const,
   },
 ] as const;
+
+const TAGS = [
+  'temptation', 'victory', 'trigger', 'grateful', 'lonely',
+  'stressed', 'hopeful', 'accountable', 'relapse', 'growth',
+] as const;
+
+// Brand colors
+const C = {
+  primary: '#226779',
+  background: '#fbf9f8',
+  surface: '#ffffff',
+  onSurface: '#1a1a2e',
+  onSurfaceVariant: '#6b7280',
+  error: '#ef4444',
+  emerald: '#10b981',
+  border: '#e5e7eb',
+} as const;
 
 type JournalEntry = {
   id: string;
@@ -71,6 +94,7 @@ export default function JournalScreen() {
   const [freewrite, setFreewrite] = useState('');
   const [guidedResponses, setGuidedResponses] = useState<Record<string, string>>({});
   const [expandedPrompt, setExpandedPrompt] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   const fetchEntries = useCallback(async () => {
@@ -133,6 +157,7 @@ export default function JournalScreen() {
         mood: moodLabel,
         content,
         guided_responses: Object.keys(guided).length > 0 ? guided : undefined,
+        tags: selectedTags.length > 0 ? selectedTags : undefined,
       });
 
       if (error) {
@@ -146,6 +171,7 @@ export default function JournalScreen() {
       setGuidedResponses({});
       setSelectedMood(null);
       setExpandedPrompt(null);
+      setSelectedTags([]);
       setWriteMode(false);
       await fetchEntries();
     } catch (e) {
@@ -246,37 +272,86 @@ export default function JournalScreen() {
               ))}
             </View>
 
-            {/* Guided Prompts */}
-            <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Guided Prompts</Text>
-            {PROMPTS.map((prompt) => (
-              <View key={prompt.key} style={styles.promptSection}>
-                <Pressable
-                  style={styles.promptHeader}
-                  onPress={() =>
-                    setExpandedPrompt(expandedPrompt === prompt.key ? null : prompt.key)
-                  }
-                >
-                  <Text style={styles.promptTitle}>{prompt.title}</Text>
-                  <Ionicons
-                    name={expandedPrompt === prompt.key ? 'chevron-up' : 'chevron-down'}
-                    size={18}
-                    color="#6b7280"
-                  />
-                </Pressable>
-                {expandedPrompt === prompt.key && (
-                  <TextInput
-                    style={styles.promptInput}
-                    placeholder={prompt.placeholder}
-                    placeholderTextColor="#9ca3af"
-                    multiline
-                    value={guidedResponses[prompt.key] ?? ''}
-                    onChangeText={(text) =>
-                      setGuidedResponses((prev) => ({ ...prev, [prompt.key]: text }))
+            {/* Guided Prompts (Stringer Framework) */}
+            <View style={styles.sectionLabelRow}>
+              <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Stringer Framework</Text>
+              <Text style={styles.sectionHint}>Tap to expand</Text>
+            </View>
+            {PROMPTS.map((prompt) => {
+              const isExpanded = expandedPrompt === prompt.key;
+              const hasContent = !!(guidedResponses[prompt.key]?.trim());
+              return (
+                <View key={prompt.key} style={[styles.promptSection, isExpanded && styles.promptSectionExpanded]}>
+                  <Pressable
+                    style={styles.promptHeader}
+                    onPress={() =>
+                      setExpandedPrompt(isExpanded ? null : prompt.key)
                     }
-                  />
-                )}
-              </View>
-            ))}
+                  >
+                    <View style={styles.promptHeaderLeft}>
+                      <Ionicons
+                        name={prompt.icon}
+                        size={18}
+                        color={isExpanded ? C.primary : C.onSurfaceVariant}
+                      />
+                      <View>
+                        <Text style={[styles.promptTitle, isExpanded && styles.promptTitleActive]}>
+                          {prompt.title}
+                        </Text>
+                        <Text style={styles.promptSubtitle}>{prompt.subtitle}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.promptHeaderRight}>
+                      {hasContent && !isExpanded && (
+                        <Ionicons name="checkmark-circle" size={16} color={C.emerald} />
+                      )}
+                      <Ionicons
+                        name={isExpanded ? 'chevron-up' : 'chevron-down'}
+                        size={18}
+                        color={C.onSurfaceVariant}
+                      />
+                    </View>
+                  </Pressable>
+                  {isExpanded && (
+                    <TextInput
+                      style={styles.promptInput}
+                      placeholder={prompt.placeholder}
+                      placeholderTextColor="#9ca3af"
+                      multiline
+                      value={guidedResponses[prompt.key] ?? ''}
+                      onChangeText={(text) =>
+                        setGuidedResponses((prev) => ({ ...prev, [prompt.key]: text }))
+                      }
+                    />
+                  )}
+                </View>
+              );
+            })}
+
+            {/* Tags */}
+            <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Tags</Text>
+            <View style={styles.tagsSelector}>
+              {TAGS.map((tag) => {
+                const isSelected = selectedTags.includes(tag);
+                return (
+                  <Pressable
+                    key={tag}
+                    style={[styles.tagChip, isSelected && styles.tagChipSelected]}
+                    onPress={() => {
+                      setSelectedTags((prev) =>
+                        isSelected
+                          ? prev.filter((t) => t !== tag)
+                          : [...prev, tag]
+                      );
+                    }}
+                  >
+                    <Text style={[styles.tagChipText, isSelected && styles.tagChipTextSelected]}>
+                      {tag}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
 
             {/* Freewrite */}
             <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Freewrite</Text>
@@ -489,6 +564,17 @@ const styles = StyleSheet.create({
     color: '#374151',
     marginBottom: 10,
   },
+  sectionLabelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+  sectionHint: {
+    fontSize: 12,
+    color: '#9ca3af',
+    marginBottom: 10,
+    marginTop: 20,
+  },
   moodRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -513,12 +599,16 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   promptSection: {
-    backgroundColor: '#ffffff',
+    backgroundColor: C.surface,
     borderRadius: 10,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: C.border,
     overflow: 'hidden',
+  },
+  promptSectionExpanded: {
+    borderColor: C.primary,
+    borderWidth: 1.5,
   },
   promptHeader: {
     flexDirection: 'row',
@@ -526,10 +616,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 14,
   },
+  promptHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+  },
+  promptHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   promptTitle: {
     fontSize: 15,
     fontWeight: '500',
     color: '#374151',
+  },
+  promptTitleActive: {
+    color: C.primary,
+    fontWeight: '600',
+  },
+  promptSubtitle: {
+    fontSize: 11,
+    color: '#9ca3af',
+    marginTop: 1,
   },
   promptInput: {
     paddingHorizontal: 14,
@@ -540,15 +650,42 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   freewriteInput: {
-    backgroundColor: '#ffffff',
+    backgroundColor: C.surface,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: C.border,
     padding: 14,
     fontSize: 15,
-    color: '#1f2937',
+    color: C.onSurface,
     minHeight: 140,
     textAlignVertical: 'top',
     marginBottom: 40,
+  },
+  // Tag selector
+  tagsSelector: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  tagChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 16,
+    backgroundColor: C.surface,
+    borderWidth: 1,
+    borderColor: C.border,
+  },
+  tagChipSelected: {
+    backgroundColor: '#e0f2f1',
+    borderColor: C.primary,
+  },
+  tagChipText: {
+    fontSize: 13,
+    color: C.onSurfaceVariant,
+    fontWeight: '500',
+  },
+  tagChipTextSelected: {
+    color: C.primary,
+    fontWeight: '600',
   },
 });

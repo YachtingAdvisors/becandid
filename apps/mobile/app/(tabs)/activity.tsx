@@ -43,13 +43,27 @@ const DURATION_PRESETS = [
   { label: '60 min', value: 60 },
 ] as const;
 
+// Brand colors
+const C = {
+  primary: '#226779',
+  background: '#fbf9f8',
+  surface: '#ffffff',
+  onSurface: '#1a1a2e',
+  onSurfaceVariant: '#6b7280',
+  error: '#ef4444',
+  emerald: '#10b981',
+  border: '#e5e7eb',
+} as const;
+
 type EventItem = {
   id: string;
   category: string;
   severity: number;
   platform?: string;
+  domain?: string;
   created_at: string;
   metadata?: Record<string, any>;
+  contested?: boolean;
 };
 
 export default function ActivityScreen() {
@@ -168,26 +182,100 @@ export default function ActivityScreen() {
     }
   }, [logCategory, logDuration, logNote, fetchEvents]);
 
+  const handleContest = useCallback(
+    async (eventId: string) => {
+      Alert.alert(
+        'Contest This Event',
+        'If you believe this was flagged incorrectly, you can contest it. Your partner will be notified.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Contest',
+            style: 'default',
+            onPress: async () => {
+              try {
+                const session = await getSession();
+                if (!session) return;
+
+                const res = await fetch(`${API_URL}/api/events/${eventId}/contest`, {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${session.access_token}`,
+                    'Content-Type': 'application/json',
+                  },
+                });
+
+                if (res.ok) {
+                  Alert.alert('Contested', 'Your contest has been submitted.');
+                  await fetchEvents();
+                } else {
+                  Alert.alert('Error', 'Failed to contest event.');
+                }
+              } catch {
+                Alert.alert('Error', 'Something went wrong.');
+              }
+            },
+          },
+        ]
+      );
+    },
+    [fetchEvents]
+  );
+
+  const getDomainDisplay = (item: EventItem): string | null => {
+    if (item.domain) return item.domain;
+    if (item.metadata?.domain) return item.metadata.domain;
+    if (item.metadata?.url) {
+      try {
+        return new URL(item.metadata.url).hostname;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  };
+
   const renderEvent = ({ item }: { item: EventItem }) => {
     const cat = getCategoryInfo(item.category);
     const sev = getSeverityBadge(item.severity);
+    const domain = getDomainDisplay(item);
 
     return (
       <View style={styles.eventRow}>
         <View style={styles.eventLeft}>
-          <Text style={styles.eventEmoji}>{cat.emoji}</Text>
-          <View>
+          <View style={[styles.eventEmojiCircle, { backgroundColor: sev.bg }]}>
+            <Text style={styles.eventEmoji}>{cat.emoji}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.eventCategory}>{cat.label}</Text>
-            {item.platform && (
+            {domain && (
+              <Text style={styles.eventDomain} numberOfLines={1}>{domain}</Text>
+            )}
+            {!domain && item.platform && (
               <Text style={styles.eventPlatform}>{item.platform}</Text>
             )}
           </View>
         </View>
         <View style={styles.eventRight}>
           <View style={[styles.severityBadge, { backgroundColor: sev.bg }]}>
+            <View style={[styles.severityDot, { backgroundColor: sev.color }]} />
             <Text style={[styles.severityText, { color: sev.color }]}>{sev.label}</Text>
           </View>
           <Text style={styles.eventTime}>{timeAgo(item.created_at)}</Text>
+          {!item.contested && item.severity >= 4 && (
+            <Pressable
+              style={styles.contestButton}
+              onPress={() => handleContest(item.id)}
+            >
+              <Ionicons name="flag-outline" size={12} color={C.primary} />
+              <Text style={styles.contestText}>Contest</Text>
+            </Pressable>
+          )}
+          {item.contested && (
+            <View style={styles.contestedBadge}>
+              <Text style={styles.contestedText}>Contested</Text>
+            </View>
+          )}
         </View>
       </View>
     );
@@ -420,25 +508,40 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: C.surface,
     borderRadius: 12,
     padding: 14,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: C.border,
   },
   eventLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    flex: 1,
+    marginRight: 10,
+  },
+  eventEmojiCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   eventEmoji: {
-    fontSize: 22,
+    fontSize: 18,
   },
   eventCategory: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#1f2937',
+    color: C.onSurface,
+  },
+  eventDomain: {
+    fontSize: 12,
+    color: C.primary,
+    marginTop: 2,
+    opacity: 0.8,
   },
   eventPlatform: {
     fontSize: 12,
@@ -450,9 +553,17 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   severityBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 10,
+    gap: 4,
+  },
+  severityDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   severityText: {
     fontSize: 11,
@@ -461,6 +572,32 @@ const styles = StyleSheet.create({
   eventTime: {
     fontSize: 12,
     color: '#9ca3af',
+  },
+  contestButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: C.border,
+  },
+  contestText: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: C.primary,
+  },
+  contestedBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    backgroundColor: '#fef3c7',
+  },
+  contestedText: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: '#ca8a04',
   },
   emptyState: {
     flex: 1,

@@ -10,6 +10,7 @@ export interface BlogPost {
   author: string;
   readTime: string;
   tags: string[];
+  image?: string; // Featured image URL
   content: string; // HTML
 }
 
