@@ -181,7 +181,7 @@ export async function backfillAndScoreDay(
     .select('action')
     .eq('user_id', userId)
     .gte('created_at', `${date}T00:00:00`)
-    .lt('created_at', `${date}T23:59:59`)
+    .lt('created_at', `${date}T23:59:59.999Z`)
     .in('action', ['focused_morning', 'focused_evening', 'focused_full_day']);
 
   const alreadyAwarded = new Set((existingPoints || []).map(p => p.action));
@@ -245,7 +245,7 @@ export async function calculateFocusStreak(
   const cursor = new Date(today);
 
   while (true) {
-    const dateStr = cursor.toLocaleDateString('en-CA');
+    const dateStr = cursor.toLocaleDateString('en-CA', { timeZone: timezone });
     const day = byDate.get(dateStr);
 
     if (!day) break; // no data for this date

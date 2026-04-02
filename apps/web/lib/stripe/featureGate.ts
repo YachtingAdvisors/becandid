@@ -130,8 +130,10 @@ export async function checkPartnerLimit(userId: string): Promise<GateResult & { 
     return {
       allowed: false,
       plan,
-      reason: `Free plan allows ${limits.maxPartners} partners. Upgrade to Pro for up to 5.`,
-      requiredPlan: 'pro',
+      reason: plan === 'pro'
+        ? `Pro plan allows ${limits.maxPartners} partners. Upgrade to Therapy for unlimited.`
+        : `Free plan allows ${limits.maxPartners} partner. Upgrade to Pro for up to 5.`,
+      requiredPlan: plan === 'pro' ? 'therapy' : 'pro',
       count: partnerCount,
       limit: limits.maxPartners,
     };

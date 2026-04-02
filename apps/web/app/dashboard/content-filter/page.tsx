@@ -42,6 +42,7 @@ function timeAgo(timestamp: string): string {
 export default function ContentFilterPage() {
   const [data, setData] = useState<ContentFilterPageData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState('');
   const [newBlockDomain, setNewBlockDomain] = useState('');
   const [newAllowDomain, setNewAllowDomain] = useState('');
 
@@ -49,7 +50,8 @@ export default function ContentFilterPage() {
     fetch('/api/content-filter/details')
       .then((r) => r.json())
       .then((d) => setData(d))
-      .catch(() =>
+      .catch(() => {
+        setFetchError('Failed to load settings. Using defaults.');
         setData({
           level: 'standard',
           blocklist: [],
@@ -57,8 +59,8 @@ export default function ContentFilterPage() {
           recent_log: [],
           is_teen: false,
           guardian_locked: false,
-        })
-      )
+        });
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -119,6 +121,13 @@ export default function ContentFilterPage() {
           Manage content filtering to block harmful or unwanted websites.
         </p>
       </div>
+
+      {fetchError && (
+        <div className="bg-error/10 rounded-2xl px-4 py-3 text-xs text-error font-body flex items-center gap-2">
+          <span className="material-symbols-outlined text-sm">warning</span>
+          {fetchError}
+        </div>
+      )}
 
       {isTeen && guardianLocked && (
         <div className="bg-tertiary-container/40 rounded-2xl px-4 py-3 text-xs text-on-tertiary-container font-body">

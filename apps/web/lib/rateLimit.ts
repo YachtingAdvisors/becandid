@@ -5,12 +5,22 @@
 // ============================================================
 
 const STORE = new Map<string, { count: number; resetAt: number }>();
+const MAX_ENTRIES = 10000;
 
 // Clean stale entries every 5 minutes
 setInterval(() => {
   const now = Date.now();
   for (const [key, val] of STORE) {
     if (now > val.resetAt) STORE.delete(key);
+  }
+
+  // Evict oldest entries if map still exceeds limit
+  if (STORE.size > MAX_ENTRIES) {
+    const sorted = [...STORE.entries()].sort((a, b) => a[1].resetAt - b[1].resetAt);
+    const toRemove = sorted.slice(0, STORE.size - MAX_ENTRIES);
+    for (const [key] of toRemove) {
+      STORE.delete(key);
+    }
   }
 }, 300_000);
 

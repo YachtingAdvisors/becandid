@@ -64,7 +64,7 @@ export async function ensureUserRow(
   const { data } = await db.from('users').select('*').eq('id', user.id).single();
   if (data) return data;
 
-  const trialEnds = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString();
+  const trialEnds = new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString();
   await db.from('users').insert({
     id: user.id,
     email: user.email!,

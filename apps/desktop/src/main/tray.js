@@ -103,7 +103,7 @@ function updateTrayMenu() {
         const { getAccessToken, getRefreshToken } = require('./auth');
         const token = getAccessToken();
         const url = token
-          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard`
+          ? `https://becandid.io/api/auth/token-login#token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard`
           : 'https://becandid.io/dashboard';
         shell.openExternal(url);
       },
@@ -114,7 +114,7 @@ function updateTrayMenu() {
         const { getAccessToken, getRefreshToken } = require('./auth');
         const token = getAccessToken();
         const url = token
-          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard/stringer-journal?action=write`
+          ? `https://becandid.io/api/auth/token-login#token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard/stringer-journal?action=write`
           : 'https://becandid.io/dashboard/stringer-journal';
         shell.openExternal(url);
       },
@@ -125,7 +125,7 @@ function updateTrayMenu() {
         const { getAccessToken, getRefreshToken } = require('./auth');
         const token = getAccessToken();
         const url = token
-          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard/activity`
+          ? `https://becandid.io/api/auth/token-login#token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard/activity`
           : 'https://becandid.io/dashboard/activity';
         shell.openExternal(url);
       },
@@ -136,7 +136,7 @@ function updateTrayMenu() {
         const { getAccessToken, getRefreshToken } = require('./auth');
         const token = getAccessToken();
         const url = token
-          ? `https://becandid.io/api/auth/token-login?token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard`
+          ? `https://becandid.io/api/auth/token-login#token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard`
           : 'https://becandid.io/dashboard';
         shell.openExternal(url);
       },

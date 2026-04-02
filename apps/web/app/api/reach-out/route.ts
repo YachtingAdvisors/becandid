@@ -11,10 +11,15 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { auditLog, escapeHtml } from '@/lib/security';
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
 
   const body = await req.json().catch(() => ({}));
   const message = typeof body.message === 'string' ? body.message.slice(0, 200).trim() : '';
@@ -71,17 +76,17 @@ export async function POST(req: NextRequest) {
       await resend.emails.send({
         from: 'Be Candid <alerts@becandid.io>',
         to: partnership.partner_email,
-        subject: `${userName} is reaching out`,
+        subject: `${escapeHtml(userName)} is reaching out`,
         html: `
           <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto;">
-            <h2 style="color: #226779;">🤝 ${userName} is reaching out</h2>
+            <h2 style="color: #226779;">🤝 ${escapeHtml(userName)} is reaching out</h2>
             ${message
-              ? `<p style="background: #f0f9ff; padding: 16px; border-radius: 12px; border-left: 4px solid #226779; font-style: italic; margin: 20px 0;">"${message}"</p>`
-              : `<p>${userName} could use your support right now.</p>`
+              ? `<p style="background: #f0f9ff; padding: 16px; border-radius: 12px; border-left: 4px solid #226779; font-style: italic; margin: 20px 0;">"${escapeHtml(message)}"</p>`
+              : `<p>${escapeHtml(userName)} could use your support right now.</p>`
             }
             <p>A simple check-in can make all the difference. Reach out when you can.</p>
             <a href="https://becandid.io/partner" style="display: inline-block; padding: 14px 28px; background: #226779; color: white; border-radius: 9999px; text-decoration: none; font-weight: 700; margin-top: 16px;">Open Be Candid</a>
-            <p style="color: #999; font-size: 12px; margin-top: 24px;">You're receiving this because you're ${userName}'s accountability partner on Be Candid.</p>
+            <p style="color: #999; font-size: 12px; margin-top: 24px;">You're receiving this because you're ${escapeHtml(userName)}'s accountability partner on Be Candid.</p>
           </div>
         `,
       });
@@ -122,6 +127,8 @@ export async function POST(req: NextRequest) {
       }
     }
   } catch {}
+
+  auditLog({ action: 'reach_out.sent', userId: user.id, metadata: { partnerId: partnership.partner_user_id } });
 
   return NextResponse.json({ success: true, partner: partnership.partner_name });
 }

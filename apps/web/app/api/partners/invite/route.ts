@@ -2,17 +2,21 @@ export const dynamic = 'force-dynamic';
 // GET /api/partners/invite?token=xxx — lookup an invite by token
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get('token');
   if (!token) return NextResponse.json({ error: 'Token required' }, { status: 400 });
 
+  const limited = checkUserRate(actionLimiter, `invite:${token}`);
+  if (limited) return limited;
+
   const db = createServiceClient();
 
   const { data: partner } = await db
     .from('partners')
-    .select('partner_name, partner_email, status, user_id')
+    .select('partner_name, status, user_id')
     .eq('invite_token', token)
     .maybeSingle();
 

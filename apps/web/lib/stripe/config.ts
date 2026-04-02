@@ -19,7 +19,7 @@ export const STRIPE_CONFIG = {
     therapy_monthly: process.env.STRIPE_PRICE_THERAPY_MONTHLY || 'price_REPLACE_ME',
     therapy_annual: process.env.STRIPE_PRICE_THERAPY_ANNUAL || 'price_REPLACE_ME',
   },
-  trialDays: 14,
+  trialDays: 21,
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
 } as const;
 
@@ -73,7 +73,7 @@ export const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
   },
   therapy: {
     aiGuidesPerMonth: Infinity,
-    maxPartners: 5,
+    maxPartners: Number.MAX_SAFE_INTEGER,
     journalReminders: true,
     weeklyReflection: true,
     vulnerabilityWindows: true,

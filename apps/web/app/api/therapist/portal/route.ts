@@ -147,6 +147,16 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    case 'patterns': {
+      if (!connection.can_see_patterns) {
+        return NextResponse.json({ error: 'Pattern access not granted by client' }, { status: 403 });
+      }
+
+      const { analyzePatterns } = await import('@/lib/stringerAnalysis');
+      const patterns = await analyzePatterns(clientId);
+      return NextResponse.json({ client_name: client?.name, section: 'patterns', patterns });
+    }
+
     case 'summary':
     default: {
       // High-level overview respecting all consent flags

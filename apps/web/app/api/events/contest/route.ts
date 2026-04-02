@@ -3,7 +3,8 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { safeError, auditLog } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { safeError, auditLog, escapeHtml } from '@/lib/security';
 import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 import { Resend } from 'resend';
 import { z } from 'zod';
@@ -20,6 +21,9 @@ export async function POST(req: NextRequest) {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/events/contest', 'Unauthorized', 401);
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const body = await req.json().catch(() => null);
     const parsed = ContestSchema.safeParse(body);
@@ -77,24 +81,24 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: FROM,
       to: ADMIN_EMAIL,
-      subject: `Flag Contest: ${userProfile?.name ?? 'User'} — ${categoryLabel}`,
+      subject: `Flag Contest: ${escapeHtml(userProfile?.name ?? 'User')} — ${escapeHtml(categoryLabel)}`,
       html: `<!DOCTYPE html><html><body style="font-family:sans-serif;padding:20px;">
 <h2 style="color:#226779;">Flag Contest Review</h2>
 <table style="border-collapse:collapse;width:100%;">
 <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">User</td>
-<td style="padding:8px;border-bottom:1px solid #eee;">${userProfile?.name ?? 'Unknown'} (${userProfile?.email ?? user.id})</td></tr>
+<td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(userProfile?.name ?? 'Unknown')} (${escapeHtml(userProfile?.email ?? user.id)})</td></tr>
 <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Category</td>
-<td style="padding:8px;border-bottom:1px solid #eee;">${categoryLabel}</td></tr>
+<td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(categoryLabel)}</td></tr>
 <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Severity</td>
-<td style="padding:8px;border-bottom:1px solid #eee;">${event.severity}</td></tr>
+<td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(event.severity)}</td></tr>
 <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Platform</td>
-<td style="padding:8px;border-bottom:1px solid #eee;">${event.platform}</td></tr>
+<td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(event.platform)}</td></tr>
 <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Domain/App</td>
-<td style="padding:8px;border-bottom:1px solid #eee;">${event.app_name ?? 'N/A'}</td></tr>
+<td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(event.app_name ?? 'N/A')}</td></tr>
 <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">Time</td>
 <td style="padding:8px;border-bottom:1px solid #eee;">${new Date(event.timestamp).toLocaleString()}</td></tr>
 <tr><td style="padding:8px;border-bottom:1px solid #eee;font-weight:bold;">User's Reason</td>
-<td style="padding:8px;border-bottom:1px solid #eee;">${parsed.data.reason}</td></tr>
+<td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(parsed.data.reason)}</td></tr>
 </table>
 ${screenshotInfo}
 <p style="margin-top:20px;"><a href="${process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io'}/dashboard/activity" style="background:#226779;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;">Review in Dashboard</a></p>

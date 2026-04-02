@@ -15,6 +15,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { encrypt } from '@/lib/encryption';
 import { onOutcomeRated, onBothCompletedOutcome } from '@/lib/relationshipHooks';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { safeError } from '@/lib/security';
 import Anthropic from '@anthropic-ai/sdk';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
@@ -86,7 +87,7 @@ export async function POST(req: NextRequest) {
     .select()
     .single();
 
-  if (upsertError) return NextResponse.json({ error: upsertError.message }, { status: 500 });
+  if (upsertError) return safeError('POST /api/conversation-outcomes', upsertError);
 
   // Check if both sides have completed
   if (outcome.user_completed_at && outcome.partner_completed_at && !outcome.ai_reflection) {
@@ -152,6 +153,6 @@ export async function GET(req: NextRequest) {
     .order('created_at', { ascending: false })
     .limit(limit);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('GET /api/conversation-outcomes', error);
   return NextResponse.json({ outcomes: data || [] });
 }

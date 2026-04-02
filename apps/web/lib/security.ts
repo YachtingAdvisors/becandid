@@ -50,6 +50,21 @@ export function sanitizePhone(input: string): string | null {
   return digits;
 }
 
+// ─── HTML Escaping ──────────────────────────────────────────
+
+/**
+ * Escape a string for safe interpolation into HTML.
+ * Use on all user-provided values before embedding in email templates.
+ */
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ─── Safe Error Responses ────────────────────────────────────
 
 /**

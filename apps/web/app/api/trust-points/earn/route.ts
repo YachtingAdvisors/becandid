@@ -72,26 +72,26 @@ export async function POST(req: NextRequest) {
     5000: 'points_5000',
   };
 
+  // Fetch all existing milestones in one query to avoid N+1
+  const { data: existingMilestones } = await db
+    .from('milestones')
+    .select('milestone')
+    .eq('user_id', user.id);
+  const earnedSet = new Set(existingMilestones?.map(m => m.milestone) ?? []);
+
   const milestonesUnlocked: string[] = [];
   for (const [threshold, milestone] of Object.entries(pointMilestones)) {
     if (newBalance >= parseInt(threshold)) {
-      const { data: existing } = await db
-        .from('milestones')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('milestone', milestone)
-        .maybeSingle();
+      if (earnedSet.has(milestone)) continue;
 
-      if (!existing) {
-        await db.from('milestones').insert({ user_id: user.id, milestone });
-        await db.from('trust_points').insert({
-          user_id: user.id,
-          points: 50,
-          action: 'milestone_reached',
-          note: `Unlocked: ${milestone}`,
-        });
-        milestonesUnlocked.push(milestone);
-      }
+      await db.from('milestones').insert({ user_id: user.id, milestone });
+      await db.from('trust_points').insert({
+        user_id: user.id,
+        points: 50,
+        action: 'milestone_reached',
+        note: `Unlocked: ${milestone}`,
+      });
+      milestonesUnlocked.push(milestone);
     }
   }
 

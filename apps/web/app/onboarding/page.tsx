@@ -512,7 +512,7 @@ function OnboardingContent() {
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Tissot_The_Judgment_of_Solomon.jpg/320px-Tissot_The_Judgment_of_Solomon.jpg" alt="King Solomon" className="w-10 h-10 rounded-full object-cover ring-1 ring-cyan-400/20 shrink-0" />
               <p className="text-xs text-slate-200 font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-cyan-400">&mdash; King Solomon</span></p>
             </div>
-            <p className="text-[10px] text-cyan-400 font-label font-medium mt-2">Add up to 2 partners free. Upgrade to Pro for up to 5.</p>
+            <p className="text-[10px] text-cyan-400 font-label font-medium mt-2">Add 1 partner free. Upgrade to Pro for up to 5.</p>
           </div>
 
           {/* Invited partners list */}

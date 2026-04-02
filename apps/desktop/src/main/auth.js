@@ -5,9 +5,11 @@
 
 const { store } = require('./store');
 
-const SUPABASE_URL = 'https://kiowvsemdxivuyzifmdn.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpb3d2c2VtZHhpdnV5emlmbWRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDU0NTksImV4cCI6MjA5MDMyMTQ1OX0.ffdjnAwdyvRBeOUb1S8MAbX3XTsX31xyApJTiQ-vEOs';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kiowvsemdxivuyzifmdn.supabase.co';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpb3d2c2VtZHhpdnV5emlmbWRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDU0NTksImV4cCI6MjA5MDMyMTQ1OX0.ffdjnAwdyvRBeOUb1S8MAbX3XTsX31xyApJTiQ-vEOs';
 const API_URL = 'https://becandid.io';
+
+let refreshing = null;
 
 async function signIn(email, password) {
   const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
@@ -37,29 +39,35 @@ async function signIn(email, password) {
 }
 
 async function refreshToken() {
-  const token = store.get('refresh_token');
-  if (!token) return false;
+  if (refreshing) return refreshing;
+  refreshing = (async () => {
+    try {
+      const token = store.get('refresh_token');
+      if (!token) return false;
 
-  try {
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-      },
-      body: JSON.stringify({ refresh_token: token }),
-    });
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ refresh_token: token }),
+      });
 
-    if (!res.ok) return false;
+      if (!res.ok) return false;
 
-    const data = await res.json();
-    store.set('access_token', data.access_token);
-    store.set('refresh_token', data.refresh_token);
-    store.set('expires_at', Date.now() + (data.expires_in * 1000));
-    return true;
-  } catch {
-    return false;
-  }
+      const data = await res.json();
+      store.set('access_token', data.access_token);
+      store.set('refresh_token', data.refresh_token);
+      store.set('expires_at', Date.now() + (data.expires_in * 1000));
+      return true;
+    } catch {
+      return false;
+    } finally {
+      refreshing = null;
+    }
+  })();
+  return refreshing;
 }
 
 async function fetchSettings() {

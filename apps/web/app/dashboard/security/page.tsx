@@ -42,6 +42,7 @@ function timeAgo(ts: string): string {
 export default function SecurityPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
+  const [revokeError, setRevokeError] = useState('');
 
   useEffect(() => {
     fetch('/api/auth/sessions')
@@ -52,12 +53,20 @@ export default function SecurityPage() {
   }, []);
 
   async function revokeSession(id: string) {
+    const previousSessions = sessions;
     setSessions(prev => prev.filter(s => s.id !== id));
-    await fetch('/api/auth/sessions', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
+    setRevokeError('');
+    try {
+      const res = await fetch('/api/auth/sessions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) throw new Error('Failed to revoke session');
+    } catch {
+      setSessions(previousSessions);
+      setRevokeError('Failed to revoke session. Please try again.');
+    }
   }
 
   return (
@@ -68,6 +77,13 @@ export default function SecurityPage() {
         </h1>
         <p className="text-sm text-on-surface-variant font-body">Review your login activity and manage sessions.</p>
       </div>
+
+      {revokeError && (
+        <div className="bg-error/10 rounded-2xl px-4 py-3 text-xs text-error font-body flex items-center gap-2">
+          <span className="material-symbols-outlined text-sm">warning</span>
+          {revokeError}
+        </div>
+      )}
 
       {/* Active Sessions */}
       <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10">

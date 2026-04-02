@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '@/lib/supabase';
 import { z } from 'zod';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
-import { safeError, sanitizeName, sanitizeEmail, sanitizePhone, auditLog } from '@/lib/security';
+import { safeError, sanitizeName, sanitizeEmail, sanitizePhone, auditLog, escapeHtml } from '@/lib/security';
 
 const InviteSchema = z.object({
   partner_name: z.string().min(1).max(100),
@@ -34,9 +34,10 @@ export async function GET(req: NextRequest) {
 
     const { data: userPlan } = await db
       .from('users').select('subscription_plan').eq('id', user.id).single();
-    const isPro = userPlan?.subscription_plan === 'pro' || userPlan?.subscription_plan === 'therapy';
+    const plan = userPlan?.subscription_plan;
+    const maxPartners = plan === 'therapy' ? 999 : plan === 'pro' ? 5 : 1;
 
-    return NextResponse.json({ partner, partners: partners ?? [], maxPartners: isPro ? 5 : 2 });
+    return NextResponse.json({ partner, partners: partners ?? [], maxPartners });
   } catch (err) {
     return safeError('GET /api/partners', err);
   }
@@ -77,19 +78,21 @@ export async function POST(req: NextRequest) {
     // so it may not have completed yet when the user reaches the partner step)
     await ensureUserRow(db, user);
 
-    // Check partner limit: 2 for free users, 3 for Pro
+    // Check partner limit: free=1, pro=5, therapy=unlimited
     const { data: existingPartners } = await db
       .from('partners').select('id').eq('user_id', user.id).in('status', ['active', 'accepted', 'pending']);
     const { data: userPlan } = await db
       .from('users').select('subscription_plan').eq('id', user.id).single();
-    const isPro = userPlan?.subscription_plan === 'pro' || userPlan?.subscription_plan === 'therapy';
-    const maxPartners = isPro ? 5 : 2;
+    const plan = userPlan?.subscription_plan;
+    const maxPartners = plan === 'therapy' ? Number.MAX_SAFE_INTEGER : plan === 'pro' ? 5 : 1;
     const currentCount = existingPartners?.length ?? 0;
 
     if (currentCount >= maxPartners) {
-      const upgradeMsg = isPro
-        ? `You've reached the maximum of ${maxPartners} partners.`
-        : `You've reached the free plan limit of ${maxPartners} partners. Upgrade to Pro for up to 5 partners.`;
+      const upgradeMsg = plan === 'therapy'
+        ? `You've reached the maximum number of partners.`
+        : plan === 'pro'
+          ? `You've reached the Pro plan limit of 5 partners. Upgrade to Therapy for unlimited partners.`
+          : `You've reached the free plan limit of 1 partner. Upgrade to Pro for up to 5 partners.`;
       return NextResponse.json({ error: upgradeMsg }, { status: 400 });
     }
 
@@ -154,7 +157,7 @@ export async function POST(req: NextRequest) {
       await resend.emails.send({
         from: FROM,
         to: cleanEmail,
-        subject: `${inviterName} invited you to Be Candid`,
+        subject: `${escapeHtml(inviterName)} invited you to Be Candid`,
         html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:0;background:#fbf9f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
 <div style="max-width:520px;margin:0 auto;padding:40px 20px;">
@@ -162,9 +165,9 @@ export async function POST(req: NextRequest) {
     <div style="display:inline-block;background:#226779;color:white;padding:6px 18px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Be Candid</div>
   </div>
   <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center;">
-    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Hey ${cleanName},</h2>
+    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Hey ${escapeHtml(cleanName)},</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:15px;line-height:1.6;">
-      <strong>${inviterName}</strong> is on a journey to align their digital life with who they want to be &mdash; and they&rsquo;ve chosen <strong>you</strong> as someone they trust to walk with them.
+      <strong>${escapeHtml(inviterName)}</strong> is on a journey to align their digital life with who they want to be &mdash; and they&rsquo;ve chosen <strong>you</strong> as someone they trust to walk with them.
     </p>
     <p style="margin:0 0 24px;color:#6b7280;font-size:14px;line-height:1.6;">
       No setup required &mdash; just accept and you&rsquo;re connected. You can optionally start your own journey too and get <strong>30 free days</strong>.

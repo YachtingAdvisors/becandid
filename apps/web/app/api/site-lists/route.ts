@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { safeError } from '@/lib/security';
+import { safeError, escapeHtml } from '@/lib/security';
 import { z } from 'zod';
 import { Resend } from 'resend';
 import twilio from 'twilio';
@@ -172,7 +172,7 @@ async function notifyPartnerOfBlacklistRemoval(
         await resend.emails.send({
           from: process.env.RESEND_FROM_EMAIL ?? 'alerts@becandid.io',
           to: partner.partner_email,
-          subject: `Be Candid: ${userName} removed a blocked site`,
+          subject: `Be Candid: ${escapeHtml(userName)} removed a blocked site`,
           html: `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -181,7 +181,7 @@ async function notifyPartnerOfBlacklistRemoval(
   <div style="background:#fff;border-radius:16px;padding:28px;border:1px solid #e5e7eb;">
     <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:20px;">Site List Update</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:14px;line-height:1.6;">
-      Hey ${partnerName}, ${userName} removed <strong>${domain}</strong> from their blocked sites list.
+      Hey ${escapeHtml(partnerName)}, ${escapeHtml(userName)} removed <strong>${escapeHtml(domain)}</strong> from their blocked sites list.
       You may want to check in with them.
     </p>
     <a href="${appUrl}/dashboard" style="display:block;text-align:center;background:#4f46e5;color:white;padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;">

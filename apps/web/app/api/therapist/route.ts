@@ -14,7 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { decryptJournalEntries, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
-import { sanitizeEmail, sanitizeName } from '@/lib/security';
+import { sanitizeEmail, sanitizeName, escapeHtml } from '@/lib/security';
 import { Resend } from 'resend';
 import { randomUUID } from 'crypto';
 
@@ -53,14 +53,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Already connected' }, { status: 400 });
   }
 
-  // Max 3 therapist connections
+  // Therapist connection limit: free=1, pro=1, therapy=unlimited
+  const { data: userPlan } = await db.from('users')
+    .select('subscription_plan').eq('id', user.id).single();
+  const plan = userPlan?.subscription_plan;
+  const maxTherapists = plan === 'therapy' ? Number.MAX_SAFE_INTEGER : 1;
+
   const { count } = await db.from('therapist_connections')
     .select('id', { count: 'exact', head: true })
     .eq('user_id', user.id)
     .eq('status', 'accepted');
 
-  if ((count ?? 0) >= 3) {
-    return NextResponse.json({ error: 'Maximum 3 therapist connections' }, { status: 400 });
+  if ((count ?? 0) >= maxTherapists) {
+    const msg = plan === 'therapy'
+      ? 'Maximum therapist connections reached.'
+      : 'Free and Pro plans allow 1 therapist connection. Upgrade to Therapy for unlimited.';
+    return NextResponse.json({ error: msg }, { status: 400 });
   }
 
   const token = randomUUID();
@@ -89,7 +97,7 @@ export async function POST(req: NextRequest) {
   await getResend().emails.send({
     from: FROM,
     to: validatedEmail,
-    subject: `${userName} has invited you to Be Candid`,
+    subject: `${escapeHtml(userName)} has invited you to Be Candid`,
     html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
 <div style="max-width:520px;margin:0 auto;padding:40px 20px;">
@@ -99,7 +107,7 @@ export async function POST(req: NextRequest) {
   <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
     <h2 style="font-family:Georgia,serif;font-size:20px;color:#0f0e1a;margin:0 0 16px;">Therapist Portal Invitation</h2>
     <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 16px;">
-      <strong>${userName}</strong> has invited you to view their progress on Be Candid, an accountability and reflection app grounded in a therapeutic framework for understanding unwanted behavior.
+      <strong>${escapeHtml(userName)}</strong> has invited you to view their progress on Be Candid, an accountability and reflection app grounded in a therapeutic framework for understanding unwanted behavior.
     </p>
     <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 8px;">You'll have read-only access to:</p>
     <ul style="font-size:13px;color:#4b5563;line-height:1.8;margin:0 0 20px;padding-left:20px;">
