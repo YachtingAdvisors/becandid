@@ -87,6 +87,29 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-[#fbf9f8]">
+      {/* Nav */}
+      <header className="sticky top-0 z-50 bg-[#fbf9f8]/70 backdrop-blur-md border-b border-outline-variant/10">
+        <div className="max-w-5xl mx-auto flex items-center justify-between px-6 h-16">
+          <a href="/" className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Be Candid" className="h-9 w-auto" />
+          </a>
+          <nav className="hidden md:flex items-center gap-8">
+            <a href="/#features" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors">Features</a>
+            <a href="/#journey" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors">How It Works</a>
+            <a href="/download" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors">Download</a>
+            <a href="/families" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors">Families</a>
+            <a href="/pricing" className="font-label text-sm text-primary font-bold">Pricing</a>
+          </nav>
+          <div className="flex items-center gap-4">
+            <a href="/auth/signin" className="font-label text-sm text-on-surface-variant hover:text-primary transition-colors hidden sm:block">Log in</a>
+            <a href="/auth/signup" className="px-5 py-2.5 rounded-full bg-primary text-on-primary text-sm font-label font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20">
+              Get Started
+            </a>
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-screen-2xl mx-auto px-6 py-24">
         {/* Header */}
         <div className="text-center mb-16 max-w-5xl mx-auto">
