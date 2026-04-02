@@ -38,8 +38,8 @@ const TIERS = [
   {
     id: 'pro',
     name: 'Pro',
-    monthlyPrice: 13.99,
-    annualPrice: 129,
+    monthlyPrice: 9.99,
+    annualPrice: 99,
     description: 'Full alignment',
     logo: '/pro-logo.png',
     cta: 'Start Free Trial',
