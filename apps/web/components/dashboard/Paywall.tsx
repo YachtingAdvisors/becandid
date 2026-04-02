@@ -24,7 +24,7 @@ const FEATURE_COPY: Record<Feature, { title: string; description: string; emoji:
   vulnerabilityWindows: { title: 'Vulnerability Windows', description: 'Pre-schedule times you know you\'re at risk', emoji: 'schedule' },
   patternDetection: { title: 'Pattern Detection', description: 'AI finds your time clusters, triggers, and frequency patterns', emoji: 'insights' },
   conversationOutcomes: { title: 'Conversation Outcomes', description: 'Track how conversations go and build a growth narrative', emoji: 'forum' },
-  therapistPortal: { title: 'Therapist Portal', description: 'Give your counselor read-only access to your journal and progress', emoji: 'medical_services' },
+  therapistPortal: { title: 'Therapist Portal', description: 'Inpatient-level insights without the inpatient setting — share journals, mood data, streaks & outcomes with granular consent', emoji: 'medical_services' },
   dataExportJson: { title: 'Data Export', description: 'Export all your data as JSON anytime', emoji: 'inventory_2' },
   spouseExperience: { title: 'Spouse Experience', description: 'Betrayal-informed tools, impact check-ins, and Committed Contender milestones', emoji: 'loyalty' },
   aiGuidesLimit: { title: 'Unlimited AI Guides', description: 'You\'ve used your 3 free guides this month', emoji: 'smart_toy' },
@@ -129,10 +129,11 @@ export default function Paywall({
             'Conversation outcomes tracking',
             'Data export',
           ] : [
-            'Everything in Pro',
-            'Therapist portal with consent controls',
-            'Extended data retention (365 days)',
-            'Priority AI guide generation',
+            'Everything in Pro, plus therapist portal access',
+            'Share journal entries, mood data, streaks & outcomes',
+            'Granular consent controls — you decide what they see',
+            'Real-time patterns & digital triggers for your therapist',
+            'Extended data retention + priority AI generation',
           ]).map((item, i) => (
             <div key={i} className="flex items-center gap-2">
               <span className="material-symbols-outlined text-emerald-500 text-sm">check</span>

@@ -107,8 +107,20 @@ export default function TherapistSettings() {
         )}
       </div>
 
+      {/* Pitch card */}
+      <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-violet-50 to-primary/5 border border-violet-100">
+        <p className="text-xs font-semibold text-violet-700 mb-1.5">Why connect your therapist?</p>
+        <p className="text-xs text-on-surface-variant leading-relaxed">
+          Share journal entries, mood data, streaks, and outcomes with your licensed therapist, with granular consent
+          controls. Get inpatient-level insights without the inpatient setting.
+        </p>
+        <p className="text-xs text-on-surface-variant leading-relaxed mt-1.5">
+          Your therapist sees real-time patterns, journal entries, and digital triggers — so they walk into every
+          session as the most present and insightful therapist you&apos;ve ever had.
+        </p>
+      </div>
+
       <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
-        Give your therapist or counselor read-only access to your journal, moods, and progress.
         You control exactly what they can see, and you can revoke access anytime.
       </p>
 

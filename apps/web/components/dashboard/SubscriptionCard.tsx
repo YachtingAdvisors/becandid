@@ -152,7 +152,7 @@ export default function SubscriptionCard() {
       {data.plan === 'pro' && (
         <button onClick={() => openCheckout('monthly', 'therapy')} disabled={actionLoading}
           className="w-full mt-2 py-2 text-xs text-violet-500 hover:text-violet-700 font-medium transition-colors">
-          Upgrade to Therapy plan ($19.99/mo) for therapist portal →
+          Unlock Therapist Portal — inpatient-level insights, $19.99/mo →
         </button>
       )}
     </div>
