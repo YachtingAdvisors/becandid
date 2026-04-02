@@ -71,7 +71,7 @@ function updateTrayMenu() {
     },
     { type: 'separator' },
     {
-      label: monitoring ? '● Monitoring Active' : '○ Monitoring Paused',
+      label: monitoring ? '🟢 Monitoring Active' : '🔴 Monitoring Paused',
       click: () => {
         const newState = !store.get('monitoring_enabled');
         store.set('monitoring_enabled', newState);
