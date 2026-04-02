@@ -460,7 +460,7 @@ export default function LandingPage() {
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo-SYobDlsUK6Jtkhk6AOOLEAwVNupQmSLEPlK8FuQIe6s2NVffDH_R4IbPyToq3JBb_q1CbH2MuJevxCbYMBD03TcBYONX7kOxkb1R4RSBnS07LOFuReuhJ0QXbvHMm9TYaQh0gQEOzNkvBNo9bxfHdGr3BnFynKwkIqWRXSD6AZTKTymbgvo9xYIablHUGDjYReLJ_TGzLgV9aLZI0FhD1y6mjoVmKqYrAocN7xNumX62L_1dhIR5Wu5kHe_TboeF2sqIoh3kROT"
                 alt="Laptop and smartphone showing synchronized Be Candid integrity progress"
-                className="w-full h-auto relative z-10"
+                className="w-full h-auto relative z-10 rounded-2xl"
               />
             </div>
           </div>
