@@ -208,13 +208,24 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
               </div>
               <div>
                 <h3 className="font-headline text-base font-bold text-on-surface">Pause Monitoring?</h3>
-                <p className="text-xs text-on-surface-variant">Keep your partner in the know.</p>
+                <p className="text-xs text-on-surface-variant">This action will notify your partner.</p>
+              </div>
+            </div>
+
+            {/* Partner notification reminder */}
+            <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-orange-50 ring-1 ring-orange-200/50">
+              <span className="material-symbols-outlined text-orange-600 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+              <div>
+                <p className="text-xs text-orange-800 font-label font-bold">Your partner will be notified immediately</p>
+                <p className="text-[10px] text-orange-700 font-body mt-0.5">
+                  When you pause monitoring, your accountability partner receives an email and SMS letting them know monitoring has been turned off. This is part of the transparency commitment you both agreed to.
+                </p>
               </div>
             </div>
 
             <div>
               <label className="text-xs font-label font-medium text-on-surface-variant block mb-1.5">
-                Send a message to your partner
+                Tell your partner why <span className="text-orange-600">(required)</span>
               </label>
               <textarea
                 value={pauseReason}
@@ -239,9 +250,10 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
                   setMonitoringEnabled(false);
                   setShowPauseModal(false);
                 }}
-                className="flex-1 py-2.5 text-sm font-label font-bold text-white bg-red-500 rounded-full shadow-lg shadow-red-500/20 hover:brightness-110 cursor-pointer transition-all duration-200"
+                disabled={!pauseReason.trim()}
+                className="flex-1 py-2.5 text-sm font-label font-bold text-white bg-red-500 rounded-full shadow-lg shadow-red-500/20 hover:brightness-110 cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Pause Monitoring
+                I Understand — Pause Monitoring
               </button>
             </div>
           </div>
