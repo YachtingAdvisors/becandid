@@ -281,7 +281,7 @@ export default function StringerJournalPage() {
                     <p className="text-xs text-on-surface-variant/70 mb-3 font-body">{prompt.hint}</p>
                     <textarea value={answers[prompt.id as keyof typeof answers]}
                       onChange={(e) => setAnswers((prev) => ({ ...prev, [prompt.id]: e.target.value }))}
-                      placeholder="Take your time\u2026"
+                      placeholder="Take your time..."
                       className="w-full h-24 px-3 py-2.5 rounded-2xl ring-1 ring-outline-variant/10 bg-surface-container-lowest text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
                   </div>
                 )}
