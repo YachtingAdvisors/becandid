@@ -40,6 +40,7 @@ const TIERS = [
     monthlyPrice: 13.99,
     annualPrice: 129,
     description: 'Full alignment',
+    logo: '/pro-logo.png',
     cta: 'Start Free Trial',
     ctaHref: '/auth/signup?plan=pro',
     highlight: true,
@@ -65,6 +66,7 @@ const TIERS = [
     monthlyPrice: 19.99,
     annualPrice: 179,
     description: 'Inpatient-level insights, outpatient setting',
+    logo: '/therapy-logo.png',
     cta: 'Upgrade',
     ctaHref: '/auth/signup?plan=therapy',
     highlight: false,
@@ -148,13 +150,20 @@ export default function PricingPage() {
                 )}
 
                 <div className="text-center mb-8 pt-2">
-                  <span
-                    className={`material-symbols-outlined text-3xl ${
-                      tier.highlight ? 'text-on-primary' : 'text-primary'
-                    }`}
-                  >
-                    {TIER_ICONS[tier.id]}
-                  </span>
+                  {(tier as any).logo ? (
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto shadow-lg ring-1 ring-outline-variant/10">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={(tier as any).logo} alt={`${tier.name} logo`} className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <span
+                      className={`material-symbols-outlined text-3xl ${
+                        tier.highlight ? 'text-on-primary' : 'text-primary'
+                      }`}
+                    >
+                      {TIER_ICONS[tier.id]}
+                    </span>
+                  )}
                   <h3
                     className={`text-xl font-headline font-bold mt-3 ${
                       tier.highlight ? 'text-on-primary' : 'text-on-surface'

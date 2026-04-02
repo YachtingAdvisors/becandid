@@ -135,7 +135,15 @@ export default function SubscriptionCard() {
           {actionLoading ? 'Opening…' : 'Manage Billing'}
         </button>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/pro-logo.png" alt="Be Candid Pro" className="w-12 h-12 rounded-xl shadow-md" />
+            <div className="flex-1">
+              <p className="text-sm font-headline font-bold text-on-surface">Be Candid Pro</p>
+              <p className="text-[10px] text-on-surface-variant">5 partners, unlimited AI guides, pattern detection</p>
+            </div>
+          </div>
           <button onClick={() => openCheckout('annual')} disabled={actionLoading}
             className="w-full py-3 text-sm font-bold rounded-lg bg-primary text-white hover:bg-primary disabled:opacity-50 transition-colors shadow-lg shadow-primary/20">
             {actionLoading ? 'Opening…' : 'Upgrade to Pro — $129/year'}
@@ -150,10 +158,20 @@ export default function SubscriptionCard() {
 
       {/* Upgrade to Therapy from Pro */}
       {data.plan === 'pro' && (
-        <button onClick={() => openCheckout('monthly', 'therapy')} disabled={actionLoading}
-          className="w-full mt-2 py-2 text-xs text-violet-500 hover:text-violet-700 font-medium transition-colors">
-          Unlock Therapist Portal — inpatient-level insights, $19.99/mo →
-        </button>
+        <div className="mt-3 p-3 rounded-xl bg-violet-50 ring-1 ring-violet-200/30">
+          <div className="flex items-center gap-3 mb-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/therapy-logo.png" alt="Be Candid Therapy" className="w-10 h-10 rounded-xl shadow-md" />
+            <div className="flex-1">
+              <p className="text-sm font-headline font-bold text-on-surface">Therapist Portal</p>
+              <p className="text-[10px] text-on-surface-variant">Inpatient-level insights for your therapist</p>
+            </div>
+          </div>
+          <button onClick={() => openCheckout('monthly', 'therapy')} disabled={actionLoading}
+            className="w-full py-2 text-xs text-violet-600 hover:text-violet-800 font-bold transition-colors">
+            Upgrade — $19.99/mo →
+          </button>
+        </div>
       )}
     </div>
   );
