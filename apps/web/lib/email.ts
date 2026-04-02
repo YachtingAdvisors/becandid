@@ -8,7 +8,7 @@ import type { User, Partner, Event, Alert } from '@be-candid/shared';
 import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
-const FROM = process.env.RESEND_FROM_EMAIL ?? 'alerts@becandid.io';
+const FROM = process.env.RESEND_FROM_EMAIL ?? 'alerts@updates.becandid.io';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
 // ─── Email Footer (unsubscribe + settings links) ─────────────
