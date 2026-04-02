@@ -51,13 +51,13 @@ function SignUpForm() {
   }
 
   return (
-    <main className="min-h-screen pt-16 flex flex-col items-center justify-center p-6 relative overflow-hidden bg-dark-sanctuary">
+    <main className="min-h-screen pt-16 flex flex-col items-center justify-center p-6 relative overflow-hidden" style={{ backgroundColor: '#0f1419' }}>
       {/* Ambient Background Elements */}
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Top Nav */}
-      <header className="fixed top-0 w-full z-50 bg-dark-sanctuary/70 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 h-16">
+      <header className="fixed top-0 w-full z-50 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 h-16" style={{ backgroundColor: 'rgba(15, 20, 25, 0.7)' }}>
         <Link href="/" className="flex items-center gap-2 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-lg">
           <img src="/logo.png" alt="Be Candid" className="h-10 w-auto brightness-[10]" />
         </Link>

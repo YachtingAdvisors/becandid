@@ -24,6 +24,22 @@ import {
 
 type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done';
 
+const STEP_BACKGROUNDS: Record<Step, string> = {
+  goals: '#141a1f',
+  stringer: '#1e2a30',
+  motivator: '#2a3640',
+  preview: '#3a4a58',
+  partner: '#4a5a68',
+  done: '#fbf9f8',
+};
+
+const STEP_TRANSITION_TEXT: Partial<Record<Step, string>> = {
+  goals: 'Come out',
+  stringer: 'of darkness',
+  motivator: 'and into',
+  partner: 'the light',
+};
+
 const STRINGER_PILLARS = [
   { icon: 'water_drop', heading: 'alignment', title: 'Trace the Tributaries', body: "Your patterns are never random. There's always a stream you can trace back — stress, loneliness, conflict, exhaustion, feeling unseen. Understanding yourself is the first step to alignment.", image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=400&fit=crop' },
   { icon: 'favorite', heading: 'truth', title: 'Name the Longing', body: "Beneath every pattern is something legitimate you need — belonging, rest, tenderness, significance. Naming it honestly is how you build congruence between who you are and who you want to be.", image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=400&fit=crop' },
@@ -35,7 +51,23 @@ function OnboardingContent() {
   const searchParams = useSearchParams();
   const initialStep = searchParams.get('step');
   const [step, setStepRaw] = useState<Step>(initialStep === 'partner' ? 'partner' : 'goals');
-  const setStep = (s: Step) => { setStepRaw(s); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const [showTransition, setShowTransition] = useState(false);
+  const [transitionText, setTransitionText] = useState('');
+  const setStep = (s: Step) => {
+    const text = STEP_TRANSITION_TEXT[s];
+    if (text) {
+      setTransitionText(text);
+      setShowTransition(true);
+      setTimeout(() => {
+        setShowTransition(false);
+        setStepRaw(s);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1500);
+    } else {
+      setStepRaw(s);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
   const [goals, setGoals] = useState<GoalCategory[]>([]);
   const [stringerStep, setStringerStep] = useState(0);
   const [partnerName, setPartnerName] = useState('');
@@ -170,41 +202,55 @@ function OnboardingContent() {
   const STEPS: Step[] = ['goals', 'stringer', 'motivator', 'preview', 'partner', 'done'];
   const progress = STEPS.indexOf(step) / (STEPS.length - 1);
 
+  const isDoneStep = step === 'done';
+
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12 overflow-x-hidden w-full max-w-full">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center px-4 py-12 overflow-x-hidden w-full max-w-full transition-colors duration-1000"
+      style={{ backgroundColor: STEP_BACKGROUNDS[step] }}
+    >
+      {/* Shattering text transition overlay */}
+      {showTransition && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ backgroundColor: STEP_BACKGROUNDS[step] }}>
+          <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-white animate-shatter text-center">
+            {transitionText}
+          </h1>
+        </div>
+      )}
+
       {/* Logo */}
       <div className="mb-6">
-        <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto" />
+        <img src="/logo.png" alt="Be Candid" className={`h-10 w-auto mx-auto ${isDoneStep ? '' : 'brightness-[10]'}`} style={isDoneStep ? undefined : { filter: 'brightness(10)' }} />
       </div>
 
       {/* Progress bar */}
       <div className="w-full max-w-md mb-8">
-        <div className="h-1.5 bg-surface-container rounded-full overflow-hidden">
+        <div className={`h-1.5 rounded-full overflow-hidden ${isDoneStep ? 'bg-surface-container' : 'bg-white/10'}`}>
           <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${progress * 100}%` }} />
         </div>
       </div>
 
       {/* ═══════ STEP 1: Goals ═══════ */}
       {step === 'goals' && (
-        <div className="max-w-4xl w-full animate-fade-in pb-24">
+        <div className="max-w-4xl w-full animate-fade-slide pb-24">
           {/* Header */}
           <div className="mb-12">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
               <div className="flex flex-col gap-2">
-                <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-bold">Step 1 of 4</span>
-                <h1 className="font-headline text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight leading-tight">
+                <span className="font-label text-xs uppercase tracking-widest text-slate-400 font-bold">Step 1 of 4</span>
+                <h1 className="font-headline text-4xl md:text-5xl font-extrabold text-slate-100 tracking-tight leading-tight">
                   Choose your rivals
                 </h1>
               </div>
-              <p className="max-w-xs text-on-surface-variant text-lg leading-relaxed md:text-right font-body">
+              <p className="max-w-xs text-slate-400 text-lg leading-relaxed md:text-right font-body">
                 Identify the habits or behaviors you want to master. We&apos;ll help you build the resilience to face them.
               </p>
             </div>
           </div>
 
           {/* Rivals philosophy */}
-          <div className="mb-8 px-5 py-4 rounded-2xl bg-gradient-to-br from-primary-container/30 to-emerald-50/50 ring-1 ring-primary-container/30">
-            <p className="text-sm text-on-surface leading-relaxed font-body">
+          <div className="mb-8 px-5 py-4 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/5 ring-1 ring-primary/10">
+            <p className="text-sm text-slate-300 leading-relaxed font-body">
               <strong className="text-primary">Why &ldquo;Rivals&rdquo;?</strong> &mdash; A rival isn&rsquo;t a verdict on your character. It&rsquo;s a worthy opponent &mdash; something that pushes back, and in doing so, reveals where you&rsquo;re growing.
               Every encounter you face honestly makes you sharper. Name the ones that challenge you most. That honesty is the first act of strength.
             </p>
@@ -214,11 +260,11 @@ function OnboardingContent() {
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
 
           {/* Fixed Footer CTA */}
-          <div className="fixed bottom-0 left-0 right-0 bg-background/70 backdrop-blur-xl px-6 py-6 border-t border-outline-variant/15 z-40">
+          <div className="fixed bottom-0 left-0 right-0 backdrop-blur-xl px-6 py-6 border-t border-white/5 z-40" style={{ backgroundColor: 'rgba(20, 26, 31, 0.7)' }}>
             <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
               <div className="hidden md:block">
-                <p className="text-on-surface-variant text-sm font-label font-bold uppercase tracking-widest">Selection Active</p>
-                <p className={`font-headline font-bold ${goals.length === 0 ? 'text-on-surface-variant' : 'text-primary'}`}>
+                <p className="text-slate-400 text-sm font-label font-bold uppercase tracking-widest">Selection Active</p>
+                <p className={`font-headline font-bold ${goals.length === 0 ? 'text-slate-400' : 'text-primary'}`}>
                   {goals.length === 0 ? 'No rivals selected' : `${goals.length} Rival${goals.length !== 1 ? 's' : ''} Identified`}
                 </p>
               </div>
@@ -233,13 +279,13 @@ function OnboardingContent() {
 
       {/* ═══════ STEP 2: Philosophy Intro (editorial layout) ═══════ */}
       {step === 'stringer' && (
-        <div className="max-w-5xl w-full animate-fade-in">
+        <div className="max-w-5xl w-full animate-fade-slide">
           {/* Progress dots */}
           <nav className="flex gap-2 mb-12">
             {STRINGER_PILLARS.map((_, i) => (
-              <div key={i} className={`h-1.5 w-12 rounded-full transition-all duration-300 ${i === stringerStep ? 'bg-primary' : 'bg-surface-container-high'}`} />
+              <div key={i} className={`h-1.5 w-12 rounded-full transition-all duration-300 ${i === stringerStep ? 'bg-primary' : 'bg-white/10'}`} />
             ))}
-            <div className="h-1.5 w-12 rounded-full bg-surface-container-high" />
+            <div className="h-1.5 w-12 rounded-full bg-white/10" />
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full max-w-5xl overflow-hidden">
@@ -265,23 +311,23 @@ function OnboardingContent() {
             {/* Content side */}
             <div className="lg:col-span-7 flex flex-col space-y-8 order-1 lg:order-2">
               <div>
-                <span className="font-label text-xs uppercase tracking-[0.2em] text-outline mb-4 block">Transformation Phase</span>
-                <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-on-surface leading-tight">
+                <span className="font-label text-xs uppercase tracking-[0.2em] text-slate-400 mb-4 block">Transformation Phase</span>
+                <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-100 leading-tight">
                   This is about <br />
                   <span className="text-primary italic">{STRINGER_PILLARS[stringerStep].heading}</span>
                 </h1>
               </div>
 
               {stringerStep === 0 && (
-                <p className="text-base text-on-surface-variant leading-relaxed font-body max-w-lg">
+                <p className="text-base text-slate-300 leading-relaxed font-body max-w-lg">
                   Be Candid is grounded in clinical research and backed by a team of psychiatrists and mental health counselors. The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life. That alignment is the foundation of authentic communication, reduced anxiety, and a nervous system that no longer carries the weight of a double life.
                 </p>
               )}
 
               <div className="space-y-6" key={stringerStep} style={{ animation: 'fadeUp 0.4s ease' }}>
-                <h3 className="font-headline text-xl font-bold text-secondary">{STRINGER_PILLARS[stringerStep].title}</h3>
-                <div className="relative pl-8 border-l-2 border-primary-container">
-                  <p className="text-xl md:text-2xl font-medium text-on-surface leading-snug">
+                <h3 className="font-headline text-xl font-bold text-primary">{STRINGER_PILLARS[stringerStep].title}</h3>
+                <div className="relative pl-8 border-l-2 border-primary/30">
+                  <p className="text-xl md:text-2xl font-medium text-slate-100 leading-snug">
                     &ldquo;{STRINGER_PILLARS[stringerStep].body}&rdquo;
                   </p>
                 </div>
@@ -301,7 +347,7 @@ function OnboardingContent() {
                 {stringerStep > 0 && (
                   <button
                     onClick={() => setStringerStep(stringerStep - 1)}
-                    className="text-on-surface/60 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
+                    className="text-slate-400 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
                   >
                     Back
                   </button>
@@ -309,7 +355,7 @@ function OnboardingContent() {
                 {stringerStep === 0 && (
                   <button
                     onClick={() => setStep('motivator')}
-                    className="text-on-surface/60 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
+                    className="text-slate-400 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
                   >
                     Skip introduction
                   </button>
@@ -321,14 +367,14 @@ function OnboardingContent() {
           {/* Quote footer */}
           {stringerStep === STRINGER_PILLARS.length - 1 && (
             <div className="mt-24 w-full max-w-2xl self-end ml-auto">
-              <div className="p-8 bg-surface-container-lowest rounded-xl shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)] relative overflow-hidden">
-                <div className="absolute top-0 left-0 h-full w-1 bg-tertiary-container" />
-                <p className="font-body text-lg italic text-on-surface-variant leading-relaxed mb-4">
+              <div className="p-8 bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-xl relative overflow-hidden">
+                <div className="absolute top-0 left-0 h-full w-1 bg-primary/30" />
+                <p className="font-body text-lg italic text-slate-300 leading-relaxed mb-4">
                   &ldquo;Freedom is found through kindness and curiosity.&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="h-[1px] w-8 bg-outline-variant/30" />
-                  <span className="font-label text-xs uppercase tracking-widest text-outline">Be Candid</span>
+                  <div className="h-[1px] w-8 bg-white/10" />
+                  <span className="font-label text-xs uppercase tracking-widest text-slate-400">Be Candid</span>
                 </div>
               </div>
             </div>
@@ -338,14 +384,14 @@ function OnboardingContent() {
 
       {/* ═══════ STEP 3: Foundational Motivator ═══════ */}
       {step === 'motivator' && (
-        <div className="max-w-md w-full animate-fade-in">
+        <div className="max-w-md w-full animate-fade-slide">
           <div className="text-center mb-6">
             <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Step 2b of 4</p>
-            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">What grounds you?</h1>
-            <p className="text-sm text-on-surface-variant font-body leading-relaxed">
+            <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">What grounds you?</h1>
+            <p className="text-sm text-slate-400 font-body leading-relaxed">
               Pick as many as you like — we&apos;ll blend quotes and reflections to match your selection.
             </p>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 mt-3 rounded-full bg-primary-container/40 text-primary text-xs font-label font-semibold">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 mt-3 rounded-full bg-primary/10 text-primary text-xs font-label font-semibold">
               <span className="material-symbols-outlined text-sm">checklist</span>
               Select multiple
             </div>
@@ -360,33 +406,33 @@ function OnboardingContent() {
                   onClick={() => toggleMotivator(key)}
                   className={`w-full text-left px-5 py-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
                     isSelected
-                      ? 'border-primary bg-primary-container/30 ring-2 ring-primary/20'
-                      : 'border-outline-variant bg-surface-container-lowest hover:border-primary/30'
+                      ? 'border-primary bg-primary/10 ring-2 ring-primary/20'
+                      : 'border-white/10 bg-white/[0.03] hover:border-primary/30'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-label font-semibold text-on-surface">{MOTIVATOR_LABELS[key]}</span>
+                    <span className="text-sm font-label font-semibold text-slate-100">{MOTIVATOR_LABELS[key]}</span>
                     {isSelected && (
                       <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                     )}
                   </div>
-                  <p className="text-xs text-on-surface-variant font-body mt-1 leading-relaxed">{MOTIVATOR_DESCRIPTIONS[key]}</p>
+                  <p className="text-xs text-slate-400 font-body mt-1 leading-relaxed">{MOTIVATOR_DESCRIPTIONS[key]}</p>
                 </button>
               );
             })}
           </div>
 
-          <p className={`text-xs font-label text-center mb-1 transition-colors duration-200 ${motivators.length > 0 ? 'text-primary font-semibold' : 'text-on-surface-variant'}`}>
+          <p className={`text-xs font-label text-center mb-1 transition-colors duration-200 ${motivators.length > 0 ? 'text-primary font-semibold' : 'text-slate-400'}`}>
             {motivators.length} of {Object.keys(MOTIVATOR_LABELS).length} selected
           </p>
 
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
 
           <div className="flex gap-3">
-            <button onClick={() => setStep('stringer')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">&larr; Back</button>
+            <button onClick={() => setStep('stringer')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">&larr; Back</button>
             <button onClick={saveMotivator} disabled={motivators.length === 0 || loading}
               className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
-              {loading ? 'Saving...' : 'Continue →'}
+              {loading ? 'Saving...' : 'Continue \u2192'}
             </button>
           </div>
         </div>
@@ -404,15 +450,15 @@ function OnboardingContent() {
 
       {/* ═══════ STEP 4: Partner Invite ═══════ */}
       {step === 'partner' && (
-        <div className="max-w-md w-full animate-fade-in overflow-hidden">
+        <div className="max-w-md w-full animate-fade-slide overflow-hidden">
           <div className="text-center mb-6">
             <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-2">Step 4 of 4</p>
-            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Invite your partners</h1>
-            <p className="text-sm text-on-surface-variant font-body">A friend, spouse, mentor, or coach who&apos;ll walk with you.</p>
-            <div className="flex items-center justify-center gap-3 mt-3 px-4 py-3 rounded-2xl bg-primary-container/20">
+            <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">Invite your partners</h1>
+            <p className="text-sm text-slate-400 font-body">A friend, spouse, mentor, or coach who&apos;ll walk with you.</p>
+            <div className="flex items-center justify-center gap-3 mt-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Simeon_Solomon_-_King_Solomon.jpg/200px-Simeon_Solomon_-_King_Solomon.jpg" alt="King Solomon" className="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20 shrink-0" />
-              <p className="text-xs text-on-surface font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-on-surface-variant">&mdash; King Solomon</span></p>
+              <p className="text-xs text-slate-300 font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-slate-400">&mdash; King Solomon</span></p>
             </div>
             <p className="text-[10px] text-primary font-label font-medium mt-2">Add up to 2 partners free. Upgrade to Pro for up to 5.</p>
           </div>
@@ -421,13 +467,13 @@ function OnboardingContent() {
           {invitedPartners.length > 0 && (
             <div className="space-y-2 mb-4">
               {invitedPartners.map((p, i) => (
-                <div key={i} className="flex items-center gap-3 px-4 py-3 bg-emerald-50 rounded-2xl ring-1 ring-emerald-200/50">
-                  <span className="material-symbols-outlined text-emerald-600 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                <div key={i} className="flex items-center gap-3 px-4 py-3 bg-emerald-500/10 rounded-2xl ring-1 ring-emerald-500/20">
+                  <span className="material-symbols-outlined text-emerald-400 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-label font-bold text-on-surface truncate">{p.name}</p>
-                    <p className="text-[10px] text-on-surface-variant truncate">{p.email}</p>
+                    <p className="text-sm font-label font-bold text-slate-100 truncate">{p.name}</p>
+                    <p className="text-[10px] text-slate-400 truncate">{p.email}</p>
                   </div>
-                  <span className="text-[10px] text-emerald-700 font-label font-bold">Invited</span>
+                  <span className="text-[10px] text-emerald-400 font-label font-bold">Invited</span>
                 </div>
               ))}
             </div>
@@ -435,35 +481,35 @@ function OnboardingContent() {
 
           {/* Form - greyed out after 2 invites on free plan */}
           {invitedPartners.length >= 2 ? (
-            <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-6 opacity-50 pointer-events-none">
+            <div className="bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-3xl p-6 opacity-50 pointer-events-none">
               <div className="text-center space-y-3">
-                <span className="material-symbols-outlined text-3xl text-on-surface-variant/40">lock</span>
-                <p className="text-sm font-headline font-bold text-on-surface">Free plan limit reached</p>
-                <p className="text-xs text-on-surface-variant font-body">Upgrade to Pro to add up to 5 accountability partners.</p>
+                <span className="material-symbols-outlined text-3xl text-slate-500">lock</span>
+                <p className="text-sm font-headline font-bold text-slate-100">Free plan limit reached</p>
+                <p className="text-xs text-slate-400 font-body">Upgrade to Pro to add up to 5 accountability partners.</p>
               </div>
             </div>
           ) : (
-            <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-6 space-y-4">
+            <div className="bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-3xl p-6 space-y-4">
               {invitedPartners.length > 0 && (
                 <p className="text-xs text-primary font-label font-bold text-center">Add another partner ({2 - invitedPartners.length} remaining on free plan)</p>
               )}
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their name</label>
+              <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their name</label>
               <input type="text" value={partnerName} onChange={(e) => setPartnerName(e.target.value)}
-                placeholder="First name" className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200" />
+                placeholder="First name" className="w-full px-4 py-3 rounded-2xl bg-stone-800 border-none text-slate-100 placeholder:text-stone-500 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their email</label>
+              <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their email</label>
               <input type="email" value={partnerEmail} onChange={(e) => setPartnerEmail(e.target.value)}
-                placeholder="partner@email.com" className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200" />
+                placeholder="partner@email.com" className="w-full px-4 py-3 rounded-2xl bg-stone-800 border-none text-slate-100 placeholder:text-stone-500 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their phone <span className="text-on-surface-variant font-normal">(optional — for SMS alerts)</span></label>
+              <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their phone <span className="text-slate-400 font-normal">(optional — for SMS alerts)</span></label>
               <input type="tel" value={partnerPhone} onChange={handlePhoneChange}
-                placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200" />
+                placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl bg-stone-800 border-none text-slate-100 placeholder:text-stone-500 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Relationship <span className="text-on-surface-variant font-normal">(select all that apply)</span></label>
+              <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Relationship <span className="text-slate-400 font-normal">(select all that apply)</span></label>
               <div className="flex flex-wrap gap-2">
                 {[
                   { key: 'friend', label: 'Friend' },
@@ -481,7 +527,7 @@ function OnboardingContent() {
                     );
                   }}
                     className={`px-4 py-2 rounded-full text-sm font-label font-medium border transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                      relationships.includes(key) ? 'border-primary bg-primary-container text-primary' : 'border-outline-variant text-on-surface-variant hover:border-primary/30'
+                      relationships.includes(key) ? 'border-primary bg-primary/10 text-primary' : 'border-white/10 text-slate-400 hover:border-primary/30'
                     }`}>
                     {label}
                   </button>
@@ -494,7 +540,7 @@ function OnboardingContent() {
                   onChange={(e) => setCustomRelationship(e.target.value)}
                   placeholder="Describe your relationship"
                   maxLength={50}
-                  className="mt-2 w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                  className="mt-2 w-full px-4 py-3 rounded-2xl bg-stone-800 border-none text-slate-100 placeholder:text-stone-500 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
                 />
               )}
             </div>
@@ -505,11 +551,11 @@ function OnboardingContent() {
 
           <div className="flex gap-3 mt-6">
             {invitedPartners.length > 0 ? (
-              <button onClick={() => setStep('done')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer">
-                Continue to Dashboard →
+              <button onClick={() => setStep('done')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer">
+                Continue to Dashboard \u2192
               </button>
             ) : (
-              <button onClick={() => initialStep === 'partner' ? router.push('/dashboard') : setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer">
+              <button onClick={() => initialStep === 'partner' ? router.push('/dashboard') : setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer">
                 {initialStep === 'partner' ? '\u2190 Dashboard' : '\u2190 Back'}
               </button>
             )}
@@ -527,13 +573,13 @@ function OnboardingContent() {
             )}
           </div>
 
-          <button onClick={enableSolo} className="w-full mt-3 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body cursor-pointer transition-colors duration-200">
+          <button onClick={enableSolo} className="w-full mt-3 py-2 text-xs text-slate-400 hover:text-slate-200 text-center font-body cursor-pointer transition-colors duration-200">
             I&apos;ll start in solo mode instead
           </button>
 
-          <div className="mt-4 px-4 py-3 rounded-2xl bg-primary-container/20 ring-1 ring-primary/10">
-            <p className="text-xs text-on-surface font-body leading-relaxed">
-              <span className="font-bold text-primary">Why invite a partner?</span> Users with a confirmed partner get <span className="font-bold">30 free days</span>, the ability to <span className="font-bold">challenge false flags</span> to protect their streaks, and eligibility for <span className="font-bold">physical and digital awards</span> tied to streak milestones.
+          <div className="mt-4 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/5 ring-1 ring-primary/10">
+            <p className="text-xs text-slate-300 font-body leading-relaxed">
+              <span className="font-bold text-primary">Why invite a partner?</span> Users with a confirmed partner get <span className="font-bold text-slate-100">30 free days</span>, the ability to <span className="font-bold text-slate-100">challenge false flags</span> to protect their streaks, and eligibility for <span className="font-bold text-slate-100">physical and digital awards</span> tied to streak milestones.
             </p>
           </div>
         </div>
@@ -541,7 +587,7 @@ function OnboardingContent() {
 
       {/* ═══════ STEP 5: Done — redirect to dashboard ═══════ */}
       {step === 'done' && (
-        <div className="max-w-md w-full text-center animate-fade-in">
+        <div className="max-w-md w-full text-center animate-fade-slide">
           <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
@@ -569,7 +615,7 @@ function OnboardingContent() {
 
 export default function OnboardingPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><p className="text-on-surface-variant">Loading...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#141a1f' }}><p className="text-slate-400">Loading...</p></div>}>
       <OnboardingContent />
     </Suspense>
   );

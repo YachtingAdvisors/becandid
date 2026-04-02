@@ -112,3 +112,47 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   -webkit-text-stroke: 1px rgba(123, 211, 237, 0.2);
   color: transparent;
 }
+
+/* Shattering text animation for onboarding transitions */
+@keyframes shatter {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    letter-spacing: -0.05em;
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1);
+    letter-spacing: 0;
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+    letter-spacing: 0.3em;
+    filter: blur(8px);
+  }
+}
+
+.animate-shatter {
+  animation: shatter 1.5s ease-out forwards;
+}
+
+/* Fade in for onboarding content */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide {
+  animation: fadeSlideUp 0.6s ease-out forwards;
+}

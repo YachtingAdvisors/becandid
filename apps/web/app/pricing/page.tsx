@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import PublicNav from '@/components/PublicNav';
 
 const TIER_ICONS: Record<string, string> = {
   free: 'eco',
@@ -91,28 +92,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-[#0c1214]">
-      {/* Nav */}
-      <header className="sticky top-0 z-50 bg-stone-950/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-5xl mx-auto flex items-center justify-between px-6 h-16">
-          <a href="/" className="flex items-center gap-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="h-9 w-auto brightness-[10]" />
-          </a>
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="/#features" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors">Features</a>
-            <a href="/#journey" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors">How It Works</a>
-            <a href="/download" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors">Download</a>
-            <a href="/families" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors">Families</a>
-            <a href="/pricing" className="font-label text-sm text-cyan-400 font-bold">Pricing</a>
-          </nav>
-          <div className="flex items-center gap-4">
-            <a href="/auth/signin" className="font-label text-sm text-stone-400 hover:text-stone-200 transition-colors hidden sm:block">Log in</a>
-            <a href="/auth/signup" className="px-5 py-2.5 rounded-full bg-gradient-to-r from-cyan-500 to-teal-400 text-stone-950 text-sm font-label font-bold hover:brightness-110 transition-all shadow-lg shadow-cyan-500/20">
-              Get Started
-            </a>
-          </div>
-        </div>
-      </header>
+      <PublicNav />
 
       <div className="max-w-screen-2xl mx-auto px-6 py-24">
         {/* Header */}

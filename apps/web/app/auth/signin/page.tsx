@@ -37,27 +37,30 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-dark-sanctuary flex items-center justify-center px-4 overflow-hidden">
+    <div className="relative min-h-screen bg-[#0f1419] flex items-center justify-center px-4 overflow-hidden">
       {/* Ambient blur backgrounds */}
       <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[100px]" />
       <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-teal-500/5 blur-[100px]" />
 
       {/* Fixed top nav */}
-      <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-dark-sanctuary/70 border-b border-white/5">
+      <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-[#0f1419]/70 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-lg">
             <img src="/logo.png" alt="Be Candid" className="h-10 w-auto brightness-[10]" />
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-[13px] font-label text-stone-400 hover:text-slate-100 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Privacy</Link>
-            <Link href="/security" className="text-[13px] font-label text-stone-400 hover:text-slate-100 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Security</Link>
+            <Link href="/privacy" className="text-[13px] font-label text-stone-500 hover:text-stone-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Privacy</Link>
+            <Link href="/security" className="text-[13px] font-label text-stone-500 hover:text-stone-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Security</Link>
           </div>
         </div>
       </nav>
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-xl">
-        <div className="bg-white/[0.03] backdrop-blur-xl rounded-[2rem] shadow-[0_4px_40px_rgba(0,0,0,0.3)] ring-1 ring-white/[0.06] p-10 sm:p-12 transition-all duration-200 hover:ring-white/[0.1]">
+        <div
+          className="rounded-[2rem] shadow-[0_4px_40px_rgba(0,0,0,0.3)] p-10 sm:p-12 transition-all duration-200 hover:ring-white/[0.1]"
+          style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}
+        >
           {/* Icon badge */}
           <div className="flex justify-center mb-6">
             <div className="w-14 h-14 rounded-2xl bg-white/[0.05] flex items-center justify-center">
@@ -70,15 +73,15 @@ export default function SignInPage() {
             <h1 className="text-2xl sm:text-3xl font-headline font-bold text-slate-100">
               Welcome <em className="text-primary not-italic font-bold italic">back.</em>
             </h1>
-            <p className="text-sm text-stone-400 mt-2 font-label">
+            <p className="text-sm text-slate-400 mt-2 font-label">
               Sign in to continue your journey
             </p>
           </div>
 
           <form onSubmit={handleSignIn} className="space-y-5">
             {error && (
-              <div className="px-4 py-3 rounded-2xl bg-error/5 ring-1 ring-error/20 text-error text-sm font-body flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-error/10 flex items-center justify-center shrink-0">
+              <div className="px-4 py-3 rounded-2xl bg-red-900/20 ring-1 ring-red-500/20 text-red-400 text-sm font-body flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-red-900/30 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-[18px]">error</span>
                 </div>
                 {error}
@@ -118,7 +121,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-5 bg-gradient-to-r from-primary to-primary-container hover:brightness-110 text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl cursor-pointer transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none"
+              className="w-full py-5 bg-gradient-to-r from-primary to-primary-container hover:brightness-110 text-white text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl cursor-pointer transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none"
             >
               {loading ? 'Signing in...' : 'Sign In'}
               {!loading && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}
@@ -126,7 +129,7 @@ export default function SignInPage() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-stone-400 mt-8 font-label">
+        <p className="text-center text-sm text-stone-500 mt-8 font-label">
           Don&apos;t have an account?{' '}
           <Link href="/auth/signup" className="text-cyan-400 font-semibold hover:text-cyan-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-1 py-0.5">Sign up</Link>
         </p>

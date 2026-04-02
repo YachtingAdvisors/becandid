@@ -1,7 +1,5 @@
-'use client';
-
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import PublicNav from '@/components/PublicNav';
 
 /* ─── Feature data ───────────────────────────────────────────── */
 const FEATURES = [
@@ -104,15 +102,6 @@ const ICON_COLORS = [
 
 /* ─── Main page ──────────────────────────────────────────────── */
 export default function LandingPage() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
     <div className="min-h-screen bg-dark-sanctuary text-white overflow-x-hidden">
       {/* JSON-LD Organization Schema */}
@@ -137,100 +126,7 @@ export default function LandingPage() {
         }}
       />
 
-      {/* ── Sticky Nav ────────────────────────────────────── */}
-      <header
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-stone-950/80 backdrop-blur-xl border-b border-white/5'
-            : 'bg-transparent'
-        }`}
-      >
-        <nav className="flex justify-between items-center px-6 lg:px-12 py-4 max-w-screen-2xl mx-auto">
-          <Link href="/" className="flex items-center gap-3 shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="h-12 w-auto object-contain brightness-[10]" />
-          </Link>
-
-          <div className="hidden md:flex items-center gap-1 font-body text-sm">
-            {[
-              { label: 'Features', href: '#features' },
-              { label: 'How It Works', href: '#journey' },
-              { label: 'Download', href: '/download', isLink: true },
-              { label: 'Families', href: '/families', isLink: true },
-              { label: 'Pricing', href: '/pricing', isLink: true },
-              { label: 'Therapists', href: '/therapists', isLink: true },
-            ].map((item) => {
-              const cls = 'px-4 py-2 rounded-full text-stone-400 hover:text-white transition-all duration-200 cursor-pointer';
-              return item.isLink ? (
-                <Link key={item.label} href={item.href} className={cls}>{item.label}</Link>
-              ) : (
-                <a key={item.label} href={item.href} className={cls}>{item.label}</a>
-              );
-            })}
-          </div>
-
-          <div className="hidden md:flex items-center gap-3">
-            <Link
-              href="/auth/signin"
-              className="px-5 py-2.5 text-sm font-medium text-stone-400 hover:text-white rounded-full transition-all duration-200 cursor-pointer"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="px-6 py-2.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label text-sm font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer"
-            >
-              Get Started
-            </Link>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
-            aria-label="Toggle menu"
-          >
-            <span className="material-symbols-outlined text-white text-2xl">
-              {mobileMenuOpen ? 'close' : 'menu'}
-            </span>
-          </button>
-        </nav>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-stone-950/95 backdrop-blur-xl border-t border-white/5 px-6 pb-6 pt-2">
-            <div className="space-y-1">
-              {[
-                { label: 'Features', href: '#features' },
-                { label: 'How It Works', href: '#journey' },
-                { label: 'Download', href: '/download' },
-                { label: 'Families', href: '/families' },
-                { label: 'Pricing', href: '/pricing' },
-                { label: 'Therapists', href: '/therapists' },
-              ].map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 rounded-xl font-body text-base text-stone-300 hover:text-white hover:bg-white/5 transition-all duration-200"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-            <div className="mt-4 pt-4 border-t border-white/5 flex flex-col gap-3">
-              <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 text-center text-stone-300 font-label text-sm font-semibold rounded-xl hover:bg-white/5 transition-all duration-200 cursor-pointer">
-                Log in
-              </Link>
-              <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 text-center bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label text-sm font-semibold shadow-lg shadow-primary/20 hover:brightness-110 transition-all duration-200 cursor-pointer">
-                Get Started
-              </Link>
-            </div>
-          </div>
-        )}
-      </header>
+      <PublicNav />
 
       <main>
         {/* ── Hero Section ─────────────────────────────────── */}
@@ -298,13 +194,6 @@ export default function LandingPage() {
                   alt="Be Candid dashboard showing integrity score and journaling prompts"
                   className="w-full h-auto rounded-2xl object-cover"
                 />
-              </div>
-
-              {/* Floating stat card */}
-              <div className="absolute -bottom-6 -left-6 glass-card p-5 rounded-2xl max-w-[200px]">
-                <MaterialIcon name="insights" className="text-cyan-400 text-2xl mb-2" filled />
-                <p className="font-headline text-2xl font-bold text-white">98%</p>
-                <p className="font-label text-[10px] text-stone-500 uppercase tracking-widest mt-0.5">Clarity</p>
               </div>
 
               {/* Floating badge top-right */}
@@ -454,6 +343,7 @@ export default function LandingPage() {
                   </div>
                 ))}
               </div>
+              <p className="font-label text-sm text-stone-500 uppercase tracking-widest mt-6">Methodology trusted by thousands</p>
             </div>
 
             {/* Download card */}
@@ -505,15 +395,18 @@ export default function LandingPage() {
 
               <MaterialIcon name="format_quote" className="text-5xl text-cyan-400/20 mb-6" />
               <blockquote className="font-body text-xl lg:text-2xl text-stone-300 leading-relaxed">
-                &ldquo;Be Candid gave me the framework I needed to have honest conversations with my partner about our digital lives. The <span className="text-cyan-400">journal alone was transformative</span>.&rdquo;
+                &ldquo;Integrity is choosing courage over comfort; choosing what is right over what is fun, fast, or easy; and choosing to practice our values rather than simply professing them.&rdquo;
               </blockquote>
               <div className="mt-8 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
-                  <MaterialIcon name="person" className="text-white text-xl" />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/authors/1749770174i/162578._UX200_CR0,0,200,200_.jpg"
+                  alt="Bren&#233; Brown"
+                  className="w-12 h-12 rounded-full object-cover"
+                />
                 <div className="text-left">
-                  <p className="font-label text-sm font-semibold text-white">Sarah M.</p>
-                  <p className="font-label text-xs text-stone-500">Using Be Candid for 8 months</p>
+                  <p className="font-label text-sm font-semibold text-white">Bren&eacute; Brown</p>
+                  <p className="font-label text-xs text-stone-500">Author &amp; Researcher</p>
                 </div>
               </div>
             </div>

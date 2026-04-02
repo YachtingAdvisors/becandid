@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import PublicNav from '@/components/PublicNav';
 
 export const metadata: Metadata = {
   title: 'Methodology — The Architecture of Honesty',
@@ -25,37 +26,7 @@ export default function MethodologyPage() {
   return (
     <div className="bg-[#020617] min-h-screen text-slate-100 overflow-x-hidden">
 
-      {/* ── Navigation ──────────────────────────────────────────── */}
-      <nav className="fixed top-0 w-full z-50 bg-stone-950/80 backdrop-blur-xl border-b border-white/5">
-        <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
-          <Link href="/">
-            <img src="/logo.png" alt="Be Candid" className="h-9 w-auto brightness-[10]" />
-          </Link>
-          <div className="hidden md:flex items-center space-x-10">
-            <Link href="/#features" className="text-stone-400 hover:text-stone-200 transition-colors text-sm">
-              Sanctuary
-            </Link>
-            <Link
-              href="/how-it-works"
-              className="text-cyan-400 font-bold border-b-2 border-cyan-400 pb-1 text-sm"
-            >
-              Methodology
-            </Link>
-            <Link href="/integrity-index" className="text-stone-400 hover:text-stone-200 transition-colors text-sm">
-              Integrity Index
-            </Link>
-            <Link href="/pricing" className="text-stone-400 hover:text-stone-200 transition-colors text-sm">
-              Pricing
-            </Link>
-          </div>
-          <Link
-            href="/auth/signup"
-            className="bg-gradient-to-r from-primary to-primary-container text-white px-6 py-2.5 rounded-full font-semibold text-sm"
-          >
-            Get Started
-          </Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       {/* ── Hero (full-bleed background image) ─────────────────── */}
       <section className="relative min-h-[819px] flex items-center justify-center text-center">
