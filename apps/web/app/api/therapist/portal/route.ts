@@ -8,12 +8,13 @@ export const dynamic = 'force-dynamic';
 //
 // Query params:
 //   ?client_id=<uuid>       → which client to view
-//   ?section=journal|moods|streaks|outcomes|patterns|summary
+//   ?section=journal|moods|streaks|outcomes|patterns|family_systems|summary
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { decryptJournalEntries, decrypt } from '@/lib/encryption';
+import { analyzeFamilySystems } from '@/lib/stringerAnalysis';
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -144,6 +145,35 @@ export async function GET(req: NextRequest) {
           ...o,
           ai_reflection: o.ai_reflection ? decrypt(o.ai_reflection, clientId) : null,
         })),
+      });
+    }
+
+    case 'family_systems': {
+      if (!connection.can_see_family_systems) {
+        return NextResponse.json({ error: 'Access not granted for family systems' }, { status: 403 });
+      }
+
+      // Run the Stringer family systems analysis
+      const analysis = await analyzeFamilySystems(db, clientId);
+
+      // Fetch therapist's notes for this client
+      const { data: notes } = await db.from('family_systems_notes')
+        .select('id, dynamic, confirmed, confidence_override, parenting_style, note, note_type, created_at, updated_at')
+        .eq('user_id', clientId)
+        .eq('therapist_id', user.id)
+        .order('created_at', { ascending: false });
+
+      // Decrypt notes
+      const decryptedNotes = (notes || []).map((n: any) => ({
+        ...n,
+        note: n.note ? decrypt(n.note, clientId) : null,
+      }));
+
+      return NextResponse.json({
+        client_name: client?.name,
+        section: 'family_systems',
+        analysis,
+        therapist_notes: decryptedNotes,
       });
     }
 

@@ -486,3 +486,68 @@ export function getQuoteOfTheDay(motivator?: FoundationalMotivator | null): Moti
 
 // The Mr. Rogers quote specifically, used as default for new users
 export const MR_ROGERS_QUOTE: MotivatorQuote = GENERAL_QUOTES[0];
+
+// ─── Family Systems Types ───────────────────────────────────
+// Based on Jay Stringer's six family-of-origin dynamics from
+// *Unwanted*, generalized across all rival categories.
+
+export type FamilyDynamic =
+  | 'rigidity'
+  | 'enmeshment'
+  | 'triangulation'
+  | 'dismissiveness'
+  | 'abdication'
+  | 'incongruence';
+
+export type ParentingStyle =
+  | 'authoritarian'
+  | 'enmeshed'
+  | 'uninvolved'
+  | 'permissive'
+  | 'conflict_driven'
+  | 'performative';
+
+export type FamilySystemsNoteType =
+  | 'observation'
+  | 'family_history'
+  | 'attachment_pattern'
+  | 'treatment_note'
+  | 'dynamic_assessment';
+
+export interface FamilySystemsNote {
+  id: string;
+  user_id: string;
+  therapist_id: string;
+  connection_id: string;
+  dynamic: FamilyDynamic | null;
+  confirmed: boolean | null;
+  confidence_override: number | null;
+  parenting_style: ParentingStyle | null;
+  note: string;
+  note_type: FamilySystemsNoteType;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DynamicScore {
+  dynamic: FamilyDynamic;
+  label: string;
+  description: string;
+  confidence: number;
+  signals: string[];
+  parenting_style: ParentingStyle;
+  parenting_label: string;
+}
+
+export interface FamilySystemsAnalysis {
+  user_id: string;
+  analyzed_at: string;
+  rivals: string[];
+  dynamics: DynamicScore[];
+  primary_dynamic: FamilyDynamic | null;
+  primary_parenting_style: ParentingStyle | null;
+  data_quality: 'insufficient' | 'low' | 'moderate' | 'strong';
+  journal_count: number;
+  event_count: number;
+  summary: string;
+}
