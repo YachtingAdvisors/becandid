@@ -91,3 +91,24 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* ─── Dark sanctuary theme ─────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.text-glow {
+  text-shadow: 0 0 30px rgba(123, 211, 237, 0.4);
+}
+
+.bg-dark-sanctuary {
+  background-color: #0c1214;
+}
+
+.text-outline {
+  -webkit-text-stroke: 1px rgba(123, 211, 237, 0.2);
+  color: transparent;
+}

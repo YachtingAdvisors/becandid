@@ -89,6 +89,19 @@ function MaterialIcon({ name, className = '', filled = false }: { name: string; 
   );
 }
 
+/* ─── Icon accent colors ─────────────────────────────────────── */
+const ICON_COLORS = [
+  'bg-cyan-500/20 text-cyan-400',
+  'bg-emerald-500/20 text-emerald-400',
+  'bg-primary/20 text-primary',
+  'bg-amber-500/20 text-amber-400',
+  'bg-cyan-500/20 text-cyan-400',
+  'bg-emerald-500/20 text-emerald-400',
+  'bg-primary/20 text-primary',
+  'bg-amber-500/20 text-amber-400',
+  'bg-cyan-500/20 text-cyan-400',
+];
+
 /* ─── Main page ──────────────────────────────────────────────── */
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -101,7 +114,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-surface text-on-surface overflow-x-hidden">
+    <div className="min-h-screen bg-dark-sanctuary text-white overflow-x-hidden">
       {/* JSON-LD Organization Schema */}
       <script
         type="application/ld+json"
@@ -123,18 +136,19 @@ export default function LandingPage() {
           }),
         }}
       />
-      {/* ── Floating Nav ───────────────────────────────────── */}
+
+      {/* ── Sticky Nav ────────────────────────────────────── */}
       <header
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-outline-variant/10'
+            ? 'bg-stone-950/80 backdrop-blur-xl border-b border-white/5'
             : 'bg-transparent'
         }`}
       >
         <nav className="flex justify-between items-center px-6 lg:px-12 py-4 max-w-screen-2xl mx-auto">
           <Link href="/" className="flex items-center gap-3 shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="h-12 w-auto object-contain" />
+            <img src="/logo.png" alt="Be Candid" className="h-12 w-auto object-contain brightness-[10]" />
           </Link>
 
           <div className="hidden md:flex items-center gap-1 font-body text-sm">
@@ -144,8 +158,9 @@ export default function LandingPage() {
               { label: 'Download', href: '/download', isLink: true },
               { label: 'Families', href: '/families', isLink: true },
               { label: 'Pricing', href: '/pricing', isLink: true },
+              { label: 'Therapists', href: '/therapists', isLink: true },
             ].map((item) => {
-              const cls = 'px-4 py-2 rounded-full text-on-surface/70 hover:text-on-surface hover:bg-surface-container-low transition-all duration-200 cursor-pointer';
+              const cls = 'px-4 py-2 rounded-full text-stone-400 hover:text-white transition-all duration-200 cursor-pointer';
               return item.isLink ? (
                 <Link key={item.label} href={item.href} className={cls}>{item.label}</Link>
               ) : (
@@ -157,13 +172,13 @@ export default function LandingPage() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/auth/signin"
-              className="px-5 py-2.5 text-sm font-medium text-on-surface/70 hover:text-on-surface rounded-full hover:bg-surface-container-low transition-all duration-200 cursor-pointer"
+              className="px-5 py-2.5 text-sm font-medium text-stone-400 hover:text-white rounded-full transition-all duration-200 cursor-pointer"
             >
               Log in
             </Link>
             <Link
               href="/auth/signup"
-              className="px-6 py-2.5 bg-primary text-on-primary rounded-full font-label text-sm font-semibold shadow-sm hover:shadow-md hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer"
+              className="px-6 py-2.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label text-sm font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer"
             >
               Get Started
             </Link>
@@ -172,10 +187,10 @@ export default function LandingPage() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
             aria-label="Toggle menu"
           >
-            <span className="material-symbols-outlined text-on-surface text-2xl">
+            <span className="material-symbols-outlined text-white text-2xl">
               {mobileMenuOpen ? 'close' : 'menu'}
             </span>
           </button>
@@ -183,7 +198,7 @@ export default function LandingPage() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-surface/95 backdrop-blur-xl border-t border-outline-variant/10 px-6 pb-6 pt-2">
+          <div className="md:hidden bg-stone-950/95 backdrop-blur-xl border-t border-white/5 px-6 pb-6 pt-2">
             <div className="space-y-1">
               {[
                 { label: 'Features', href: '#features' },
@@ -191,24 +206,25 @@ export default function LandingPage() {
                 { label: 'Download', href: '/download' },
                 { label: 'Families', href: '/families' },
                 { label: 'Pricing', href: '/pricing' },
+                { label: 'Therapists', href: '/therapists' },
               ].map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 rounded-xl font-body text-base text-on-surface hover:bg-surface-container-low transition-all duration-200"
+                  className="block px-4 py-3 rounded-xl font-body text-base text-stone-300 hover:text-white hover:bg-white/5 transition-all duration-200"
                 >
                   {item.label}
                 </a>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-outline-variant/10 flex flex-col gap-3">
+            <div className="mt-4 pt-4 border-t border-white/5 flex flex-col gap-3">
               <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 text-center text-on-surface font-label text-sm font-semibold rounded-xl hover:bg-surface-container-low transition-all duration-200 cursor-pointer">
+                className="px-4 py-3 text-center text-stone-300 font-label text-sm font-semibold rounded-xl hover:bg-white/5 transition-all duration-200 cursor-pointer">
                 Log in
               </Link>
               <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 text-center bg-primary text-on-primary rounded-full font-label text-sm font-semibold shadow-lg shadow-primary/20 hover:brightness-110 transition-all duration-200 cursor-pointer">
+                className="px-4 py-3 text-center bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label text-sm font-semibold shadow-lg shadow-primary/20 hover:brightness-110 transition-all duration-200 cursor-pointer">
                 Get Started
               </Link>
             </div>
@@ -219,28 +235,31 @@ export default function LandingPage() {
       <main>
         {/* ── Hero Section ─────────────────────────────────── */}
         <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 px-6 lg:px-12 max-w-screen-2xl mx-auto min-h-[90vh] flex flex-col justify-center">
-          {/* Subtle background gradient */}
+          {/* Decorative blur orbs */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-20 -right-40 w-[600px] h-[600px] bg-primary/[0.04] rounded-full blur-[120px]" />
-            <div className="absolute -bottom-20 -left-40 w-[500px] h-[500px] bg-primary-container/[0.08] rounded-full blur-[100px]" />
+            <div className="absolute top-20 -right-40 w-[600px] h-[600px] rounded-full blur-[160px]" style={{ background: 'rgba(0, 102, 122, 0.15)' }} />
+            <div className="absolute -bottom-20 -left-40 w-[500px] h-[500px] rounded-full blur-[140px]" style={{ background: 'rgba(123, 211, 237, 0.08)' }} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[200px]" style={{ background: 'rgba(0, 102, 122, 0.06)' }} />
           </div>
 
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center relative z-10">
             <div className="space-y-8 max-w-xl">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-primary/[0.08] border border-primary/15 rounded-full">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse-dot" />
-                <span className="font-label text-xs font-semibold uppercase tracking-widest text-primary">Clinically Informed</span>
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 glass-card rounded-full">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="font-label text-xs font-semibold uppercase tracking-widest text-cyan-400">Clinically Informed</span>
               </div>
 
               {/* Headline */}
-              <h1 className="font-headline text-[2.75rem] sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold text-on-surface tracking-tight leading-[1.08]">
-                Recovery starts with{' '}
-                <span className="text-primary">radical honesty.</span>
+              <h1 className="font-headline text-[2.75rem] sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold tracking-tight leading-[1.08]">
+                <span className="text-glow">Recovery starts with{' '}</span>
+                <span className="bg-gradient-to-r from-cyan-400 via-primary to-emerald-400 bg-clip-text text-transparent">
+                  radical honesty.
+                </span>
               </h1>
 
               {/* Sub */}
-              <p className="font-body text-lg lg:text-xl text-on-surface-variant leading-relaxed max-w-md">
+              <p className="font-body text-lg lg:text-xl text-stone-400 leading-relaxed max-w-md">
                 An accountability app that combines screen monitoring, guided journaling, and AI-driven insights to help you break free from unwanted habits &mdash; for good.
               </p>
 
@@ -248,31 +267,31 @@ export default function LandingPage() {
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link
                   href="/auth/signup"
-                  className="group px-8 py-4 bg-primary text-on-primary rounded-full font-label font-bold text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+                  className="group px-8 py-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
                 >
-                  Start Free Trial
+                  Begin Your Journey
                   <MaterialIcon name="arrow_forward" className="text-lg group-hover:translate-x-0.5 transition-transform duration-200" />
                 </Link>
                 <a
                   href="#journey"
-                  className="px-8 py-4 rounded-full font-label font-bold text-base text-on-surface/70 hover:text-on-surface hover:bg-surface-container transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+                  className="px-8 py-4 rounded-full font-label font-bold text-base text-stone-300 hover:text-white glass-card hover:bg-white/[0.06] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
                 >
-                  <MaterialIcon name="play_circle" className="text-xl text-primary" filled />
-                  How It Works
+                  <MaterialIcon name="play_circle" className="text-xl text-cyan-400" filled />
+                  The Methodology
                 </a>
               </div>
 
               {/* Micro-trust */}
-              <div className="flex items-center gap-3 pt-2 text-on-surface-variant/60">
-                <MaterialIcon name="verified_user" className="text-base text-primary/50" filled />
+              <div className="flex items-center gap-3 pt-2 text-stone-500">
+                <MaterialIcon name="verified_user" className="text-base text-primary/60" filled />
                 <span className="font-body text-sm">Free 14-day trial &middot; No credit card required</span>
               </div>
             </div>
 
-            {/* Hero Image */}
+            {/* Hero Phone Mockup */}
             <div className="relative hidden lg:block">
-              <div className="absolute -inset-8 bg-gradient-to-br from-primary/[0.06] via-transparent to-primary-container/[0.08] blur-3xl rounded-full" />
-              <div className="relative bg-surface-container-lowest rounded-3xl p-3 shadow-2xl shadow-on-surface/[0.08] ring-1 ring-outline-variant/10 transform rotate-1 hover:rotate-0 transition-transform duration-700">
+              <div className="absolute -inset-8 rounded-full blur-[80px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.2), transparent 70%)' }} />
+              <div className="relative glass-card rounded-3xl p-3 transform rotate-1 hover:rotate-0 transition-transform duration-700">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBDhdaLlgxHIo_EQEqTmR12ZxXVjLjZzQR32EdMhoa_Wx7_3glU1nTRHm1c7XAWnFGGPLDLoqo8o-VvOMXB56KxDMWa054TdLlpsZsPPAGJhDElxPH8IYampDAz8ajs9SDk_IwFhdWISX-YRczgAUd6JegtfDruOhiPwoIaYjmDhVLDw8_GbAwE8PW5s2ci5wvWPSmnbu34eIOizHnoY2DJF7DCsL_pt-JSFBs1rj0Qw7_96_k7nUMFbrBYJHX52XfyKK4DnTy6Jp6"
@@ -281,57 +300,46 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* Floating stat */}
-              <div className="absolute -bottom-6 -left-6 bg-surface-container-lowest p-5 rounded-2xl shadow-xl shadow-on-surface/[0.06] ring-1 ring-outline-variant/10 max-w-[200px]">
-                <MaterialIcon name="insights" className="text-primary text-2xl mb-2" filled />
-                <p className="font-headline text-2xl font-bold text-on-surface">+84%</p>
-                <p className="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mt-0.5">Integrity Growth</p>
+              {/* Floating stat card */}
+              <div className="absolute -bottom-6 -left-6 glass-card p-5 rounded-2xl max-w-[200px]">
+                <MaterialIcon name="insights" className="text-cyan-400 text-2xl mb-2" filled />
+                <p className="font-headline text-2xl font-bold text-white">98%</p>
+                <p className="font-label text-[10px] text-stone-500 uppercase tracking-widest mt-0.5">Clarity</p>
               </div>
 
               {/* Floating badge top-right */}
-              <div className="absolute -top-4 -right-4 bg-surface-container-lowest px-4 py-3 rounded-2xl shadow-xl shadow-on-surface/[0.06] ring-1 ring-outline-variant/10 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                  <MaterialIcon name="check" className="text-green-600 text-base" />
+              <div className="absolute -top-4 -right-4 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <MaterialIcon name="check" className="text-emerald-400 text-base" />
                 </div>
                 <div>
-                  <p className="font-label text-xs font-semibold text-on-surface">256-bit</p>
-                  <p className="font-label text-[10px] text-on-surface-variant">Encrypted</p>
+                  <p className="font-label text-xs font-semibold text-white">256-bit</p>
+                  <p className="font-label text-[10px] text-stone-500">Encrypted</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Trust Strip ──────────────────────────────────── */}
-        <section className="border-y border-outline-variant/10 bg-surface-container-low/50">
-          <div className="max-w-screen-xl mx-auto px-6 py-8 flex flex-wrap justify-center gap-x-16 gap-y-6">
-            {TRUST_STATS.map((s) => (
-              <div key={s.label} className="text-center">
-                <p className="font-headline text-2xl font-bold text-on-surface">{s.value}</p>
-                <p className="font-label text-xs text-on-surface-variant uppercase tracking-widest mt-0.5">{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Features Bento ───────────────────────────────── */}
+        {/* ── Precision Tools ─────────────────────────────── */}
         <section id="features" className="py-24 lg:py-32 px-6">
           <div className="max-w-screen-xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-primary">Features</span>
-              <h2 className="font-headline font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-on-surface mt-4 tracking-tight">
-                Everything you need for digital integrity
+              <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">Features</span>
+              <h2 className="font-headline font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-white mt-4 tracking-tight">
+                Precision Tools
               </h2>
-              <p className="text-on-surface-variant mt-4 text-lg leading-relaxed">
+              <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 via-primary to-emerald-400 rounded-full mx-auto mt-4" />
+              <p className="text-stone-400 mt-6 text-lg leading-relaxed">
                 Awareness, journaling, conversation guides, and alignment tracking &mdash; all in one place.
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {FEATURES.map((f) => (
+              {FEATURES.map((f, i) => (
                 <div
                   key={f.title}
-                  className="group relative bg-surface-container-lowest rounded-2xl overflow-hidden ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 cursor-pointer"
+                  className="group relative glass-card rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 cursor-pointer"
                 >
                   {/* Image */}
                   <div className="aspect-[16/10] overflow-hidden">
@@ -346,12 +354,12 @@ export default function LandingPage() {
                   {/* Content */}
                   <div className="p-5">
                     <div className="flex items-center gap-3 mb-2.5">
-                      <div className="w-9 h-9 rounded-xl bg-primary/[0.08] flex items-center justify-center shrink-0">
-                        <MaterialIcon name={f.icon} className="text-primary text-lg" />
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${ICON_COLORS[i] || 'bg-primary/20 text-primary'}`}>
+                        <MaterialIcon name={f.icon} className="text-lg" />
                       </div>
-                      <h3 className="font-headline font-bold text-base text-on-surface leading-snug">{f.title}</h3>
+                      <h3 className="font-headline font-bold text-base text-white leading-snug">{f.title}</h3>
                     </div>
-                    <p className="font-body text-on-surface-variant leading-relaxed text-sm">{f.desc}</p>
+                    <p className="font-body text-stone-400 leading-relaxed text-sm">{f.desc}</p>
                   </div>
                 </div>
               ))}
@@ -360,71 +368,103 @@ export default function LandingPage() {
         </section>
 
         {/* ── The Journey to Integrity ─────────────────────── */}
-        <section id="journey" className="py-24 lg:py-32 px-6 bg-surface-container-low/50">
+        <section id="journey" className="py-24 lg:py-32 px-6 border-t border-white/5">
           <div className="max-w-screen-xl mx-auto">
             <div className="text-center mb-20">
-              <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-primary">The Process</span>
-              <h2 className="font-headline text-3xl sm:text-4xl lg:text-[2.75rem] font-bold mt-4 tracking-tight">
+              <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">The Process</span>
+              <h2 className="font-headline text-3xl sm:text-4xl lg:text-[2.75rem] font-bold mt-4 tracking-tight text-white">
                 The Journey to Integrity
               </h2>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8 relative">
-              {/* Connecting line (desktop) */}
-              <div className="absolute top-12 left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-transparent via-outline-variant/25 to-transparent hidden lg:block" />
-
-              {[
-                {
-                  num: 1,
-                  icon: 'self_improvement',
-                  title: 'Define who you want to be',
-                  desc: 'Articulate your values and vision for a resilient life using our guided introspection tools.',
-                },
-                {
-                  num: 2,
-                  icon: 'group',
-                  title: 'Invite a trusted partner',
-                  desc: 'Choose a companion for your journey\u2014someone who understands your goals and provides support.',
-                },
-                {
-                  num: 3,
-                  icon: 'trending_up',
-                  title: 'Build digital integrity',
-                  desc: 'Consistent daily actions and honest reporting forge a path toward lasting personal growth.',
-                },
-              ].map((step) => (
-                <div key={step.num} className="relative text-center lg:text-left">
-                  {/* Step number */}
-                  <div className="w-14 h-14 rounded-2xl bg-primary text-on-primary flex items-center justify-center relative z-10 shadow-lg shadow-primary/20 mx-auto lg:mx-0 mb-6">
-                    <MaterialIcon name={step.icon} className="text-2xl" />
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 justify-center lg:justify-start">
-                      <span className="font-label text-xs font-semibold text-primary/60 uppercase tracking-widest">Step {step.num}</span>
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              {/* Steps */}
+              <div className="space-y-12">
+                {[
+                  {
+                    num: '01',
+                    title: 'The Reckoning',
+                    desc: 'Audit your digital footprint with honesty. Confront the patterns that keep you stuck and face the truth about your habits.',
+                  },
+                  {
+                    num: '02',
+                    title: 'The Architecture',
+                    desc: 'Build barriers and bridges with accountability partners. Design the structure that supports your transformation.',
+                  },
+                  {
+                    num: '03',
+                    title: 'The Ascent',
+                    desc: 'Track progress in character points and trust. Watch your integrity score rise as you build lasting, meaningful change.',
+                  },
+                ].map((step) => (
+                  <div key={step.num} className="flex gap-6 items-start">
+                    <span className="text-outline font-headline text-6xl font-black leading-none shrink-0 select-none">
+                      {step.num}
+                    </span>
+                    <div className="space-y-2 pt-1">
+                      <h3 className="font-headline text-xl font-bold text-white">{step.title}</h3>
+                      <p className="font-body text-stone-400 leading-relaxed">{step.desc}</p>
                     </div>
-                    <h3 className="font-headline text-xl font-bold text-on-surface">{step.title}</h3>
-                    <p className="font-body text-on-surface-variant leading-relaxed">{step.desc}</p>
                   </div>
+                ))}
+              </div>
+
+              {/* Right side image */}
+              <div className="relative hidden lg:block">
+                <div className="absolute -inset-4 rounded-3xl blur-[60px]" style={{ background: 'rgba(0, 102, 122, 0.1)' }} />
+                <div className="relative rounded-3xl overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo-SYobDlsUK6Jtkhk6AOOLEAwVNupQmSLEPlK8FuQIe6s2NVffDH_R4IbPyToq3JBb_q1CbH2MuJevxCbYMBD03TcBYONX7kOxkb1R4RSBnS07LOFuReuhJ0QXbvHMm9TYaQh0gQEOzNkvBNo9bxfHdGr3BnFynKwkIqWRXSD6AZTKTymbgvo9xYIablHUGDjYReLJ_TGzLgV9aLZI0FhD1y6mjoVmKqYrAocN7xNumX62L_1dhIR5Wu5kHe_TboeF2sqIoh3kROT"
+                    alt="Laptop and smartphone showing synchronized Be Candid integrity progress"
+                    className="w-full h-auto rounded-3xl object-cover"
+                  />
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c1214] via-transparent to-transparent" />
                 </div>
-              ))}
+
+                {/* Floating glass quote card */}
+                <div className="absolute bottom-8 left-8 right-8 glass-card rounded-2xl p-6">
+                  <MaterialIcon name="format_quote" className="text-2xl text-cyan-400/50 mb-2" />
+                  <p className="font-body text-sm text-stone-300 italic leading-relaxed">
+                    &ldquo;Integrity is choosing courage over comfort.&rdquo;
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ── Download / Growth on the Go ─────────────────── */}
-        <section id="download" className="py-24 lg:py-32 px-6">
+        {/* ── Stats + Download CTA ────────────────────────── */}
+        <section id="download" className="py-24 lg:py-32 px-6 border-t border-white/5">
           <div className="max-w-screen-xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8 order-2 lg:order-1">
-              <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-primary">Install Anywhere</span>
-              <h2 className="font-headline text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold tracking-tight">
-                Growth on the go
-              </h2>
-              <p className="font-body text-lg text-on-surface-variant leading-relaxed max-w-md">
-                Sync your journey across all devices. Your sanctuary is always within reach, whether you&apos;re at your desk or in the world.
+            {/* Stats */}
+            <div className="space-y-10">
+              <div>
+                <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">Proven Results</span>
+                <h2 className="font-headline text-3xl sm:text-4xl font-bold mt-4 tracking-tight text-white">
+                  Trusted by thousands
+                </h2>
+              </div>
+              <div className="grid grid-cols-2 gap-8">
+                {TRUST_STATS.map((s) => (
+                  <div key={s.label}>
+                    <p className="font-headline text-4xl lg:text-5xl font-black text-white text-glow">{s.value}</p>
+                    <p className="font-label text-xs text-stone-500 uppercase tracking-widest mt-2">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Download card */}
+            <div className="glass-card rounded-3xl p-8 lg:p-10">
+              <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">Install Anywhere</span>
+              <h3 className="font-headline text-2xl font-bold text-white mt-3 mb-2">Growth on the go</h3>
+              <p className="font-body text-stone-400 leading-relaxed mb-8">
+                Sync your journey across all devices. Your sanctuary is always within reach.
               </p>
 
-              <div className="flex flex-wrap gap-3 pt-2">
+              <div className="flex flex-wrap gap-3">
                 {[
                   { icon: 'phone_iphone', label: 'iPhone & iPad', sub: 'Install on', href: '/download' },
                   { icon: 'phone_android', label: 'Android', sub: 'Install on', href: '/download' },
@@ -433,10 +473,10 @@ export default function LandingPage() {
                   <Link
                     key={btn.label}
                     href={btn.href}
-                    className={`px-6 py-3.5 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer ${
+                    className={`px-5 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 cursor-pointer ${
                       btn.light
-                        ? 'bg-surface-container ring-1 ring-outline-variant/15 text-on-surface hover:bg-surface-container-high'
-                        : 'bg-on-surface text-surface hover:opacity-90'
+                        ? 'glass-card text-stone-300 hover:text-white hover:bg-white/[0.06]'
+                        : 'bg-white/10 text-white hover:bg-white/15'
                     }`}
                   >
                     <MaterialIcon name={btn.icon} className="text-2xl" />
@@ -448,38 +488,33 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              <p className="font-body text-sm text-on-surface-variant/60 flex items-center gap-2">
+              <p className="font-body text-sm text-stone-500 flex items-center gap-2 mt-6">
                 <MaterialIcon name="info" className="text-base" />
                 Installs as a Progressive Web App &mdash; no app store needed.
               </p>
             </div>
-
-            <div className="order-1 lg:order-2 relative">
-              <div className="absolute -inset-8 bg-gradient-to-tr from-primary/[0.04] to-primary-container/[0.06] blur-3xl rounded-full" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo-SYobDlsUK6Jtkhk6AOOLEAwVNupQmSLEPlK8FuQIe6s2NVffDH_R4IbPyToq3JBb_q1CbH2MuJevxCbYMBD03TcBYONX7kOxkb1R4RSBnS07LOFuReuhJ0QXbvHMm9TYaQh0gQEOzNkvBNo9bxfHdGr3BnFynKwkIqWRXSD6AZTKTymbgvo9xYIablHUGDjYReLJ_TGzLgV9aLZI0FhD1y6mjoVmKqYrAocN7xNumX62L_1dhIR5Wu5kHe_TboeF2sqIoh3kROT"
-                alt="Laptop and smartphone showing synchronized Be Candid integrity progress"
-                className="w-full h-auto relative z-10 rounded-2xl"
-              />
-            </div>
           </div>
         </section>
 
-        {/* ── Testimonial / Social Proof ───────────────────── */}
-        <section className="py-20 px-6 bg-surface-container-low/50">
-          <div className="max-w-3xl mx-auto text-center">
-            <MaterialIcon name="format_quote" className="text-4xl text-primary/30 mb-4" />
-            <blockquote className="font-body text-xl lg:text-2xl text-on-surface leading-relaxed italic">
-              &ldquo;Be Candid gave me the framework I needed to have honest conversations with my partner about our digital lives. The journal alone was transformative.&rdquo;
-            </blockquote>
-            <div className="mt-6 flex items-center justify-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <MaterialIcon name="person" className="text-primary text-lg" />
-              </div>
-              <div className="text-left">
-                <p className="font-label text-sm font-semibold text-on-surface">Sarah M.</p>
-                <p className="font-label text-xs text-on-surface-variant">Using Be Candid for 8 months</p>
+        {/* ── Testimonial ─────────────────────────────────── */}
+        <section className="py-20 px-6 border-t border-white/5">
+          <div className="max-w-3xl mx-auto">
+            <div className="glass-card rounded-3xl p-10 lg:p-14 relative overflow-hidden">
+              {/* Gradient line at top */}
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
+
+              <MaterialIcon name="format_quote" className="text-5xl text-cyan-400/20 mb-6" />
+              <blockquote className="font-body text-xl lg:text-2xl text-stone-300 leading-relaxed">
+                &ldquo;Be Candid gave me the framework I needed to have honest conversations with my partner about our digital lives. The <span className="text-cyan-400">journal alone was transformative</span>.&rdquo;
+              </blockquote>
+              <div className="mt-8 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+                  <MaterialIcon name="person" className="text-white text-xl" />
+                </div>
+                <div className="text-left">
+                  <p className="font-label text-sm font-semibold text-white">Sarah M.</p>
+                  <p className="font-label text-xs text-stone-500">Using Be Candid for 8 months</p>
+                </div>
               </div>
             </div>
           </div>
@@ -488,33 +523,30 @@ export default function LandingPage() {
         {/* ── Final CTA ───────────────────────────────────── */}
         <section id="cta" className="py-24 lg:py-32 px-6">
           <div className="max-w-screen-lg mx-auto relative">
-            {/* Background card */}
-            <div className="bg-gradient-to-br from-primary via-primary-dim to-[#0a4d5c] rounded-[2rem] lg:rounded-[2.5rem] px-8 py-16 sm:p-16 lg:p-20 text-center relative overflow-hidden">
-              {/* Decorative elements */}
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-0 left-0 w-72 h-72 bg-white/[0.06] rounded-full blur-[80px] -translate-x-1/3 -translate-y-1/3" />
-                <div className="absolute bottom-0 right-0 w-72 h-72 bg-primary-container/[0.08] rounded-full blur-[80px] translate-x-1/3 translate-y-1/3" />
-                {/* Grid pattern */}
+            <div className="bg-gradient-to-br from-primary via-primary to-primary-container rounded-[2rem] lg:rounded-[2.5rem] px-8 py-16 sm:p-16 lg:p-20 text-center relative overflow-hidden">
+              {/* Decorative skewed overlay */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute -top-1/2 -right-1/4 w-[120%] h-[200%] bg-white/[0.04] rotate-12 transform origin-center" />
                 <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
               </div>
 
               <div className="relative z-10 space-y-8">
-                <h2 className="font-headline text-3xl sm:text-4xl lg:text-5xl font-extrabold text-on-primary tracking-tight">
-                  Become who you<br className="hidden sm:block" /> want to be
+                <h2 className="font-headline text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+                  Become who you<br className="hidden sm:block" /> want to be.
                 </h2>
-                <p className="font-body text-lg text-on-primary/75 max-w-lg mx-auto leading-relaxed">
+                <p className="font-body text-lg text-white/70 max-w-lg mx-auto leading-relaxed">
                   Join thousands building a life of integrity and transparency. Start your 14-day free trial today.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-4">
                   <Link
                     href="/auth/signup"
-                    className="group px-10 py-4 bg-surface-container-lowest text-primary rounded-full font-label font-bold text-base shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+                    className="group px-10 py-4 bg-white text-primary rounded-full font-label font-bold text-base shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
                   >
-                    Create Your Account
+                    Start Your Sanctuary Now
                     <MaterialIcon name="arrow_forward" className="text-lg group-hover:translate-x-0.5 transition-transform duration-200" />
                   </Link>
                 </div>
-                <p className="font-body text-sm text-on-primary/50">
+                <p className="font-body text-sm text-white/50">
                   No credit card required &middot; Cancel anytime
                 </p>
               </div>
@@ -523,26 +555,33 @@ export default function LandingPage() {
         </section>
 
         {/* ── Footer ──────────────────────────────────────── */}
-        <footer className="border-t border-outline-variant/10 bg-surface">
+        <footer className="border-t border-white/5 bg-stone-950">
           <div className="max-w-screen-xl mx-auto px-6 py-12">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
               {/* Brand */}
-              <div className="col-span-2 lg:col-span-1">
+              <div className="col-span-2 lg:col-span-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mb-4" />
-                <p className="font-body text-sm text-on-surface-variant leading-relaxed max-w-xs">
+                <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mb-4 brightness-[10]" />
+                <p className="font-body text-sm text-stone-500 leading-relaxed max-w-xs">
                   A digital sanctuary for integrity, growth, and honest living.
                 </p>
               </div>
 
               {/* Product */}
               <div>
-                <h4 className="font-label text-xs font-semibold uppercase tracking-widest text-on-surface mb-4">Product</h4>
+                <h4 className="font-label text-xs font-semibold uppercase tracking-widest text-stone-400 mb-4">Product</h4>
                 <ul className="space-y-2.5">
-                  {['Features', 'Download', 'Pricing', 'Families'].map((item) => (
-                    <li key={item}>
-                      <Link href={item === 'Features' ? '#features' : `/${item.toLowerCase()}`} className="font-body text-sm text-on-surface-variant hover:text-primary transition-colors duration-200">
-                        {item}
+                  {[
+                    { label: 'Features', href: '#features' },
+                    { label: 'Download', href: '/download' },
+                    { label: 'Pricing', href: '/pricing' },
+                    { label: 'Families', href: '/families' },
+                    { label: 'Blog', href: '/blog' },
+                    { label: 'Therapists', href: '/therapists' },
+                  ].map((item) => (
+                    <li key={item.label}>
+                      <Link href={item.href} className="font-body text-sm text-stone-500 hover:text-cyan-400 transition-colors duration-200">
+                        {item.label}
                       </Link>
                     </li>
                   ))}
@@ -551,15 +590,14 @@ export default function LandingPage() {
 
               {/* Legal */}
               <div>
-                <h4 className="font-label text-xs font-semibold uppercase tracking-widest text-on-surface mb-4">Legal</h4>
+                <h4 className="font-label text-xs font-semibold uppercase tracking-widest text-stone-400 mb-4">Legal</h4>
                 <ul className="space-y-2.5">
                   {[
                     { label: 'Privacy Policy', href: '/legal/privacy' },
                     { label: 'Terms of Service', href: '/legal/terms' },
-                    { label: 'Cookie Policy', href: '/legal/cookies' },
                   ].map((item) => (
                     <li key={item.label}>
-                      <Link href={item.href} className="font-body text-sm text-on-surface-variant hover:text-primary transition-colors duration-200">
+                      <Link href={item.href} className="font-body text-sm text-stone-500 hover:text-cyan-400 transition-colors duration-200">
                         {item.label}
                       </Link>
                     </li>
@@ -567,17 +605,16 @@ export default function LandingPage() {
                 </ul>
               </div>
 
-              {/* Resources */}
+              {/* Company */}
               <div>
-                <h4 className="font-label text-xs font-semibold uppercase tracking-widest text-on-surface mb-4">Resources</h4>
+                <h4 className="font-label text-xs font-semibold uppercase tracking-widest text-stone-400 mb-4">Company</h4>
                 <ul className="space-y-2.5">
                   {[
-                    { label: 'Crisis Help (988)', href: 'tel:988' },
-                    { label: 'How It Works', href: '#journey' },
+                    { label: 'About', href: '/about' },
                     { label: 'Contact', href: 'mailto:support@becandid.io' },
                   ].map((item) => (
                     <li key={item.label}>
-                      <a href={item.href} className="font-body text-sm text-on-surface-variant hover:text-primary transition-colors duration-200">
+                      <a href={item.href} className="font-body text-sm text-stone-500 hover:text-cyan-400 transition-colors duration-200">
                         {item.label}
                       </a>
                     </li>
@@ -586,11 +623,11 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="mt-12 pt-6 border-t border-outline-variant/10 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <p className="font-body text-xs text-on-surface-variant/60">
+            <div className="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <p className="font-body text-xs text-stone-600">
                 &copy; {new Date().getFullYear()} Be Candid. All rights reserved.
               </p>
-              <p className="font-body text-[10px] text-on-surface-variant/40 text-center sm:text-right max-w-sm">
+              <p className="font-body text-[10px] text-stone-700 text-center sm:text-right max-w-sm">
                 Be Candid is not a substitute for professional therapy or crisis intervention. If you are in crisis, call or text 988.
               </p>
             </div>
