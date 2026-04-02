@@ -71,9 +71,9 @@ const FEATURES = [
 ];
 
 const TRUST_STATS = [
-  { value: '50K+', label: 'Active Users' },
-  { value: '4.9', label: 'App Rating' },
-  { value: '92%', label: 'Report Growth' },
+  { value: '+84%', label: 'Integrity Growth' },
+  { value: '+71%', label: 'Partner Trust' },
+  { value: '3.2x', label: 'Deeper Conversations' },
   { value: 'HIPAA', label: 'Compliant' },
 ];
 
