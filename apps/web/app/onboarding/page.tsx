@@ -44,6 +44,7 @@ function OnboardingContent() {
   const [relationships, setRelationships] = useState<string[]>(['friend']);
   const [customRelationship, setCustomRelationship] = useState('');
   const relationship = relationships.join(', ');
+  const [invitedPartners, setInvitedPartners] = useState<Array<{ name: string; email: string }>>([]);
 
   // Format phone as +1 (XXX) XXX-XXXX
   const formatPhone = (value: string) => {
@@ -131,7 +132,13 @@ function OnboardingContent() {
           setError(data.error || 'Failed to send invite');
         }
       } else {
-        setStep('done');
+        // Track invited partner and reset form for another
+        setInvitedPartners(prev => [...prev, { name: partnerName.trim(), email: partnerEmail.trim() }]);
+        setPartnerName('');
+        setPartnerEmail('');
+        setPartnerPhone('');
+        setRelationships(['friend']);
+        setCustomRelationship('');
       }
     } catch (e: any) { setError(e?.message || 'Network error — please try again.'); }
     setLoading(false);
@@ -410,7 +417,36 @@ function OnboardingContent() {
             <p className="text-[10px] text-primary font-label font-medium mt-2">Add up to 2 partners free. Upgrade to Pro for up to 5.</p>
           </div>
 
-          <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-6 space-y-4">
+          {/* Invited partners list */}
+          {invitedPartners.length > 0 && (
+            <div className="space-y-2 mb-4">
+              {invitedPartners.map((p, i) => (
+                <div key={i} className="flex items-center gap-3 px-4 py-3 bg-emerald-50 rounded-2xl ring-1 ring-emerald-200/50">
+                  <span className="material-symbols-outlined text-emerald-600 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-label font-bold text-on-surface truncate">{p.name}</p>
+                    <p className="text-[10px] text-on-surface-variant truncate">{p.email}</p>
+                  </div>
+                  <span className="text-[10px] text-emerald-700 font-label font-bold">Invited</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Form - greyed out after 2 invites on free plan */}
+          {invitedPartners.length >= 2 ? (
+            <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-6 opacity-50 pointer-events-none">
+              <div className="text-center space-y-3">
+                <span className="material-symbols-outlined text-3xl text-on-surface-variant/40">lock</span>
+                <p className="text-sm font-headline font-bold text-on-surface">Free plan limit reached</p>
+                <p className="text-xs text-on-surface-variant font-body">Upgrade to Pro to add up to 5 accountability partners.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-surface-container-lowest rounded-3xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] p-6 space-y-4">
+              {invitedPartners.length > 0 && (
+                <p className="text-xs text-primary font-label font-bold text-center">Add another partner ({2 - invitedPartners.length} remaining on free plan)</p>
+              )}
             <div>
               <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their name</label>
               <input type="text" value={partnerName} onChange={(e) => setPartnerName(e.target.value)}
@@ -463,15 +499,32 @@ function OnboardingContent() {
               )}
             </div>
           </div>
+          )}
 
           {error && <p className="text-sm text-error mt-3 font-body">{error}</p>}
 
           <div className="flex gap-3 mt-6">
-            <button onClick={() => initialStep === 'partner' ? router.push('/dashboard') : setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">{initialStep === 'partner' ? '\u2190 Dashboard' : '\u2190 Back'}</button>
-            <button onClick={sendInvite} disabled={!partnerName.trim() || !partnerEmail.trim() || loading}
-              className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
-              {loading ? 'Sending invite...' : 'Send invite →'}
-            </button>
+            {invitedPartners.length > 0 ? (
+              <button onClick={() => setStep('done')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer">
+                Continue to Dashboard →
+              </button>
+            ) : (
+              <button onClick={() => initialStep === 'partner' ? router.push('/dashboard') : setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer">
+                {initialStep === 'partner' ? '\u2190 Dashboard' : '\u2190 Back'}
+              </button>
+            )}
+            {invitedPartners.length < 2 && (
+              <button onClick={sendInvite} disabled={!partnerName.trim() || !partnerEmail.trim() || loading}
+                className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer">
+                {loading ? 'Sending invite...' : invitedPartners.length > 0 ? 'Send another invite →' : 'Send invite →'}
+              </button>
+            )}
+            {invitedPartners.length >= 2 && (
+              <button onClick={() => setStep('done')}
+                className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer">
+                Continue →
+              </button>
+            )}
           </div>
 
           <button onClick={enableSolo} className="w-full mt-3 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body cursor-pointer transition-colors duration-200">
