@@ -42,6 +42,8 @@ export default function TherapistSettings() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
 
+  const [findingSent, setFindingSent] = useState(false);
+
   const fetchConnections = () => {
     fetch('/api/therapist').then((r) => r.json()).then((d) => {
       setConnections(d.as_user || []);
@@ -199,6 +201,28 @@ export default function TherapistSettings() {
       {connections.length === 0 && !showInvite && (
         <p className="text-sm text-on-surface-variant text-center py-2">No therapist connections yet</p>
       )}
+
+      {/* Looking for a therapist */}
+      <div className="mt-4 pt-4 border-t border-outline-variant/30 text-center">
+        <p className="text-xs text-on-surface-variant font-body mb-2">Don&apos;t have a therapist yet?</p>
+        <button
+          onClick={async () => {
+            setFindingSent(true);
+            try {
+              await fetch('/api/therapist/find', { method: 'POST' });
+            } catch { /* fire and forget */ }
+          }}
+          disabled={findingSent}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-label font-semibold transition-all ${
+            findingSent
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              : 'bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20'
+          }`}
+        >
+          <span className="material-symbols-outlined text-sm">{findingSent ? 'check_circle' : 'search'}</span>
+          {findingSent ? 'We\'ll be in touch!' : 'Looking for a therapist?'}
+        </button>
+      </div>
     </div>
   );
 }
