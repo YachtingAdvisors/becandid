@@ -119,6 +119,9 @@ export default function NotificationsPage() {
               <button
                 onClick={() => !item.comingSoon && toggle(item.key)}
                 disabled={item.comingSoon}
+                role="switch"
+                aria-checked={!!prefs[item.key as keyof NotifPrefs] && !item.comingSoon}
+                aria-label={item.label}
                 className={`relative w-11 h-6 rounded-full transition-all duration-200 focus:ring-2 focus:ring-primary/30 ${
                   item.comingSoon ? 'cursor-not-allowed' : 'cursor-pointer'
                 } ${

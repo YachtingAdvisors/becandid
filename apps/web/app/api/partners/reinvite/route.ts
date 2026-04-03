@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     const { data: partner } = await db
       .from('partners')
-      .select('*')
+      .select('id, partner_email')
       .eq('user_id', user.id)
       .eq('status', 'pending')
       .maybeSingle();

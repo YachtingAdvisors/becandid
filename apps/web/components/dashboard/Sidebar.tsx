@@ -153,6 +153,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
           <div>
             <button
               onClick={() => setShowTroubleshoot(!showTroubleshoot)}
+              aria-expanded={showTroubleshoot}
               className="w-full px-3 py-2 rounded-2xl bg-amber-50 ring-1 ring-amber-200/50 flex items-center gap-2 cursor-pointer hover:bg-amber-100/50 transition-colors"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
@@ -299,11 +300,13 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       <div className="px-3 py-3 border-t border-outline-variant relative">
         <button
           onClick={() => setShowProfileMenu(!showProfileMenu)}
+          aria-expanded={showProfileMenu}
+          aria-label="Profile menu"
           className="w-full flex items-center gap-3 px-2 py-2 rounded-2xl hover:bg-surface-container cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30"
         >
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={avatarUrl} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
+            <img src={avatarUrl} alt={`${userName}'s avatar`} className="w-9 h-9 rounded-full object-cover shrink-0" />
           ) : (
             <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
               <span className="text-sm font-headline font-bold text-primary">{userName.charAt(0).toUpperCase()}</span>
@@ -384,7 +387,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       </button>
 
       {/* Desktop sidebar — glass effect */}
-      <aside className="hidden lg:flex w-60 shrink-0 bg-[#fbf9f8]/70 backdrop-blur-xl border-r border-outline-variant flex-col min-h-screen sticky top-0">
+      <aside aria-label="Main navigation" className="hidden lg:flex w-60 shrink-0 bg-[#fbf9f8]/70 backdrop-blur-xl border-r border-outline-variant flex-col min-h-screen sticky top-0">
         {sidebarContent}
       </aside>
 
@@ -405,7 +408,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
 
       {/* Mobile bottom nav bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant">
-        <nav className="flex items-center justify-around px-2 py-1">
+        <nav aria-label="Mobile navigation" className="flex items-center justify-around px-2 py-1">
           {MOBILE_TABS_ALL.filter(tab => !soloMode || tab.solo).map((tab) => {
             const active = isActive(tab.href);
             return (

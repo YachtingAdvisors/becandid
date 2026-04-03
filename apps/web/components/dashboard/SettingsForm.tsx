@@ -401,6 +401,9 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
           </div>
           <button
             onClick={() => setCheckInEnabled(!checkInEnabled)}
+            role="switch"
+            aria-checked={checkInEnabled}
+            aria-label="Check-ins"
             className={`relative w-11 h-6 rounded-full transition-colors ${
               checkInEnabled ? 'bg-primary' : 'bg-surface-container'
             }`}
@@ -451,6 +454,9 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
           </div>
           <button
             onClick={() => setNudgeEnabled(!nudgeEnabled)}
+            role="switch"
+            aria-checked={nudgeEnabled}
+            aria-label="Proactive nudges"
             className={`relative w-11 h-6 rounded-full transition-colors ${
               nudgeEnabled ? 'bg-primary' : 'bg-surface-container'
             }`}

@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
 
   // Verify therapist has an accepted connection to this client
   const { data: connection } = await db.from('therapist_connections')
-    .select('*')
+    .select('can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns, can_see_family_systems')
     .eq('therapist_user_id', user.id)
     .eq('user_id', clientId)
     .eq('status', 'accepted')

@@ -21,14 +21,14 @@ export async function POST(req: NextRequest) {
     // Find active partnership (user could be either side)
     const { data: asUser } = await db
       .from('partners')
-      .select('*')
+      .select('id, mutual')
       .eq('user_id', user.id)
       .eq('status', 'active')
       .maybeSingle();
 
     const { data: asPartner } = await db
       .from('partners')
-      .select('*')
+      .select('id, mutual')
       .eq('partner_user_id', user.id)
       .eq('status', 'active')
       .maybeSingle();

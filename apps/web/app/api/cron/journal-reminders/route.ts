@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
 
   // Fetch all users with reminders enabled
   const { data: prefs } = await db.from('journal_preferences')
-    .select('*')
+    .select('user_id, frequency, preferred_hour, timezone, last_reminder_at')
     .eq('reminder_enabled', true);
 
   if (!prefs || prefs.length === 0) {
