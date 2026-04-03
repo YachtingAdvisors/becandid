@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import WelcomeModal from './WelcomeModal';
 import GettingStartedCard from './GettingStartedCard';
+import WalkthroughTour from './WalkthroughTour';
 
 interface WalkthroughWrapperProps {
   userName: string;
@@ -12,6 +13,7 @@ interface WalkthroughWrapperProps {
 export default function WalkthroughWrapper({ userName, completedSteps }: WalkthroughWrapperProps) {
   const [showChecklist, setShowChecklist] = useState(true);
   const [showModal, setShowModal] = useState(true);
+  const [showTour, setShowTour] = useState(false);
 
   const dismissWalkthrough = useCallback(() => {
     fetch('/api/walkthrough', {
@@ -23,12 +25,14 @@ export default function WalkthroughWrapper({ userName, completedSteps }: Walkthr
 
   const handleGetStarted = useCallback(() => {
     setShowModal(false);
-    // Keep checklist visible
+    // Launch the guided tour
+    setShowTour(true);
   }, []);
 
   const handleDismissAll = useCallback(() => {
     setShowModal(false);
     setShowChecklist(false);
+    setShowTour(false);
     dismissWalkthrough();
   }, [dismissWalkthrough]);
 
@@ -37,6 +41,15 @@ export default function WalkthroughWrapper({ userName, completedSteps }: Walkthr
     dismissWalkthrough();
   }, [dismissWalkthrough]);
 
+  const handleTourComplete = useCallback(() => {
+    setShowTour(false);
+    // Keep checklist visible so user can track setup progress
+  }, []);
+
+  const handleTourSkip = useCallback(() => {
+    setShowTour(false);
+  }, []);
+
   return (
     <>
       {showModal && (
@@ -44,6 +57,12 @@ export default function WalkthroughWrapper({ userName, completedSteps }: Walkthr
           userName={userName}
           onGetStarted={handleGetStarted}
           onDismiss={handleDismissAll}
+        />
+      )}
+      {showTour && (
+        <WalkthroughTour
+          onComplete={handleTourComplete}
+          onSkip={handleTourSkip}
         />
       )}
       {showChecklist && (

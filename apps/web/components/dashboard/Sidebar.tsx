@@ -228,6 +228,9 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
             key={item.id}
             href={item.href}
             onClick={() => setOpen(false)}
+            {...(item.id === 'stringer-journal' ? { 'data-tour': 'journal' } : {})}
+            {...(item.id === 'checkins' ? { 'data-tour': 'checkins' } : {})}
+            {...(item.id === 'invite-partner' || item.id === 'conversations' ? { 'data-tour': 'partner' } : {})}
             className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
               isActive(item.href)
                 ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
