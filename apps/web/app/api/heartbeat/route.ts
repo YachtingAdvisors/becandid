@@ -77,30 +77,15 @@ export async function GET(req: NextRequest) {
   const fiveMinAgo = Date.now() - 5 * 60 * 1000;
   const appRunning = lastHeartbeat > fiveMinAgo;
 
-  // Check if another account under same email domain has a more recent heartbeat
-  // This detects the "logged into different accounts" mismatch
-  const userEmail = data?.email ?? '';
-  let mismatchEmail: string | null = null;
-
-  if (!appRunning) {
-    // Check if any other user with a recent heartbeat exists (same person, different account)
-    const { data: otherUsers } = await db
-      .from('users')
-      .select('email, last_heartbeat')
-      .neq('id', userId)
-      .not('last_heartbeat', 'is', null)
-      .gt('last_heartbeat', new Date(Date.now() - 5 * 60 * 1000).toISOString())
-      .limit(1);
-
-    if (otherUsers && otherUsers.length > 0) {
-      mismatchEmail = otherUsers[0].email;
-    }
-  }
+  // Detect possible account mismatch: the user has a heartbeat record but it's
+  // stale, which may indicate the desktop app is signed into a different account.
+  // We intentionally do NOT query other users to avoid leaking email addresses.
+  const mismatch = !appRunning && lastHeartbeat > 0;
 
   return NextResponse.json({
     app_running: appRunning,
     monitoring_enabled: data?.monitoring_enabled ?? false,
     last_heartbeat: data?.last_heartbeat ?? null,
-    mismatch_email: mismatchEmail,
+    mismatch,
   });
 }

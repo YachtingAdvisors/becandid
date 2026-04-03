@@ -40,12 +40,12 @@ const FULL_PHRASE_LINES = ['Come out', 'of darkness', 'and into', 'the light'];
 
 // Rising sun: maps each step to translateY offset, opacity, and color
 const SUN_STATES: Record<Step, { y: number; opacity: number; color: string; glow: string }> = {
-  goals:     { y: 60,  opacity: 0.08, color: '#4a2010', glow: 'none' },
-  stringer:  { y: 45,  opacity: 0.15, color: '#6b3020', glow: 'none' },
-  motivator: { y: 30,  opacity: 0.3,  color: '#a04820', glow: 'none' },
-  preview:   { y: 15,  opacity: 0.55, color: '#d4803a', glow: '0 0 20px rgba(212,128,58,0.3)' },
-  partner:   { y: 4,   opacity: 0.8,  color: '#e8a84c', glow: '0 0 30px rgba(232,168,76,0.4)' },
-  done:      { y: -8,  opacity: 1,    color: '#f0c060', glow: '0 0 40px rgba(240,192,96,0.5)' },
+  goals:     { y: 38,  opacity: 1, color: '#6b3020', glow: 'none' },
+  stringer:  { y: 28,  opacity: 1, color: '#8b4020', glow: '0 0 10px rgba(139,64,32,0.2)' },
+  motivator: { y: 18,  opacity: 1, color: '#a04820', glow: '0 0 15px rgba(160,72,32,0.25)' },
+  preview:   { y: 8,   opacity: 1, color: '#d4803a', glow: '0 0 20px rgba(212,128,58,0.3)' },
+  partner:   { y: 0,   opacity: 1, color: '#e8a84c', glow: '0 0 30px rgba(232,168,76,0.4)' },
+  done:      { y: -8,  opacity: 1, color: '#f0c060', glow: '0 0 40px rgba(240,192,96,0.5)' },
 };
 
 const STRINGER_PILLARS = [
@@ -507,10 +507,29 @@ function OnboardingContent() {
             <p className="text-xs text-cyan-400 font-label font-medium uppercase tracking-widest mb-2">Step 4 of 4</p>
             <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">Invite your partners</h1>
             <p className="text-sm text-slate-400 font-body">A friend, spouse, mentor, or coach who&apos;ll walk with you.</p>
-            <div className="flex items-center justify-center gap-3 mt-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="relative mt-5 mb-2 px-5 py-5 rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(34,103,121,0.3) 100%)' }}>
+              {/* Background painting */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Tissot_The_Judgment_of_Solomon.jpg/320px-Tissot_The_Judgment_of_Solomon.jpg" alt="King Solomon" className="w-10 h-10 rounded-full object-cover ring-1 ring-cyan-400/20 shrink-0" />
-              <p className="text-xs text-slate-200 font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-cyan-400">&mdash; King Solomon</span></p>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Simeon_Solomon_-_King_Solomon_and_his_mother_%28Bathsheba%29.jpg/400px-Simeon_Solomon_-_King_Solomon_and_his_mother_%28Bathsheba%29.jpg"
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover opacity-20"
+              />
+              <div className="relative z-10 flex items-center gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Simeon_Solomon_-_King_Solomon_and_his_mother_%28Bathsheba%29.jpg/200px-Simeon_Solomon_-_King_Solomon_and_his_mother_%28Bathsheba%29.jpg"
+                  alt="King Solomon"
+                  className="w-16 h-16 rounded-2xl object-cover ring-2 ring-white/20 shadow-lg shrink-0"
+                />
+                <div className="text-left">
+                  <p className="text-sm text-white font-body italic leading-relaxed">
+                    &ldquo;A cord of three strands is not easily broken.&rdquo;
+                  </p>
+                  <p className="text-xs font-label font-bold text-cyan-300 mt-1">&mdash; King Solomon, Ecclesiastes 4:12</p>
+                </div>
+              </div>
             </div>
             <p className="text-[10px] text-cyan-400 font-label font-medium mt-2">Add 1 partner free. Upgrade to Pro for up to 5.</p>
           </div>

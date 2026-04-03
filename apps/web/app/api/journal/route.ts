@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { onJournalEntry } from '@/lib/relationshipHooks';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { safeError } from '@/lib/security';
 import { encryptJournalEntry, decryptJournalEntries } from '@/lib/encryption';
 import {
   STRINGER_PROMPTS, STRINGER_QUOTES, JOURNAL_TAGS,
@@ -215,7 +216,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { data: entries, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
 
   if (exportType === 'word') {
     return new NextResponse(buildWordHTML((entries || []) as StringerJournalEntry[]), {
@@ -345,7 +346,7 @@ export async function PATCH(req: NextRequest) {
   const encryptedUpdate = encryptJournalEntry(rawUpdate, user.id);
   const { data, error } = await db.from('stringer_journal').update(encryptedUpdate).eq('id', id).eq('user_id', user.id).select().single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
   return NextResponse.json({ entry: data });
 }
 
@@ -364,6 +365,6 @@ export async function DELETE(req: NextRequest) {
 
   const db = createServiceClient();
   const { error } = await db.from('stringer_journal').delete().eq('id', id).eq('user_id', user.id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
   return NextResponse.json({ deleted: true });
 }

@@ -11,8 +11,8 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
+import { sanitizeText, auditLog, escapeHtml } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
-import { auditLog, escapeHtml } from '@/lib/security';
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => ({}));
-  const message = typeof body.message === 'string' ? body.message.slice(0, 200).trim() : '';
+  const message = typeof body.message === 'string' ? sanitizeText(body.message, 200) : '';
 
   const db = createServiceClient();
 

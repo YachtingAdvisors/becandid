@@ -65,6 +65,9 @@ export default function SoloModeToggle() {
         <button
           onClick={toggle}
           disabled={toggling}
+          role="switch"
+          aria-checked={solo}
+          aria-label="Solo mode"
           className={`relative w-11 h-6 rounded-full transition-colors ${
             solo ? 'bg-amber-500' : 'bg-primary'
           }`}

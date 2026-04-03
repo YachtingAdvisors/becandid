@@ -14,7 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { decryptJournalEntries, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
-import { sanitizeEmail, sanitizeName, escapeHtml } from '@/lib/security';
+import { sanitizeEmail, sanitizeName, safeError, escapeHtml } from '@/lib/security';
 import { Resend } from 'resend';
 import { randomUUID } from 'crypto';
 
@@ -183,11 +183,50 @@ export async function PATCH(req: NextRequest) {
 
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
-  const { connection_id, action, can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns } = body;
-
-  if (!connection_id) return NextResponse.json({ error: 'Missing connection_id' }, { status: 400 });
+  const { connection_id, action, invite_token, can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns } = body;
 
   const db = createServiceClient();
+
+  // ── Accept invite via token ──────────────────────────────
+  if (action === 'accept' && invite_token) {
+    const { data: conn, error: lookupErr } = await db.from('therapist_connections')
+      .select('id, user_id, status, therapist_email')
+      .eq('invite_token', invite_token)
+      .single();
+
+    if (lookupErr || !conn) {
+      return NextResponse.json({ error: 'Invalid or expired invite token' }, { status: 404 });
+    }
+    if (conn.status === 'accepted') {
+      return NextResponse.json({ error: 'Already accepted', connection_id: conn.id }, { status: 400 });
+    }
+    if (conn.status === 'revoked') {
+      return NextResponse.json({ error: 'This invitation has been revoked' }, { status: 410 });
+    }
+
+    const { error: updateErr } = await db.from('therapist_connections').update({
+      therapist_user_id: user.id,
+      status: 'accepted',
+      accepted_at: new Date().toISOString(),
+    }).eq('id', conn.id);
+
+    if (updateErr) return NextResponse.json({ error: safeError(updateErr) }, { status: 500 });
+
+    // Fetch client name for the response
+    const { data: clientRow } = await db.from('users').select('name').eq('id', conn.user_id).single();
+
+    try {
+      await db.from('audit_log').insert({
+        user_id: conn.user_id,
+        action: 'therapist_accepted',
+        metadata: { therapist_user_id: user.id, connection_id: conn.id },
+      });
+    } catch { /* audit logging never blocks */ }
+
+    return NextResponse.json({ accepted: true, connection_id: conn.id, client_name: clientRow?.name });
+  }
+
+  if (!connection_id) return NextResponse.json({ error: 'Missing connection_id' }, { status: 400 });
 
   if (action === 'revoke') {
     await db.from('therapist_connections').update({

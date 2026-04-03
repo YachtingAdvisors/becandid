@@ -251,6 +251,7 @@ export default function FocusBoard() {
                     </div>
                     <button
                       onClick={() => handleDayClick(day.date)}
+                      aria-label={`${formatDateShort(day.date)} — Morning: ${day.morning}, Evening: ${day.evening}`}
                       className={`w-full cursor-pointer transition-all duration-200 rounded-md ${
                         isSelected ? 'ring-2 ring-primary ring-offset-1 scale-105' : 'hover:scale-105 hover:ring-1 hover:ring-primary/30'
                       }`}
@@ -311,7 +312,7 @@ export default function FocusBoard() {
                             </p>
                           </div>
                         </div>
-                        <button onClick={() => setSelectedDate(null)} className="p-1 rounded-full hover:bg-surface-container-low cursor-pointer">
+                        <button onClick={() => setSelectedDate(null)} aria-label="Close day detail" className="p-1 rounded-full hover:bg-surface-container-low cursor-pointer">
                           <span className="material-symbols-outlined text-on-surface-variant text-sm">close</span>
                         </button>
                       </div>
@@ -400,6 +401,7 @@ export default function FocusBoard() {
       <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10">
         <button
           onClick={() => setShowHistory(!showHistory)}
+          aria-expanded={showHistory}
           className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors"
         >
           <span>Recent Points Activity</span>

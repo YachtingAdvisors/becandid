@@ -20,7 +20,7 @@ const SECTIONS = [
     items: [
       { key: 'alert_email', label: 'Email notifications', desc: 'Get an email with your conversation guide' },
       { key: 'alert_sms', label: 'SMS notifications', desc: 'Get a text message with a link' },
-      { key: 'alert_push', label: 'Push notifications', desc: 'Mobile push notification (requires app)' },
+      { key: 'alert_push', label: 'Push notifications', desc: 'Mobile push notification (requires app)', comingSoon: true },
     ],
   },
   {
@@ -105,20 +105,31 @@ export default function NotificationsPage() {
             <p className="text-xs text-on-surface-variant font-body">{section.desc}</p>
           </div>
 
-          {section.items.map(item => (
-            <div key={item.key} className="flex items-center justify-between">
+          {section.items.map((item: any) => (
+            <div key={item.key} className={`flex items-center justify-between ${item.comingSoon ? 'opacity-50' : ''}`}>
               <div>
-                <div className="text-sm font-medium text-on-surface">{item.label}</div>
+                <div className="text-sm font-medium text-on-surface flex items-center gap-2">
+                  {item.label}
+                  {item.comingSoon && (
+                    <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-label font-bold bg-tertiary-container text-on-tertiary-container uppercase tracking-wider">Coming soon</span>
+                  )}
+                </div>
                 <div className="text-xs text-on-surface-variant font-body">{item.desc}</div>
               </div>
               <button
-                onClick={() => toggle(item.key)}
-                className={`relative w-11 h-6 rounded-full cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 ${
-                  prefs[item.key as keyof NotifPrefs] ? 'bg-primary' : 'bg-outline-variant'
+                onClick={() => !item.comingSoon && toggle(item.key)}
+                disabled={item.comingSoon}
+                role="switch"
+                aria-checked={!!prefs[item.key as keyof NotifPrefs] && !item.comingSoon}
+                aria-label={item.label}
+                className={`relative w-11 h-6 rounded-full transition-all duration-200 focus:ring-2 focus:ring-primary/30 ${
+                  item.comingSoon ? 'cursor-not-allowed' : 'cursor-pointer'
+                } ${
+                  prefs[item.key as keyof NotifPrefs] && !item.comingSoon ? 'bg-primary' : 'bg-outline-variant'
                 }`}
               >
                 <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
-                  prefs[item.key as keyof NotifPrefs] ? 'translate-x-5' : ''
+                  prefs[item.key as keyof NotifPrefs] && !item.comingSoon ? 'translate-x-5' : ''
                 }`} />
               </button>
             </div>

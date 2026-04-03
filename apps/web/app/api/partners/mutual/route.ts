@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { safeError, auditLog } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,19 +13,22 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/partners/mutual', 'Unauthorized', 401);
 
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
+
     const db = createServiceClient();
 
     // Find active partnership (user could be either side)
     const { data: asUser } = await db
       .from('partners')
-      .select('*')
+      .select('id, mutual')
       .eq('user_id', user.id)
       .eq('status', 'active')
       .maybeSingle();
 
     const { data: asPartner } = await db
       .from('partners')
-      .select('*')
+      .select('id, mutual')
       .eq('partner_user_id', user.id)
       .eq('status', 'active')
       .maybeSingle();

@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { safeError, auditLog } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { z } from 'zod';
 
 const NotifPrefsSchema = z.object({
@@ -24,6 +25,9 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/auth/notifications', 'Unauthorized', 401);
 
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
+
     const db = createServiceClient();
     const { data: profile } = await db
       .from('users')
@@ -42,6 +46,9 @@ export async function PATCH(req: NextRequest) {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('PATCH /api/auth/notifications', 'Unauthorized', 401);
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const body = await req.json().catch(() => null);
     if (!body) return safeError('PATCH /api/auth/notifications', 'Invalid JSON', 400);

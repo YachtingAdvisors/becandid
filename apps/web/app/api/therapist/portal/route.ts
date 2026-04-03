@@ -8,17 +8,22 @@ export const dynamic = 'force-dynamic';
 //
 // Query params:
 //   ?client_id=<uuid>       → which client to view
-//   ?section=journal|moods|streaks|outcomes|patterns|summary
+//   ?section=journal|moods|streaks|outcomes|patterns|family_systems|summary
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { decryptJournalEntries, decrypt } from '@/lib/encryption';
+import { analyzeFamilySystems } from '@/lib/stringerAnalysis';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
 
   const url = new URL(req.url);
   const clientId = url.searchParams.get('client_id');
@@ -30,7 +35,7 @@ export async function GET(req: NextRequest) {
 
   // Verify therapist has an accepted connection to this client
   const { data: connection } = await db.from('therapist_connections')
-    .select('*')
+    .select('can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns, can_see_family_systems')
     .eq('therapist_user_id', user.id)
     .eq('user_id', clientId)
     .eq('status', 'accepted')
@@ -149,12 +154,93 @@ export async function GET(req: NextRequest) {
 
     case 'patterns': {
       if (!connection.can_see_patterns) {
-        return NextResponse.json({ error: 'Pattern access not granted by client' }, { status: 403 });
+        return NextResponse.json({ error: 'Access not granted for patterns' }, { status: 403 });
       }
 
+      // Time pattern analysis — events by hour and day
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 86400000).toISOString();
+      const { data: events } = await db.from('events')
+        .select('category, severity, timestamp')
+        .eq('user_id', clientId)
+        .gte('timestamp', ninetyDaysAgo)
+        .order('timestamp', { ascending: false });
+
+      const hourCounts = new Array(24).fill(0);
+      const dayCounts = new Array(7).fill(0);
+      const categoryCounts: Record<string, number> = {};
+
+      for (const e of (events || [])) {
+        const dt = new Date(e.timestamp);
+        hourCounts[dt.getUTCHours()]++;
+        dayCounts[dt.getUTCDay()]++;
+        categoryCounts[e.category] = (categoryCounts[e.category] || 0) + 1;
+      }
+
+      // Recent nudges
+      const { data: nudges } = await db.from('nudges')
+        .select('trigger_type, category, message, severity, sent_at')
+        .eq('user_id', clientId)
+        .order('sent_at', { ascending: false })
+        .limit(20);
+
+      // Frequency: last 7 days vs previous 30-day baseline
+      const sevenDaysAgo = new Date(Date.now() - 7 * 86400000);
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
+      const recentEvents = (events || []).filter(e => new Date(e.timestamp) > sevenDaysAgo);
+      const baselineEvents = (events || []).filter(e => {
+        const d = new Date(e.timestamp);
+        return d > thirtyDaysAgo && d <= sevenDaysAgo;
+      });
+      const recentRate = recentEvents.length / 7;
+      const baselineRate = baselineEvents.length > 0 ? baselineEvents.length / 23 : 0;
+      const spikePercent = baselineRate > 0 ? Math.round((recentRate / baselineRate - 1) * 100) : null;
+
+      // Also run the full pattern analysis from stringerAnalysis
       const { analyzePatterns } = await import('@/lib/stringerAnalysis');
       const patterns = await analyzePatterns(clientId);
-      return NextResponse.json({ client_name: client?.name, section: 'patterns', patterns });
+
+      return NextResponse.json({
+        client_name: client?.name,
+        section: 'patterns',
+        total_events_90d: (events || []).length,
+        hour_distribution: hourCounts,
+        day_distribution: dayCounts,
+        category_breakdown: categoryCounts,
+        frequency_spike_percent: spikePercent,
+        recent_rate_per_day: Math.round(recentRate * 10) / 10,
+        baseline_rate_per_day: Math.round(baselineRate * 10) / 10,
+        nudges: nudges || [],
+        patterns,
+      });
+    }
+
+    case 'family_systems': {
+      if (!connection.can_see_family_systems) {
+        return NextResponse.json({ error: 'Access not granted for family systems' }, { status: 403 });
+      }
+
+      // Run the Stringer family systems analysis
+      const analysis = await analyzeFamilySystems(db, clientId);
+
+      // Fetch therapist's notes for this client
+      const { data: notes } = await db.from('family_systems_notes')
+        .select('id, dynamic, confirmed, confidence_override, parenting_style, note, note_type, created_at, updated_at')
+        .eq('user_id', clientId)
+        .eq('therapist_id', user.id)
+        .order('created_at', { ascending: false });
+
+      // Decrypt notes
+      const decryptedNotes = (notes || []).map((n: any) => ({
+        ...n,
+        note: n.note ? decrypt(n.note, clientId) : null,
+      }));
+
+      return NextResponse.json({
+        client_name: client?.name,
+        section: 'family_systems',
+        analysis,
+        therapist_notes: decryptedNotes,
+      });
     }
 
     case 'summary':

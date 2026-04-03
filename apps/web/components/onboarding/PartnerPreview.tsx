@@ -35,7 +35,7 @@ export default function PartnerPreview({
           What your partner will see
         </h1>
         <p className="text-sm text-slate-300 leading-relaxed font-body">
-          Awareness is clarity. You should know exactly what your partner can see, because congruence starts with honesty.
+          Awareness is clarity. You should know exactly what your partner can see, because congruence starts with honesty. <span className="text-primary-container font-semibold">You&apos;re inviting them to see your humanity, while keeping your dignity.</span>
         </p>
       </div>
 

@@ -110,6 +110,9 @@ export default function JournalSettings() {
         </div>
         <button
           onClick={() => save({ reminder_enabled: !prefs.reminder_enabled })}
+          role="switch"
+          aria-checked={prefs.reminder_enabled}
+          aria-label="Scheduled reminders"
           className={`relative w-11 h-6 rounded-full transition-colors ${
             prefs.reminder_enabled ? 'bg-primary' : 'bg-surface-container'
           }`}
@@ -170,6 +173,9 @@ export default function JournalSettings() {
         </div>
         <button
           onClick={() => save({ after_relapse: !prefs.after_relapse })}
+          role="switch"
+          aria-checked={prefs.after_relapse}
+          aria-label="Journal after relapse"
           className={`relative w-11 h-6 rounded-full transition-colors ${
             prefs.after_relapse ? 'bg-primary' : 'bg-surface-container'
           }`}
