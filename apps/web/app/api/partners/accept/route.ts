@@ -31,5 +31,24 @@ export async function POST(req: NextRequest) {
     accepted_at: new Date().toISOString(),
   }).eq('id', partner.id);
 
+  // Grant the accepting partner 30 free days
+  const { data: acceptingUser } = await db
+    .from('users')
+    .select('subscription_plan, subscription_status, trial_ends_at')
+    .eq('id', user.id)
+    .single();
+
+  if (acceptingUser && acceptingUser.subscription_plan === 'free') {
+    const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const currentTrialEnd = acceptingUser.trial_ends_at ? new Date(acceptingUser.trial_ends_at) : null;
+    // Only extend if new date is further out than existing trial
+    if (!currentTrialEnd || new Date(thirtyDaysFromNow) > currentTrialEnd) {
+      await db.from('users').update({
+        subscription_status: 'trialing',
+        trial_ends_at: thirtyDaysFromNow,
+      }).eq('id', user.id);
+    }
+  }
+
   return NextResponse.json({ success: true });
 }

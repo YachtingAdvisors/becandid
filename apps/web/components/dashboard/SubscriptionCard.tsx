@@ -89,14 +89,25 @@ export default function SubscriptionCard() {
         )}
       </div>
 
-      {/* Trial banner */}
+      {/* Trial countdown */}
       {data.trial?.active && (
-        <div className="mb-3 p-3 rounded-lg bg-primary/5 border border-primary/10">
-          <p className="text-xs text-primary font-medium">
-            Free trial — {data.trial.days_left} day{data.trial.days_left !== 1 ? 's' : ''} left
-          </p>
-          <p className="text-[10px] text-on-surface-variant mt-0.5">
-            Your card won't be charged until {new Date(data.trial.ends_at).toLocaleDateString()}.
+        <div className="mb-3 p-3.5 rounded-xl bg-gradient-to-r from-primary/8 to-tertiary/5 border border-primary/15">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-label font-bold text-primary">
+              {data.trial.days_left} day{data.trial.days_left !== 1 ? 's' : ''} left
+            </p>
+            <span className="text-[10px] font-label text-on-surface-variant">
+              Free trial ends {new Date(data.trial.ends_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            </span>
+          </div>
+          <div className="h-2 bg-surface-container-low rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-primary to-primary-dim transition-all"
+              style={{ width: `${Math.max(5, ((30 - data.trial.days_left) / 30) * 100)}%` }}
+            />
+          </div>
+          <p className="text-[10px] text-on-surface-variant mt-1.5">
+            Invite a partner to earn 30 free days. No card required.
           </p>
         </div>
       )}
