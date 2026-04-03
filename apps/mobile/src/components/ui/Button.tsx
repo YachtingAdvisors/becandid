@@ -1,14 +1,26 @@
 import React from 'react';
 import {
-  TouchableOpacity,
   Text,
   ActivityIndicator,
   StyleSheet,
   ViewStyle,
   TextStyle,
+  Pressable,
 } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { iconMap } from './Icon';
+
+let Haptics: typeof import('expo-haptics') | null = null;
+try {
+  Haptics = require('expo-haptics');
+} catch {
+  // expo-haptics not available
+}
 
 const colors = {
   primary: '#226779',
@@ -42,11 +54,17 @@ const variantStyles: Record<Variant, { container: ViewStyle; text: TextStyle }> 
     text: { color: '#ffffff' },
   },
   secondary: {
-    container: { backgroundColor: colors.bg },
-    text: { color: colors.text },
+    container: {
+      backgroundColor: 'transparent',
+      borderWidth: 1.5,
+      borderColor: colors.primary,
+    },
+    text: { color: colors.primary },
   },
   ghost: {
-    container: { backgroundColor: 'transparent' },
+    container: {
+      backgroundColor: 'transparent',
+    },
     text: { color: colors.primary },
   },
   danger: {
@@ -62,6 +80,9 @@ const variantStyles: Record<Variant, { container: ViewStyle; text: TextStyle }> 
   },
 };
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const SPRING_CONFIG = { damping: 15, stiffness: 350, mass: 0.5 };
+
 export function Button({
   title,
   onPress,
@@ -70,19 +91,41 @@ export function Button({
   disabled = false,
   icon,
 }: ButtonProps) {
+  const scale = useSharedValue(1);
   const vStyle = variantStyles[variant];
   const ionName = icon ? iconMap[icon] ?? (icon as keyof typeof Ionicons.glyphMap) : undefined;
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const handlePressIn = () => {
+    scale.value = withSpring(0.96, SPRING_CONFIG);
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, SPRING_CONFIG);
+  };
+
+  const handlePress = () => {
+    if (Haptics) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    }
+    onPress();
+  };
+
   return (
-    <TouchableOpacity
+    <AnimatedPressable
       style={[
         styles.container,
         vStyle.container,
         disabled && styles.disabled,
+        animatedStyle,
       ]}
-      onPress={onPress}
+      onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       disabled={disabled || loading}
-      activeOpacity={0.7}
     >
       {loading ? (
         <ActivityIndicator
@@ -103,7 +146,7 @@ export function Button({
           <Text style={[styles.text, vStyle.text]}>{title}</Text>
         </>
       )}
-    </TouchableOpacity>
+    </AnimatedPressable>
   );
 }
 

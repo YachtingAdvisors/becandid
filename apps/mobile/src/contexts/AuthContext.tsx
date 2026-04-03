@@ -6,8 +6,11 @@
 // ============================================================
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '../lib/supabase';
 import type { Session, User, AuthError } from '@supabase/supabase-js';
+
+const BIOMETRIC_ENABLED_KEY = '@becandid/biometric_enabled';
 
 // ── Types ───────────────────────────────────────────────────
 
@@ -23,6 +26,9 @@ interface AuthContextValue extends AuthState {
   signUp: (name: string, email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  biometricEnabled: boolean;
+  enableBiometric: () => Promise<void>;
+  disableBiometric: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -36,6 +42,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading: true,
     error: null,
   });
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+
+  // Load biometric preference from storage
+  useEffect(() => {
+    AsyncStorage.getItem(BIOMETRIC_ENABLED_KEY).then((value) => {
+      setBiometricEnabled(value === 'true');
+    });
+  }, []);
 
   // Helper to format Supabase auth errors into readable messages
   const formatError = (err: AuthError): string => {
@@ -149,6 +163,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setState({ user: null, session: null, loading: false, error: null });
   }, []);
 
+  const enableBiometric = useCallback(async () => {
+    await AsyncStorage.setItem(BIOMETRIC_ENABLED_KEY, 'true');
+    setBiometricEnabled(true);
+  }, []);
+
+  const disableBiometric = useCallback(async () => {
+    await AsyncStorage.removeItem(BIOMETRIC_ENABLED_KEY);
+    setBiometricEnabled(false);
+  }, []);
+
   const resetPassword = useCallback(async (email: string) => {
     setState((s) => ({ ...s, loading: true, error: null }));
 
@@ -165,7 +189,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ── Render ────────────────────────────────────────────────
 
   return (
-    <AuthContext.Provider value={{ ...state, signIn, signUp, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ ...state, signIn, signUp, signOut, resetPassword, biometricEnabled, enableBiometric, disableBiometric }}>
       {children}
     </AuthContext.Provider>
   );
