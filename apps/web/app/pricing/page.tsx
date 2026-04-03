@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
+import JsonLd from '@/components/JsonLd';
+import { productSchema } from '@/lib/structuredData';
 
 const TIER_ICONS: Record<string, string> = {
   free: 'eco',
@@ -95,6 +97,20 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-[#0c1214]">
+      {/* JSON-LD Product structured data for each tier */}
+      {TIERS.map((tier) => (
+        <JsonLd
+          key={tier.id}
+          data={productSchema({
+            name: tier.name,
+            description: tier.description,
+            monthlyPrice: tier.monthlyPrice,
+            annualPrice: tier.annualPrice,
+            features: tier.features.filter((f) => f.included).map((f) => f.text),
+          })}
+        />
+      ))}
+
       <PublicNav />
 
       <div className="max-w-screen-2xl mx-auto px-6 py-24">

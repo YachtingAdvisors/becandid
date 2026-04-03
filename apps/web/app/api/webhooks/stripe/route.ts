@@ -24,6 +24,7 @@ import Stripe from 'stripe';
 import { stripe, syncSubscription } from '@/lib/stripe/server';
 import { STRIPE_CONFIG } from '@/lib/stripe/config';
 import { createServiceClient } from '@/lib/supabase';
+import { sendPaymentFailedEmail } from '@/lib/email/paymentFailed';
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -99,6 +100,20 @@ export async function POST(req: NextRequest) {
                 : null,
             },
           });
+
+          // Send payment failed email
+          try {
+            await sendPaymentFailedEmail({
+              email: user.email,
+              name: user.name || 'there',
+              attemptCount: invoice.attempt_count ?? 1,
+              nextAttempt: invoice.next_payment_attempt
+                ? new Date(invoice.next_payment_attempt * 1000)
+                : null,
+            });
+          } catch (emailErr) {
+            console.error('[stripe] Payment failed email error:', emailErr);
+          }
 
           console.info(`[stripe] Payment failed for user ${user.id}, attempt ${invoice.attempt_count}`);
         }

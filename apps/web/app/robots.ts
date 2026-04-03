@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/dashboard/', '/api/', '/partner/', '/onboarding', '/guardian'],
+        disallow: ['/dashboard/', '/api/', '/partner/', '/therapist/', '/onboarding', '/guardian'],
       },
     ],
     sitemap: 'https://becandid.io/sitemap.xml',

@@ -3,7 +3,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import FamilySystemsPanel from '@/components/dashboard/FamilySystemsPanel';
+import dynamic from 'next/dynamic';
+
+const FamilySystemsPanel = dynamic(
+  () => import('@/components/dashboard/FamilySystemsPanel'),
+  { ssr: false, loading: () => <div className="animate-pulse bg-surface-container-low rounded-3xl h-64" /> },
+);
 
 // ── Types ──────────────────────────────────────────────────
 

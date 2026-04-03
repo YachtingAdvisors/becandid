@@ -73,7 +73,7 @@ export default function Paywall({
         <div className="mt-3 px-3 py-2 rounded-lg bg-amber-50 border border-amber-100">
           <p className="text-xs text-amber-700">
             This feature is available on the <strong>{requiredPlan === 'therapy' ? 'Therapy' : 'Pro'}</strong> plan.
-            {requiredPlan === 'pro' && ' Includes a 14-day free trial.'}
+            {requiredPlan === 'pro' && ' Includes a 21-day free trial.'}
           </p>
         </div>
       </div>
@@ -154,7 +154,7 @@ export default function Paywall({
           disabled={loading}
           className="w-full py-3 text-sm font-medium rounded-xl bg-primary text-white hover:bg-primary disabled:opacity-50 transition-colors"
         >
-          {loading ? 'Opening checkout…' : requiredPlan === 'pro' ? 'Start 14-Day Free Trial' : 'Upgrade to Therapy'}
+          {loading ? 'Opening checkout…' : requiredPlan === 'pro' ? 'Start 21-Day Free Trial' : 'Upgrade to Therapy'}
         </button>
 
         <p className="text-center text-[10px] text-on-surface-variant mt-2">Cancel anytime. No commitment.</p>
