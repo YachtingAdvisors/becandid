@@ -12,6 +12,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import DarkModeToggle from '@/components/DarkModeToggle';
+import NotificationCenter from '@/components/dashboard/NotificationCenter';
 
 interface NavItem {
   id: string;
@@ -307,6 +308,10 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
 
       {/* User profile + logout */}
       <div className="px-3 py-3 border-t border-outline-variant relative">
+        <div className="flex items-center gap-1 mb-1 px-2">
+          <div className="flex-1" />
+          <NotificationCenter />
+        </div>
         <button
           onClick={() => setShowProfileMenu(!showProfileMenu)}
           aria-expanded={showProfileMenu}
