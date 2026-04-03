@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
+import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion } from '@/components/LandingSections';
 
 /* ─── Feature data ───────────────────────────────────────────── */
 const FEATURES = [
@@ -210,6 +211,9 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── Social Proof Counter ────────────────────────── */}
+        <SocialProofCounter />
+
         {/* ── Precision Tools ─────────────────────────────── */}
         <section id="features" className="py-24 lg:py-32 px-6">
           <div className="max-w-screen-xl mx-auto">
@@ -411,6 +415,15 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* ── Testimonial Carousel ─────────────────────────── */}
+        <TestimonialCarousel />
+
+        {/* ── Comparison Table ────────────────────────────── */}
+        <ComparisonTable />
+
+        {/* ── FAQ Accordion ───────────────────────────────── */}
+        <FAQAccordion />
 
         {/* ── Final CTA ───────────────────────────────────── */}
         <section id="cta" className="py-24 lg:py-32 px-6">

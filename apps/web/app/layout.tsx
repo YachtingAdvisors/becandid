@@ -3,6 +3,7 @@ import { Manrope, Plus_Jakarta_Sans } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import LegalFooter from '@/components/LegalFooter';
+import PWAInstallBanner from '@/components/PWAInstallBanner';
 
 const GA_ID = 'G-CK9VDX3HKT';
 
@@ -99,6 +100,7 @@ export default function RootLayout({
       <body className="font-body bg-background text-on-surface">
         {children}
         <LegalFooter />
+        <PWAInstallBanner />
       </body>
     </html>
   );

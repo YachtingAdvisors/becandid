@@ -335,7 +335,9 @@ export default async function DashboardPage() {
       </section>
 
       {/* ── Focus Board & Check-in ─────────────────────────── */}
-      <FocusBoardMini />
+      <div data-tour="focus-board">
+        <FocusBoardMini />
+      </div>
       <CheckInMini />
 
       {/* ── Relationship & Spouse Impact ────────────────────── */}

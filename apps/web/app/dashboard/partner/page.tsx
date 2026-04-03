@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { GoalCategory } from '@be-candid/shared';
 import { GOAL_LABELS, getCategoryEmoji } from '@be-candid/shared';
+import PartnerCompatibility from '@/components/dashboard/PartnerCompatibility';
 
 interface PartnerData {
   id: string;
@@ -61,6 +62,11 @@ export default function PartnerPage() {
   const [sharedRivals, setSharedRivals] = useState<GoalCategory[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [partnerScores, setPartnerScores] = useState<Array<{
+    partnerId: string; partnerName: string; score: number;
+    responseTime: number; checkInRate: number; avgRating: number;
+    conversationCount: number;
+  }>>([]);
 
   // Fetch partner data
   const fetchPartner = () => {
@@ -73,6 +79,10 @@ export default function PartnerPage() {
 
   useEffect(() => {
     fetchPartner();
+    fetch('/api/partners/scores')
+      .then(r => r.json())
+      .then(d => setPartnerScores(d.scores ?? []))
+      .catch(console.error);
   }, []);
 
   // Fetch user profile to get goals when form opens
@@ -184,6 +194,11 @@ export default function PartnerPage() {
 
       {partner ? (
         <div className="space-y-4">
+          {/* Partner effectiveness scores */}
+          {partner.status === 'active' && partnerScores.length > 0 && (
+            <PartnerCompatibility partners={partnerScores} />
+          )}
+
           <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-primary font-headline font-bold text-xl flex-shrink-0">
