@@ -17,6 +17,7 @@
 
 import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import BreathingExercise from '@/components/dashboard/BreathingExercise';
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -72,6 +73,7 @@ function PauseContent() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startTimeRef = useRef(Date.now());
   const hasLoggedView = useRef(false);
+  const [showBreathing, setShowBreathing] = useState(false);
 
   // ── Log initial view event ───────────────────────────────
   useEffect(() => {
