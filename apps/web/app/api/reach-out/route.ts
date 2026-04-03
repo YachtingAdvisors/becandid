@@ -11,13 +11,18 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
+import { sanitizeText } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
   const body = await req.json().catch(() => ({}));
-  const message = typeof body.message === 'string' ? body.message.slice(0, 200).trim() : '';
+  const message = typeof body.message === 'string' ? sanitizeText(body.message, 200) : '';
 
   const db = createServiceClient();
 

@@ -42,6 +42,9 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
   const url = new URL(req.url);
   const db = createServiceClient();
 

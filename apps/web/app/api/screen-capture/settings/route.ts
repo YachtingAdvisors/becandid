@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const ADMIN_EMAILS = ['slaser90@gmail.com', 'shawn@yachtingadvisors.com'];
 
@@ -19,6 +20,9 @@ export async function GET(req: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
 
   const db = createServiceClient();
   const { data: profile } = await db
@@ -39,6 +43,9 @@ export async function PATCH(req: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
 
   const body = await req.json();
   const update: Record<string, unknown> = {};

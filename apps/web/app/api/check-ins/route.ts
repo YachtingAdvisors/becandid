@@ -5,12 +5,17 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { getCheckInStats } from '@/lib/checkInEngine';
+import { safeError } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const db = createServiceClient();
     const { searchParams } = new URL(req.url);
@@ -43,6 +48,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (err: any) {
     console.error('[GET /api/check-ins]', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: safeError(err) }, { status: 500 });
   }
 }

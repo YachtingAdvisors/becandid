@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 /**
  * PATCH /api/walkthrough
@@ -16,6 +17,9 @@ export async function PATCH(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const body = await req.json().catch(() => ({}));
     const db = createServiceClient();

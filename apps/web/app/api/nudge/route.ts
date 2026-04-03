@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { safeError, auditLog } from '@/lib/security';
+import { safeError, auditLog, sanitizeText } from '@/lib/security';
 import { sendNudgeSMS } from '@/lib/sms';
 import { Resend } from 'resend';
 import { z } from 'zod';
@@ -27,6 +27,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     const parsed = NudgeSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
+
+    if (parsed.data.message) {
+      parsed.data.message = sanitizeText(parsed.data.message, 500);
+    }
 
     const db = createServiceClient();
 

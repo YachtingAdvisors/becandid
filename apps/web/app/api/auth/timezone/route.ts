@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const VALID_TIMEZONES = [
   'Pacific/Honolulu', 'America/Anchorage', 'America/Los_Angeles',
@@ -18,6 +19,9 @@ export async function PATCH(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
 
   const { timezone } = await req.json();
 

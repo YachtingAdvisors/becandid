@@ -5,12 +5,16 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { safeError, auditLog } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/partners/mutual', 'Unauthorized', 401);
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const db = createServiceClient();
 

@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { safeError, auditLog } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 // Valid promo codes and what they grant
 const PROMO_CODES: Record<string, { plan: string; days: number }> = {
@@ -17,6 +18,9 @@ export async function POST(req: NextRequest) {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/billing/promo', 'Unauthorized', 401);
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const body = await req.json().catch(() => null);
     if (!body?.code) return NextResponse.json({ error: 'Promo code required' }, { status: 400 });
