@@ -6,3 +6,4 @@ export { Badge } from './Badge';
 export { Icon, iconMap } from './Icon';
 export { Modal } from './Modal';
 export { Avatar } from './Avatar';
+export { Skeleton } from './Skeleton';

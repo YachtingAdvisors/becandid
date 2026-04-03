@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createClient } from '@/lib/supabase';
+import type { RealtimeEvent } from '@/hooks/useRealtimeSubscription';
 
 /* ── Types ───────────────────────────────────────────────── */
 
@@ -10,6 +12,33 @@ interface Notification {
   message: string;
   timestamp: string;
   read: boolean;
+}
+
+/** Map a RealtimeEvent to a Notification for display */
+function realtimeToNotification(event: RealtimeEvent): Notification {
+  const typeMap: Record<RealtimeEvent['type'], Notification['type']> = {
+    alert: 'partner',
+    check_in: 'checkin',
+    nudge: 'nudge',
+    milestone: 'milestone',
+    focus_segment: 'streak',
+  };
+
+  const messageMap: Record<RealtimeEvent['type'], (p: Record<string, any>) => string> = {
+    alert: (p) => `New flag: ${(p.category ?? 'activity').replace(/_/g, ' ')} (${p.severity ?? 'medium'})`,
+    check_in: (p) => p.user_mood ? `Check-in received — mood: ${p.user_mood}` : 'New check-in is waiting',
+    nudge: (p) => p.message ?? p.content ?? 'You received a nudge',
+    milestone: (p) => `Milestone unlocked: ${p.name ?? p.title ?? 'New milestone'}`,
+    focus_segment: (p) => `Focus ${p.segment ?? 'segment'}: ${p.status ?? 'focused'}`,
+  };
+
+  return {
+    id: `rt-${event.type}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    type: typeMap[event.type] ?? 'nudge',
+    message: messageMap[event.type]?.(event.payload) ?? 'New activity',
+    timestamp: event.timestamp,
+    read: false,
+  };
 }
 
 const TYPE_CONFIG: Record<string, { icon: string; color: string; bg: string }> = {
@@ -40,6 +69,7 @@ export default function NotificationCenter() {
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
+  const channelRefRT = useRef<any>(null);
 
   const fetchNotifications = useCallback(async () => {
     setLoading(true);
@@ -63,6 +93,64 @@ export default function NotificationCenter() {
     const interval = setInterval(fetchNotifications, 60000);
     return () => clearInterval(interval);
   }, [fetchNotifications]);
+
+  // ── Real-time subscription for live updates ───────────────
+  useEffect(() => {
+    const supabase = createClient();
+    let userId: string | null = null;
+
+    supabase.auth.getUser().then(({ data }) => {
+      userId = data.user?.id ?? null;
+      if (!userId) return;
+
+      const tables = ['alerts', 'check_ins', 'nudges', 'milestones', 'focus_segments'] as const;
+      const typeForTable: Record<string, RealtimeEvent['type']> = {
+        alerts: 'alert',
+        check_ins: 'check_in',
+        nudges: 'nudge',
+        milestones: 'milestone',
+        focus_segments: 'focus_segment',
+      };
+
+      let channel = supabase.channel(`notif-center:${userId}`);
+
+      for (const table of tables) {
+        channel = channel.on(
+          'postgres_changes' as any,
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table,
+            filter: `user_id=eq.${userId}`,
+          },
+          (payload: any) => {
+            const eventType = typeForTable[table];
+            if (!eventType) return;
+
+            const rtEvent: RealtimeEvent = {
+              type: eventType,
+              payload: payload.new ?? payload,
+              timestamp: new Date().toISOString(),
+            };
+
+            const notif = realtimeToNotification(rtEvent);
+            setNotifications((prev) => [notif, ...prev]);
+            setUnreadCount((prev) => prev + 1);
+          },
+        );
+      }
+
+      channel.subscribe();
+      channelRefRT.current = channel;
+    });
+
+    return () => {
+      if (channelRefRT.current) {
+        supabase.removeChannel(channelRefRT.current);
+        channelRefRT.current = null;
+      }
+    };
+  }, []);
 
   // Close on click outside
   useEffect(() => {

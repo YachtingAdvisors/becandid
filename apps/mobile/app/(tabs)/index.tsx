@@ -488,29 +488,41 @@ export default function DashboardScreen() {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Quick Actions</Text>
           <View style={styles.actionsRow}>
-            <Pressable style={styles.actionButton} onPress={() => {}}>
-              <View style={[styles.actionIcon, { backgroundColor: '#ede9fe' }]}>
-                <Ionicons name="call-outline" size={20} color="#7c3aed" />
+            <Pressable
+              style={styles.actionButton}
+              onPress={() => router.push('/coach')}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: '#e0f2f1' }]}>
+                <Ionicons name="heart-outline" size={20} color={C.primary} />
               </View>
-              <Text style={styles.actionLabel}>Reach Out</Text>
+              <Text style={styles.actionLabel}>Coach</Text>
             </Pressable>
             <Pressable
               style={styles.actionButton}
               onPress={() => router.push('/(tabs)/journal')}
             >
-              <View style={[styles.actionIcon, { backgroundColor: '#e0f2f1' }]}>
-                <Ionicons name="create-outline" size={20} color={C.primary} />
+              <View style={[styles.actionIcon, { backgroundColor: '#ede9fe' }]}>
+                <Ionicons name="create-outline" size={20} color="#7c3aed" />
               </View>
               <Text style={styles.actionLabel}>Journal</Text>
             </Pressable>
             <Pressable
               style={styles.actionButton}
-              onPress={() => router.push('/(tabs)/activity')}
+              onPress={() => router.push('/mood-calendar')}
             >
               <View style={[styles.actionIcon, { backgroundColor: '#fef3c7' }]}>
-                <Ionicons name="bar-chart-outline" size={20} color="#ca8a04" />
+                <Ionicons name="calendar-outline" size={20} color="#ca8a04" />
               </View>
-              <Text style={styles.actionLabel}>Activity</Text>
+              <Text style={styles.actionLabel}>Moods</Text>
+            </Pressable>
+            <Pressable
+              style={styles.actionButton}
+              onPress={() => router.push('/progress')}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: '#dcfce7' }]}>
+                <Ionicons name="flag-outline" size={20} color="#16a34a" />
+              </View>
+              <Text style={styles.actionLabel}>Progress</Text>
             </Pressable>
           </View>
         </View>

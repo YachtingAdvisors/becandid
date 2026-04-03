@@ -6,6 +6,7 @@
 //   2. Push notification setup + deep link routing
 //   3. Offline event queue listener
 //   4. Platform-specific monitoring registration
+//   5. Theme provider (dark mode)
 // ============================================================
 
 import { useEffect, useRef, useState } from 'react';
@@ -15,6 +16,7 @@ import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { AuthProvider } from '../src/contexts/AuthContext';
+import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
 import { startHeartbeat, stopHeartbeat } from '../src/lib/heartbeat';
 import { setupPushNotifications, getScreenFromNotification } from '../src/lib/push/setup';
 import { startOfflineQueueListener, syncPendingEvents } from '../src/lib/offlineQueue';
@@ -30,7 +32,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function RootLayout() {
+function InnerLayout() {
+  const { isDark, colors } = useTheme();
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
   const notificationListener = useRef<any>();
@@ -133,8 +136,6 @@ export default function RootLayout() {
 
         // Handle journal deep links from push notifications
         if (type === 'journal_reminder' || type === 'relapse_journal') {
-          // These have a URL like /dashboard/stringer-journal?action=write&trigger=...
-          // On mobile, route to the journal tab
           router.push('/(tabs)/journal');
           return;
         }
@@ -196,15 +197,34 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <AuthProvider>
-      <StatusBar style="dark" />
-      <Stack screenOptions={{ headerShown: false }}>
+    <>
+      <StatusBar style={colors.statusBar} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.background },
+          animation: 'slide_from_right',
+        }}
+      >
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="auth/signin" />
         <Stack.Screen name="auth/signup" />
-        <Stack.Screen name="conversation/[alertId]" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="checkin/[id]" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="conversation/[alertId]" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="checkin/[id]" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="coach" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="mood-calendar" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="progress" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack>
-    </AuthProvider>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <InnerLayout />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

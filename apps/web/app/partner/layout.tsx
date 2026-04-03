@@ -1,5 +1,6 @@
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import PartnerNav from '@/components/dashboard/PartnerNav';
+import PartnerRealtimeProvider from '@/components/dashboard/PartnerRealtimeProvider';
 
 export default async function PartnerLayout({
   children,
@@ -35,6 +36,7 @@ export default async function PartnerLayout({
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {children}
       </main>
+      <PartnerRealtimeProvider />
     </div>
   );
 }
