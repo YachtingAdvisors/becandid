@@ -23,7 +23,7 @@ const PUBLIC_PATHS = [
 ];
 
 const CRON_PATHS = ['/api/cron'];
-const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/webhooks/'];
+const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/partners/accept', '/api/webhooks/'];
 
 // ─── Content Security Policy ─────────────────────────────────
 function buildCSP(): string {
