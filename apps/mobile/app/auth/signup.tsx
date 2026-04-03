@@ -2,10 +2,10 @@
 // apps/mobile/app/auth/signup.tsx
 //
 // Sign-up screen for Be Candid. Matches the sign-in screen's
-// clean iOS-native style.
+// clean iOS-native style. Includes real-time password strength.
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -32,6 +32,32 @@ const colors = {
   white: '#ffffff',
 };
 
+// ── Password strength ───────────────────────────────────────
+
+type StrengthLevel = 'Weak' | 'Fair' | 'Good' | 'Strong';
+
+const strengthColors: Record<StrengthLevel, string> = {
+  Weak: '#d93025',
+  Fair: '#e37400',
+  Good: '#f5b400',
+  Strong: '#1e8e3e',
+};
+
+function getPasswordStrength(pw: string): { level: StrengthLevel; score: number } {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[a-z]/.test(pw)) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+
+  const levels: StrengthLevel[] = ['Weak', 'Fair', 'Good', 'Strong'];
+  const level = levels[Math.min(score, 4) - 1] || 'Weak';
+
+  return { level, score };
+}
+
+// ── Component ───────────────────────────────────────────────
+
 export default function SignUpScreen() {
   const router = useRouter();
   const { signUp, loading } = useAuth();
@@ -43,6 +69,8 @@ export default function SignUpScreen() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const strength = useMemo(() => getPasswordStrength(password), [password]);
+
   const handleSignUp = async () => {
     setError(null);
 
@@ -53,6 +81,10 @@ export default function SignUpScreen() {
     }
     if (!email.trim()) {
       setError('Please enter your email.');
+      return;
+    }
+    if (strength.level === 'Weak') {
+      setError('Password is too weak. Include uppercase, lowercase, and a number.');
       return;
     }
     if (password.length < 8) {
@@ -76,6 +108,7 @@ export default function SignUpScreen() {
   };
 
   const isLoading = submitting || loading;
+  const submitDisabled = isLoading || strength.level === 'Weak';
 
   return (
     <KeyboardAvoidingView
@@ -140,6 +173,36 @@ export default function SignUpScreen() {
             editable={!isLoading}
           />
 
+          {/* Password strength indicator */}
+          {password.length > 0 && (
+            <View style={styles.strengthContainer}>
+              <View style={styles.strengthBar}>
+                {[0, 1, 2, 3].map((i) => (
+                  <View
+                    key={i}
+                    style={[
+                      styles.strengthSegment,
+                      {
+                        backgroundColor:
+                          i < strength.score
+                            ? strengthColors[strength.level]
+                            : '#e0e0e0',
+                      },
+                    ]}
+                  />
+                ))}
+              </View>
+              <Text
+                style={[
+                  styles.strengthLabel,
+                  { color: strengthColors[strength.level] },
+                ]}
+              >
+                {strength.level}
+              </Text>
+            </View>
+          )}
+
           <Text style={styles.label}>Confirm Password</Text>
           <TextInput
             style={styles.input}
@@ -156,9 +219,9 @@ export default function SignUpScreen() {
           />
 
           <TouchableOpacity
-            style={[styles.button, isLoading && styles.buttonDisabled]}
+            style={[styles.button, submitDisabled && styles.buttonDisabled]}
             onPress={handleSignUp}
-            disabled={isLoading}
+            disabled={submitDisabled}
             activeOpacity={0.8}
           >
             {isLoading ? (
@@ -235,6 +298,30 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 16,
     color: colors.text,
+  },
+
+  // Password strength
+  strengthContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 10,
+  },
+  strengthBar: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: 4,
+  },
+  strengthSegment: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+  },
+  strengthLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    width: 48,
+    textAlign: 'right',
   },
 
   // Button

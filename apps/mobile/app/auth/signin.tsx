@@ -2,9 +2,10 @@
 // apps/mobile/app/auth/signin.tsx
 //
 // Sign-in screen for Be Candid. Clean, iOS-native feeling.
+// Supports biometric (Face ID / Fingerprint) re-authentication.
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,9 +16,15 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/contexts/AuthContext';
+import {
+  isBiometricAvailable,
+  authenticateWithBiometric,
+  getBiometricType,
+} from '../../src/lib/biometric';
 
 // ── Design tokens ───────────────────────────────────────────
 
@@ -33,12 +40,53 @@ const colors = {
 
 export default function SignInScreen() {
   const router = useRouter();
-  const { signIn, loading } = useAuth();
+  const { signIn, loading, session, biometricEnabled, enableBiometric } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Biometric state
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricType, setBiometricType] = useState<'fingerprint' | 'face' | 'iris' | null>(null);
+
+  // Check biometric availability on mount
+  useEffect(() => {
+    async function checkBiometric() {
+      const available = await isBiometricAvailable();
+      setBiometricAvailable(available);
+      if (available) {
+        const type = await getBiometricType();
+        setBiometricType(type);
+      }
+    }
+    checkBiometric();
+  }, []);
+
+  // If biometric is enabled and available, auto-prompt on mount
+  useEffect(() => {
+    if (biometricEnabled && biometricAvailable && !session) {
+      handleBiometricSignIn();
+    }
+  }, [biometricEnabled, biometricAvailable]);
+
+  const biometricLabel =
+    biometricType === 'face'
+      ? 'Sign in with Face ID'
+      : biometricType === 'iris'
+        ? 'Sign in with Iris'
+        : 'Sign in with Fingerprint';
+
+  const handleBiometricSignIn = async () => {
+    setError(null);
+    const success = await authenticateWithBiometric();
+    if (success) {
+      // Biometric passed -- the stored Supabase session is still valid
+      // (onAuthStateChange will pick it up). Navigate to main app.
+      router.replace('/(tabs)');
+    }
+  };
 
   const handleSignIn = async () => {
     setError(null);
@@ -55,6 +103,19 @@ export default function SignInScreen() {
     setSubmitting(true);
     try {
       await signIn(email.trim().toLowerCase(), password);
+
+      // After first successful password login, offer biometric enrollment
+      if (biometricAvailable && !biometricEnabled) {
+        Alert.alert(
+          'Enable Biometric Login?',
+          `Use ${biometricType === 'face' ? 'Face ID' : 'Fingerprint'} to sign in next time?`,
+          [
+            { text: 'Not Now', style: 'cancel' },
+            { text: 'Enable', onPress: () => enableBiometric() },
+          ],
+        );
+      }
+
       router.replace('/(tabs)');
     } catch (e: any) {
       setError(e?.message || 'Sign in failed. Please try again.');
@@ -79,6 +140,29 @@ export default function SignInScreen() {
           <Text style={styles.logoText}>Be Candid</Text>
           <Text style={styles.tagline}>Accountability starts here</Text>
         </View>
+
+        {/* Biometric button -- shown above form when enabled */}
+        {biometricAvailable && biometricEnabled && (
+          <View style={styles.biometricSection}>
+            <TouchableOpacity
+              style={styles.biometricButton}
+              onPress={handleBiometricSignIn}
+              disabled={isLoading}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.biometricIcon}>
+                {biometricType === 'face' ? '👤' : '🔒'}
+              </Text>
+              <Text style={styles.biometricButtonText}>{biometricLabel}</Text>
+            </TouchableOpacity>
+
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>or use password</Text>
+              <View style={styles.dividerLine} />
+            </View>
+          </View>
+        )}
 
         {/* Form */}
         <View style={styles.form}>
@@ -129,6 +213,18 @@ export default function SignInScreen() {
               <Text style={styles.buttonText}>Sign In</Text>
             )}
           </TouchableOpacity>
+
+          {/* Biometric button -- shown below form when available but not yet enabled */}
+          {biometricAvailable && !biometricEnabled && (
+            <TouchableOpacity
+              style={styles.secondaryBiometricButton}
+              onPress={handleBiometricSignIn}
+              disabled={isLoading}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.secondaryBiometricText}>{biometricLabel}</Text>
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             style={styles.linkButton}
@@ -183,6 +279,59 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.muted,
     marginTop: 6,
+  },
+
+  // Biometric
+  biometricSection: {
+    marginBottom: 16,
+  },
+  biometricButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    borderRadius: 10,
+    paddingVertical: 16,
+    gap: 10,
+  },
+  biometricIcon: {
+    fontSize: 20,
+  },
+  biometricButtonText: {
+    color: colors.primary,
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 4,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.border,
+  },
+  dividerText: {
+    color: colors.muted,
+    fontSize: 13,
+    marginHorizontal: 12,
+  },
+  secondaryBiometricButton: {
+    alignItems: 'center',
+    marginTop: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 10,
+  },
+  secondaryBiometricText: {
+    color: colors.primary,
+    fontSize: 15,
+    fontWeight: '500',
   },
 
   // Form
