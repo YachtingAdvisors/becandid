@@ -748,7 +748,7 @@ export default function TherapistClientDetailPage() {
                 )}
 
                 {/* Action buttons */}
-                <div className="flex gap-2 pt-2 border-t border-outline-variant/50 print:hidden">
+                <div className="flex flex-wrap gap-2 pt-2 border-t border-outline-variant/50 print:hidden">
                   <button
                     onClick={emailReport}
                     disabled={emailSending}
@@ -756,6 +756,13 @@ export default function TherapistClientDetailPage() {
                   >
                     <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>email</span>
                     {emailSent ? 'Sent!' : emailSending ? 'Sending...' : 'Email Report'}
+                  </button>
+                  <button
+                    onClick={() => window.open(`/therapist/session-report/${clientId}`, '_blank')}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-sm font-label font-medium ring-1 ring-outline-variant/10 text-on-surface-variant hover:bg-surface-container-low transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>picture_as_pdf</span>
+                    Download PDF
                   </button>
                   <button
                     onClick={() => window.print()}
