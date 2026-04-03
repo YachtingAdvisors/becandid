@@ -531,7 +531,7 @@ function OnboardingContent() {
                 </div>
               </div>
             </div>
-            <p className="text-[10px] text-cyan-400 font-label font-medium mt-2">Add up to 2 partners free. Upgrade to Pro for up to 5.</p>
+            <p className="text-[10px] text-cyan-400 font-label font-medium mt-2">Add 1 partner free. Upgrade to Pro for up to 5.</p>
           </div>
 
           {/* Invited partners list */}

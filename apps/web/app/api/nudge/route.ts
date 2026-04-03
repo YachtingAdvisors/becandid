@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { safeError, auditLog, sanitizeText } from '@/lib/security';
+import { safeError, auditLog, sanitizeText, escapeHtml } from '@/lib/security';
 import { sendNudgeSMS } from '@/lib/sms';
 import { Resend } from 'resend';
 import { z } from 'zod';
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
           await resend.emails.send({
             from: FROM,
             to: partner.partner_email,
-            subject: `${moodInfo.emoji} ${userName} could use your support right now`,
+            subject: `${moodInfo.emoji} ${escapeHtml(userName)} could use your support right now`,
             html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:0;background:#fbf9f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
 <div style="max-width:520px;margin:0 auto;padding:40px 20px;">
@@ -77,18 +77,18 @@ export async function POST(req: NextRequest) {
   </div>
   <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center;">
     <div style="font-size:48px;margin-bottom:16px;">${moodInfo.emoji}</div>
-    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Hey ${partner.partner_name?.split(' ')[0] ?? 'Partner'},</h2>
+    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Hey ${escapeHtml(partner.partner_name?.split(' ')[0] ?? 'Partner')},</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:15px;line-height:1.6;">
-      <strong>${userName}</strong> is feeling <strong style="color:${moodInfo.color}">${moodInfo.label.toLowerCase()}</strong> right now and reached out for support.
+      <strong>${escapeHtml(userName)}</strong> is feeling <strong style="color:${moodInfo.color}">${moodInfo.label.toLowerCase()}</strong> right now and reached out for support.
     </p>
     ${parsed.data.message ? `<div style="background:#f9fafb;border-radius:12px;padding:16px;margin-bottom:20px;text-align:left;">
-      <p style="margin:0;color:#374151;font-size:14px;font-style:italic;line-height:1.6;">&ldquo;${parsed.data.message}&rdquo;</p>
+      <p style="margin:0;color:#374151;font-size:14px;font-style:italic;line-height:1.6;">&ldquo;${escapeHtml(parsed.data.message)}&rdquo;</p>
     </div>` : ''}
     <p style="margin:0 0 24px;color:#6b7280;font-size:14px;line-height:1.6;">
       A simple text, call, or check-in can make all the difference. You don&rsquo;t need to fix anything &mdash; just show up.
     </p>
     <a href="${APP_URL}/dashboard/conversations" style="display:inline-block;background:#226779;color:white;padding:14px 32px;border-radius:100px;text-decoration:none;font-weight:700;font-size:15px;">
-      Check In With ${userName} &rarr;
+      Check In With ${escapeHtml(userName)} &rarr;
     </a>
     <p style="margin:20px 0 0;color:#9ca3af;font-size:12px;font-style:italic;">
       &ldquo;The people we trust with that important talk can help us know that we are not alone.&rdquo; &mdash; Fred Rogers

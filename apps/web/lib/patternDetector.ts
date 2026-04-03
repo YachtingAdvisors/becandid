@@ -50,15 +50,10 @@ export async function detectPatterns(
     const localHour = parseInt(
       dt.toLocaleString('en-US', { timeZone: timezone, hour: 'numeric', hour12: false })
     );
-    const localDay = parseInt(
-      dt.toLocaleString('en-US', { timeZone: timezone, weekday: 'narrow' }) === 'S' ? '0' : '1'
-    );
     hourCounts[localHour]++;
 
-    const dayNum = new Date(
-      dt.toLocaleString('en-US', { timeZone: timezone })
-    ).getDay();
-    dayOfWeekCounts[dayNum]++;
+    const dayOfWeek = new Date(e.timestamp).getDay(); // 0=Sun, 1=Mon, ...
+    dayOfWeekCounts[dayOfWeek]++;
   }
 
   // Find peak hours (more than 2x average)

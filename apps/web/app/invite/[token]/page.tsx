@@ -75,7 +75,7 @@ export default function InvitePage() {
       return;
     }
 
-    // Create profile with invite context (triggers 15-day trial)
+    // Create profile with invite context (triggers 21-day trial)
     await fetch('/api/auth/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

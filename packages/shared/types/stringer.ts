@@ -425,21 +425,20 @@ export function getQuotesForMotivator(motivator: FoundationalMotivator | null | 
   }));
 
   // Mr. Rogers is always first, then motivator-specific quotes follow
-  const mrRogers = MR_ROGERS_QUOTE;
 
   if (!motivator || motivator === 'general') {
-    return [mrRogers, ...stringerConverted, ...GENERAL_QUOTES.filter(q => q.text !== mrRogers.text), ...SPIRITUAL_QUOTES.slice(0, 4), ...PSYCHOLOGICAL_QUOTES.slice(0, 3), ...RELATIONAL_QUOTES.slice(0, 3)];
+    return [MR_ROGERS_QUOTE, ...stringerConverted, ...GENERAL_QUOTES.filter(q => q.text !== MR_ROGERS_QUOTE.text), ...SPIRITUAL_QUOTES.slice(0, 4), ...PSYCHOLOGICAL_QUOTES.slice(0, 3), ...RELATIONAL_QUOTES.slice(0, 3)];
   }
 
   switch (motivator) {
     case 'spiritual':
-      return [mrRogers, ...SPIRITUAL_QUOTES, ...stringerConverted];
+      return [MR_ROGERS_QUOTE, ...SPIRITUAL_QUOTES, ...stringerConverted];
     case 'psychological':
-      return [mrRogers, ...PSYCHOLOGICAL_QUOTES, ...stringerConverted];
+      return [MR_ROGERS_QUOTE, ...PSYCHOLOGICAL_QUOTES, ...stringerConverted];
     case 'relational':
-      return [mrRogers, ...RELATIONAL_QUOTES, ...stringerConverted];
+      return [MR_ROGERS_QUOTE, ...RELATIONAL_QUOTES, ...stringerConverted];
     default:
-      return [mrRogers, ...stringerConverted];
+      return [MR_ROGERS_QUOTE, ...stringerConverted];
   }
 }
 
@@ -458,14 +457,13 @@ export function getAllQuotes(): MotivatorQuote[] {
     ref: q.ref,
     motivator: 'psychological' as FoundationalMotivator,
   }));
-  const mrRogers = MR_ROGERS_QUOTE;
   return [
-    mrRogers,
+    MR_ROGERS_QUOTE,
     ...stringerConverted,
     ...SPIRITUAL_QUOTES,
     ...PSYCHOLOGICAL_QUOTES,
     ...RELATIONAL_QUOTES,
-    ...GENERAL_QUOTES.filter(q => q.text !== mrRogers.text),
+    ...GENERAL_QUOTES.filter(q => q.text !== MR_ROGERS_QUOTE.text),
   ];
 }
 

@@ -195,6 +195,10 @@ export async function GET(req: NextRequest) {
       const baselineRate = baselineEvents.length > 0 ? baselineEvents.length / 23 : 0;
       const spikePercent = baselineRate > 0 ? Math.round((recentRate / baselineRate - 1) * 100) : null;
 
+      // Also run the full pattern analysis from stringerAnalysis
+      const { analyzePatterns } = await import('@/lib/stringerAnalysis');
+      const patterns = await analyzePatterns(clientId);
+
       return NextResponse.json({
         client_name: client?.name,
         section: 'patterns',
@@ -206,6 +210,7 @@ export async function GET(req: NextRequest) {
         recent_rate_per_day: Math.round(recentRate * 10) / 10,
         baseline_rate_per_day: Math.round(baselineRate * 10) / 10,
         nudges: nudges || [],
+        patterns,
       });
     }
 

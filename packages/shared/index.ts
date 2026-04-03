@@ -33,10 +33,23 @@ export function getSeverityWeight(severity: 'low' | 'medium' | 'high'): number {
 }
 
 export function generateInviteToken(): string {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback for older environments
+  const bytes = new Uint8Array(16);
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    crypto.getRandomValues(bytes);
+  } else {
+    // Last resort — still better than Math.random
+    for (let i = 0; i < 16; i++) bytes[i] = Math.floor(Math.random() * 256);
+  }
+  return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
 }
 
 export function maskEmail(email: string): string {
   const [user, domain] = email.split('@');
-  return `${user[0]}***@${domain}`;
+  if (!domain || !user) return '***@***';
+  if (user.length <= 2) return `${user[0]}***@${domain}`;
+  return `${user[0]}${'*'.repeat(Math.min(user.length - 2, 6))}${user[user.length - 1]}@${domain}`;
 }

@@ -20,6 +20,9 @@ const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16;
 function getMasterKey(): string {
   const key = process.env.ENCRYPTION_MASTER_KEY ?? '';
+  if (!key && process.env.NODE_ENV === 'production') {
+    throw new Error('ENCRYPTION_MASTER_KEY is required in production');
+  }
   return key;
 }
 

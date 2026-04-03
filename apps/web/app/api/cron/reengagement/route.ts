@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { escapeHtml } from '@/lib/security';
 
 // Vercel Crons send GET requests
 export async function GET(req: NextRequest) { return handleCron(req); }
@@ -72,7 +73,7 @@ async function handleCron(req: NextRequest) {
         await resend.emails.send({
           from: FROM,
           to: user.email,
-          subject: `${user.name}, your accountability partner is waiting`,
+          subject: `${escapeHtml(user.name)}, your accountability partner is waiting`,
           html: `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"></head>
@@ -80,7 +81,7 @@ async function handleCron(req: NextRequest) {
 <div style="max-width:520px;margin:0 auto;padding:40px 20px;">
   <div style="background:#fff;border-radius:16px;padding:32px;border:1px solid #e5e7eb;text-align:center;">
     <div style="font-size:48px;margin-bottom:16px;">💙</div>
-    <h2 style="margin:0 0 12px;color:#0f0e1a;font-size:22px;font-family:Georgia,serif;">We miss you, ${user.name}</h2>
+    <h2 style="margin:0 0 12px;color:#0f0e1a;font-size:22px;font-family:Georgia,serif;">We miss you, ${escapeHtml(user.name)}</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:14px;line-height:1.6;">
       It's been ${daysInactive} days since your last visit.
       ${total > 0 ? `Your last focus rate was ${Math.round((focused / total) * 100)}%.` : ''}

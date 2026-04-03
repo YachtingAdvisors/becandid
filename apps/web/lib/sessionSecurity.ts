@@ -46,6 +46,19 @@ export async function recordSessionActivity(
 ) {
   const db = createServiceClient();
 
+  // Enforce concurrent session limit BEFORE upserting to avoid temporarily exceeding the limit
+  const { data: sessions } = await db
+    .from('user_sessions')
+    .select('id, last_active_at')
+    .eq('user_id', userId)
+    .order('last_active_at', { ascending: false });
+
+  if (sessions && sessions.length >= MAX_CONCURRENT_SESSIONS) {
+    // Remove oldest sessions to make room for the new/updated one
+    const toRemove = sessions.slice(MAX_CONCURRENT_SESSIONS - 1).map((s) => s.id);
+    await db.from('user_sessions').delete().in('id', toRemove);
+  }
+
   // Upsert session
   await db.from('user_sessions').upsert({
     user_id: userId,
@@ -57,19 +70,6 @@ export async function recordSessionActivity(
   }, {
     onConflict: 'user_id,device_hash',
   });
-
-  // Enforce concurrent session limit
-  const { data: sessions } = await db
-    .from('user_sessions')
-    .select('id, last_active_at')
-    .eq('user_id', userId)
-    .order('last_active_at', { ascending: false });
-
-  if (sessions && sessions.length > MAX_CONCURRENT_SESSIONS) {
-    // Remove oldest sessions beyond limit
-    const toRemove = sessions.slice(MAX_CONCURRENT_SESSIONS).map((s) => s.id);
-    await db.from('user_sessions').delete().in('id', toRemove);
-  }
 }
 
 // ── Check for suspicious activity ───────────────────────────

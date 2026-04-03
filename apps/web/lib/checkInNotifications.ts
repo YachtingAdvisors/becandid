@@ -4,6 +4,8 @@
 // is created, and follow-ups when one side confirms.
 // ============================================================
 
+import { escapeHtml } from '@/lib/security';
+
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
 // ─── Email Templates ──────────────────────────────────────────
@@ -22,7 +24,7 @@ export function buildUserCheckInEmail(params: {
   });
 
   return {
-    subject: `📋 Check-in time, ${userName}`,
+    subject: `📋 Check-in time, ${escapeHtml(userName)}`,
     html: `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -35,8 +37,8 @@ export function buildUserCheckInEmail(params: {
   </div>
 
   <div style="background:white;border-radius:16px;padding:28px;border:1px solid #e5e7eb;">
-    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:20px;">Hey ${userName} 👋</h2>
-    <p style="margin:0 0 20px;color:#6b7280;font-size:14px;line-height:1.6;">${prompt}</p>
+    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:20px;">Hey ${escapeHtml(userName)} 👋</h2>
+    <p style="margin:0 0 20px;color:#6b7280;font-size:14px;line-height:1.6;">${escapeHtml(prompt)}</p>
 
     <div style="background:#f8f7ff;border-radius:12px;padding:16px;margin-bottom:20px;">
       <p style="margin:0;color:#4f46e5;font-size:13px;font-weight:600;">
@@ -70,7 +72,7 @@ export function buildPartnerCheckInEmail(params: {
   });
 
   return {
-    subject: `📋 ${monitoredUserName}'s check-in needs your response`,
+    subject: `📋 ${escapeHtml(monitoredUserName)}'s check-in needs your response`,
     html: `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -83,15 +85,15 @@ export function buildPartnerCheckInEmail(params: {
   </div>
 
   <div style="background:white;border-radius:16px;padding:28px;border:1px solid #e5e7eb;">
-    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:20px;">Hey ${partnerName} 👋</h2>
+    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:20px;">Hey ${escapeHtml(partnerName)} 👋</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:14px;line-height:1.6;">
-      ${monitoredUserName} has a check-in waiting. Your confirmation shows you're engaged
+      ${escapeHtml(monitoredUserName)} has a check-in waiting. Your confirmation shows you're engaged
       and paying attention — it matters more than you think.
     </p>
 
     <div style="background:#f0fdf4;border-radius:12px;padding:16px;margin-bottom:20px;">
       <p style="margin:0;color:#059669;font-size:13px;">
-        <strong>How it works:</strong> Share how you feel about ${monitoredUserName}'s progress.
+        <strong>How it works:</strong> Share how you feel about ${escapeHtml(monitoredUserName)}'s progress.
         Both of you must respond by ${dueDate} for the check-in to count.
       </p>
     </div>
@@ -121,7 +123,7 @@ export function buildConfirmationFollowUpEmail(params: {
     : `${APP_URL}/dashboard/checkins`;
 
   return {
-    subject: `✅ ${confirmerName} confirmed — your turn!`,
+    subject: `✅ ${escapeHtml(confirmerName)} confirmed — your turn!`,
     html: `
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -129,9 +131,9 @@ export function buildConfirmationFollowUpEmail(params: {
 <div style="max-width:520px;margin:0 auto;padding:32px 20px;">
   <div style="background:white;border-radius:16px;padding:28px;border:1px solid #e5e7eb;text-align:center;">
     <div style="font-size:48px;margin-bottom:12px;">✅</div>
-    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:20px;">${confirmerName} just checked in</h2>
+    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:20px;">${escapeHtml(confirmerName)} just checked in</h2>
     <p style="margin:0 0 20px;color:#6b7280;font-size:14px;line-height:1.6;">
-      Hey ${recipientName} — ${confirmerName} has confirmed their side of the check-in.
+      Hey ${escapeHtml(recipientName)} — ${escapeHtml(confirmerName)} has confirmed their side of the check-in.
       Now it's your turn to complete it.
     </p>
     <a href="${url}" style="display:inline-block;background:#4f46e5;color:white;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;">

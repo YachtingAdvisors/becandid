@@ -65,22 +65,22 @@ export default async function DashboardPage() {
     db.from('milestones').select('milestone').eq('user_id', user.id).order('unlocked_at', { ascending: false }).limit(1),
   ]);
 
-  const profile = profileRes.data;
-  const events = eventsRes.data ?? [];
-  const alerts = alertsRes.data ?? [];
-  const partner = partnerRes.data;
+  const profile = profileRes?.data ?? null;
+  const events = eventsRes?.data ?? [];
+  const alerts = alertsRes?.data ?? [];
+  const partner = partnerRes?.data ?? null;
 
   const pendingConversations = alerts.filter((a: any) => !a.conversations?.[0]?.completed_at).length;
 
   // Dashboard card data
-  const todayEvents = todayEventsRes.data ?? [];
+  const todayEvents = todayEventsRes?.data ?? [];
   const todayFlags = todayEvents.length;
   const todayHighFlags = todayEvents.filter((e: any) => e.severity === 'high').length;
-  const weekEvents = weekEventsRes.data ?? [];
+  const weekEvents = weekEventsRes?.data ?? [];
   const weekFlags = weekEvents.length;
   const weekCategories = [...new Set(weekEvents.map((e: any) => e.category))];
-  const journalCount = journalCountRes.count ?? 0;
-  const latestMilestone = streakRes.data?.[0]?.milestone ?? null;
+  const journalCount = journalCountRes?.count ?? 0;
+  const latestMilestone = streakRes?.data?.[0]?.milestone ?? null;
 
   // Walkthrough: detect which setup steps are complete
   // Show walkthrough only for first 2 logins, unless manually dismissed
@@ -94,9 +94,9 @@ export default async function DashboardPage() {
     .then(() => {});
   const completedSteps = {
     checkin_configured: (profile?.check_in_hour !== 21 || profile?.check_in_frequency !== 'daily'),
-    focus_started: (focusCountRes.count ?? 0) > 0,
-    first_journal: (journalCountRes.count ?? 0) > 0,
-    first_checkin: (checkinCountRes.count ?? 0) > 0,
+    focus_started: (focusCountRes?.count ?? 0) > 0,
+    first_journal: (journalCountRes?.count ?? 0) > 0,
+    first_checkin: (checkinCountRes?.count ?? 0) > 0,
   };
 
   return (
@@ -201,7 +201,7 @@ export default async function DashboardPage() {
         </Link>
 
         {/* Guardian Hub — with partner status */}
-        <Link href="/guardian" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
+        <Link href="/dashboard/settings" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>shield</span>

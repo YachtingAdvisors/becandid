@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { escapeHtml } from '@/lib/security';
 
 const ADMIN_EMAILS = ['slaser90@gmail.com', 'shawn@yachtingadvisors.com'];
 
@@ -143,15 +144,15 @@ async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createService
       await resend.emails.send({
         from: 'Be Candid <alerts@becandid.io>',
         to: partnership.partner_email,
-        subject: `${userName} paused their monitoring`,
+        subject: `${escapeHtml(userName)} paused their monitoring`,
         html: `
           <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto;">
             <h2 style="color: #226779;">Monitoring Paused</h2>
-            <p>${userName} has paused their screen monitoring on Be Candid.</p>
-            ${reason ? `<p style="background: #fef3cd; padding: 12px 16px; border-radius: 8px; margin: 16px 0;"><strong>Their note:</strong> ${reason}</p>` : ''}
+            <p>${escapeHtml(userName)} has paused their screen monitoring on Be Candid.</p>
+            ${reason ? `<p style="background: #fef3cd; padding: 12px 16px; border-radius: 8px; margin: 16px 0;"><strong>Their note:</strong> ${escapeHtml(reason)}</p>` : ''}
             <p>This could be a good time to reach out and check in with them.</p>
             <a href="https://becandid.io/partner" style="display: inline-block; padding: 12px 24px; background: #226779; color: white; border-radius: 8px; text-decoration: none; font-weight: 600;">Open Be Candid</a>
-            <p style="color: #999; font-size: 12px; margin-top: 24px;">You're receiving this because you're ${userName}'s accountability partner on Be Candid.</p>
+            <p style="color: #999; font-size: 12px; margin-top: 24px;">You're receiving this because you're ${escapeHtml(userName)}'s accountability partner on Be Candid.</p>
           </div>
         `,
       });

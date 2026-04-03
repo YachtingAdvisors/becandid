@@ -21,6 +21,7 @@ import {
   STRINGER_QUOTES,
 } from '@be-candid/shared';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { escapeHtml } from '@/lib/security';
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@becandid.io>';
@@ -121,14 +122,14 @@ export async function GET(req: NextRequest) {
   <div style="background:#fff;border-radius:16px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
     <h2 style="font-family:Georgia,serif;font-size:20px;color:#0f0e1a;margin:0 0 16px;text-align:center;">Time to reflect</h2>
     <div style="background:#faf5ff;border-left:3px solid #8b5cf6;border-radius:0 10px 10px 0;padding:14px 18px;margin:0 0 20px;">
-      <p style="margin:0;font-size:14px;color:#4c1d95;line-height:1.6;">${prompt}</p>
+      <p style="margin:0;font-size:14px;color:#4c1d95;line-height:1.6;">${escapeHtml(prompt)}</p>
     </div>
     <a href="${APP_URL}/dashboard/stringer-journal?action=write&trigger=reminder&prompt=${encodeURIComponent(prompt)}"
       style="display:block;text-align:center;background:#4f46e5;color:#fff;text-decoration:none;padding:13px 24px;border-radius:10px;font-weight:600;font-size:14px;">
       Open Journal →
     </a>
     <p style="text-align:center;font-size:12px;color:#9ca3af;margin:16px 0 0;font-style:italic;">
-      "${quote.text}"
+      "${escapeHtml(quote.text)}"
     </p>
   </div>
 </div></body></html>`,

@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { GOAL_LABELS, getCategoryEmoji, type GoalCategory } from '@be-candid/shared';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { escapeHtml } from '@/lib/security';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
@@ -159,7 +160,7 @@ async function handleCron(req: NextRequest) {
 <body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
 <div style="max-width:520px;margin:0 auto;padding:32px 20px;">
   <div style="background:#fff;border-radius:16px;padding:28px;border:1px solid #e5e7eb;">
-    <h2 style="margin:0 0 8px;color:#0f0e1a;font-size:20px;font-family:Georgia,serif;">${user.name}'s weekly digest</h2>
+    <h2 style="margin:0 0 8px;color:#0f0e1a;font-size:20px;font-family:Georgia,serif;">${escapeHtml(user.name)}'s weekly digest</h2>
     <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">Here's how they did this week.</p>
     <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
       <tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Focus rate</td><td style="padding:8px 0;text-align:right;font-weight:600;font-size:14px;">${focusRate}%</td></tr>
@@ -174,7 +175,7 @@ async function handleCron(req: NextRequest) {
           await resend.emails.send({
             from: FROM,
             to: partner.partner_email,
-            subject: `📊 ${user.name}'s weekly focus digest — ${focusRate}% focused`,
+            subject: `📊 ${escapeHtml(user.name)}'s weekly focus digest — ${focusRate}% focused`,
             html: partnerHtml,
           });
         }

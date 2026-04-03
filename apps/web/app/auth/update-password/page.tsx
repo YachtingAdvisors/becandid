@@ -15,18 +15,35 @@ export default function UpdatePasswordPage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    let resolved = false;
     const supabase = createClient();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+
+    const markReady = () => {
+      if (!resolved) {
+        resolved = true;
         setReady(true);
       }
+    };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+        markReady();
+      }
     });
+
+    // Also check if there's already a session (e.g. token was auto-exchanged)
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true);
+      if (session) markReady();
     });
+
+    // Give Supabase enough time to exchange the token from the URL hash.
+    // The token exchange can take several seconds on slow connections.
     const timeout = setTimeout(() => {
-      if (!ready) setError('This reset link has expired or is invalid. Please request a new one.');
-    }, 3000);
+      if (!resolved) {
+        setError('This reset link has expired or is invalid. Please request a new one.');
+      }
+    }, 15000);
+
     return () => { subscription.unsubscribe(); clearTimeout(timeout); };
   }, []);
 

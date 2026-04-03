@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 /* ── Chrome Web Store URL (update once published) ────────────── */
-const CHROME_STORE_URL = '#'; // TODO: replace with Chrome Web Store link
+const CHROME_STORE_URL = 'https://chromewebstore.google.com'; // TODO: Replace with actual listing URL
 
 function Icon({ name, className = '' }: { name: string; className?: string }) {
   return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
@@ -117,18 +117,18 @@ export default function DownloadsPage() {
               ))}
             </div>
             <div className="flex flex-wrap gap-3">
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface-container rounded-2xl font-label font-medium text-sm text-on-surface-variant/50 cursor-default"
+              <span
+                aria-disabled="true"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface-container rounded-2xl font-label font-medium text-sm text-on-surface-variant/50 cursor-default select-none"
               >
                 App Store — coming soon
-              </a>
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface-container rounded-2xl font-label font-medium text-sm text-on-surface-variant/50 cursor-default"
+              </span>
+              <span
+                aria-disabled="true"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface-container rounded-2xl font-label font-medium text-sm text-on-surface-variant/50 cursor-default select-none"
               >
                 Play Store — coming soon
-              </a>
+              </span>
             </div>
           </div>
         </div>

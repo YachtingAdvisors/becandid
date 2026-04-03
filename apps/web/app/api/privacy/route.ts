@@ -16,6 +16,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { decryptJournalEntries, decryptGuide } from '@/lib/encryption';
 import { getActiveSessions, forceLogoutAll } from '@/lib/sessionSecurity';
 import { accountLimiter, actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { safeError } from '@/lib/security';
 
 // ── GET: Full data export ───────────────────────────────────
 
@@ -51,14 +52,14 @@ export async function GET(req: NextRequest) {
     partnersResult,
   ] = await Promise.all([
     db.from('users').select('*').eq('id', user.id).single(),
-    db.from('events').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-    db.from('alerts').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-    db.from('stringer_journal').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-    db.from('check_ins').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-    db.from('trust_points').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-    db.from('milestones').select('*').eq('user_id', user.id),
+    db.from('events').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10000),
+    db.from('alerts').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10000),
+    db.from('stringer_journal').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10000),
+    db.from('check_ins').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10000),
+    db.from('trust_points').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10000),
+    db.from('milestones').select('*').eq('user_id', user.id).limit(10000),
     db.from('journal_preferences').select('*').eq('user_id', user.id).single(),
-    db.from('partners').select('*').eq('user_id', user.id),
+    db.from('partners').select('*').eq('user_id', user.id).limit(10000),
   ]);
 
   // Decrypt journal entries for export
@@ -136,7 +137,7 @@ export async function PUT(req: NextRequest) {
     event_retention_days,
   }).eq('id', user.id);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('PUT /api/privacy', error);
 
   await db.from('audit_log').insert({
     user_id: user.id,

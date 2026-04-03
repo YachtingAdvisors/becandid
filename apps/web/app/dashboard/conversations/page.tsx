@@ -170,12 +170,12 @@ export default function ConversationsPage() {
                 <span className="material-symbols-outlined text-primary text-xl">flag</span>
                 <div className="flex-1">
                   <div className="text-sm font-label font-medium text-on-surface">
-                    {GOAL_LABELS[alert.events?.category as GoalCategory] ?? 'Alert'}
+                    {GOAL_LABELS[(alert.events?.category ?? 'unknown') as GoalCategory] ?? 'Alert'}
                   </div>
                   <div className="text-xs text-on-surface-variant font-label">{timeAgo(alert.sent_at)}</div>
                 </div>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${SEVERITY_STYLES[alert.events?.severity as Severity ?? 'medium']}`}>
-                  {alert.events?.severity}
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${SEVERITY_STYLES[(alert.events?.severity ?? 'low') as Severity]}`}>
+                  {alert.events?.severity ?? 'low'}
                 </span>
               </div>
 
@@ -221,7 +221,7 @@ export default function ConversationsPage() {
                   <span className="material-symbols-outlined text-on-surface-variant text-lg">flag</span>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-label font-medium text-on-surface">
-                      {GOAL_LABELS[alert.events?.category as GoalCategory] ?? 'Alert'}
+                      {GOAL_LABELS[(alert.events?.category ?? 'unknown') as GoalCategory] ?? 'Alert'}
                     </div>
                     <div className="text-xs text-on-surface-variant font-label">{timeAgo(alert.sent_at)}</div>
                   </div>

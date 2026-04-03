@@ -80,8 +80,8 @@ export async function POST(req: NextRequest) {
     // Generate a unique referral code for this user
     const refCode = generateReferralCode();
 
-    // Set trial: 15 days standard, will become 30 if they add a partner in session
-    const trialDays = 15;
+    // Set trial: 21 days standard, will become 30 if they add a partner in session
+    const trialDays = 21;
     const trialEnds = new Date(Date.now() + trialDays * 24 * 60 * 60 * 1000).toISOString();
 
     const { error } = await db.from('users').insert({
