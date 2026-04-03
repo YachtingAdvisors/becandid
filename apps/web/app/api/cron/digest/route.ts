@@ -10,6 +10,7 @@ import { createServiceClient } from '@/lib/supabase';
 import { GOAL_LABELS, getCategoryEmoji, type GoalCategory } from '@be-candid/shared';
 import { verifyCronAuth } from '@/lib/cronAuth';
 import { escapeHtml } from '@/lib/security';
+import { decrypt } from '@/lib/encryption';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
@@ -39,7 +40,7 @@ async function handleCron(req: NextRequest) {
   for (const user of users) {
     try {
       // Fetch week's data in parallel
-      const [segmentsRes, pointsRes, checkInsRes, milestonesRes, partnerRes] = await Promise.all([
+      const [segmentsRes, pointsRes, checkInsRes, milestonesRes, partnerRes, reflectionRes] = await Promise.all([
         db.from('focus_segments')
           .select('date, segment, status')
           .eq('user_id', user.id)
@@ -62,6 +63,11 @@ async function handleCron(req: NextRequest) {
           .eq('user_id', user.id)
           .eq('status', 'active')
           .maybeSingle(),
+        db.from('weekly_reflections')
+          .select('reflection, mood_avg, entry_count')
+          .eq('user_id', user.id)
+          .eq('week_start', weekAgo.toISOString().slice(0, 10))
+          .maybeSingle(),
       ]);
 
       const segments = segmentsRes.data ?? [];
@@ -69,6 +75,14 @@ async function handleCron(req: NextRequest) {
       const checkIns = checkInsRes.data ?? [];
       const milestones = milestonesRes.data ?? [];
       const partner = partnerRes.data;
+
+      // Decrypt weekly reflection if available
+      let reflection: any = null;
+      if (reflectionRes.data?.reflection) {
+        try {
+          reflection = JSON.parse(decrypt(reflectionRes.data.reflection, user.id));
+        } catch { /* reflection decryption failed — skip */ }
+      }
 
       // Calculate stats
       const focusedSegments = segments.filter(s => s.status === 'focused').length;
@@ -140,6 +154,14 @@ async function handleCron(req: NextRequest) {
       <tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Trust points earned</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#7c3aed;font-size:14px;">+${totalPoints}</td></tr>
       ${milestones.length > 0 ? `<tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Milestones unlocked</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#d97706;font-size:14px;">🏅 ${milestones.length}</td></tr>` : ''}
     </table>
+    ${reflection ? `
+    <div style="margin:20px 0;padding:20px;background:#f0fafb;border-radius:12px;border-left:4px solid #226779;">
+      <h3 style="margin:0 0 10px;color:#226779;font-size:15px;font-family:Georgia,serif;">Your Weekly Reflection</h3>
+      <p style="margin:0 0 12px;color:#374151;font-size:14px;line-height:1.6;">${escapeHtml(reflection.narrative?.slice(0, 600) || '')}</p>
+      ${reflection.growth_moment ? `<p style="margin:0 0 8px;color:#226779;font-size:13px;"><strong>Growth moment:</strong> ${escapeHtml(reflection.growth_moment)}</p>` : ''}
+      ${reflection.stringer_insight ? `<p style="margin:0 0 8px;color:#226779;font-size:13px;"><strong>Insight:</strong> ${escapeHtml(reflection.stringer_insight)}</p>` : ''}
+      ${reflection.looking_ahead ? `<p style="margin:0;color:#6b7280;font-size:13px;font-style:italic;">${escapeHtml(reflection.looking_ahead)}</p>` : ''}
+    </div>` : ''}
     <a href="${APP_URL_BASE}/dashboard/journal" style="display:block;text-align:center;background:#7c3aed;color:white;padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;">View Growth Journal →</a>
   </div>
 </div>
