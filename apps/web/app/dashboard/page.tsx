@@ -16,6 +16,12 @@ import RelationshipMini from '@/components/dashboard/RelationshipMini';
 import Link from 'next/link';
 import DashboardHero from '@/components/dashboard/DashboardHero';
 import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
+import FocusChip from '@/components/dashboard/FocusChip';
+
+const DailyChallenge = dynamic(
+  () => import('@/components/dashboard/DailyChallenge'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-2xl" /> },
+);
 
 /* Dynamically imported heavy client components for code-splitting */
 const SpouseImpactAwareness = dynamic(
@@ -100,6 +106,14 @@ export default async function DashboardPage() {
     db.from('milestones').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
   ]);
 
+  // Fetch recent milestones for Focus Chips display
+  const recentChipsRes = await db
+    .from('milestones')
+    .select('milestone, unlocked_at')
+    .eq('user_id', user.id)
+    .order('unlocked_at', { ascending: false })
+    .limit(10);
+
   const profile = profileRes?.data ?? null;
   const events = eventsRes?.data ?? [];
   const alerts = alertsRes?.data ?? [];
@@ -143,6 +157,33 @@ export default async function DashboardPage() {
       direction: diff > 0.3 ? 'up' : diff < -0.3 ? 'down' : 'stable',
     };
   }
+
+  // ── Recent Focus Chips ──────────────────────────────────
+  const chipMilestoneMap: Record<string, number> = {
+    full_days_7: 7, full_days_14: 14, full_days_30: 30,
+    full_days_60: 60, full_days_90: 90,
+    streak_7: 7, streak_30: 30, streak_90: 90,
+  };
+  const recentChipMilestones = (recentChipsRes?.data ?? [])
+    .map((m: any) => ({
+      days: chipMilestoneMap[m.milestone] ?? null,
+      achievedDate: m.unlocked_at,
+    }))
+    .filter((c: any) => c.days !== null);
+  // Also add day-1 if they have any focused segment
+  if (currentStreak >= 1 && !recentChipMilestones.some((c: any) => c.days === 1)) {
+    recentChipMilestones.push({ days: 1, achievedDate: new Date().toISOString() });
+  }
+  // Mark from streak
+  for (const ms of [1, 7, 14, 30, 60, 90, 180, 365]) {
+    if (currentStreak >= ms && !recentChipMilestones.some((c: any) => c.days === ms)) {
+      recentChipMilestones.push({ days: ms, achievedDate: new Date().toISOString() });
+    }
+  }
+  // Sort by days descending and take top 3
+  const displayChips = recentChipMilestones
+    .sort((a: any, b: any) => b.days - a.days)
+    .slice(0, 3);
 
   // Walkthrough: detect which setup steps are complete
   // Show walkthrough only for first 2 logins, unless manually dismissed

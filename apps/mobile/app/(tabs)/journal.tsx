@@ -62,6 +62,22 @@ const TAGS = [
   'stressed', 'hopeful', 'accountable', 'relapse', 'growth',
 ] as const;
 
+// TODO: Voice Journaling — Add voice input support for mobile journal fields.
+// Integration points:
+//   - Each TextInput for freewrite, tributaries, longing, and roadmap should
+//     have a mic icon button next to its label.
+//   - Use `expo-speech` for text-to-speech feedback, and for speech-to-text
+//     use either `@react-native-voice/voice` (cross-platform) or
+//     `expo-av` + a transcription service.
+//   - The recording UI should show a pulsing indicator, elapsed time, and
+//     live transcript preview, mirroring the web VoiceJournal component.
+//   - On iOS, the native SFSpeechRecognizer can be accessed via
+//     `@react-native-voice/voice`. On Android, use Google Speech API.
+//   - The transcript should be appended to the current field value via
+//     the same callback pattern as the web version:
+//     onTranscript={(text) => setFieldValue(prev => prev ? prev + ' ' + text : text)}
+//   - See web implementation: apps/web/components/dashboard/VoiceJournal.tsx
+
 // Brand colors
 const C = {
   primary: '#226779',

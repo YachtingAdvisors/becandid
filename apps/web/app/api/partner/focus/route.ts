@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
   ]);
 
   return NextResponse.json({
+    monitoredUserId,
     monitoredUserName: monitoredUser?.name || 'Your partner',
     balance,
     streak,
