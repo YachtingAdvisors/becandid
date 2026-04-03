@@ -47,9 +47,9 @@ export default function GuardianOverview() {
   if (loading) {
     return (
       <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5">
-        <div className="animate-pulse space-y-3">
-          <div className="h-5 bg-surface-container-low rounded w-40" />
-          <div className="h-16 bg-surface-container-low rounded" />
+        <div className="space-y-3">
+          <div className="h-5 skeleton-shimmer rounded w-40" />
+          <div className="h-16 skeleton-shimmer rounded" />
         </div>
       </div>
     );

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   GOAL_LABELS,
   GOAL_DESCRIPTIONS,
@@ -11,6 +12,43 @@ interface GoalSelectorProps {
   onChange: (goals: GoalCategory[]) => void;
   disabled?: boolean;
 }
+
+/* Category-specific accent glow colors */
+const CATEGORY_GLOW: Partial<Record<GoalCategory, string>> = {
+  pornography: 'shadow-red-500/20',
+  sexting: 'shadow-pink-500/20',
+  social_media: 'shadow-blue-500/20',
+  binge_watching: 'shadow-indigo-500/20',
+  impulse_shopping: 'shadow-emerald-500/20',
+  alcohol_drugs: 'shadow-purple-500/20',
+  vaping_tobacco: 'shadow-purple-400/20',
+  eating_disorder: 'shadow-orange-500/20',
+  body_checking: 'shadow-rose-500/20',
+  gambling: 'shadow-amber-500/20',
+  sports_betting: 'shadow-amber-400/20',
+  day_trading: 'shadow-green-500/20',
+  dating_apps: 'shadow-pink-400/20',
+  gaming: 'shadow-violet-500/20',
+  rage_content: 'shadow-red-400/20',
+};
+
+const CATEGORY_ACCENT_RING: Partial<Record<GoalCategory, string>> = {
+  pornography: 'ring-red-500/20',
+  sexting: 'ring-pink-500/20',
+  social_media: 'ring-blue-500/20',
+  binge_watching: 'ring-indigo-500/20',
+  impulse_shopping: 'ring-emerald-500/20',
+  alcohol_drugs: 'ring-purple-500/20',
+  vaping_tobacco: 'ring-purple-400/20',
+  eating_disorder: 'ring-orange-500/20',
+  body_checking: 'ring-rose-500/20',
+  gambling: 'ring-amber-500/20',
+  sports_betting: 'ring-amber-400/20',
+  day_trading: 'ring-green-500/20',
+  dating_apps: 'ring-pink-400/20',
+  gaming: 'ring-violet-500/20',
+  rage_content: 'ring-red-400/20',
+};
 
 /* Individual category cards with material icons */
 const CATEGORY_CARDS: { id: GoalCategory; icon: string }[] = [
@@ -32,6 +70,14 @@ const CATEGORY_CARDS: { id: GoalCategory; icon: string }[] = [
 ];
 
 export default function GoalSelector({ selected, onChange, disabled }: GoalSelectorProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Trigger stagger animation on mount
+    const timer = setTimeout(() => setMounted(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
   function toggleGoal(goal: GoalCategory) {
     if (disabled) return;
     if (selected.includes(goal)) {
@@ -43,10 +89,22 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
 
   return (
     <div>
+      {/* Counter badge */}
+      {selected.length > 0 && (
+        <div className="flex justify-center mb-5">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/15 text-primary text-xs font-label font-semibold backdrop-blur-sm border border-primary/20">
+            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+            {selected.length} rival{selected.length !== 1 ? 's' : ''} selected
+          </span>
+        </div>
+      )}
+
       {/* Bento Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {CATEGORY_CARDS.map((cat) => {
+        {CATEGORY_CARDS.map((cat, index) => {
           const isSelected = selected.includes(cat.id);
+          const glowClass = CATEGORY_GLOW[cat.id] ?? 'shadow-slate-500/20';
+          const accentRing = CATEGORY_ACCENT_RING[cat.id] ?? 'ring-white/10';
 
           return (
             <button
@@ -54,31 +112,38 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
               type="button"
               onClick={() => toggleGoal(cat.id)}
               disabled={disabled}
-              className={`group relative flex flex-col p-5 rounded-xl text-left transition-all active:scale-[0.98] outline-none disabled:opacity-50 ${
+              style={{
+                opacity: mounted ? undefined : 0,
+                transform: mounted ? undefined : 'translateY(12px)',
+                transition: `opacity 0.4s ease-out ${index * 50}ms, transform 0.4s ease-out ${index * 50}ms`,
+              }}
+              className={`group relative flex flex-col p-5 rounded-xl text-left transition-all duration-300 active:scale-[0.98] outline-none disabled:opacity-50 min-h-[140px] ${
                 isSelected
-                  ? 'bg-white shadow-[0_0_0_2px_#22d3ee] shadow-lg'
-                  : 'bg-white/[0.06] backdrop-blur-md border border-white/10 hover:bg-white/[0.1]'
+                  ? `bg-gradient-to-br from-slate-700 to-slate-800 shadow-lg ${glowClass} -translate-y-1 ring-2 ring-primary`
+                  : `bg-gradient-to-br from-slate-800 to-slate-900 ring-1 ${accentRing} opacity-80 hover:opacity-100 hover:shadow-md ${glowClass}`
               }`}
             >
-              <div className="mb-4 flex justify-between items-start">
-                <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
-                  isSelected ? 'bg-primary/10 text-primary' : 'bg-white/10 text-slate-400'
-                }`}>
-                  <span className="material-symbols-outlined text-xl">{cat.icon}</span>
+              {/* Selected checkmark badge */}
+              {isSelected && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-md animate-[scale-in_0.2s_ease-out]"
+                  style={{ animation: 'scale-in 0.2s ease-out' }}>
+                  <span className="material-symbols-outlined text-white text-sm" style={{ fontSize: '14px' }}>check</span>
                 </div>
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                  isSelected ? 'border-primary' : 'border-white/20'
+              )}
+
+              <div className="mb-3">
+                <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
+                  isSelected ? 'bg-primary/20 text-primary' : 'bg-white/10 text-slate-400'
                 }`}>
-                  <div className={`w-3 h-3 rounded-full bg-primary transition-opacity ${
-                    isSelected ? 'opacity-100' : 'opacity-0'
-                  }`} />
+                  <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>{cat.icon}</span>
                 </div>
               </div>
+
               <h3 className={`font-headline font-bold text-sm mb-1 transition-colors ${
-                isSelected ? 'text-on-surface' : 'text-slate-200'
+                isSelected ? 'text-white' : 'text-slate-200'
               }`}>{GOAL_LABELS[cat.id]}</h3>
               <p className={`font-body text-xs leading-snug transition-colors ${
-                isSelected ? 'text-on-surface-variant' : 'text-slate-400'
+                isSelected ? 'text-slate-300' : 'text-slate-400'
               }`}>{GOAL_DESCRIPTIONS[cat.id]}</p>
             </button>
           );
@@ -90,26 +155,25 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
         type="button"
         onClick={() => toggleGoal('custom')}
         disabled={disabled}
-        className={`w-full mt-4 flex items-center gap-4 p-5 rounded-xl text-left transition-all active:scale-[0.98] outline-none disabled:opacity-50 ${
+        className={`w-full mt-4 flex items-center gap-4 p-5 rounded-xl text-left transition-all duration-300 active:scale-[0.98] outline-none disabled:opacity-50 ${
           selected.includes('custom')
-            ? 'bg-white shadow-[0_0_0_2px_#22d3ee] shadow-lg'
-            : 'bg-white/[0.06] backdrop-blur-md border-2 border-dashed border-white/10 hover:bg-white/[0.1]'
+            ? 'bg-gradient-to-br from-slate-700 to-slate-800 shadow-lg shadow-primary/20 ring-2 ring-primary'
+            : 'bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-dashed border-white/10 opacity-80 hover:opacity-100'
         }`}
       >
-        <div className="w-11 h-11 rounded-full bg-secondary-container flex items-center justify-center text-primary">
-          <span className="material-symbols-outlined text-xl">tune</span>
+        <div className="w-11 h-11 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>tune</span>
         </div>
         <div className="flex-1">
-          <h3 className="font-headline font-bold text-sm text-on-surface">Custom</h3>
-          <p className="font-body text-xs text-on-surface-variant">Define your own category to monitor</p>
+          <h3 className="font-headline font-bold text-sm text-white">Custom</h3>
+          <p className="font-body text-xs text-slate-400">Define your own category to monitor</p>
         </div>
-        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-          selected.includes('custom') ? 'border-primary' : 'border-outline-variant'
-        }`}>
-          <div className={`w-3 h-3 rounded-full bg-primary transition-opacity ${
-            selected.includes('custom') ? 'opacity-100' : 'opacity-0'
-          }`} />
-        </div>
+        {selected.includes('custom') && (
+          <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-md"
+            style={{ animation: 'scale-in 0.2s ease-out' }}>
+            <span className="material-symbols-outlined text-white text-sm" style={{ fontSize: '14px' }}>check</span>
+          </div>
+        )}
       </button>
 
       {/* Custom category disclaimer */}

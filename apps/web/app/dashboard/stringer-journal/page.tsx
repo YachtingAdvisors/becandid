@@ -37,6 +37,31 @@ const PROMPT_COLORS = [
   { bg: 'bg-secondary-container/20', border: 'border-secondary-container', accent: 'text-secondary', ring: 'ring-secondary/20' },
 ];
 
+const MOOD_BORDERS: Record<number, string> = {
+  1: 'border-l-4 border-l-error',
+  2: 'border-l-4 border-l-orange-400',
+  3: 'border-l-4 border-l-outline-variant',
+  4: 'border-l-4 border-l-primary/60',
+  5: 'border-l-4 border-l-emerald-500',
+};
+const MOOD_BORDER_DEFAULT = 'border-l-4 border-l-outline-variant/30';
+
+const TAG_COLORS: Record<string, string> = {
+  loneliness: 'bg-blue-100 text-blue-700',
+  boredom: 'bg-amber-100 text-amber-700',
+  stress: 'bg-red-100 text-red-700',
+  anxiety: 'bg-violet-100 text-violet-700',
+  shame: 'bg-rose-100 text-rose-700',
+  anger: 'bg-orange-100 text-orange-700',
+  sadness: 'bg-indigo-100 text-indigo-700',
+  relapse: 'bg-red-50 text-red-600',
+  gratitude: 'bg-emerald-100 text-emerald-700',
+  progress: 'bg-teal-100 text-teal-700',
+  connection: 'bg-sky-100 text-sky-700',
+  clarity: 'bg-cyan-100 text-cyan-700',
+};
+const TAG_COLOR_DEFAULT = 'bg-tertiary-container text-on-tertiary-container';
+
 function timeAgo(ts: string) {
   const s = (Date.now() - new Date(ts).getTime()) / 1000;
   if (s < 3600) return Math.floor(s / 60) + 'm ago';
@@ -207,6 +232,16 @@ export default function StringerJournalPage() {
     entries.forEach((e) => (e.tags || []).forEach((t: string) => { tc[t] = (tc[t] || 0) + 1; }));
     return Object.entries(tc).sort((a, b) => b[1] - a[1]);
   }, [entries]);
+
+  // Expand/collapse state for journal entry cards
+  const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
+  const toggleExpand = (id: string) => {
+    setExpandedEntries(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
 
   // -- Shared form renderer --
   const renderForm = (isEdit: boolean) => (
@@ -489,22 +524,43 @@ export default function StringerJournalPage() {
                   ))}
                 </div>
               )}
-              {filtered.map((entry) => {
+              {filtered.map((entry, entryIdx) => {
                 const filled = STRINGER_PROMPTS.filter((p) => entry[p.id]);
                 const preview = entry.freewrite || entry.tributaries || entry.longing || entry.roadmap || '';
+                const isLong = preview.length > 180;
+                const isExpanded = expandedEntries.has(entry.id);
+                const moodBorder = entry.mood ? (MOOD_BORDERS[entry.mood as number] || MOOD_BORDER_DEFAULT) : MOOD_BORDER_DEFAULT;
                 return (
-                  <button key={entry.id} onClick={() => { setSelected(entry); setView('detail'); }}
-                    className="w-full text-left p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-label font-medium text-on-surface">
-                        {new Date(entry.created_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                      </span>
-                      <span className="text-xs text-on-surface-variant font-label">{timeAgo(entry.created_at)}</span>
-                      {entry.mood && <span className="text-sm">{MOODS.find((m) => m.v === entry.mood)?.emoji}</span>}
-                      {entry.trigger_type === 'relapse' && <span className="text-[9px] px-1.5 py-0.5 rounded-full font-label bg-error/10 text-error">relapse</span>}
-                      {entry.trigger_type === 'reminder' && <span className="text-[9px] px-1.5 py-0.5 rounded-full font-label bg-secondary-container text-secondary">reminder</span>}
-                    </div>
-                    <p className="text-sm text-on-surface-variant font-body line-clamp-2 leading-relaxed">{preview.slice(0, 130)}{preview.length > 130 ? '\u2026' : ''}</p>
+                  <div key={entry.id}
+                    className={`w-full text-left p-4 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200 ${moodBorder}`}
+                    style={{ animation: `fade-up 0.3s ease-out ${entryIdx * 60}ms both` }}>
+                    <button onClick={() => { setSelected(entry); setView('detail'); }}
+                      className="w-full text-left cursor-pointer">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-label font-medium text-on-surface">
+                          {new Date(entry.created_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </span>
+                        <span className="text-xs text-on-surface-variant font-label">{timeAgo(entry.created_at)}</span>
+                        {entry.mood && <span className="text-sm">{MOODS.find((m) => m.v === entry.mood)?.emoji}</span>}
+                        {/* Completion indicator dots */}
+                        <span className="flex items-center gap-0.5 ml-1">
+                          <span className={`w-1.5 h-1.5 rounded-full ${entry.tributaries ? 'bg-primary' : 'bg-outline-variant/30'}`} title="Tributaries" />
+                          <span className={`w-1.5 h-1.5 rounded-full ${entry.longing ? 'bg-primary' : 'bg-outline-variant/30'}`} title="Longing" />
+                          <span className={`w-1.5 h-1.5 rounded-full ${entry.roadmap ? 'bg-primary' : 'bg-outline-variant/30'}`} title="Roadmap" />
+                        </span>
+                        {entry.trigger_type === 'relapse' && <span className="text-[9px] px-1.5 py-0.5 rounded-full font-label bg-error/10 text-error">relapse</span>}
+                        {entry.trigger_type === 'reminder' && <span className="text-[9px] px-1.5 py-0.5 rounded-full font-label bg-secondary-container text-secondary">reminder</span>}
+                      </div>
+                      <p className={`text-sm text-on-surface-variant font-body leading-relaxed ${!isExpanded && isLong ? 'line-clamp-3' : ''}`}>
+                        {preview}
+                      </p>
+                    </button>
+                    {isLong && (
+                      <button onClick={() => toggleExpand(entry.id)}
+                        className="text-xs text-primary font-label font-medium mt-1 cursor-pointer hover:opacity-80 transition-opacity">
+                        {isExpanded ? 'Show less' : 'Read more'}
+                      </button>
+                    )}
                     {filled.length > 0 && (
                       <div className="flex gap-1.5 mt-2 flex-wrap">
                         {filled.map((p, i) => (
@@ -514,7 +570,14 @@ export default function StringerJournalPage() {
                         ))}
                       </div>
                     )}
-                  </button>
+                    {(entry.tags?.length ?? 0) > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {(entry.tags as string[]).map((tag: string) => (
+                          <span key={tag} className={`px-2 py-0.5 rounded-full text-[10px] font-label font-medium ${TAG_COLORS[tag] || TAG_COLOR_DEFAULT}`}>{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
               {filtered.length === 0 && <p className="text-center text-sm text-on-surface-variant font-body py-8">No entries match your search</p>}

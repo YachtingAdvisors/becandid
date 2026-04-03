@@ -76,7 +76,7 @@ export default async function DashboardLayout({
       />
       <main className="flex-1 min-w-0 pt-16 pb-20 lg:pt-0 lg:pb-0 relative">
         {/* Subtle top gradient decorative element */}
-        <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/[0.03] dark:from-primary/[0.06] to-transparent pointer-events-none" />
         <WebTrackingProvider />
         {!isVerified && user.email && (
           <EmailVerificationBanner email={user.email} />
