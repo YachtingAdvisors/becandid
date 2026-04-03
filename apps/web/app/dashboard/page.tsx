@@ -21,6 +21,7 @@ import GrowthJournalWidget from '@/components/dashboard/GrowthJournalWidget';
 import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
 import ReferralCard from '@/components/dashboard/ReferralCard';
 import Link from 'next/link';
+import DashboardHero from '@/components/dashboard/DashboardHero';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
   low: 'bg-tertiary-container text-on-tertiary-container',
@@ -52,7 +53,9 @@ export default async function DashboardPage() {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 
-  const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes, todayEventsRes, weekEventsRes, streakRes] = await Promise.all([
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes, todayEventsRes, weekEventsRes, streakRes, journalWeekRes, moodCheckInsRes, focusStreakRes, trustPointsRes] = await Promise.all([
     db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator, login_count').eq('id', user.id).single(),
     db.from('events').select('id, category, severity, platform, app_name, timestamp').eq('user_id', user.id).order('timestamp', { ascending: false }).limit(5),
     db.from('alerts').select('id, sent_at, conversations(id, completed_at, outcome)').eq('user_id', user.id).order('sent_at', { ascending: false }).limit(5),
@@ -61,8 +64,16 @@ export default async function DashboardPage() {
     db.from('stringer_journal').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
     db.from('check_ins').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'completed').limit(1),
     db.from('events').select('id, severity', { count: 'exact', head: false }).eq('user_id', user.id).gte('timestamp', todayStart.toISOString()),
-    db.from('events').select('id, severity, category').eq('user_id', user.id).gte('timestamp', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
+    db.from('events').select('id, severity, category').eq('user_id', user.id).gte('timestamp', sevenDaysAgo),
     db.from('milestones').select('milestone').eq('user_id', user.id).order('unlocked_at', { ascending: false }).limit(1),
+    // Hero: 7-day journal count
+    db.from('stringer_journal').select('id', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', sevenDaysAgo),
+    // Hero: mood trend from recent check-ins
+    db.from('check_ins').select('user_mood, sent_at').eq('user_id', user.id).eq('status', 'completed').gte('sent_at', sevenDaysAgo).order('sent_at', { ascending: true }),
+    // Hero: streak from focus_segments (recent consecutive focused days)
+    db.from('focus_segments').select('date, status').eq('user_id', user.id).order('date', { ascending: false }).limit(90),
+    // Hero: trust points from milestones count as proxy
+    db.from('milestones').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
   ]);
 
   const profile = profileRes?.data ?? null;
@@ -82,6 +93,33 @@ export default async function DashboardPage() {
   const journalCount = journalCountRes?.count ?? 0;
   const latestMilestone = streakRes?.data?.[0]?.milestone ?? null;
 
+  // ── Hero data ────────────────────────────────────────────
+  const journalCount7d = journalWeekRes?.count ?? 0;
+  const heroTrustPoints = trustPointsRes?.count ?? 0;
+
+  // Compute streak from focus_segments (consecutive "focused" days from most recent)
+  const focusSegments = (focusStreakRes?.data ?? []) as { date: string; status: string }[];
+  let currentStreak = 0;
+  for (const seg of focusSegments) {
+    if (seg.status === 'focused') currentStreak++;
+    else break;
+  }
+
+  // Compute mood trend from check-in moods
+  const moodCheckins = (moodCheckInsRes?.data ?? []) as { user_mood: number | null; sent_at: string }[];
+  const moodValues = moodCheckins.filter((c) => c.user_mood != null).map((c) => c.user_mood as number);
+  let heroMoodTrend: { start: number; end: number; direction: 'up' | 'down' | 'stable' } | undefined;
+  if (moodValues.length >= 2) {
+    const start = moodValues[0];
+    const end = moodValues[moodValues.length - 1];
+    const diff = end - start;
+    heroMoodTrend = {
+      start,
+      end,
+      direction: diff > 0.3 ? 'up' : diff < -0.3 ? 'down' : 'stable',
+    };
+  }
+
   // Walkthrough: detect which setup steps are complete
   // Show walkthrough only for first 2 logins, unless manually dismissed
   const loginCount = profile?.login_count ?? 0;
@@ -100,7 +138,7 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 page-enter">
       {/* ── First-Time Walkthrough ─────────────────────────── */}
       {showWalkthrough && (
         <WalkthroughWrapper
@@ -109,17 +147,15 @@ export default async function DashboardPage() {
         />
       )}
 
-      {/* ── Header ─────────────────────────────────────────── */}
-      <section className="relative pb-4">
-        <p className="font-label text-xs text-on-surface-variant/60 uppercase tracking-widest mb-1">Welcome back</p>
-        <h2 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-2">
-          Quick Access Dashboard
-        </h2>
-        <p className="font-body text-sm text-on-surface-variant leading-relaxed">
-          Hey {profile?.name?.split(' ')[0] ?? 'there'} &mdash; immediate tools for your on-the-go safety management.
-        </p>
-        <div className="absolute bottom-0 left-0 w-16 h-0.5 rounded-full bg-gradient-to-r from-primary to-tertiary" />
-      </section>
+      {/* ── Dashboard Hero ─────────────────────────────────── */}
+      <DashboardHero
+        userName={profile?.name ?? 'there'}
+        currentStreak={currentStreak}
+        moodTrend={heroMoodTrend}
+        journalCount7d={journalCount7d}
+        trustPoints={heroTrustPoints}
+        goals={profile?.goals ?? []}
+      />
 
       {/* ── Nudges ─────────────────────────────────────────── */}
       <NudgeBanner />
@@ -134,7 +170,7 @@ export default async function DashboardPage() {
       <ReferralCard />
 
       {/* ── Featured Cards Grid ────────────────────────────── */}
-      <section className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <section className="grid grid-cols-2 lg:grid-cols-3 gap-4 stagger">
         {/* Crisis Detection — full width with real data */}
         <Link href="/dashboard/activity" className="col-span-2 lg:col-span-3 group bg-surface-container-low rounded-2xl overflow-hidden shadow-sm ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer p-5">
           <div className="flex justify-between items-start mb-3">
@@ -328,7 +364,7 @@ export default async function DashboardPage() {
       {/* ── Other Services ─────────────────────────────────── */}
       <section>
         <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-4">Other Services</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
           <Link href="/dashboard/conversations" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}

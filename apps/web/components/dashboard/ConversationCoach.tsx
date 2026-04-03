@@ -8,7 +8,7 @@
 // a relapse or difficult moment.
 // ============================================================
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -105,6 +105,26 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
   const abortRef = useRef<AbortController | null>(null);
 
   const currentPhase = detectPhase(messages);
+  const prevPhaseRef = useRef<CoachPhase>(currentPhase);
+  const [phaseTransition, setPhaseTransition] = useState(false);
+
+  // Track phase changes for slide animation
+  useEffect(() => {
+    if (currentPhase !== prevPhaseRef.current) {
+      setPhaseTransition(true);
+      const timer = setTimeout(() => setPhaseTransition(false), 500);
+      prevPhaseRef.current = currentPhase;
+      return () => clearTimeout(timer);
+    }
+  }, [currentPhase]);
+
+  // Compute background gradient based on message count
+  const messageCount = messages.length;
+  const bgGradientClass = useMemo(() => {
+    if (messageCount >= 6) return 'bg-gradient-to-b from-surface-container-lowest to-primary/[0.04]';
+    if (messageCount >= 3) return 'bg-gradient-to-b from-surface-container-lowest to-primary/[0.02]';
+    return 'bg-surface-container-lowest';
+  }, [messageCount]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -235,13 +255,18 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
   // ── Render ────────────────────────────────────────────────
 
   return (
-    <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant flex flex-col h-[600px] max-h-[80vh]">
+    <div className={`${bgGradientClass} rounded-3xl border border-outline-variant flex flex-col h-[600px] max-h-[80vh] transition-all duration-1000`}>
       {/* Header + Phase Breadcrumbs */}
       <div className="px-5 pt-5 pb-3 border-b border-outline-variant/50">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             {/* Coach Avatar */}
-            <div className="w-9 h-9 rounded-full bg-[#226779] flex items-center justify-center flex-shrink-0">
+            <div
+              className="w-9 h-9 rounded-full bg-[#226779] flex items-center justify-center flex-shrink-0"
+              style={isStreaming ? {
+                animation: 'breathe 2.5s ease-in-out infinite',
+              } : undefined}
+            >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
@@ -275,13 +300,16 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
                     <div className={`w-4 h-px ${isPast || isActive ? 'bg-[#226779]' : 'bg-outline-variant/40'}`} />
                   )}
                   <div
-                    className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-label transition-all ${
+                    className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-label transition-all duration-500 ${
                       isActive
-                        ? 'bg-[#226779]/10 text-[#226779] font-medium'
+                        ? `bg-[#226779]/10 text-[#226779] font-medium ${phaseTransition ? 'translate-x-0 opacity-100' : ''}`
                         : isPast
                           ? 'text-[#226779]/60'
                           : 'text-on-surface-variant/40'
                     }`}
+                    style={isActive && phaseTransition ? {
+                      animation: 'phase-slide-in 0.5s ease-out',
+                    } : undefined}
                   >
                     {isPast && (
                       <svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor">
@@ -321,7 +349,12 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {msg.role === 'assistant' && (
-              <div className="w-7 h-7 rounded-full bg-[#226779] flex items-center justify-center flex-shrink-0 mt-0.5 mr-2">
+              <div
+                className="w-7 h-7 rounded-full bg-[#226779] flex items-center justify-center flex-shrink-0 mt-0.5 mr-2"
+                style={isStreaming && !msg.content ? {
+                  animation: 'breathe 2.5s ease-in-out infinite',
+                } : undefined}
+              >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
@@ -335,10 +368,10 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
               }`}
             >
               {msg.content || (
-                <span className="inline-flex gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/40 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/40 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/40 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <span className="inline-flex items-center gap-0.5 text-on-surface-variant/60 text-lg font-bold leading-none py-1">
+                  <span className="animate-bounce" style={{ animationDelay: '0ms' }}>.</span>
+                  <span className="animate-bounce" style={{ animationDelay: '150ms' }}>.</span>
+                  <span className="animate-bounce" style={{ animationDelay: '300ms' }}>.</span>
                 </span>
               )}
             </div>
@@ -346,11 +379,35 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
         ))}
 
         {sessionEnded && (
-          <div className="flex justify-center py-4">
-            <div className="bg-surface-container-low rounded-2xl px-5 py-3 text-center">
-              <p className="font-label text-xs text-on-surface-variant">
-                Session complete. You showed real courage today.
-              </p>
+          <div className="flex justify-center py-6">
+            <div className="w-full max-w-sm rounded-2xl p-[1px] bg-gradient-to-br from-[#226779] to-tertiary">
+              <div className="bg-surface-container-lowest rounded-2xl px-6 py-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                  <h4 className="font-headline font-bold text-sm text-on-surface">Session Complete</h4>
+                </div>
+                <p className="font-body text-xs text-on-surface-variant leading-relaxed mb-4">
+                  You showed real courage today. Every honest conversation builds the foundation for lasting change.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setMessages([]);
+                      setSessionEnded(false);
+                      setError(null);
+                    }}
+                    className="flex-1 px-4 py-2 rounded-full bg-[#226779] text-white text-xs font-label font-semibold hover:bg-[#1a5563] transition-colors"
+                  >
+                    Start New Session
+                  </button>
+                  <a
+                    href="/dashboard"
+                    className="flex-1 px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant text-xs font-label font-semibold text-center hover:bg-surface-container-low transition-colors"
+                  >
+                    Return to Dashboard
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         )}

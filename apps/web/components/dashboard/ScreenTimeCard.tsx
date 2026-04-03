@@ -39,12 +39,12 @@ export default function ScreenTimeCard() {
   if (loading) {
     return (
       <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5">
-        <div className="animate-pulse space-y-3">
-          <div className="h-4 bg-surface-container-low rounded w-32" />
-          <div className="h-8 bg-surface-container-low rounded w-20" />
+        <div className="space-y-3">
+          <div className="h-4 skeleton-shimmer rounded w-32" />
+          <div className="h-8 skeleton-shimmer rounded w-20" />
           <div className="space-y-2">
-            <div className="h-3 bg-surface-container-low rounded" />
-            <div className="h-3 bg-surface-container-low rounded w-3/4" />
+            <div className="h-3 skeleton-shimmer rounded" />
+            <div className="h-3 skeleton-shimmer rounded w-3/4" />
           </div>
         </div>
       </div>

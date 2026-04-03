@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 
 interface PartnerOverview {
@@ -9,7 +9,21 @@ interface PartnerOverview {
   streak: { streakDays: number };
   pendingCheckIns: number;
   pendingConversations: number;
+  /* New fields for enhancements */
+  checkInCompletionRate: number;
+  avgConversationRating: number;
+  totalConversations: number;
+  streakWhenJoined: number;
 }
+
+const ENCOURAGEMENT_TEMPLATES = [
+  { emoji: 'favorite', text: "I'm proud of you for showing up today." },
+  { emoji: 'handshake', text: "I'm here. Whatever you need." },
+  { emoji: 'diamond', text: 'Your honesty takes real courage.' },
+  { emoji: 'sunny', text: "One day at a time. You're doing it." },
+  { emoji: 'visibility', text: "I see the person you're becoming." },
+  { emoji: 'heart_check', text: "You don't have to be perfect. Just honest." },
+];
 
 export default function PartnerIndexPage() {
   const [data, setData] = useState<PartnerOverview | null>(null);

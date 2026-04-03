@@ -2,16 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Font Variables (loaded in layout.tsx) ──────────────── */
+/* ─── MD3 Color Tokens (light) ────────────────────────────── */
 :root {
   --font-headline: 'Manrope', system-ui, sans-serif;
   --font-body: 'Manrope', system-ui, sans-serif;
   --font-label: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Primary */
+  --color-primary: #226779;
+  --color-primary-dim: #0e5b6c;
+  --color-primary-container: #a4e4f8;
+  --color-on-primary: #f0fbff;
+  --color-on-primary-container: #005465;
+
+  /* Secondary */
+  --color-secondary: #47636d;
+  --color-secondary-container: #c9e8f3;
+  --color-on-secondary-container: #39565f;
+
+  /* Tertiary */
+  --color-tertiary: #845500;
+  --color-tertiary-container: #fdbe66;
+  --color-on-tertiary-container: #5d3b00;
+
+  /* Background & Surface */
+  --color-background: #fbf9f8;
+  --color-surface: #fbf9f8;
+  --color-surface-container: #eeeeed;
+  --color-surface-container-low: #f5f3f3;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+
+  /* On-Surface */
+  --color-on-surface: #313333;
+  --color-on-surface-variant: #5e5f5f;
+
+  /* Outline */
+  --color-outline: #7a7b7b;
+  --color-outline-variant: #b1b2b2;
+
+  /* Error */
+  --color-error: #a83836;
+  --color-error-container: #fa746f;
 }
 
-/* ─── Dark Mode Overrides ──────────────────────────────── */
-.dark body {
-  @apply bg-[#111416] text-[#e2e3e3];
+/* ─── MD3 Color Tokens (dark) ─────────────────────────────── */
+.dark {
+  --color-primary: #7ccfe0;
+  --color-primary-dim: #5ab8ca;
+  --color-primary-container: #004d5e;
+  --color-on-primary: #003544;
+  --color-on-primary-container: #a4e4f8;
+
+  --color-secondary: #b0cad4;
+  --color-secondary-container: #2e4a54;
+  --color-on-secondary-container: #c9e8f3;
+
+  --color-tertiary: #fdbe66;
+  --color-tertiary-container: #5d3b00;
+  --color-on-tertiary-container: #ffddb3;
+
+  --color-background: #111416;
+  --color-surface: #111416;
+  --color-surface-container: #1d2023;
+  --color-surface-container-low: #1a1c1f;
+  --color-surface-container-lowest: #0c0e10;
+  --color-surface-container-high: #272a2d;
+  --color-surface-container-highest: #323538;
+
+  --color-on-surface: #e2e3e3;
+  --color-on-surface-variant: #bfc0c0;
+
+  --color-outline: #898a8a;
+  --color-outline-variant: #434445;
+
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-primary: #7ccfe0;
+    --color-primary-dim: #5ab8ca;
+    --color-primary-container: #004d5e;
+    --color-on-primary: #003544;
+    --color-on-primary-container: #a4e4f8;
+
+    --color-secondary: #b0cad4;
+    --color-secondary-container: #2e4a54;
+    --color-on-secondary-container: #c9e8f3;
+
+    --color-tertiary: #fdbe66;
+    --color-tertiary-container: #5d3b00;
+    --color-on-tertiary-container: #ffddb3;
+
+    --color-background: #111416;
+    --color-surface: #111416;
+    --color-surface-container: #1d2023;
+    --color-surface-container-low: #1a1c1f;
+    --color-surface-container-lowest: #0c0e10;
+    --color-surface-container-high: #272a2d;
+    --color-surface-container-highest: #323538;
+
+    --color-on-surface: #e2e3e3;
+    --color-on-surface-variant: #bfc0c0;
+
+    --color-outline: #898a8a;
+    --color-outline-variant: #434445;
+
+    --color-error: #ffb4ab;
+    --color-error-container: #93000a;
+  }
 }
 
 /* ─── Material Symbols ──────────────────────────────────── */
@@ -85,6 +187,11 @@ body {
 .stagger > *:nth-child(5) { animation-delay: 240ms; }
 .stagger > *:nth-child(6) { animation-delay: 300ms; }
 .stagger > *:nth-child(7) { animation-delay: 360ms; }
+.stagger > *:nth-child(8) { animation-delay: 420ms; }
+.stagger > *:nth-child(9) { animation-delay: 480ms; }
+.stagger > *:nth-child(10) { animation-delay: 540ms; }
+.stagger > *:nth-child(11) { animation-delay: 600ms; }
+.stagger > *:nth-child(12) { animation-delay: 660ms; }
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(8px); }
@@ -165,6 +272,100 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
 
 .animate-fade-slide {
   animation: fadeSlideUp 0.6s ease-out forwards;
+}
+
+/* ─── Focus Board: today pulse ─────────────────────────── */
+@keyframes focus-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.animate-focus-pulse {
+  animation: focus-pulse 2s ease-in-out infinite;
+}
+
+/* ─── Streak Celebration: confetti burst ───────────────── */
+@keyframes confetti-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--confetti-x, 100px), var(--confetti-y, -100px)) rotate(var(--confetti-r, 360deg)) scale(0.5);
+  }
+}
+
+/* ─── Streak Celebration: badge bounce ─────────────────── */
+@keyframes badge-bounce {
+  0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+  70% { transform: scale(0.95) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ─── Streak Celebration: ring draw ────────────────────── */
+@keyframes ring-draw {
+  0% { stroke-dashoffset: 283; opacity: 0; }
+  20% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+/* ─── Streak Celebration: number pop ───────────────────── */
+@keyframes number-pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ─── Journal: expand height transition ────────────────── */
+.journal-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.journal-expand.expanded {
+  grid-template-rows: 1fr;
+}
+.journal-expand > div {
+  overflow: hidden;
+}
+
+/* ─── Content-aware skeleton shimmer ──────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--color-surface-container-low) 25%, var(--color-surface-container) 50%, var(--color-surface-container-low) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ─── Page entrance ──────────────────────────────────────── */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: page-enter 0.4s ease-out;
+}
+
+/* ─── Coach: breathing avatar ────────────────────────────── */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+/* ─── Coach: phase slide-in ──────────────────────────────── */
+@keyframes phase-slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Goal selector: checkmark scale-in ──────────────────── */
+@keyframes scale-in {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
 }
 
 /* ─── Dark Mode: scrollbar ──────────────────────────────── */

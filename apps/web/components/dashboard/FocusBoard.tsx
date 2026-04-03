@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 
 // ─── Types ────────────────────────────────────────────────────
@@ -148,9 +148,9 @@ export default function FocusBoard() {
 
   if (loading) {
     return (
-      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-8 animate-pulse">
-        <div className="h-6 bg-surface-container rounded w-48 mb-4" />
-        <div className="h-32 bg-surface-container-low rounded" />
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-8">
+        <div className="h-6 skeleton-shimmer rounded w-48 mb-4" />
+        <div className="h-32 skeleton-shimmer rounded" />
       </div>
     );
   }
@@ -248,47 +248,66 @@ export default function FocusBoard() {
               Week {wi + 1}
             </div>
             <div className="grid grid-cols-7 gap-1.5">
-              {week.map((day) => {
+              {week.map((day, di) => {
+                const cellIndex = wi * 7 + di;
                 const isSelected = selectedDate === day.date;
-                const isDistracted = day.morning === 'distracted' || day.evening === 'distracted';
+                const isToday = day.date === todayStr;
+                const isHovered = hoveredDay === day.date;
+                const isMilestoneBoundary = cellIndex === 6 || cellIndex === 13;
                 return (
-                  <div key={day.date} className="text-center">
+                  <div key={day.date} className="text-center relative"
+                    style={{ animation: `fade-up 0.3s ease-out ${cellIndex * 30}ms both` }}>
                     <div className="text-[10px] text-on-surface-variant mb-1">
                       {getDayLabel(day.date)}
                     </div>
                     <button
                       onClick={() => handleDayClick(day.date)}
+                      onMouseEnter={() => setHoveredDay(day.date)}
+                      onMouseLeave={() => setHoveredDay(null)}
                       aria-label={`${formatDateShort(day.date)} — Morning: ${day.morning}, Evening: ${day.evening}`}
                       className={`w-full cursor-pointer transition-all duration-200 rounded-md ${
+                        isToday ? 'animate-focus-pulse' : ''
+                      } ${
                         isSelected ? 'ring-2 ring-primary ring-offset-1 scale-105' : 'hover:scale-105 hover:ring-1 hover:ring-primary/30'
                       }`}
                     >
                       {/* Morning cell */}
                       <div
-                        className={`h-5 rounded-t-md ${
+                        className={`h-5 rounded-t-md transition-colors duration-300 ${
                           day.morning === 'focused'
                             ? 'bg-emerald-400'
                             : day.morning === 'distracted'
                               ? 'bg-red-400'
                               : 'bg-surface-container'
                         }`}
-                        title={`${formatDateShort(day.date)} AM: ${day.morning}`}
                       />
                       {/* Evening cell */}
                       <div
-                        className={`h-5 rounded-b-md mt-0.5 ${
+                        className={`h-5 rounded-b-md mt-0.5 transition-colors duration-300 ${
                           day.evening === 'focused'
                             ? 'bg-emerald-400'
                             : day.evening === 'distracted'
                               ? 'bg-red-400'
                               : 'bg-surface-container'
                         }`}
-                        title={`${formatDateShort(day.date)} PM: ${day.evening}`}
                       />
                     </button>
                     <div className="text-[9px] text-on-surface-variant mt-0.5">
                       {formatDateShort(day.date).split(' ')[1]}
                     </div>
+                    {/* Hover tooltip */}
+                    {isHovered && (
+                      <div className="absolute z-20 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-xl bg-on-surface text-surface-container-lowest text-[10px] font-label whitespace-nowrap shadow-lg pointer-events-none animate-fade-in">
+                        <div className="font-semibold mb-0.5">{formatDateShort(day.date)}</div>
+                        <div>AM: <span className={day.morning === 'focused' ? 'text-emerald-300' : day.morning === 'distracted' ? 'text-red-300' : 'text-gray-400'}>{day.morning}</span></div>
+                        <div>PM: <span className={day.evening === 'focused' ? 'text-emerald-300' : day.evening === 'distracted' ? 'text-red-300' : 'text-gray-400'}>{day.evening}</span></div>
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-on-surface" />
+                      </div>
+                    )}
+                    {/* Streak milestone marker */}
+                    {isMilestoneBoundary && (
+                      <div className="absolute -right-1 top-3 bottom-3 w-0.5 bg-amber-400 rounded-full opacity-70" />
+                    )}
                   </div>
                 );
               })}
