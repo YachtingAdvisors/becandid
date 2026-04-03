@@ -214,6 +214,9 @@ function InnerLayout() {
         <Stack.Screen name="coach" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="mood-calendar" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="progress" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="fasting" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="referrals" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="reflections" options={{ animation: 'slide_from_right' }} />
       </Stack>
     </>
   );

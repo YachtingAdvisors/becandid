@@ -469,6 +469,34 @@ export default function SettingsScreen() {
           )}
         </View>
 
+        {/* More Features */}
+        <Text style={styles.sectionTitle}>More</Text>
+        <View style={styles.card}>
+          <Pressable style={styles.editLink} onPress={() => router.push('/fasting')}>
+            <View style={styles.toggleLabelRow}>
+              <Ionicons name="leaf-outline" size={18} color={C.primary} />
+              <Text style={styles.editLinkText}>Digital Fasting</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.primary} />
+          </Pressable>
+          <View style={styles.separator} />
+          <Pressable style={styles.editLink} onPress={() => router.push('/referrals')}>
+            <View style={styles.toggleLabelRow}>
+              <Ionicons name="gift-outline" size={18} color={C.primary} />
+              <Text style={styles.editLinkText}>Referrals</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.primary} />
+          </Pressable>
+          <View style={styles.separator} />
+          <Pressable style={styles.editLink} onPress={() => router.push('/reflections')}>
+            <View style={styles.toggleLabelRow}>
+              <Ionicons name="journal-outline" size={18} color={C.primary} />
+              <Text style={styles.editLinkText}>Weekly Reflections</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.primary} />
+          </Pressable>
+        </View>
+
         {/* Sign Out */}
         <Pressable style={styles.signOutButton} onPress={handleSignOut}>
           <Ionicons name="log-out-outline" size={20} color={C.error} />
