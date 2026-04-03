@@ -64,7 +64,7 @@ export default function InvitePage() {
     setAccepting(true);
     setError('');
 
-    const { error: authError } = await supabase.auth.signUp({
+    const { data: signUpData, error: authError } = await supabase.auth.signUp({
       email, password,
       options: { data: { name: name.trim() } },
     });
@@ -75,17 +75,35 @@ export default function InvitePage() {
       return;
     }
 
-    // Create profile with invite context (triggers 21-day trial)
-    await fetch('/api/auth/profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name.trim(), invited_as_partner: true }),
-    }).catch(() => {});
+    // signUp may return a user even when email confirmation is required
+    // (user.identities will be empty if the email is already taken)
+    const newUserId = signUpData?.user?.id;
+    if (!newUserId) {
+      setError('Signup succeeded but no user was returned. Please check your email and try signing in.');
+      setAccepting(false);
+      return;
+    }
 
+    // If email confirmation is required, the session won't exist yet.
+    // Check whether we actually got a session.
+    const hasSession = !!signUpData?.session;
+
+    // Try to create the profile — this may 401 if no session cookie yet,
+    // which is fine; the accept endpoint will create the user row via ensureUserRow.
+    if (hasSession) {
+      await fetch('/api/auth/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim(), invited_as_partner: true }),
+      }).catch(() => {});
+    }
+
+    // Accept the invite, passing userId for the inline signup flow
+    // so the accept endpoint can work even without a session cookie.
     const res = await fetch('/api/partners/accept', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ token, userId: newUserId }),
     });
 
     if (!res.ok) {
@@ -95,7 +113,12 @@ export default function InvitePage() {
       return;
     }
 
-    router.push('/partner/onboarding');
+    // If we have a session, go to onboarding; otherwise prompt to verify email
+    if (hasSession) {
+      router.push('/partner/onboarding');
+    } else {
+      router.push('/auth/signin?message=invite_accepted_verify_email');
+    }
   }
 
   if (loading) {
@@ -222,6 +245,13 @@ export default function InvitePage() {
               <span className="material-symbols-outlined text-lg">person_add</span>
               {accepting ? 'Creating account...' : 'Create Account & Accept'}
             </button>
+
+            <p className="text-center text-sm text-on-surface-variant font-label">
+              Already have an account?{' '}
+              <Link href={`/auth/signin?redirect=/invite/${token}`} className="text-primary font-semibold hover:underline">
+                Sign in
+              </Link>
+            </p>
           </form>
         )}
       </div>

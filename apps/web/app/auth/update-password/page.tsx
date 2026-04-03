@@ -25,13 +25,21 @@ export default function UpdatePasswordPage() {
       }
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // PASSWORD_RECOVERY fires on implicit (hash) flow token exchange
+      // SIGNED_IN fires on fresh sign-in
+      // INITIAL_SESSION fires when the client loads with an existing cookie session
+      //   (this is the normal path after PKCE code exchange in the callback route)
+      //   — but it also fires with session=null if there's no session, so check both.
       if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+        markReady();
+      } else if (event === 'INITIAL_SESSION' && session) {
         markReady();
       }
     });
 
-    // Also check if there's already a session (e.g. token was auto-exchanged)
+    // Also check if there's already a session (e.g. token was auto-exchanged
+    // server-side via the /auth/callback route in the PKCE flow)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) markReady();
     });

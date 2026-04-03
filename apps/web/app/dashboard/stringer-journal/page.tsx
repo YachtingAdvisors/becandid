@@ -22,6 +22,7 @@ import {
 } from '@be-candid/shared';
 import { checkForCrisisLanguage } from '@/lib/crisisDetection';
 import CrisisResourceBanner from '@/components/dashboard/CrisisResourceBanner';
+import VoiceJournal from '@/components/dashboard/VoiceJournal';
 
 const MOODS = [
   { v: 1, label: 'Heavy', emoji: '\uD83D\uDE14' },
@@ -103,6 +104,12 @@ export default function StringerJournalPage() {
   // Crisis detection
   const crisisCheck = useMemo(() => checkForCrisisLanguage(freewrite), [freewrite]);
 
+  // Future letter state (surfaced during relapse)
+  const [relapseLetter, setRelapseLetter] = useState<{
+    id: string; letter: string; sealed_at: string; written_mood: number | null;
+  } | null>(null);
+  const [letterDismissed, setLetterDismissed] = useState(false);
+
   // If opened from a relapse notification, pre-populate context
   useEffect(() => {
     if (triggerType === 'relapse') {
@@ -112,6 +119,30 @@ export default function StringerJournalPage() {
         setSelectedTags((prev) => prev.includes('relapse') ? prev : [...prev, 'relapse']);
       }
     }
+  }, [triggerType]);
+
+  // Fetch an undelivered future letter when in relapse mode
+  useEffect(() => {
+    if (triggerType !== 'relapse') return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/letters?undelivered=true&limit=1');
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+        const letters = data.letters || [];
+        if (letters.length > 0 && !cancelled) {
+          setRelapseLetter(letters[0]);
+          // Mark as delivered
+          fetch('/api/letters', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: letters[0].id, delivery_trigger: 'relapse_journal' }),
+          }).catch(() => {});
+        }
+      } catch (e) { console.error(e); }
+    })();
+    return () => { cancelled = true; };
   }, [triggerType]);
 
   // Fetch entries
@@ -266,6 +297,45 @@ export default function StringerJournalPage() {
         </div>
       )}
 
+      {/* Future letter from past self (surfaced during relapse) */}
+      {!isEdit && relapseLetter && !letterDismissed && (
+        <div className="relative rounded-3xl overflow-hidden animate-fade-in">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-secondary-container/20 to-tertiary-container/15 pointer-events-none" />
+          <div className="relative p-5 sm:p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="material-symbols-outlined text-primary text-lg">mark_email_read</span>
+              <p className="text-xs font-label font-medium text-primary uppercase tracking-wider">
+                A letter from your past self
+              </p>
+            </div>
+            <p className="text-xs text-on-surface-variant font-label mb-3">
+              Written on {new Date(relapseLetter.sealed_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              {relapseLetter.written_mood && (
+                <span>
+                  {' '}&middot; when you were feeling{' '}
+                  {({ 1: 'heavy', 2: 'low', 3: 'neutral', 4: 'lighter', 5: 'strong' } as Record<number, string>)[relapseLetter.written_mood]}
+                </span>
+              )}
+            </p>
+            <div className="pl-4 border-l-2 border-primary/30 mb-3">
+              <p className="text-sm text-on-surface font-body leading-relaxed whitespace-pre-wrap italic">
+                {relapseLetter.letter}
+              </p>
+            </div>
+            <p className="text-xs text-on-surface-variant font-label text-right">
+              &mdash; You, {new Date(relapseLetter.sealed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </p>
+            <button
+              onClick={() => setLetterDismissed(true)}
+              className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center text-on-surface-variant/50 hover:text-on-surface-variant hover:bg-surface-container cursor-pointer transition-all duration-200"
+              aria-label="Dismiss letter"
+            >
+              <span className="material-symbols-outlined text-base">close</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Notification prompt (if opened from a push notification) */}
       {!isEdit && promptFromNotification && (
         <div className="p-4 rounded-2xl bg-tertiary-container/40 border border-tertiary-container">
@@ -276,7 +346,13 @@ export default function StringerJournalPage() {
 
       {/* Freewrite */}
       <div>
-        <label className="block text-sm font-label font-medium text-on-surface mb-2">Open reflection</label>
+        <div className="flex items-center gap-2 mb-2">
+          <label className="text-sm font-label font-medium text-on-surface">Open reflection</label>
+          <VoiceJournal
+            fieldName="freewrite"
+            onTranscript={(text) => setFreewrite(prev => prev ? prev + ' ' + text : text)}
+          />
+        </div>
         <textarea value={freewrite} onChange={(e) => setFreewrite(e.target.value)}
           placeholder="Write freely. What happened? What are you feeling right now?"
           className="w-full h-28 px-4 py-3 rounded-3xl bg-secondary-container/30 ring-1 ring-outline-variant/10 text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
@@ -312,7 +388,13 @@ export default function StringerJournalPage() {
                 </button>
                 {isOpen && (
                   <div className="px-4 pb-4 pt-1">
-                    <p className="text-sm text-on-surface-variant italic mb-1.5 font-body">{prompt.question}</p>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <p className="text-sm text-on-surface-variant italic font-body">{prompt.question}</p>
+                      <VoiceJournal
+                        fieldName={prompt.id}
+                        onTranscript={(text) => setAnswers((prev) => ({ ...prev, [prompt.id]: prev[prompt.id as keyof typeof prev] ? prev[prompt.id as keyof typeof prev] + ' ' + text : text }))}
+                      />
+                    </div>
                     <p className="text-xs text-on-surface-variant/70 mb-3 font-body">{prompt.hint}</p>
                     <textarea value={answers[prompt.id as keyof typeof answers]}
                       onChange={(e) => setAnswers((prev) => ({ ...prev, [prompt.id]: e.target.value }))}

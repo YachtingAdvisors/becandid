@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     .from('partners')
     .select('partner_name, status, user_id')
     .eq('invite_token', token)
+    .eq('status', 'pending')
     .maybeSingle();
 
   if (!partner) {

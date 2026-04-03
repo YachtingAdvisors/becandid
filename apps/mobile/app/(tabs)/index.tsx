@@ -525,6 +525,36 @@ export default function DashboardScreen() {
               <Text style={styles.actionLabel}>Progress</Text>
             </Pressable>
           </View>
+          <View style={[styles.actionsRow, { marginTop: 12 }]}>
+            <Pressable
+              style={styles.actionButton}
+              onPress={() => router.push('/fasting')}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: '#e0f2f1' }]}>
+                <Ionicons name="leaf-outline" size={20} color={C.primary} />
+              </View>
+              <Text style={styles.actionLabel}>Fasting</Text>
+            </Pressable>
+            <Pressable
+              style={styles.actionButton}
+              onPress={() => router.push('/referrals')}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: '#fce4ec' }]}>
+                <Ionicons name="gift-outline" size={20} color="#e91e63" />
+              </View>
+              <Text style={styles.actionLabel}>Referrals</Text>
+            </Pressable>
+            <Pressable
+              style={styles.actionButton}
+              onPress={() => router.push('/reflections')}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: '#e8eaf6' }]}>
+                <Ionicons name="journal-outline" size={20} color="#3f51b5" />
+              </View>
+              <Text style={styles.actionLabel}>Reflections</Text>
+            </Pressable>
+            <View style={styles.actionButton} />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

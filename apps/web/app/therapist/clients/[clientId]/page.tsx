@@ -486,6 +486,14 @@ export default function TherapistClientDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [forbidden, setForbidden] = useState(false);
 
+  // Session prep state
+  const [prepReport, setPrepReport] = useState<any>(null);
+  const [prepLoading, setPrepLoading] = useState(false);
+  const [prepError, setPrepError] = useState<string | null>(null);
+  const [prepOpen, setPrepOpen] = useState(false);
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+
   const fetchSection = useCallback(async (section: TabKey) => {
     setLoading(true);
     setError(null);
@@ -512,6 +520,39 @@ export default function TherapistClientDetailPage() {
     }
   }, [clientId]);
 
+  const fetchSessionPrep = useCallback(async () => {
+    setPrepLoading(true);
+    setPrepError(null);
+    setPrepReport(null);
+    setPrepOpen(true);
+    try {
+      const res = await fetch(`/api/therapist/session-prep?client_id=${clientId}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setPrepError(body.error || 'Failed to generate report');
+        return;
+      }
+      const json = await res.json();
+      setPrepReport(json);
+    } catch {
+      setPrepError('Network error. Please try again.');
+    } finally {
+      setPrepLoading(false);
+    }
+  }, [clientId]);
+
+  const emailReport = useCallback(async () => {
+    setEmailSending(true);
+    try {
+      const res = await fetch(`/api/therapist/session-prep?client_id=${clientId}&format=email`);
+      if (res.ok) {
+        setEmailSent(true);
+        setTimeout(() => setEmailSent(false), 3000);
+      }
+    } catch { /* ignore */ }
+    finally { setEmailSending(false); }
+  }, [clientId]);
+
   useEffect(() => {
     fetchSection(activeTab);
   }, [activeTab, fetchSection]);
@@ -526,10 +567,20 @@ export default function TherapistClientDetailPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Back + Header */}
       <div>
-        <Link href="/therapist/dashboard" className="inline-flex items-center gap-1 text-sm text-on-surface-variant hover:text-primary transition-colors font-label mb-3">
-          <span className="material-symbols-outlined text-lg">arrow_back</span>
-          Back to clients
-        </Link>
+        <div className="flex items-center justify-between mb-3">
+          <Link href="/therapist/dashboard" className="inline-flex items-center gap-1 text-sm text-on-surface-variant hover:text-primary transition-colors font-label">
+            <span className="material-symbols-outlined text-lg">arrow_back</span>
+            Back to clients
+          </Link>
+          <button
+            onClick={fetchSessionPrep}
+            disabled={prepLoading}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-label font-medium bg-tertiary-container text-on-tertiary-container hover:opacity-90 transition-all cursor-pointer shadow-sm"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>clinical_notes</span>
+            {prepLoading ? 'Generating...' : 'Prep for Session'}
+          </button>
+        </div>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
             <span className="material-symbols-outlined text-primary text-xl">person</span>
@@ -539,6 +590,192 @@ export default function TherapistClientDetailPage() {
           </h1>
         </div>
       </div>
+
+      {/* Session Prep Report Modal */}
+      {prepOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-scrim/40" onClick={() => setPrepOpen(false)} />
+          <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-surface-container-lowest rounded-3xl shadow-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <h2 className="font-headline text-xl font-bold text-on-surface">Session Prep Report</h2>
+              <button onClick={() => setPrepOpen(false)} className="p-1 rounded-full hover:bg-surface-container cursor-pointer">
+                <span className="material-symbols-outlined text-on-surface-variant">close</span>
+              </button>
+            </div>
+
+            {prepLoading && (
+              <div className="py-12 text-center space-y-3">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-sm text-on-surface-variant font-body">Generating session prep...</p>
+                <p className="text-xs text-on-surface-variant/70 font-body">Analyzing 14 days of client data with AI</p>
+              </div>
+            )}
+
+            {prepError && (
+              <div className="py-8 text-center">
+                <span className="material-symbols-outlined text-error text-3xl mb-2 block">error</span>
+                <p className="text-sm text-on-surface-variant font-body">{prepError}</p>
+                <button onClick={fetchSessionPrep} className="mt-3 text-sm text-primary font-label cursor-pointer hover:underline">Try again</button>
+              </div>
+            )}
+
+            {prepReport && !prepLoading && (
+              <>
+                {/* Metadata */}
+                <div className="flex flex-wrap gap-2 text-xs text-on-surface-variant font-label">
+                  <span>Client: <strong className="text-on-surface">{prepReport.client_name}</strong></span>
+                  <span>&middot;</span>
+                  <span>{prepReport.period_days}-day window</span>
+                  <span>&middot;</span>
+                  <span>{prepReport.data_summary?.journal_entries ?? 0} journal entries, {prepReport.data_summary?.mood_readings ?? 0} mood readings</span>
+                </div>
+
+                {/* Overall summary */}
+                {prepReport.overall_summary && (
+                  <p className="text-sm text-on-surface font-body leading-relaxed">{prepReport.overall_summary}</p>
+                )}
+
+                {/* Mood trajectory */}
+                <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-4">
+                  <h3 className="text-xs font-label font-medium text-primary uppercase tracking-wider mb-2">Mood Trajectory</h3>
+                  <p className="text-sm font-body text-on-surface">
+                    <strong>Trend:</strong> {prepReport.mood_trajectory?.trend || 'N/A'}
+                  </p>
+                  {prepReport.mood_trajectory?.average != null && (
+                    <p className="text-sm font-body text-on-surface-variant mt-1">Average: {prepReport.mood_trajectory.average}/5</p>
+                  )}
+                  {/* Mini sparkline for mood data */}
+                  {prepReport.data_summary?.mood_readings > 0 && prepReport.mood_trajectory?.notable_shifts?.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {prepReport.mood_trajectory.notable_shifts.map((shift: string, i: number) => (
+                        <span key={i} className="text-xs font-body text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">{shift}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Journal themes as pills */}
+                {prepReport.journal_themes && (
+                  <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-4">
+                    <h3 className="text-xs font-label font-medium text-secondary uppercase tracking-wider mb-2">Journal Themes</h3>
+                    <div className="space-y-2">
+                      {prepReport.journal_themes.tributaries?.length > 0 && (
+                        <div>
+                          <span className="text-xs font-label text-on-surface-variant">Tributaries: </span>
+                          <div className="inline-flex flex-wrap gap-1 mt-0.5">
+                            {prepReport.journal_themes.tributaries.map((t: string, i: number) => (
+                              <span key={i} className="px-2 py-0.5 rounded-full text-xs font-label bg-primary-container/50 text-on-primary-container">{t}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {prepReport.journal_themes.longings?.length > 0 && (
+                        <div>
+                          <span className="text-xs font-label text-on-surface-variant">Longings: </span>
+                          <div className="inline-flex flex-wrap gap-1 mt-0.5">
+                            {prepReport.journal_themes.longings.map((l: string, i: number) => (
+                              <span key={i} className="px-2 py-0.5 rounded-full text-xs font-label bg-tertiary-container/50 text-on-tertiary-container">{l}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {prepReport.journal_themes.recurring_tags?.length > 0 && (
+                        <div>
+                          <span className="text-xs font-label text-on-surface-variant">Tags: </span>
+                          <div className="inline-flex flex-wrap gap-1 mt-0.5">
+                            {prepReport.journal_themes.recurring_tags.map((tag: string, i: number) => (
+                              <span key={i} className="px-2 py-0.5 rounded-full text-xs font-label bg-secondary-container/50 text-on-secondary-container">{tag}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Behavioral patterns */}
+                {prepReport.behavioral_patterns && (
+                  <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-4">
+                    <h3 className="text-xs font-label font-medium text-tertiary uppercase tracking-wider mb-2">Behavioral Patterns</h3>
+                    <p className="text-sm font-body text-on-surface">{prepReport.behavioral_patterns.summary}</p>
+                    {prepReport.behavioral_patterns.frequency_note && (
+                      <p className="text-xs font-body text-on-surface-variant mt-1">{prepReport.behavioral_patterns.frequency_note}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Suggested talking points */}
+                {prepReport.talking_points?.length > 0 && (
+                  <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-4">
+                    <h3 className="text-xs font-label font-medium text-primary uppercase tracking-wider mb-2">Suggested Talking Points</h3>
+                    <ol className="list-decimal list-inside space-y-1.5">
+                      {prepReport.talking_points.map((point: string, i: number) => (
+                        <li key={i} className="text-sm font-body text-on-surface leading-relaxed">{point}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {/* Risk flags */}
+                {prepReport.risk_flags?.length > 0 && (
+                  <div className="bg-error/5 rounded-2xl border border-error/20 p-4">
+                    <h3 className="text-xs font-label font-medium text-error uppercase tracking-wider mb-2">Risk Flags</h3>
+                    <div className="space-y-1.5">
+                      {prepReport.risk_flags.map((flag: string, i: number) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-label font-bold bg-error text-on-error shrink-0 mt-0.5">FLAG</span>
+                          <p className="text-sm font-body text-on-surface">{flag}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Growth observations */}
+                {prepReport.growth_observations?.length > 0 && (
+                  <div className="bg-emerald-50 rounded-2xl border border-emerald-200 p-4">
+                    <h3 className="text-xs font-label font-medium text-emerald-700 uppercase tracking-wider mb-2">Growth Observations</h3>
+                    <ul className="space-y-1.5">
+                      {prepReport.growth_observations.map((obs: string, i: number) => (
+                        <li key={i} className="text-sm font-body text-on-surface leading-relaxed flex items-start gap-2">
+                          <span className="text-emerald-600 shrink-0 mt-0.5">&#10003;</span>
+                          {obs}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                <div className="flex gap-2 pt-2 border-t border-outline-variant/50 print:hidden">
+                  <button
+                    onClick={emailReport}
+                    disabled={emailSending}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-sm font-label font-medium bg-primary text-on-primary hover:opacity-90 transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>email</span>
+                    {emailSent ? 'Sent!' : emailSending ? 'Sending...' : 'Email Report'}
+                  </button>
+                  <button
+                    onClick={() => window.print()}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl text-sm font-label font-medium ring-1 ring-outline-variant/10 text-on-surface-variant hover:bg-surface-container-low transition-all cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>print</span>
+                    Print
+                  </button>
+                  <button
+                    onClick={() => setPrepOpen(false)}
+                    className="ml-auto px-4 py-2.5 rounded-2xl text-sm font-label text-on-surface-variant hover:bg-surface-container-low transition-all cursor-pointer"
+                  >
+                    Close
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Tab navigation */}
       <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
