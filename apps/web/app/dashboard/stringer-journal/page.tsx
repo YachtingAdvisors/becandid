@@ -23,6 +23,7 @@ import {
 import { checkForCrisisLanguage } from '@/lib/crisisDetection';
 import CrisisResourceBanner from '@/components/dashboard/CrisisResourceBanner';
 import VoiceJournal from '@/components/dashboard/VoiceJournal';
+import PromptPicker from '@/components/dashboard/PromptPicker';
 
 const MOODS = [
   { v: 1, label: 'Heavy', emoji: '\uD83D\uDE14' },
@@ -353,6 +354,8 @@ export default function StringerJournalPage() {
             onTranscript={(text) => setFreewrite(prev => prev ? prev + ' ' + text : text)}
           />
         </div>
+        <PromptPicker onSelectPrompt={(text) => setFreewrite(prev => prev ? prev + '\n\n' + text : text)} />
+        <div className="mt-2" />
         <textarea value={freewrite} onChange={(e) => setFreewrite(e.target.value)}
           placeholder="Write freely. What happened? What are you feeling right now?"
           className="w-full h-28 px-4 py-3 rounded-3xl bg-secondary-container/30 ring-1 ring-outline-variant/10 text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />

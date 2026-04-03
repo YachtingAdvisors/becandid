@@ -27,6 +27,8 @@ const NAV_ITEMS = [
   { id: 'progress', href: '/dashboard/progress', label: 'Progress', icon: 'trending_up', solo: true },
   { id: 'fasting', href: '/dashboard/fasting', label: 'Fasting', icon: 'self_improvement', solo: true },
   { id: 'groups', href: '/dashboard/groups', label: 'Groups', icon: 'diversity_3', solo: true },
+  { id: 'community', href: '/dashboard/community', label: 'Community', icon: 'groups', solo: true },
+  { id: 'mentors', href: '/dashboard/mentors', label: 'Mentors', icon: 'supervised_user_circle', solo: true },
   { id: 'conversations', href: '/dashboard/conversations', label: 'Partner Conversations', icon: 'forum', solo: false },
   { id: 'downloads', href: '/dashboard/downloads', label: 'Downloads', icon: 'download', solo: true },
   { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: 'settings', solo: true },

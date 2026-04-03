@@ -257,6 +257,22 @@ export default function PartnerIndexPage() {
         </div>
       </div>
 
+      {/* Partner Guide CTA */}
+      <Link
+        href="/partner/training"
+        className="flex items-center gap-3 bg-surface-container-lowest rounded-2xl ring-1 ring-primary/20 p-4 hover:ring-primary/40 hover:shadow-lg transition-all duration-300 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
+      >
+        <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-primary text-xl">school</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <span className="font-headline text-sm font-bold text-on-surface">
+            New to accountability? Read our Partner Guide
+          </span>
+          <span className="text-primary ml-1 group-hover:ml-2 transition-all duration-200">&rarr;</span>
+        </div>
+      </Link>
+
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
         <Link href="/partner/focus" className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 text-center group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">

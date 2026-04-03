@@ -17,6 +17,7 @@
 
 import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import BreathingExercise from '@/components/dashboard/BreathingExercise';
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -72,6 +73,7 @@ function PauseContent() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startTimeRef = useRef(Date.now());
   const hasLoggedView = useRef(false);
+  const [showBreathing, setShowBreathing] = useState(false);
 
   // ── Log initial view event ───────────────────────────────
   useEffect(() => {
@@ -177,6 +179,40 @@ function PauseContent() {
 
       {/* ── Content ──────────────────────────────────────── */}
       <div className="relative z-10 flex flex-col items-center gap-8 px-6 max-w-md w-full text-center">
+
+        {/* Inline breathing exercise */}
+        {showBreathing && (
+          <div className="w-full pause-fade-in">
+            <BreathingExercise
+              variant="inline"
+              rounds={2}
+              onComplete={() => setShowBreathing(false)}
+            />
+          </div>
+        )}
+
+        {/* Breathe First button (shown during countdown, before completion) */}
+        {!complete && !showBreathing && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowBreathing(true);
+              if (!paused) {
+                setPaused(true);
+                if (timerRef.current) clearTimeout(timerRef.current);
+              }
+              logEvent('pause_breathe_first', { category });
+            }}
+            className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] px-4 py-2 transition-colors"
+          >
+            <span className="material-symbols-outlined text-base text-[#226779]">
+              self_improvement
+            </span>
+            <span className="font-label text-xs text-white/70">
+              Breathe first
+            </span>
+          </button>
+        )}
 
         {/* Countdown ring */}
         <div

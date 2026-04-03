@@ -93,6 +93,34 @@ export const RELAPSE_NOTIFICATION_PROMPTS = [
   "Your partner was notified. That takes courage. Now write for yourself.",
 ];
 
+// Therapeutic journal prompts — deeper, category-based prompts
+// for the PromptPicker component in the journal write flow
+export const THERAPEUTIC_PROMPTS: Array<{ text: string; category: 'reflection' | 'letter' | 'imagination' | 'body' | 'relationship' }> = [
+  // Reflection
+  { text: "What would your younger self think of who you are today?", category: 'reflection' },
+  { text: "If shame had a voice, what would it say? Now write what you'd say back.", category: 'reflection' },
+  { text: "What's one belief about yourself that you've outgrown?", category: 'reflection' },
+  { text: "What are you avoiding right now? Name it honestly.", category: 'reflection' },
+
+  // Letter
+  { text: "Write a letter to the person you hurt most recently.", category: 'letter' },
+  { text: "Write a letter from your future self — 5 years from now, healthy and free.", category: 'letter' },
+  { text: "Write a thank-you note to someone who showed you grace.", category: 'letter' },
+
+  // Imagination
+  { text: "Describe a single day in the life you want to be living one year from now.", category: 'imagination' },
+  { text: "If you could tell one person your full story without judgment, who would it be and what would you say?", category: 'imagination' },
+
+  // Body
+  { text: "Where in your body do you feel tension right now? Describe it.", category: 'body' },
+  { text: "What does rest actually feel like for you? When was the last time you truly rested?", category: 'body' },
+
+  // Relationship
+  { text: "What does your partner need to hear from you that you haven't said yet?", category: 'relationship' },
+  { text: "Name one way someone loved you well this week.", category: 'relationship' },
+  { text: "What would trust look like fully rebuilt in your closest relationship?", category: 'relationship' },
+];
+
 export const STRINGER_QUOTES = [
   { text: 'Freedom is found through kindness and curiosity.', ref: 'p. 68' },
   { text: 'We are healed to the degree we turn to face and name what is killing us.', ref: 'p. 146' },
