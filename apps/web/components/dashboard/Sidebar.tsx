@@ -11,6 +11,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import DarkModeToggle from '@/components/DarkModeToggle';
 
 interface NavItem {
   id: string;
@@ -294,6 +295,11 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
           <span className="material-symbols-outlined text-lg w-5 text-center">auto_awesome</span>
           <span className="font-body font-semibold">Upgrade Plan</span>
         </Link>
+      </div>
+
+      {/* Theme toggle */}
+      <div className="px-4 py-2">
+        <DarkModeToggle />
       </div>
 
       {/* User profile + logout */}
