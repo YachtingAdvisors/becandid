@@ -13,6 +13,8 @@ import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '
 import Sidebar from '@/components/dashboard/Sidebar';
 import EmailVerificationBanner from '@/components/dashboard/EmailVerificationBanner';
 import WebTrackingProvider from '@/components/dashboard/WebTrackingProvider';
+import IdleTimeout from '@/components/IdleTimeout';
+import RealtimeProvider from '@/components/dashboard/RealtimeProvider';
 
 // Nav items — some hidden in solo mode
 const NAV_ITEMS = [
@@ -65,6 +67,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-background">
+      <IdleTimeout />
       <Sidebar
         userName={profile?.name ?? user.email ?? 'User'}
         userEmail={user.email ?? ''}
@@ -84,6 +87,7 @@ export default async function DashboardLayout({
         <div className="relative px-4 py-6 lg:px-10 lg:py-10">
           {children}
         </div>
+        <RealtimeProvider />
       </main>
     </div>
   );

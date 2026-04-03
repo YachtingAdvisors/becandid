@@ -25,6 +25,28 @@ const PUBLIC_PATHS = [
 const CRON_PATHS = ['/api/cron'];
 const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/webhooks/'];
 
+// ─── Content Security Policy ─────────────────────────────────
+function buildCSP(): string {
+  const isDev = process.env.NODE_ENV === 'development';
+  const scriptSrc = isDev
+    ? `'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://js.stripe.com`
+    : `'self' 'unsafe-inline' https://www.googletagmanager.com https://js.stripe.com`;
+
+  return [
+    `default-src 'self'`,
+    `script-src ${scriptSrc}`,
+    `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
+    `img-src 'self' data: blob: https://upload.wikimedia.org https://images.unsplash.com https://images.gr-assets.com https://i.gr-assets.com https://*.supabase.co`,
+    `font-src 'self' https://fonts.gstatic.com`,
+    `connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://www.google-analytics.com`,
+    `frame-src https://js.stripe.com https://hooks.stripe.com`,
+    `object-src 'none'`,
+    `base-uri 'self'`,
+    `form-action 'self'`,
+    `frame-ancestors 'none'`,
+  ].join('; ');
+}
+
 // ─── Security Headers ────────────────────────────────────────
 const SECURITY_HEADERS: Record<string, string> = {
   'X-Content-Type-Options': 'nosniff',
@@ -33,6 +55,7 @@ const SECURITY_HEADERS: Record<string, string> = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+  'Content-Security-Policy': buildCSP(),
 };
 
 function applyHeaders(response: NextResponse) {

@@ -15,19 +15,52 @@ export default function SignInPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const reason = searchParams.get('reason');
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
 
+    // Check account lockout before attempting auth
+    try {
+      const lockoutRes = await fetch('/api/auth/check-lockout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const lockoutData = await lockoutRes.json();
+      if (lockoutData.locked) {
+        setError(
+          `Account temporarily locked. Try again in ${lockoutData.minutes_remaining ?? 'a few'} minute${lockoutData.minutes_remaining === 1 ? '' : 's'}.`
+        );
+        setLoading(false);
+        return;
+      }
+    } catch {
+      // Fail open — don't block login if lockout check fails
+    }
+
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (authError) {
       setError(authError.message);
+      // Record failed attempt
+      fetch('/api/auth/record-attempt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, success: false }),
+      }).catch(() => {});
       setLoading(false);
       return;
     }
+
+    // Record successful attempt (clears failed attempts)
+    fetch('/api/auth/record-attempt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, success: true }),
+    }).catch(() => {});
 
     // Record login session
     fetch('/api/auth/sessions', { method: 'POST' }).catch(() => {});
@@ -79,6 +112,14 @@ export default function SignInPage() {
           </div>
 
           <form onSubmit={handleSignIn} className="space-y-5">
+            {reason === 'idle' && !error && (
+              <div className="px-4 py-3 rounded-2xl bg-amber-900/20 ring-1 ring-amber-500/20 text-amber-400 text-sm font-body flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-amber-900/30 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[18px]">schedule</span>
+                </div>
+                You were signed out due to inactivity.
+              </div>
+            )}
             {error && (
               <div className="px-4 py-3 rounded-2xl bg-red-900/20 ring-1 ring-red-500/20 text-red-400 text-sm font-body flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-red-900/30 flex items-center justify-center shrink-0">
