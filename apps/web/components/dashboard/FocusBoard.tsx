@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 
 // ─── Types ────────────────────────────────────────────────────
@@ -99,6 +99,11 @@ interface DayEvent {
   timestamp: string;
 }
 
+function getTodayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 export default function FocusBoard() {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -106,6 +111,8 @@ export default function FocusBoard() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [dayEvents, setDayEvents] = useState<DayEvent[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(false);
+  const [hoveredDay, setHoveredDay] = useState<string | null>(null);
+  const todayStr = getTodayStr();
 
   useEffect(() => {
     fetch('/api/trust-points/stats')
