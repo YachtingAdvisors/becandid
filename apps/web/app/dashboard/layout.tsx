@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { id: 'checkins', href: '/dashboard/checkins', label: 'Check-ins', icon: 'check_circle', solo: true },
   { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: 'edit_note', solo: true },
   { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: 'timeline', solo: true },
+  { id: 'chips', href: '/dashboard/chips', label: 'Focus Chips', icon: 'military_tech', solo: true },
   { id: 'progress', href: '/dashboard/progress', label: 'Progress', icon: 'trending_up', solo: true },
   { id: 'fasting', href: '/dashboard/fasting', label: 'Fasting', icon: 'self_improvement', solo: true },
   { id: 'conversations', href: '/dashboard/conversations', label: 'Partner Conversations', icon: 'forum', solo: false },

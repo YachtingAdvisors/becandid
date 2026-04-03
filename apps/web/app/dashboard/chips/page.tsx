@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import FocusChip from '@/components/dashboard/FocusChip';
+import ChipShareButton from '@/components/dashboard/ChipShareButton';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -9,6 +10,17 @@ export const metadata: Metadata = {
 };
 
 const MILESTONES = [1, 7, 14, 30, 60, 90, 180, 365];
+
+const TIER_NAMES: Record<number, string> = {
+  1: 'Silver',
+  7: 'Bronze',
+  14: 'Copper',
+  30: 'Gold',
+  60: 'Emerald',
+  90: 'Sapphire',
+  180: 'Amethyst',
+  365: 'Diamond',
+};
 
 /** Map milestones table entries to day counts */
 function milestoneToDays(m: string): number | null {
@@ -112,45 +124,78 @@ export default async function ChipsPage() {
 
       {/* Stats bar */}
       <div className="flex gap-3">
-        <div className="flex-1 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center">
+        <div className="flex-1 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center shadow-sm">
           <div className="text-3xl font-headline font-black text-primary">{achievedCount}</div>
           <div className="text-[10px] font-label font-semibold text-on-surface-variant uppercase tracking-wider">Chips Earned</div>
         </div>
-        <div className="flex-1 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center">
+        <div className="flex-1 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center shadow-sm">
           <div className="text-3xl font-headline font-black text-on-surface">{currentStreak}</div>
           <div className="text-[10px] font-label font-semibold text-on-surface-variant uppercase tracking-wider">Current Streak</div>
         </div>
-        <div className="flex-1 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center">
+        <div className="flex-1 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center shadow-sm">
           <div className="text-3xl font-headline font-black text-on-surface">{longestStreak}</div>
           <div className="text-[10px] font-label font-semibold text-on-surface-variant uppercase tracking-wider">Longest Streak</div>
         </div>
       </div>
 
-      {/* Chip Grid */}
+      {/* Chip Grid — premium collectible display */}
       <section>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 justify-items-center stagger">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center stagger">
           {MILESTONES.map((ms) => {
             const achieved = achievedMap.has(ms);
             const isNext = ms === nextMilestone;
             return (
-              <FocusChip
-                key={ms}
-                milestone={ms}
-                achieved={achieved}
-                achievedDate={achieved ? achievedMap.get(ms) : undefined}
-                variant="compact"
-                daysAway={!achieved ? Math.max(0, ms - currentStreak) : undefined}
-                isNext={isNext}
-              />
+              <div key={ms} className="flex flex-col items-center gap-2">
+                <FocusChip
+                  milestone={ms}
+                  achieved={achieved}
+                  achievedDate={achieved ? achievedMap.get(ms) : undefined}
+                  variant={isNext ? 'full' : 'full'}
+                  daysAway={!achieved ? Math.max(0, ms - currentStreak) : undefined}
+                  isNext={isNext}
+                />
+                {/* Tier name under each chip */}
+                <span className={`text-[10px] font-label font-bold uppercase tracking-wider ${
+                  achieved ? 'text-on-surface' : 'text-on-surface-variant/30'
+                }`}>
+                  {TIER_NAMES[ms]}
+                </span>
+                {/* Share button for achieved chips */}
+                {achieved && (
+                  <ChipShareButton milestone={ms} tierName={TIER_NAMES[ms]} />
+                )}
+              </div>
             );
           })}
         </div>
       </section>
 
+      {/* Progress toward next chip */}
+      {nextMilestone && (
+        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+              <span className="text-sm font-headline font-bold text-on-surface">Next: {TIER_NAMES[nextMilestone]} Chip</span>
+            </div>
+            <span className="text-xs font-label font-semibold text-primary">{daysToNext} day{daysToNext !== 1 ? 's' : ''} away</span>
+          </div>
+          <div className="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-primary to-tertiary rounded-full transition-all duration-700"
+              style={{ width: `${Math.min(100, nextMilestone > 0 ? ((currentStreak / nextMilestone) * 100) : 0)}%` }}
+            />
+          </div>
+          <p className="text-[11px] text-on-surface-variant font-body mt-2">
+            {currentStreak} of {nextMilestone} days complete
+          </p>
+        </div>
+      )}
+
       {/* Motivational footer */}
-      <div className="bg-gradient-to-br from-primary/5 to-tertiary/5 rounded-2xl ring-1 ring-primary/10 p-5 text-center">
-        <span className="material-symbols-outlined text-primary text-2xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
-        <p className="text-sm font-body text-on-surface leading-relaxed">
+      <div className="bg-gradient-to-br from-primary/5 via-surface to-tertiary/5 rounded-2xl ring-1 ring-primary/10 p-6 text-center shadow-sm">
+        <span className="material-symbols-outlined text-primary text-3xl mb-2 block" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
+        <p className="text-sm font-body text-on-surface leading-relaxed max-w-md mx-auto">
           {achievedCount === 0
             ? 'Your first chip is waiting. One day of focus is all it takes.'
             : achievedCount === MILESTONES.length

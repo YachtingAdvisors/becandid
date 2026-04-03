@@ -11,6 +11,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface Connection {
   id: string;
@@ -222,6 +223,13 @@ export default function TherapistSettings() {
           <span className="material-symbols-outlined text-sm">{findingSent ? 'check_circle' : 'search'}</span>
           {findingSent ? 'We\'ll be in touch!' : 'Looking for a therapist?'}
         </button>
+        <Link
+          href="/therapist/directory"
+          className="mt-2 inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+        >
+          <span className="material-symbols-outlined text-sm">group</span>
+          Browse our therapist directory
+        </Link>
       </div>
     </div>
   );

@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import ConversationStarters from '@/components/dashboard/ConversationStarters';
 
 interface PartnerOverview {
+  monitoredUserId: string;
   monitoredUserName: string;
   balance: number;
   streak: { streakDays: number };
@@ -86,6 +88,7 @@ export default function PartnerIndexPage() {
           : 0;
 
         setData({
+          monitoredUserId: focus.monitoredUserId,
           monitoredUserName: focus.monitoredUserName ?? 'Your partner',
           balance: focus.balance ?? 0,
           streak: focus.streak ?? { streakDays: 0 },
@@ -184,6 +187,9 @@ export default function PartnerIndexPage() {
           <div className="text-xs text-on-surface-variant mt-0.5">{actionCount > 0 ? 'Action Needed' : 'All Clear'}</div>
         </div>
       </div>
+
+      {/* ── Conversation Starters ─────────────────────── */}
+      {data.monitoredUserId && <ConversationStarters monitoredUserId={data.monitoredUserId} />}
 
       {/* ── Relationship Health Meter ────────────────── */}
       {(() => {

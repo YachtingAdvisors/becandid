@@ -231,6 +231,37 @@ export default async function DashboardPage() {
       {/* ── Quote of the Day ──────────────────────────────── */}
       <QuoteOfTheDay motivator={profile?.foundational_motivator ?? null} />
 
+      {/* ── Daily Challenge ────────────────────────────────── */}
+      <Suspense fallback={<div className="skeleton-shimmer h-36 rounded-2xl" />}>
+        <DailyChallenge />
+      </Suspense>
+
+      {/* ── Recent Focus Chips ─────────────────────────────── */}
+      {displayChips.length > 0 && (
+        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
+              <h3 className="font-headline font-bold text-sm text-on-surface">Recent Chips</h3>
+            </div>
+            <Link href="/dashboard/chips" className="text-xs text-primary font-label font-medium hover:underline">
+              View all
+            </Link>
+          </div>
+          <div className="flex items-center justify-center gap-4">
+            {displayChips.map((chip: any) => (
+              <FocusChip
+                key={chip.days}
+                milestone={chip.days}
+                achieved={true}
+                achievedDate={chip.achievedDate}
+                variant="compact"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── Referral Card ────────────────────────────────── */}
       <ReferralCard />
 

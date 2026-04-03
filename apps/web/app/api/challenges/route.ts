@@ -154,7 +154,8 @@ export async function PATCH() {
   await db.from('trust_points').insert({
     user_id: user.id,
     points: 5,
-    reason: 'daily_challenge',
+    action: 'daily_challenge',
+    note: 'Daily challenge completed',
   });
 
   // Recalculate streak for response

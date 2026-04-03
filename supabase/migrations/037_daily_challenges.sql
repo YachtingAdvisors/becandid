@@ -20,3 +20,23 @@ ALTER TABLE daily_challenges ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users manage own challenges"
   ON daily_challenges FOR ALL USING (auth.uid() = user_id);
+
+-- Extend trust_points action CHECK to include daily_challenge
+ALTER TABLE public.trust_points DROP CONSTRAINT IF EXISTS trust_points_action_check;
+ALTER TABLE public.trust_points ADD CONSTRAINT trust_points_action_check CHECK (
+  action IN (
+    'focused_morning',
+    'focused_evening',
+    'focused_full_day',
+    'check_in_completed',
+    'conversation_done',
+    'conversation_positive',
+    'milestone_reached',
+    'partner_encouraged',
+    'streak_bonus_7',
+    'streak_bonus_30',
+    'streak_bonus_90',
+    'manual_adjustment',
+    'daily_challenge'
+  )
+);

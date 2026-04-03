@@ -264,9 +264,6 @@ export default function StringerJournalPage() {
     return Object.entries(tc).sort((a, b) => b[1] - a[1]);
   }, [entries]);
 
-  // Voice journal: which field's voice UI is currently open
-  const [voiceField, setVoiceField] = useState<string | null>(null);
-
   // Expand/collapse state for journal entry cards
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
   const toggleExpand = (id: string) => {
@@ -351,21 +348,11 @@ export default function StringerJournalPage() {
       <div>
         <div className="flex items-center gap-2 mb-2">
           <label className="text-sm font-label font-medium text-on-surface">Open reflection</label>
-          {voiceField !== 'freewrite' && (
-            <VoiceJournal
-              fieldName="freewrite"
-              onTranscript={(text) => { setFreewrite(prev => prev ? prev + ' ' + text : text); setVoiceField(null); }}
-            />
-          )}
+          <VoiceJournal
+            fieldName="freewrite"
+            onTranscript={(text) => setFreewrite(prev => prev ? prev + ' ' + text : text)}
+          />
         </div>
-        {voiceField === 'freewrite' && (
-          <div className="mb-2">
-            <VoiceJournal
-              fieldName="freewrite"
-              onTranscript={(text) => { setFreewrite(prev => prev ? prev + ' ' + text : text); setVoiceField(null); }}
-            />
-          </div>
-        )}
         <textarea value={freewrite} onChange={(e) => setFreewrite(e.target.value)}
           placeholder="Write freely. What happened? What are you feeling right now?"
           className="w-full h-28 px-4 py-3 rounded-3xl bg-secondary-container/30 ring-1 ring-outline-variant/10 text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-on-surface-variant/50" />
