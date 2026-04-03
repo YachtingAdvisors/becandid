@@ -238,18 +238,22 @@ export default async function DashboardPage() {
 
       {/* ── Recent Focus Chips ─────────────────────────────── */}
       {displayChips.length > 0 && (
-        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5">
+        <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2.5">
-              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>emoji_events</span>
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
               <h3 className="font-headline font-bold text-sm text-on-surface">Recent Chips</h3>
             </div>
-            <Link href="/dashboard/chips" className="text-xs text-primary font-label font-medium hover:underline">
+            <Link
+              href="/dashboard/chips"
+              className="text-xs font-label font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-0.5"
+            >
               View all
+              <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
           </div>
-          <div className="flex items-center justify-center gap-4">
-            {displayChips.map((chip: any) => (
+          <div className="flex items-center justify-center gap-4 stagger">
+            {displayChips.map((chip: { days: number; achievedDate: string }) => (
               <FocusChip
                 key={chip.days}
                 milestone={chip.days}
@@ -258,8 +262,17 @@ export default async function DashboardPage() {
                 variant="compact"
               />
             ))}
+            {displayChips.length < 3 && (
+              <Link
+                href="/dashboard/chips"
+                className="flex flex-col items-center justify-center w-[120px] h-[120px] rounded-2xl border-2 border-dashed border-outline-variant/30 bg-surface-container/30 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-on-surface-variant/25 text-2xl">add</span>
+                <span className="text-[9px] font-label font-semibold text-on-surface-variant/30 mt-1">Keep going</span>
+              </Link>
+            )}
           </div>
-        </div>
+        </section>
       )}
 
       {/* ── Referral Card ────────────────────────────────── */}

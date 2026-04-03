@@ -29,24 +29,30 @@ export default function FocusChip({ milestone, achieved, achievedDate, variant =
   const size = isCompact ? 'w-[120px] h-[120px]' : 'w-[200px] h-[200px]';
 
   if (!achieved) {
+    const nextSize = isCompact ? 'w-[130px] h-[130px]' : 'w-[220px] h-[220px]';
     return (
       <div
-        className={`${isNext ? 'w-[140px] h-[140px]' : size} relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-outline-variant/40 bg-surface-container/50 transition-all duration-300 cursor-default select-none ${isNext ? 'animate-pulse ring-2 ring-primary/20' : ''}`}
+        className={`${isNext ? nextSize : size} relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed transition-all duration-300 cursor-default select-none ${
+          isNext
+            ? 'border-primary/40 bg-primary/[0.03] shadow-[0_0_20px_rgba(var(--md-sys-color-primary-rgb,99,102,241),0.15)] animate-[chipPulse_2s_ease-in-out_infinite]'
+            : 'border-outline-variant/40 bg-surface-container/50'
+        }`}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <span className="font-headline text-3xl font-black text-on-surface-variant/25">?</span>
-        <span className="text-[9px] font-label font-semibold text-on-surface-variant/30 uppercase tracking-wider mt-1">{milestone} days</span>
+        <span className={`font-headline font-black ${isNext ? 'text-primary/40' : 'text-on-surface-variant/25'} ${isCompact ? 'text-3xl' : 'text-5xl'}`}>?</span>
+        <span className={`font-label font-semibold text-on-surface-variant/30 uppercase tracking-wider mt-1 ${isCompact ? 'text-[9px]' : 'text-xs'}`}>{milestone} days</span>
         {hovered && daysAway != null && daysAway > 0 && (
           <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-on-surface/5 backdrop-blur-[2px]">
             <span className="text-xs font-label font-bold text-on-surface-variant">{daysAway} day{daysAway !== 1 ? 's' : ''} away</span>
           </div>
         )}
         {isNext && (
-          <span className="absolute -top-2 -right-2 bg-primary text-on-primary text-[8px] font-label font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-md">
+          <span className="absolute -top-2.5 -right-2.5 bg-primary text-on-primary text-[8px] font-label font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-lg">
             Next
           </span>
         )}
+        <style jsx>{`@keyframes chipPulse { 0%, 100% { box-shadow: 0 0 12px rgba(var(--md-sys-color-primary-rgb,99,102,241),0.1); } 50% { box-shadow: 0 0 24px rgba(var(--md-sys-color-primary-rgb,99,102,241),0.25); } }`}</style>
       </div>
     );
   }

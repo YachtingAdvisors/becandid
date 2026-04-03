@@ -1,99 +1,144 @@
 'use client';
+// ============================================================
+// /pause — "Before You Open" sacred pause page
+//
+// A full-viewport interstitial shown when the extension or
+// desktop app redirects a user about to engage with rival
+// content. NOT a block — a breath.
+//
+// Query params:
+//   ?category=<rival>  — the content category being navigated to
+//   &return=<url>      — encoded URL of the original destination
+//
+// 10-second countdown ring with breathing dark gradient.
+// Clicking anything before 10s pauses the countdown.
+// After countdown: Go Back (primary), Journal Instead, Continue.
+// ============================================================
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+
+// ── Types ────────────────────────────────────────────────────
 
 interface PauseContext {
   streak: number;
   lastInsight: string | null;
-  quote: { text: string; author: string } | null;
+  lastInsightDate: string | null;
+  quote: { text: string; author: string; ref: string } | null;
   partner: { name: string; phone: string | null } | null;
+  userName: string | null;
 }
 
+// ── Constants ────────────────────────────────────────────────
+
+const COUNTDOWN_SECONDS = 10;
+const RING_SIZE = 160;
+const RING_STROKE = 5;
+const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+// ── Page wrapper with Suspense (required for useSearchParams) ─
+
 export default function PausePage() {
+  return (
+    <Suspense fallback={<PauseShell />}>
+      <PauseContent />
+    </Suspense>
+  );
+}
+
+function PauseShell() {
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900">
+      <div className="h-10 w-10 animate-pulse rounded-full bg-primary/30" />
+    </div>
+  );
+}
+
+// ── Main pause content ──────────────────────────────────────
+
+function PauseContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const category = searchParams.get('category') || 'unknown';
   const returnUrl = searchParams.get('return') || '';
 
+  // ── State ────────────────────────────────────────────────
   const [context, setContext] = useState<PauseContext | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [seconds, setSeconds] = useState(10);
+  const [contextLoaded, setContextLoaded] = useState(false);
+  const [seconds, setSeconds] = useState(COUNTDOWN_SECONDS);
   const [paused, setPaused] = useState(false);
   const [complete, setComplete] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const hasLoggedShow = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startTimeRef = useRef(Date.now());
+  const hasLoggedView = useRef(false);
 
-  // Log that the interstitial was shown
+  // ── Log initial view event ───────────────────────────────
   useEffect(() => {
-    if (hasLoggedShow.current) return;
-    hasLoggedShow.current = true;
-    fetch('/api/events', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        category,
-        severity: 'low',
-        platform: 'web',
-        metadata: { type: 'interstitial_shown' },
-      }),
-    }).catch(() => {});
-  }, [category]);
+    if (hasLoggedView.current) return;
+    hasLoggedView.current = true;
+    logEvent('pause_view', { category, return_url: returnUrl });
+  }, [category, returnUrl]);
 
-  // Fetch context
+  // ── Fetch context ────────────────────────────────────────
   useEffect(() => {
     fetch('/api/pause/context')
-      .then(r => r.json())
-      .then(setContext)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data) setContext(data);
+      })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => setContextLoaded(true));
   }, []);
 
-  // Countdown timer
+  // ── Countdown timer ──────────────────────────────────────
   useEffect(() => {
     if (paused || complete) return;
     if (seconds <= 0) {
       setComplete(true);
+      logEvent('pause_countdown_complete', { category });
       return;
     }
     timerRef.current = setTimeout(() => {
-      setSeconds(s => s - 1);
+      setSeconds((s) => s - 1);
     }, 1000);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [seconds, paused, complete]);
+  }, [seconds, paused, complete, category]);
 
-  const handleInteract = useCallback(() => {
-    if (!complete && seconds > 0) {
+  // ── Pause on early interaction ───────────────────────────
+  const handleEarlyInteraction = useCallback(() => {
+    if (!complete && !paused && seconds > 0) {
       setPaused(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      logEvent('pause_early_interaction', {
+        category,
+        seconds_remaining: seconds,
+      });
     }
-  }, [complete, seconds]);
+  }, [complete, paused, seconds, category]);
 
-  const resumeTimer = useCallback(() => {
+  const resumeCountdown = useCallback(() => {
     setPaused(false);
   }, []);
 
-  const logEvent = useCallback(async (type: string) => {
-    await fetch('/api/events', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        category,
-        severity: 'low',
-        platform: 'web',
-        metadata: { type },
-      }),
-    }).catch(() => {});
-  }, [category]);
+  // ── Time spent helper ────────────────────────────────────
+  const timeSpent = () => Math.round((Date.now() - startTimeRef.current) / 1000);
 
-  const handleGoBack = useCallback(async () => {
-    await logEvent('interstitial_redirected');
+  // ── Action handlers ──────────────────────────────────────
+  const handleGoBack = useCallback(() => {
+    logEvent('pause_go_back', { category, time_spent: timeSpent() });
     router.push('/dashboard');
-  }, [logEvent, router]);
+  }, [category, router]);
 
-  const handleContinue = useCallback(async () => {
-    await logEvent('interstitial_bypassed');
+  const handleJournal = useCallback(() => {
+    logEvent('pause_journal_instead', { category, time_spent: timeSpent() });
+    router.push('/dashboard/stringer-journal?trigger=manual');
+  }, [category, router]);
+
+  const handleContinue = useCallback(() => {
+    logEvent('pause_continue', { category, time_spent: timeSpent() });
     if (returnUrl) {
       try {
         const decoded = decodeURIComponent(returnUrl);
@@ -104,206 +149,289 @@ export default function PausePage() {
     } else {
       router.back();
     }
-  }, [logEvent, returnUrl, router]);
+  }, [category, returnUrl, router]);
 
-  const handleJournal = useCallback(async () => {
-    await logEvent('interstitial_redirected');
-    router.push('/dashboard/stringer-journal?trigger=manual');
-  }, [logEvent, router]);
+  const handleCallPartner = useCallback(() => {
+    if (!context?.partner?.phone) return;
+    logEvent('pause_call_partner', { category });
+    window.location.href = `tel:${context.partner.phone}`;
+  }, [context, category]);
 
-  // SVG countdown ring
-  const radius = 54;
-  const circumference = 2 * Math.PI * radius;
-  const progress = complete ? 0 : ((10 - seconds) / 10) * circumference;
+  // ── Ring progress (0 = full circle, 1 = empty) ──────────
+  const progress = complete
+    ? 1
+    : (COUNTDOWN_SECONDS - seconds) / COUNTDOWN_SECONDS;
+  const strokeOffset = RING_CIRCUMFERENCE * (1 - progress);
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-      onMouseDown={handleInteract}
-      onTouchStart={handleInteract}
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden select-none"
+      onMouseDown={!complete && !paused ? handleEarlyInteraction : undefined}
+      onTouchStart={!complete && !paused ? handleEarlyInteraction : undefined}
     >
-      {/* Breathing background */}
-      <div
-        className="absolute inset-0 transition-all duration-[4000ms] ease-in-out"
-        style={{
-          background: complete
-            ? 'linear-gradient(135deg, #fef3c7 0%, #f5e6d3 30%, #e8d5c4 60%, #dbeafe 100%)'
-            : 'linear-gradient(135deg, #fef9c3 0%, #fde68a 25%, #f5e6d3 50%, #e8d5c4 75%, #d1d5db 100%)',
-          animation: 'breathe 8s ease-in-out infinite',
-        }}
-      />
+      {/* ── Breathing background ─────────────────────────── */}
+      <div className="pause-bg absolute inset-0 bg-gradient-to-b from-slate-900 via-[#226779]/20 to-slate-900" />
 
-      {/* Subtle overlay */}
-      <div className="absolute inset-0 bg-white/20" />
+      {/* Subtle radial glow behind the ring */}
+      <div className="pause-bg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-80 w-80 rounded-full bg-[#226779]/8 blur-3xl pointer-events-none" />
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-md w-full">
+      {/* ── Content ──────────────────────────────────────── */}
+      <div className="relative z-10 flex flex-col items-center gap-8 px-6 max-w-md w-full text-center">
 
         {/* Countdown ring */}
-        {!complete && (
-          <div className="relative mb-8">
-            <svg width="140" height="140" className="transform -rotate-90">
-              {/* Background ring */}
-              <circle
-                cx="70"
-                cy="70"
-                r={radius}
-                fill="none"
-                stroke="rgba(34, 103, 121, 0.1)"
-                strokeWidth="4"
-              />
-              {/* Progress ring */}
-              <circle
-                cx="70"
-                cy="70"
-                r={radius}
-                fill="none"
-                stroke="#226779"
-                strokeWidth="4"
-                strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={circumference - progress}
-                className="transition-all duration-1000 ease-linear"
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-headline text-4xl font-bold text-on-surface/80">
+        <div
+          className="relative flex items-center justify-center shrink-0"
+          style={{ width: RING_SIZE, height: RING_SIZE }}
+        >
+          <svg
+            width={RING_SIZE}
+            height={RING_SIZE}
+            className="absolute -rotate-90"
+          >
+            {/* Track */}
+            <circle
+              cx={RING_SIZE / 2}
+              cy={RING_SIZE / 2}
+              r={RING_RADIUS}
+              fill="none"
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth={RING_STROKE}
+            />
+            {/* Animated arc */}
+            <circle
+              cx={RING_SIZE / 2}
+              cy={RING_SIZE / 2}
+              r={RING_RADIUS}
+              fill="none"
+              stroke={complete ? '#34d399' : '#226779'}
+              strokeWidth={RING_STROKE}
+              strokeLinecap="round"
+              strokeDasharray={RING_CIRCUMFERENCE}
+              strokeDashoffset={strokeOffset}
+              className="transition-all duration-1000 ease-linear"
+            />
+          </svg>
+
+          {/* Center of ring */}
+          <div className="flex flex-col items-center justify-center">
+            {complete ? (
+              <span
+                className="material-symbols-outlined text-4xl text-emerald-400"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                check_circle
+              </span>
+            ) : paused ? (
+              <span className="material-symbols-outlined text-3xl text-white/50 animate-pulse">
+                pause
+              </span>
+            ) : (
+              <span className="font-headline text-5xl font-bold text-white tabular-nums">
                 {seconds}
               </span>
-            </div>
+            )}
           </div>
-        )}
+        </div>
 
-        {/* Completed state icon */}
-        {complete && (
-          <div className="mb-8 animate-fade-up">
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-              <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                self_improvement
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Paused indicator */}
-        {paused && !complete && (
-          <button
-            onClick={resumeTimer}
-            className="mb-4 px-4 py-1.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-sm border border-outline-variant/20 text-xs font-label text-on-surface-variant hover:bg-surface-container-low/80 transition-colors cursor-pointer focus:outline-none"
-          >
-            <span className="material-symbols-outlined text-xs align-middle mr-1">play_arrow</span>
-            Tap to resume
-          </button>
-        )}
-
-        {/* Main content area */}
-        <div className="space-y-5 mb-8">
-          {/* Streak */}
-          {!loading && context?.streak !== undefined && context.streak > 0 && (
-            <p className="font-headline text-lg font-bold text-on-surface/90">
-              You&apos;ve been focused for {context.streak} day{context.streak !== 1 ? 's' : ''}
+        {/* Status line */}
+        <div className="min-h-[2.5rem]">
+          {complete ? (
+            <p className="font-headline text-xl text-white pause-fade-in">
+              The choice is yours.
             </p>
+          ) : paused ? (
+            <div className="space-y-1">
+              <p className="font-headline text-lg text-white/70">
+                Take your time.
+              </p>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resumeCountdown();
+                }}
+                className="inline-flex items-center gap-1 font-label text-sm text-[#226779]/80 hover:text-[#226779] transition-colors"
+              >
+                <span className="material-symbols-outlined text-sm">play_arrow</span>
+                Resume
+              </button>
+            </div>
+          ) : (
+            <p className="font-body text-sm text-white/40 tracking-wide">
+              Breathe.
+            </p>
+          )}
+        </div>
+
+        {/* ── Contextual content ────────────────────────── */}
+        <div
+          className={`flex flex-col items-center gap-5 w-full transition-opacity duration-700 ${
+            contextLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          {/* Streak */}
+          {context && context.streak > 0 && (
+            <div className="inline-flex items-center gap-2 text-white/70">
+              <span className="material-symbols-outlined text-lg text-amber-400/80">
+                local_fire_department
+              </span>
+              <p className="font-body text-sm">
+                You&apos;ve been focused for{' '}
+                <span className="font-semibold text-white">
+                  {context.streak} {context.streak === 1 ? 'day' : 'days'}
+                </span>
+              </p>
+            </div>
           )}
 
           {/* Last journal insight */}
-          {!loading && context?.lastInsight && (
-            <div className="bg-surface-container-lowest/60 backdrop-blur-sm rounded-2xl border border-outline-variant/15 px-5 py-4">
-              <p className="text-xs font-label text-on-surface-variant/60 uppercase tracking-wider mb-1.5">Last time you wrote</p>
-              <p className="font-headline italic text-sm text-on-surface/80 leading-relaxed">
-                &ldquo;{context.lastInsight.length > 160
-                  ? context.lastInsight.slice(0, 160) + '...'
-                  : context.lastInsight}&rdquo;
+          {context?.lastInsight && (
+            <div className="w-full rounded-2xl bg-white/[0.04] border border-white/[0.08] px-5 py-4">
+              <p className="font-label text-[10px] uppercase tracking-widest text-white/30 mb-2">
+                From your journal
+              </p>
+              <p className="font-body text-sm italic text-white/60 leading-relaxed">
+                &ldquo;{context.lastInsight}&rdquo;
               </p>
             </div>
           )}
 
-          {/* Quote */}
-          {!loading && context?.quote && (
-            <div className="px-4">
-              <p className="font-headline italic text-sm text-on-surface/60 leading-relaxed">
+          {/* Rotating quote */}
+          {context?.quote && (
+            <div className="px-2">
+              <p className="font-body text-sm text-white/45 leading-relaxed">
                 &ldquo;{context.quote.text}&rdquo;
               </p>
-              <p className="text-[10px] font-label text-on-surface-variant/40 mt-1">
+              <p className="font-label text-[10px] text-white/25 mt-1.5">
                 &mdash; {context.quote.author}
               </p>
             </div>
           )}
 
-          {/* Loading state */}
-          {loading && (
-            <div className="space-y-3 animate-pulse">
-              <div className="h-5 bg-surface-container-low/40 rounded-lg w-48 mx-auto" />
-              <div className="h-16 bg-surface-container-low/30 rounded-2xl w-full" />
-              <div className="h-10 bg-surface-container-low/20 rounded-lg w-56 mx-auto" />
-            </div>
+          {/* Call partner pill */}
+          {context?.partner && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCallPartner();
+              }}
+              disabled={!context.partner.phone}
+              className="inline-flex items-center gap-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] px-5 py-2.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <span
+                className="material-symbols-outlined text-lg text-[#226779]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                call
+              </span>
+              <span className="font-label text-sm text-white/80">
+                Call {context.partner.name}
+              </span>
+            </button>
           )}
 
-          {/* Call partner button (always visible if partner exists) */}
-          {!loading && context?.partner && (
-            <a
-              href={context.partner.phone ? `tel:${context.partner.phone}` : '#'}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-container-lowest/70 backdrop-blur-sm border border-outline-variant/20 text-sm font-label font-medium text-on-surface hover:bg-surface-container-lowest hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30"
-              onClick={(e) => {
-                if (!context.partner?.phone) e.preventDefault();
-              }}
-            >
-              <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
-              Call {context.partner.name}
-            </a>
+          {/* Loading skeleton */}
+          {!contextLoaded && (
+            <div className="space-y-3 w-full animate-pulse">
+              <div className="h-4 bg-white/5 rounded-lg w-48 mx-auto" />
+              <div className="h-16 bg-white/[0.03] rounded-2xl w-full" />
+              <div className="h-10 bg-white/[0.03] rounded-lg w-56 mx-auto" />
+            </div>
           )}
         </div>
 
-        {/* Post-countdown choices */}
-        {complete && (
-          <div className="animate-fade-up space-y-4">
-            <p className="font-headline text-xl font-bold text-on-surface/80 mb-6">
-              The choice is yours.
-            </p>
+        {/* ── Action buttons (after countdown or pause) ──── */}
+        {(complete || paused) && (
+          <div className="flex flex-col items-center gap-3 w-full mt-2 pause-fade-in">
+            {/* Go Back — primary, prominent, large */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleGoBack();
+              }}
+              className="w-full max-w-xs rounded-full bg-[#226779] hover:bg-[#226779]/90 active:bg-[#226779]/80 text-white font-label text-base font-medium py-3.5 px-8 transition-all shadow-lg shadow-[#226779]/25 focus:outline-none focus:ring-2 focus:ring-[#226779]/40"
+            >
+              <span className="material-symbols-outlined text-lg align-middle mr-1.5">
+                arrow_back
+              </span>
+              Go Back
+            </button>
 
-            <div className="flex flex-col items-center gap-3 w-full">
-              {/* Go Back — primary, prominent */}
-              <button
-                onClick={handleGoBack}
-                className="w-full max-w-xs px-6 py-3.5 bg-primary text-on-primary rounded-full font-headline font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
-              >
-                <span className="material-symbols-outlined text-lg align-middle mr-1.5">arrow_back</span>
-                Go Back
-              </button>
+            {/* Journal Instead — secondary */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleJournal();
+              }}
+              className="w-full max-w-xs rounded-full bg-white/[0.08] hover:bg-white/[0.12] border border-white/[0.1] text-white/90 font-label text-sm py-3 px-8 transition-all focus:outline-none focus:ring-2 focus:ring-white/20"
+            >
+              <span className="material-symbols-outlined text-sm align-middle mr-1.5">
+                edit_note
+              </span>
+              Journal Instead
+            </button>
 
-              {/* Continue — ghost, muted */}
+            {/* Continue — ghost, small, muted (only after full countdown) */}
+            {complete && (
               <button
-                onClick={handleContinue}
-                className="w-full max-w-xs px-6 py-3 rounded-full text-sm font-label text-on-surface-variant/50 hover:text-on-surface-variant/70 hover:bg-surface-container-low/30 transition-all duration-200 cursor-pointer focus:outline-none"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleContinue();
+                }}
+                className="mt-4 font-label text-xs text-white/20 hover:text-white/35 transition-colors focus:outline-none"
               >
-                Continue
+                Continue anyway
               </button>
-
-              {/* Journal instead */}
-              <button
-                onClick={handleJournal}
-                className="mt-2 inline-flex items-center gap-1.5 text-xs font-label text-primary/70 hover:text-primary transition-colors cursor-pointer focus:outline-none"
-              >
-                <span className="material-symbols-outlined text-sm">edit_note</span>
-                Journal instead
-              </button>
-            </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Breathing animation keyframes */}
-      <style jsx>{`
-        @keyframes breathe {
+      {/* ── Animations ───────────────────────────────────── */}
+      <style jsx global>{`
+        @keyframes pause-breathe {
           0%, 100% {
-            background-size: 100% 100%;
             opacity: 1;
+            transform: scale(1);
           }
           50% {
-            background-size: 120% 120%;
-            opacity: 0.92;
+            opacity: 0.85;
+            transform: scale(1.03);
           }
+        }
+        .pause-bg {
+          animation: pause-breathe 8s ease-in-out infinite;
+        }
+        @keyframes pause-fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .pause-fade-in {
+          animation: pause-fade-in 0.6s ease-out both;
         }
       `}</style>
     </div>
   );
+}
+
+// ── Event logging ────────────────────────────────────────────
+
+function logEvent(type: string, metadata: Record<string, unknown>) {
+  fetch('/api/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      category: 'pause_page',
+      severity: 'low',
+      platform: 'web',
+      metadata: { event_type: type, ...metadata },
+    }),
+  }).catch(() => {
+    // Analytics should never break the UX
+  });
 }
