@@ -130,16 +130,20 @@ export default async function SettingsPage() {
       {/* Data Export */}
       <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <h2 className="font-headline text-lg font-bold text-on-surface">Your Data</h2>
+        <p className="text-xs text-on-surface-variant font-body">
+          Download a complete copy of all your data. This includes journals, events, moods, conversations, and everything else we store about you.
+        </p>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-sm font-label font-medium text-on-surface">Export all data</div>
-            <div className="text-xs text-on-surface-variant font-body">Download everything as a JSON file</div>
+            <div className="text-sm font-label font-medium text-on-surface">Download All My Data</div>
+            <div className="text-xs text-on-surface-variant font-body">GDPR-compliant JSON export of every table</div>
           </div>
           <a
-            href="/api/account"
+            href="/api/privacy"
             download
-            className="px-3 py-1.5 min-h-[44px] text-xs font-label font-medium text-primary border border-primary-container rounded-2xl hover:bg-primary-container/20 cursor-pointer transition-all duration-200"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] text-xs font-label font-medium text-primary border border-primary-container rounded-2xl hover:bg-primary-container/20 cursor-pointer transition-all duration-200"
           >
+            <span className="material-symbols-outlined text-sm">download</span>
             Export
           </a>
         </div>
