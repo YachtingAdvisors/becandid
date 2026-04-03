@@ -211,6 +211,9 @@ function InnerLayout() {
         <Stack.Screen name="auth/signup" />
         <Stack.Screen name="conversation/[alertId]" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="checkin/[id]" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="coach" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="mood-calendar" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="progress" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack>
     </>
   );
