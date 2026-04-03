@@ -1,6 +1,18 @@
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
+import JsonLd from '@/components/JsonLd';
 import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion } from '@/components/LandingSections';
+import { softwareAppSchema, organizationSchema, faqSchema } from '@/lib/structuredData';
+
+/* ─── FAQ items (duplicated from LandingSections for structured data) */
+const FAQ_ITEMS_FOR_SCHEMA = [
+  { q: 'Can my partner see what websites I visit?', a: 'No. They see categories and timing, never URLs or content. Your specific browsing activity stays private.' },
+  { q: 'Is this like Covenant Eyes?', a: "We're accountability, not surveillance. No screenshots, no browsing logs. Be Candid is built on trust and self-reflection, not monitoring." },
+  { q: 'What is the Stringer framework?', a: 'Based on Jay Stringer\'s research, we help you understand why -- not just track what. The framework identifies emotional and relational patterns that drive unwanted behaviors.' },
+  { q: 'Is my journal private?', a: 'Encrypted end-to-end. Not even we can read it. Your reflections are yours alone unless you choose to share insights with a therapist.' },
+  { q: 'How much does it cost?', a: 'Free tier includes 1 partner and core features. Pro is $9.99/mo and unlocks unlimited partners, advanced analytics, and therapist portal access.' },
+  { q: 'Is there a therapist portal?', a: 'Yes. Therapists get read-only access to consented data. You control exactly what is shared and can revoke access at any time.' },
+];
 
 /* ─── Feature data ───────────────────────────────────────────── */
 const FEATURES = [
@@ -105,27 +117,10 @@ const ICON_COLORS = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-dark-sanctuary text-white overflow-x-hidden">
-      {/* JSON-LD Organization Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
-            name: 'Be Candid',
-            applicationCategory: 'HealthApplication',
-            operatingSystem: 'Web, iOS, Android',
-            description: 'AI-powered screen time accountability app for digital wellness. Build streaks, share with an accountability partner, and align your digital life with your values.',
-            url: 'https://becandid.io',
-            offers: {
-              '@type': 'Offer',
-              price: '0',
-              priceCurrency: 'USD',
-              description: 'Free tier available',
-            },
-          }),
-        }}
-      />
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={softwareAppSchema()} />
+      <JsonLd data={organizationSchema()} />
+      <JsonLd data={faqSchema(FAQ_ITEMS_FOR_SCHEMA)} />
 
       <PublicNav />
 

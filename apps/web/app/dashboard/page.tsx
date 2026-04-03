@@ -8,20 +8,44 @@ export const metadata: Metadata = {
 import { GOAL_LABELS, getCategoryEmoji, timeAgo } from '@be-candid/shared';
 import type { GoalCategory, Severity } from '@be-candid/shared';
 import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import FocusBoardMini from '@/components/dashboard/FocusBoardMini';
 import CheckInMini from '@/components/dashboard/CheckInMini';
 import NudgeBanner from '@/components/dashboard/NudgeBanner';
 import RelationshipMini from '@/components/dashboard/RelationshipMini';
-import SpouseImpactAwareness from '@/components/dashboard/SpouseImpactAwareness';
-import ScreenTimeCard from '@/components/dashboard/ScreenTimeCard';
-import ContentFilterStatus from '@/components/dashboard/ContentFilterStatus';
-import WalkthroughWrapper from '@/components/dashboard/WalkthroughWrapper';
-import QuickMoodCheckin from '@/components/dashboard/QuickMoodCheckin';
-import GrowthJournalWidget from '@/components/dashboard/GrowthJournalWidget';
-import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
-import ReferralCard from '@/components/dashboard/ReferralCard';
 import Link from 'next/link';
 import DashboardHero from '@/components/dashboard/DashboardHero';
+import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
+
+/* Dynamically imported heavy client components for code-splitting */
+const SpouseImpactAwareness = dynamic(
+  () => import('@/components/dashboard/SpouseImpactAwareness'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-32 rounded-2xl" /> },
+);
+const ScreenTimeCard = dynamic(
+  () => import('@/components/dashboard/ScreenTimeCard'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-28 rounded-2xl" /> },
+);
+const ContentFilterStatus = dynamic(
+  () => import('@/components/dashboard/ContentFilterStatus'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-28 rounded-2xl" /> },
+);
+const WalkthroughWrapper = dynamic(
+  () => import('@/components/dashboard/WalkthroughWrapper'),
+  { ssr: false },
+);
+const QuickMoodCheckin = dynamic(
+  () => import('@/components/dashboard/QuickMoodCheckin'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-24 rounded-2xl" /> },
+);
+const GrowthJournalWidget = dynamic(
+  () => import('@/components/dashboard/GrowthJournalWidget'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-32 rounded-2xl" /> },
+);
+const ReferralCard = dynamic(
+  () => import('@/components/dashboard/ReferralCard'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-24 rounded-2xl" /> },
+);
 
 const SEVERITY_STYLES: Record<Severity, string> = {
   low: 'bg-tertiary-container text-on-tertiary-container',

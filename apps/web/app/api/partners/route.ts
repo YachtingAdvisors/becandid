@@ -154,32 +154,28 @@ export async function POST(req: NextRequest) {
       const { data: profile } = await db.from('users').select('name').eq('id', user.id).single();
       const inviterName = profile?.name ?? 'Someone';
 
+      const { emailWrapper } = await import('@/lib/email/template');
       await resend.emails.send({
         from: FROM,
         to: cleanEmail,
         subject: `${escapeHtml(inviterName)} invited you to Be Candid`,
-        html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#fbf9f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-<div style="max-width:520px;margin:0 auto;padding:40px 20px;">
-  <div style="text-align:center;margin-bottom:24px;">
-    <div style="display:inline-block;background:#226779;color:white;padding:6px 18px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Be Candid</div>
-  </div>
-  <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center;">
-    <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Hey ${escapeHtml(cleanName)},</h2>
-    <p style="margin:0 0 20px;color:#6b7280;font-size:15px;line-height:1.6;">
-      <strong>${escapeHtml(inviterName)}</strong> is on a journey to align their digital life with who they want to be &mdash; and they&rsquo;ve chosen <strong>you</strong> as someone they trust to walk with them.
-    </p>
-    <p style="margin:0 0 24px;color:#6b7280;font-size:14px;line-height:1.6;">
-      No setup required &mdash; just accept and you&rsquo;re connected. You can optionally start your own journey too and get <strong>30 free days</strong>.
-    </p>
-    <a href="${APP_URL}/invite/${inviteToken}" style="display:inline-block;background:#226779;color:white;padding:14px 32px;border-radius:100px;text-decoration:none;font-weight:700;font-size:15px;">
-      Accept Invitation &rarr;
-    </a>
-    <p style="margin:20px 0 0;color:#9ca3af;font-size:12px;font-style:italic;">
-      &ldquo;A cord of three strands is not easily broken.&rdquo; &mdash; King Solomon
-    </p>
-  </div>
-</div></body></html>`,
+        html: emailWrapper({
+          preheader: `${escapeHtml(inviterName)} chose you as their accountability partner on Be Candid`,
+          body: `
+            <h2 class="text-heading" style="margin:0 0 12px;color:#1a1a2e;font-size:22px;font-weight:700;text-align:center;">
+              Hey ${escapeHtml(cleanName)},
+            </h2>
+            <p class="text-body" style="margin:0 0 20px;color:#4b5563;font-size:15px;line-height:1.7;text-align:center;">
+              <strong>${escapeHtml(inviterName)}</strong> is on a journey to align their digital life with who they want to be &mdash; and they&rsquo;ve chosen <strong>you</strong> as someone they trust to walk with them.
+            </p>
+            <p class="text-body" style="margin:0 0 8px;color:#4b5563;font-size:14px;line-height:1.7;text-align:center;">
+              No setup required &mdash; just accept and you&rsquo;re connected. You can optionally start your own journey too and get <strong>30 free days</strong>.
+            </p>
+          `,
+          ctaUrl: `${APP_URL}/invite/${inviteToken}`,
+          ctaLabel: 'Accept Invitation',
+          footerNote: '&ldquo;A cord of three strands is not easily broken.&rdquo; &mdash; King Solomon',
+        }),
       });
     } catch (emailErr) {
       console.error('Partner invite email failed:', emailErr);

@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import ShareButton from '@/components/ShareButton';
+import { articleSchema } from '@/lib/structuredData';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -47,19 +48,13 @@ export default async function BlogPostPage({ params }: Props) {
   return (
     <main className="max-w-3xl mx-auto px-6 py-16">
       <JsonLd
-        data={{
-          '@context': 'https://schema.org',
-          '@type': 'Article',
+        data={articleSchema({
           headline: post.title,
           description: post.description,
           datePublished: post.date,
-          author: { '@type': 'Organization', name: post.author },
-          publisher: {
-            '@type': 'Organization',
-            name: 'Be Candid',
-            url: 'https://becandid.io',
-          },
-        }}
+          author: post.author,
+          url: `https://becandid.io/blog/${post.slug}`,
+        })}
       />
 
       {/* Back link */}

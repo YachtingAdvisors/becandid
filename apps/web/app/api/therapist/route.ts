@@ -94,36 +94,42 @@ export async function POST(req: NextRequest) {
   const userName = profile?.name || user.email || 'A client';
 
   // Send invite email
+  const { emailWrapper } = await import('@/lib/email/template');
+
+  const accessList = [
+    can_see_journal !== false ? '<li>Journal entries (tributaries, longings, roadmap reflections)</li>' : '',
+    can_see_moods !== false ? '<li>Mood timeline</li>' : '',
+    can_see_streaks !== false ? '<li>Focus streaks and milestones</li>' : '',
+    can_see_outcomes !== false ? '<li>Conversation outcome history</li>' : '',
+  ].filter(Boolean).join('\n');
+
   await getResend().emails.send({
     from: FROM,
     to: validatedEmail,
     subject: `${escapeHtml(userName)} has invited you to Be Candid`,
-    html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-<div style="max-width:520px;margin:0 auto;padding:40px 20px;">
-  <div style="text-align:center;margin-bottom:24px;">
-    <div style="display:inline-block;background:#4f46e5;color:white;padding:6px 18px;border-radius:100px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Be Candid</div>
-  </div>
-  <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.08);">
-    <h2 style="font-family:Georgia,serif;font-size:20px;color:#0f0e1a;margin:0 0 16px;">Therapist Portal Invitation</h2>
-    <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 16px;">
-      <strong>${escapeHtml(userName)}</strong> has invited you to view their progress on Be Candid, an accountability and reflection app grounded in a therapeutic framework for understanding unwanted behavior.
-    </p>
-    <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 8px;">You'll have read-only access to:</p>
-    <ul style="font-size:13px;color:#4b5563;line-height:1.8;margin:0 0 20px;padding-left:20px;">
-      ${can_see_journal !== false ? '<li>Journal entries (tributaries, longings, roadmap reflections)</li>' : ''}
-      ${can_see_moods !== false ? '<li>Mood timeline</li>' : ''}
-      ${can_see_streaks !== false ? '<li>Focus streaks and milestones</li>' : ''}
-      ${can_see_outcomes !== false ? '<li>Conversation outcome history</li>' : ''}
-    </ul>
-    <p style="font-size:13px;color:#9ca3af;margin:0 0 20px;font-style:italic;">
-      You will never see: browsing history, URLs, screenshots, or push notification content.
-    </p>
-    <a href="${APP_URL}/therapist/accept/${token}" style="display:block;text-align:center;background:#4f46e5;color:#fff;text-decoration:none;padding:14px 24px;border-radius:10px;font-weight:600;font-size:14px;">
-      Accept Invitation →
-    </a>
-  </div>
-</div></body></html>`,
+    html: emailWrapper({
+      preheader: `${escapeHtml(userName)} wants to share their progress with you on Be Candid`,
+      body: `
+        <h2 class="text-heading" style="margin:0 0 16px;color:#1a1a2e;font-size:20px;font-weight:700;">
+          Therapist Portal Invitation
+        </h2>
+        <p class="text-body" style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 16px;">
+          <strong>${escapeHtml(userName)}</strong> has invited you to view their progress on Be Candid, an accountability and reflection app grounded in a therapeutic framework for understanding unwanted behavior.
+        </p>
+        <p class="text-body" style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 8px;">
+          You'll have read-only access to:
+        </p>
+        <ul style="font-size:13px;color:#4b5563;line-height:1.8;margin:0 0 20px;padding-left:20px;">
+          ${accessList}
+        </ul>
+        <p class="text-muted" style="font-size:13px;color:#9ca3af;margin:0;font-style:italic;">
+          You will never see: browsing history, URLs, screenshots, or push notification content.
+        </p>
+      `,
+      ctaUrl: `${APP_URL}/therapist/accept/${token}`,
+      ctaLabel: 'Accept Invitation',
+      footerNote: 'All data is encrypted in transit and at rest. HIPAA-ready audit logging is enabled.',
+    }),
   }).catch((e) => console.error('Therapist invite email failed:', e));
 
   await db.from('audit_log').insert({
