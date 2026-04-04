@@ -197,6 +197,26 @@ export async function middleware(request: NextRequest) {
       }
     }
 
+    // ── 5b. MFA enforcement — redirect to challenge if aal2 required ──
+    if (user && (pathname.startsWith('/dashboard') || pathname.startsWith('/partner'))) {
+      // Skip the MFA challenge page itself to avoid redirect loops
+      if (!pathname.startsWith('/auth/')) {
+        try {
+          const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+          if (aal.data?.currentLevel === 'aal1' && aal.data?.nextLevel === 'aal2') {
+            const url = request.nextUrl.clone();
+            url.pathname = '/auth/mfa-verify';
+            url.searchParams.set('redirect', pathname);
+            const redir = NextResponse.redirect(url);
+            applyHeaders(redir);
+            return redir;
+          }
+        } catch {
+          // Fail open — don't block if MFA check fails
+        }
+      }
+    }
+
     // ── 6. Apply security headers and CORS ────────────────
     applyHeaders(response);
     if (origin.startsWith('chrome-extension://') && pathname.startsWith('/api/')) {

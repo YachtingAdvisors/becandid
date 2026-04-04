@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import ConversationStarters from '@/components/dashboard/ConversationStarters';
+import PartnerOnboardingBanner from '@/components/partner/OnboardingBanner';
 
 interface PartnerOverview {
   monitoredUserId: string;
@@ -148,6 +149,9 @@ export default function PartnerIndexPage() {
           You&apos;re their contender &mdash; someone willing to be candid because you care about who they&apos;ll be tomorrow, not just how they feel today.
         </p>
       </div>
+
+      {/* Onboarding banner for new partners */}
+      <PartnerOnboardingBanner />
 
       {/* Action needed banner */}
       {actionCount > 0 && (

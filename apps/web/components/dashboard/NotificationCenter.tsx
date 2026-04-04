@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import useSWR from 'swr';
 import { createClient } from '@/lib/supabase';
 import type { RealtimeEvent } from '@/hooks/useRealtimeSubscription';
 
@@ -65,34 +66,25 @@ function timeAgo(iso: string): string {
 
 export default function NotificationCenter() {
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [localNotifications, setLocalNotifications] = useState<Notification[]>([]);
+  const [localUnread, setLocalUnread] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const channelRefRT = useRef<any>(null);
 
-  const fetchNotifications = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/notifications');
-      if (res.ok) {
-        const data = await res.json();
-        setNotifications(data.notifications ?? []);
-        setUnreadCount(data.unreadCount ?? 0);
-      }
-    } catch {
-      // silently fail
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { data: notifData, isLoading: loading, mutate } = useSWR<{ notifications: Notification[]; unreadCount: number }>(
+    '/api/notifications',
+    {
+      refreshInterval: 60000,
+      onSuccess: (data) => {
+        setLocalNotifications(data.notifications ?? []);
+        setLocalUnread(data.unreadCount ?? 0);
+      },
+    },
+  );
 
-  // Fetch on mount and every 60 seconds
-  useEffect(() => {
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 60000);
-    return () => clearInterval(interval);
-  }, [fetchNotifications]);
+  // Use local state so realtime updates can prepend without waiting for revalidation
+  const notifications = localNotifications;
+  const unreadCount = localUnread;
 
   // ── Real-time subscription for live updates ───────────────
   useEffect(() => {
@@ -134,8 +126,8 @@ export default function NotificationCenter() {
             };
 
             const notif = realtimeToNotification(rtEvent);
-            setNotifications((prev) => [notif, ...prev]);
-            setUnreadCount((prev) => prev + 1);
+            setLocalNotifications((prev) => [notif, ...prev]);
+            setLocalUnread((prev) => prev + 1);
           },
         );
       }
@@ -166,8 +158,9 @@ export default function NotificationCenter() {
   async function markAllRead() {
     try {
       await fetch('/api/notifications?mark_read=true');
-      setUnreadCount(0);
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setLocalUnread(0);
+      setLocalNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      mutate();
     } catch {
       // silently fail
     }
@@ -177,7 +170,7 @@ export default function NotificationCenter() {
     <div className="relative" ref={panelRef}>
       {/* Bell Button */}
       <button
-        onClick={() => { setOpen(!open); if (!open) fetchNotifications(); }}
+        onClick={() => { setOpen(!open); if (!open) mutate(); }}
         className="relative w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
         aria-label="Notifications"
       >

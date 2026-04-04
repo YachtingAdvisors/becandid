@@ -23,6 +23,11 @@ const DailyChallenge = dynamic(
   { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-2xl" /> },
 );
 
+const DailyCommitment = dynamic(
+  () => import('@/components/dashboard/DailyCommitment'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-3xl" /> },
+);
+
 /* Dynamically imported heavy client components for code-splitting */
 const SpouseImpactAwareness = dynamic(
   () => import('@/components/dashboard/SpouseImpactAwareness'),
@@ -51,6 +56,10 @@ const GrowthJournalWidget = dynamic(
 const ReferralCard = dynamic(
   () => import('@/components/dashboard/ReferralCard'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-24 rounded-2xl" /> },
+);
+const DailyInventory = dynamic(
+  () => import('@/components/dashboard/DailyInventory'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
 );
 
 const SEVERITY_STYLES: Record<Severity, string> = {
@@ -221,6 +230,9 @@ export default async function DashboardPage() {
         trustPoints={heroTrustPoints}
         goals={profile?.goals ?? []}
       />
+
+      {/* ── Daily Commitment Ritual ────────────────────────── */}
+      <DailyCommitment />
 
       {/* ── Nudges ─────────────────────────────────────────── */}
       <NudgeBanner />
@@ -472,6 +484,11 @@ export default async function DashboardPage() {
         <GrowthJournalWidget />
       </Suspense>
 
+      {/* ── Daily Inventory (Step 10) ─────────────────────── */}
+      <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+        <DailyInventory compact />
+      </Suspense>
+
       {/* ── Other Services ─────────────────────────────────── */}
       <section>
         <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-4">Other Services</h3>
@@ -532,6 +549,28 @@ export default async function DashboardPage() {
             <div className="flex-1">
               <h4 className="font-headline font-bold text-sm text-on-surface">End-to-End Encryption</h4>
               <p className="text-[10px] text-on-surface-variant">Maximum privacy for interactions.</p>
+            </div>
+            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
+          </Link>
+
+          <Link href="/dashboard/values" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
+            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>diamond</span>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-headline font-bold text-sm text-on-surface">Values Clarification</h4>
+              <p className="text-[10px] text-on-surface-variant">Align actions with core values.</p>
+            </div>
+            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
+          </Link>
+
+          <Link href="/dashboard/commitments" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
+            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>wb_twilight</span>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-headline font-bold text-sm text-on-surface">Daily Commitment</h4>
+              <p className="text-[10px] text-on-surface-variant">Morning intentions, evening reflections.</p>
             </div>
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
           </Link>

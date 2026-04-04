@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import useSWR from 'swr';
 
 interface Starter {
   text: string;
@@ -12,29 +13,16 @@ interface ConversationStartersProps {
 }
 
 export default function ConversationStarters({ monitoredUserId }: ConversationStartersProps) {
-  const [starters, setStarters] = useState<Starter[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [empty, setEmpty] = useState(false);
-  const [fallback, setFallback] = useState<string | null>(null);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
-  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    fetch(`/api/partner/conversation-starters?user_id=${monitoredUserId}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data.empty) {
-          setEmpty(true);
-          setFallback(data.fallback || null);
-        } else if (data.starters) {
-          setStarters(data.starters);
-        } else {
-          setError(true);
-        }
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [monitoredUserId]);
+  const { data: apiData, error: fetchError, isLoading: loading } = useSWR<any>(
+    `/api/partner/conversation-starters?user_id=${monitoredUserId}`,
+  );
+
+  const starters: Starter[] = apiData?.starters ?? [];
+  const empty = apiData?.empty ?? false;
+  const fallback: string | null = apiData?.fallback ?? null;
+  const error = !!fetchError || (!loading && !apiData?.starters && !apiData?.empty);
 
   const copyToClipboard = useCallback(async (text: string, idx: number) => {
     try {

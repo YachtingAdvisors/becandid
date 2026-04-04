@@ -11,7 +11,8 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 
 const PLAN_DISPLAY: Record<string, { name: string; emoji: string; color: string }> = {
   free: { name: 'Free', emoji: 'eco', color: 'text-on-surface-variant' },
@@ -20,22 +21,13 @@ const PLAN_DISPLAY: Record<string, { name: string; emoji: string; color: string 
 };
 
 export default function SubscriptionCard() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, error, isLoading: loading, mutate } = useSWR<any>('/api/billing');
   const [actionLoading, setActionLoading] = useState(false);
   const [promoCode, setPromoCode] = useState('');
   const [promoError, setPromoError] = useState('');
   const [promoSuccess, setPromoSuccess] = useState('');
   const [applyingPromo, setApplyingPromo] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
-
-  useEffect(() => {
-    fetch('/api/billing')
-      .then((r) => r.json())
-      .then(setData)
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
 
   const openCheckout = async (billing: 'monthly' | 'annual', plan: 'pro' | 'therapy' = 'pro') => {
     setActionLoading(true);

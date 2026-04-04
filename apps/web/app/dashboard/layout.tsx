@@ -15,6 +15,7 @@ import EmailVerificationBanner from '@/components/dashboard/EmailVerificationBan
 import WebTrackingProvider from '@/components/dashboard/WebTrackingProvider';
 import IdleTimeout from '@/components/IdleTimeout';
 import RealtimeProvider from '@/components/dashboard/RealtimeProvider';
+import SWRProvider from '@/components/SWRProvider';
 
 // Nav items — some hidden in solo mode
 const NAV_ITEMS = [
@@ -26,6 +27,8 @@ const NAV_ITEMS = [
   { id: 'chips', href: '/dashboard/chips', label: 'Focus Chips', icon: 'military_tech', solo: true },
   { id: 'progress', href: '/dashboard/progress', label: 'Progress', icon: 'trending_up', solo: true },
   { id: 'fasting', href: '/dashboard/fasting', label: 'Fasting', icon: 'self_improvement', solo: true },
+  { id: 'amends', href: '/dashboard/amends', label: 'Making Amends', icon: 'handshake', solo: true },
+  { id: 'inventory', href: '/dashboard/inventory', label: 'Daily Inventory', icon: 'self_improvement', solo: true },
   { id: 'groups', href: '/dashboard/groups', label: 'Groups', icon: 'diversity_3', solo: true },
   { id: 'community', href: '/dashboard/community', label: 'Community', icon: 'groups', solo: true },
   { id: 'mentors', href: '/dashboard/mentors', label: 'Mentors', icon: 'supervised_user_circle', solo: true },
@@ -88,9 +91,11 @@ export default async function DashboardLayout({
         {!isVerified && user.email && (
           <EmailVerificationBanner email={user.email} />
         )}
+        <SWRProvider>
         <div className="relative px-4 py-6 lg:px-10 lg:py-10">
           {children}
         </div>
+        </SWRProvider>
         <RealtimeProvider />
       </main>
     </div>
