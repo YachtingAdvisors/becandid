@@ -553,6 +553,28 @@ export default async function DashboardPage() {
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
           </Link>
 
+          <Link href="/dashboard/values" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
+            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>diamond</span>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-headline font-bold text-sm text-on-surface">Values Clarification</h4>
+              <p className="text-[10px] text-on-surface-variant">Align actions with core values.</p>
+            </div>
+            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
+          </Link>
+
+          <Link href="/dashboard/commitments" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
+            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>wb_twilight</span>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-headline font-bold text-sm text-on-surface">Daily Commitment</h4>
+              <p className="text-[10px] text-on-surface-variant">Morning intentions, evening reflections.</p>
+            </div>
+            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
+          </Link>
+
           <Link href="/dashboard/checkins" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
