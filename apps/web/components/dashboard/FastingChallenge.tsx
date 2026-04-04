@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import useSWR from 'swr';
 
 /* ── Types ───────────────────────────────────────────────── */
 
@@ -194,8 +195,6 @@ function CountdownRing({ pct, size = 160, stroke = 10 }: { pct: number; size?: n
 /* ── Main Component ──────────────────────────────────────── */
 
 export default function FastingChallenge() {
-  const [fasts, setFasts] = useState<Fast[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [customLabel, setCustomLabel] = useState('');
   const [customCategory, setCustomCategory] = useState('');
@@ -212,21 +211,8 @@ export default function FastingChallenge() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
-  const fetchFasts = useCallback(async () => {
-    try {
-      const res = await fetch('/api/fasts');
-      if (res.ok) {
-        const data = await res.json();
-        setFasts(data.fasts ?? []);
-      }
-    } catch {
-      // silently fail
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { fetchFasts(); }, [fetchFasts]);
+  const { data: fastsData, isLoading: loading, mutate } = useSWR<{ fasts: Fast[] }>('/api/fasts');
+  const fasts = fastsData?.fasts ?? [];
 
   const activeFasts = fasts.filter(f => !f.completed_at && !f.broken_at);
   const pastFasts = fasts.filter(f => f.completed_at || f.broken_at);

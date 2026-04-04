@@ -15,6 +15,7 @@ import EmailVerificationBanner from '@/components/dashboard/EmailVerificationBan
 import WebTrackingProvider from '@/components/dashboard/WebTrackingProvider';
 import IdleTimeout from '@/components/IdleTimeout';
 import RealtimeProvider from '@/components/dashboard/RealtimeProvider';
+import SWRProvider from '@/components/SWRProvider';
 
 // Nav items — some hidden in solo mode
 const NAV_ITEMS = [
@@ -90,9 +91,11 @@ export default async function DashboardLayout({
         {!isVerified && user.email && (
           <EmailVerificationBanner email={user.email} />
         )}
+        <SWRProvider>
         <div className="relative px-4 py-6 lg:px-10 lg:py-10">
           {children}
         </div>
+        </SWRProvider>
         <RealtimeProvider />
       </main>
     </div>

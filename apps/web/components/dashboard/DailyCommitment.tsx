@@ -12,7 +12,8 @@
 //  - Evening (after 6 PM): expandable review card
 // ============================================================
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import useSWR from 'swr';
 
 interface Commitment {
   id: string;
@@ -48,8 +49,7 @@ function getTimeOfDay(): TimeOfDay {
 }
 
 export default function DailyCommitment() {
-  const [data, setData] = useState<CommitmentData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, error, isLoading: loading, mutate } = useSWR<CommitmentData>('/api/commitments');
   const [intention, setIntention] = useState('');
   const [reflection, setReflection] = useState('');
   const [intentionMet, setIntentionMet] = useState<boolean | null>(null);
@@ -57,28 +57,12 @@ export default function DailyCommitment() {
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('morning');
   const [showReview, setShowReview] = useState(false);
 
-  // ── Fetch data ───────────────────────────────────────────
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await fetch('/api/commitments');
-      if (res.ok) {
-        const d = await res.json();
-        setData(d);
-      }
-    } catch {
-      // silent
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    fetchData();
     setTimeOfDay(getTimeOfDay());
     // Update time of day every minute
     const interval = setInterval(() => setTimeOfDay(getTimeOfDay()), 60_000);
     return () => clearInterval(interval);
-  }, [fetchData]);
+  }, []);
 
   // ── Set morning intention ─────────────────────────────────
   const handleSetIntention = async () => {
@@ -91,7 +75,7 @@ export default function DailyCommitment() {
         body: JSON.stringify({ intention: intention.trim() }),
       });
       if (res.ok) {
-        await fetchData();
+        await mutate();
         setIntention('');
       }
     } catch {
@@ -115,7 +99,7 @@ export default function DailyCommitment() {
         }),
       });
       if (res.ok) {
-        await fetchData();
+        await mutate();
         setShowReview(false);
         setReflection('');
         setIntentionMet(null);

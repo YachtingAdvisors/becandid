@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 
 interface ChallengeData {
   id: string;
@@ -20,27 +21,12 @@ const TYPE_META: Record<string, { icon: string; color: string; bg: string; label
 };
 
 export default function DailyChallenge() {
-  const [challenge, setChallenge] = useState<ChallengeData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: challenge, error, isLoading: loading, mutate } = useSWR<ChallengeData>('/api/challenges');
   const [completing, setCompleting] = useState(false);
   const [justCompleted, setJustCompleted] = useState(false);
 
-  const fetchChallenge = useCallback(async () => {
-    try {
-      const res = await fetch('/api/challenges');
-      if (res.ok) {
-        const data = await res.json();
-        setChallenge(data);
-        if (data.completed) setJustCompleted(true);
-      }
-    } catch {
-      // silently fail
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { fetchChallenge(); }, [fetchChallenge]);
+  // Sync justCompleted when data arrives already completed
+  if (challenge?.completed && !justCompleted) setJustCompleted(true);
 
   const handleComplete = async () => {
     if (!challenge || challenge.completed || completing) return;
@@ -49,7 +35,7 @@ export default function DailyChallenge() {
       const res = await fetch('/api/challenges', { method: 'PATCH' });
       if (res.ok) {
         const data = await res.json();
-        setChallenge(data);
+        mutate(data, false);
         setJustCompleted(true);
       }
     } catch {

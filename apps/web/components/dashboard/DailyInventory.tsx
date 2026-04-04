@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import useSWR from 'swr';
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -72,8 +73,6 @@ interface DailyInventoryProps {
 }
 
 export default function DailyInventory({ compact = false }: DailyInventoryProps) {
-  const [inventory, setInventory] = useState<Inventory | null>(null);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -97,13 +96,11 @@ export default function DailyInventory({ compact = false }: DailyInventoryProps)
 
   // ── Fetch today's inventory ──────────────────────────────
 
-  const fetchToday = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/inventory?date=${today}`);
-      if (res.ok) {
-        const data = await res.json();
+  const { data: inventoryData, isLoading: loading, mutate } = useSWR<{ inventories: Inventory[] }>(
+    `/api/inventory?date=${today}`,
+    {
+      onSuccess: (data) => {
         const inv = data.inventories?.[0] ?? null;
-        setInventory(inv);
         if (inv) {
           setWentWell(inv.went_well || '');
           setWasDishonest(inv.was_dishonest || '');
@@ -111,12 +108,11 @@ export default function DailyInventory({ compact = false }: DailyInventoryProps)
           setGratefulFor(inv.grateful_for || '');
           setRating(inv.overall_rating);
         }
-      }
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
-  }, [today]);
+      },
+    },
+  );
 
-  useEffect(() => { fetchToday(); }, [fetchToday]);
+  const inventory = inventoryData?.inventories?.[0] ?? null;
 
   // ── Save ─────────────────────────────────────────────────
 
@@ -141,7 +137,7 @@ export default function DailyInventory({ compact = false }: DailyInventoryProps)
       if (res.ok) {
         setSaved(true);
         setEditing(false);
-        fetchToday();
+        mutate();
         setTimeout(() => setSaved(false), 3000);
       }
     } catch (e) { console.error(e); }
