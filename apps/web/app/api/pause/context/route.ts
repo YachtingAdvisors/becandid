@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { calculateFocusStreak } from '@/lib/focusSegments';
 import { decryptJournalEntry } from '@/lib/encryption';
+import { decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
 import { getRandomQuote, type FoundationalMotivator } from '@be-candid/shared';
@@ -39,7 +40,7 @@ export async function GET(req: NextRequest) {
     const motivator = (profile?.motivator as FoundationalMotivator) || null;
 
     // Fetch all context in parallel
-    const [streak, journalResult, partnerResult] = await Promise.all([
+    const [streak, journalResult, partnerResult, topValueResult] = await Promise.all([
       // Current streak
       calculateFocusStreak(db, user.id, tz),
 
@@ -56,6 +57,13 @@ export async function GET(req: NextRequest) {
         .eq('user_id', user.id)
         .eq('status', 'active')
         .order('created_at', { ascending: true })
+        .maybeSingle(),
+
+      // Top user value (#1 ranked)
+      db.from('user_values')
+        .select('value_name, rival_conflict')
+        .eq('user_id', user.id)
+        .eq('rank', 1)
         .maybeSingle(),
     ]);
 
@@ -92,6 +100,17 @@ export async function GET(req: NextRequest) {
     // Random quote for the user's motivator
     const quote = getRandomQuote(motivator);
 
+    // Resolve top value (decrypt rival_conflict if present)
+    let topValue: { name: string; conflict: string | null } | null = null;
+    if (topValueResult.data) {
+      topValue = {
+        name: topValueResult.data.value_name,
+        conflict: topValueResult.data.rival_conflict
+          ? decrypt(topValueResult.data.rival_conflict, user.id)
+          : null,
+      };
+    }
+
     return NextResponse.json({
       streak: streak.streakDays,
       lastInsight,
@@ -99,6 +118,7 @@ export async function GET(req: NextRequest) {
       quote: { text: quote.text, author: quote.author, ref: quote.ref },
       partner: partnerName ? { name: partnerName, phone: partnerPhone } : null,
       userName: profile?.display_name || null,
+      topValue,
     });
   } catch (err) {
     console.error('Pause context error:', err);

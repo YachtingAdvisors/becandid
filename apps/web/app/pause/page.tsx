@@ -28,6 +28,7 @@ interface PauseContext {
   quote: { text: string; author: string; ref: string } | null;
   partner: { name: string; phone: string | null } | null;
   userName: string | null;
+  topValue: { name: string; conflict: string | null } | null;
 }
 
 // ── Constants ────────────────────────────────────────────────
@@ -316,6 +317,23 @@ function PauseContent() {
                   {context.streak} {context.streak === 1 ? 'day' : 'days'}
                 </span>
               </p>
+            </div>
+          )}
+
+          {/* Top value reminder */}
+          {context?.topValue && (
+            <div className="w-full rounded-2xl bg-white/[0.04] border border-white/[0.08] px-5 py-4">
+              <p className="font-label text-[10px] uppercase tracking-widest text-white/30 mb-2">
+                Your #1 value
+              </p>
+              <p className="font-headline text-base font-bold text-white/80">
+                You said <span className="text-[#226779]">{context.topValue.name}</span> is your #1 value.
+              </p>
+              {context.topValue.conflict && (
+                <p className="font-body text-xs text-white/40 mt-1.5 leading-relaxed italic">
+                  {context.topValue.conflict}
+                </p>
+              )}
             </div>
           )}
 

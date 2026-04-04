@@ -23,6 +23,11 @@ const DailyChallenge = dynamic(
   { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-2xl" /> },
 );
 
+const DailyCommitment = dynamic(
+  () => import('@/components/dashboard/DailyCommitment'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-3xl" /> },
+);
+
 /* Dynamically imported heavy client components for code-splitting */
 const SpouseImpactAwareness = dynamic(
   () => import('@/components/dashboard/SpouseImpactAwareness'),
@@ -51,6 +56,10 @@ const GrowthJournalWidget = dynamic(
 const ReferralCard = dynamic(
   () => import('@/components/dashboard/ReferralCard'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-24 rounded-2xl" /> },
+);
+const DailyInventory = dynamic(
+  () => import('@/components/dashboard/DailyInventory'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
 );
 
 const SEVERITY_STYLES: Record<Severity, string> = {
@@ -221,6 +230,9 @@ export default async function DashboardPage() {
         trustPoints={heroTrustPoints}
         goals={profile?.goals ?? []}
       />
+
+      {/* ── Daily Commitment Ritual ────────────────────────── */}
+      <DailyCommitment />
 
       {/* ── Nudges ─────────────────────────────────────────── */}
       <NudgeBanner />
@@ -470,6 +482,11 @@ export default async function DashboardPage() {
       {/* ── Growth Journal Widget ────────────────────────── */}
       <Suspense fallback={null}>
         <GrowthJournalWidget />
+      </Suspense>
+
+      {/* ── Daily Inventory (Step 10) ─────────────────────── */}
+      <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+        <DailyInventory compact />
       </Suspense>
 
       {/* ── Other Services ─────────────────────────────────── */}
