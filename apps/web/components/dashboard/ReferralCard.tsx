@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import useSWR from 'swr';
 
 interface ReferralStats {
   referralCode: string | null;
@@ -10,15 +11,8 @@ interface ReferralStats {
 }
 
 export default function ReferralCard() {
-  const [stats, setStats] = useState<ReferralStats | null>(null);
+  const { data: stats } = useSWR<ReferralStats>('/api/referrals');
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    fetch('/api/referrals')
-      .then(r => r.json())
-      .then(setStats)
-      .catch(() => {});
-  }, []);
 
   const referralUrl = stats?.referralCode
     ? `${typeof window !== 'undefined' ? window.location.origin : ''}/r/${stats.referralCode}`

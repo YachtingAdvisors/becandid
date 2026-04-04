@@ -260,7 +260,7 @@ export default function FastingChallenge() {
       setCustomLabel('');
       setCustomCategory('');
       setCustomDays(7);
-      await fetchFasts();
+      await mutate();
     } catch {
       setError('Network error. Please try again.');
     } finally {
@@ -278,7 +278,7 @@ export default function FastingChallenge() {
         body: JSON.stringify({ broken_at: new Date().toISOString() }),
       });
       setConfirmBreak(null);
-      await fetchFasts();
+      await mutate();
     } catch { /* silently fail */ }
   }
 
@@ -289,7 +289,7 @@ export default function FastingChallenge() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed_at: new Date().toISOString() }),
       });
-      await fetchFasts();
+      await mutate();
     } catch { /* silently fail */ }
   }
 

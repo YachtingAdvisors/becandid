@@ -10,7 +10,8 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 import Link from 'next/link';
 
 interface Connection {
@@ -35,8 +36,8 @@ const CONSENT_ITEMS = [
 ];
 
 export default function TherapistSettings() {
-  const [connections, setConnections] = useState<Connection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: therapistData, isLoading: loading, mutate } = useSWR<{ as_user: Connection[] }>('/api/therapist');
+  const connections = therapistData?.as_user ?? [];
   const [showInvite, setShowInvite] = useState(false);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -44,15 +45,6 @@ export default function TherapistSettings() {
   const [error, setError] = useState('');
 
   const [findingSent, setFindingSent] = useState(false);
-
-  const fetchConnections = () => {
-    fetch('/api/therapist').then((r) => r.json()).then((d) => {
-      setConnections(d.as_user || []);
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  };
-
-  useEffect(() => { fetchConnections(); }, []);
 
   const sendInvite = async () => {
     if (!email.trim()) return;
@@ -66,13 +58,17 @@ export default function TherapistSettings() {
       });
       const data = await res.json();
       if (data.error) { setError(data.error); }
-      else { setEmail(''); setName(''); setShowInvite(false); fetchConnections(); }
+      else { setEmail(''); setName(''); setShowInvite(false); mutate(); }
     } catch (e) { setError('Failed to send invite'); }
     setSending(false);
   };
 
   const updateConsent = async (connectionId: string, field: string, value: boolean) => {
-    setConnections((prev) => prev.map((c) => c.id === connectionId ? { ...c, [field]: value } : c));
+    // Optimistic update
+    mutate(
+      (prev) => prev ? { ...prev, as_user: prev.as_user.map((c) => c.id === connectionId ? { ...c, [field]: value } : c) } : prev,
+      false,
+    );
     await fetch('/api/therapist', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -87,7 +83,7 @@ export default function TherapistSettings() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ connection_id: connectionId, action: 'revoke' }),
     });
-    fetchConnections();
+    mutate();
   };
 
   if (loading) return <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5"><div className="h-32 animate-pulse bg-surface-container-low rounded-lg" /></div>;
