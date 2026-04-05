@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
 
@@ -9,7 +11,12 @@ function MaterialIcon({ name, className = '' }: { name: string; className?: stri
   return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
 }
 
-export default function DownloadPage() {
+export default async function DownloadPage() {
+  // Require authentication — redirect to signin if not logged in
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect('/auth/signin?redirect=/download');
+
   return (
     <div className="min-h-screen bg-[#020617] text-white overflow-x-hidden">
       <PublicNav />
