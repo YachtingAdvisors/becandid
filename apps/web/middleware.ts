@@ -183,7 +183,7 @@ export async function middleware(request: NextRequest) {
 
     // Unauthenticated → redirect or 401
     if (!user) {
-      if (pathname.startsWith('/dashboard') || pathname.startsWith('/partner')) {
+      if (pathname.startsWith('/dashboard') || pathname.startsWith('/partner') || pathname.startsWith('/download')) {
         const url = request.nextUrl.clone();
         url.pathname = '/auth/signin';
         url.searchParams.set('redirect', pathname);

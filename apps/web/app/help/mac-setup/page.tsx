@@ -139,12 +139,11 @@ export default function MacSetupGuide() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="text-center pt-4">
-          <Link href="/download" className="btn-primary inline-flex items-center gap-2">
-            <span className="material-symbols-outlined text-lg">download</span>
-            Download for Mac
-          </Link>
+        {/* Notice */}
+        <div className="text-center pt-4 px-4 py-3 rounded-2xl bg-amber-50 border border-amber-200">
+          <p className="text-sm text-amber-800 font-body">
+            The macOS desktop app is temporarily unavailable while we complete Apple notarization. Check back soon.
+          </p>
         </div>
       </div>
     </div>

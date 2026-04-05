@@ -110,16 +110,12 @@ export default function DownloadPage() {
                 ))}
               </ul>
 
-              <a
-                href="https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0/BeCandid-1.0.0-mac-arm64.dmg"
-                className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
-              >
-                <MaterialIcon name="download" className="text-lg" />
-                Download for macOS
-              </a>
-
-              <p className="text-stone-500 text-xs mt-4 text-center">
-                Windows version coming soon
+              <div className="w-full px-6 py-3.5 bg-stone-700 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
+                <MaterialIcon name="pause_circle" className="text-lg" />
+                {' '}macOS — Temporarily Unavailable
+              </div>
+              <p className="text-amber-400/80 text-xs mt-4 text-center">
+                The macOS build is being updated for Apple notarization. Check back soon.
               </p>
             </div>
 

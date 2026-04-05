@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import useSWR from 'swr';
 import type { FoundationalMotivator, MotivatorQuote } from '@be-candid/shared';
 import { getQuotesForMotivator, MR_ROGERS_QUOTE } from '@be-candid/shared';
 
@@ -25,7 +26,6 @@ export default function QuoteCarousel({ motivator, userId }: QuoteCarouselProps)
   }, [motivator]);
 
   const [index, setIndex] = useState(0);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [toggling, setToggling] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
@@ -42,16 +42,12 @@ export default function QuoteCarousel({ motivator, userId }: QuoteCarouselProps)
   const gradientKey = currentQuote.motivator ?? 'general';
   const gradient = MOTIVATOR_GRADIENTS[gradientKey] ?? MOTIVATOR_GRADIENTS.general;
 
-  // Fetch favorites on mount
-  useEffect(() => {
-    fetch('/api/quotes/favorites')
-      .then(r => r.json())
-      .then(d => {
-        const favTexts = (d.favorites ?? []).map((f: any) => f.quote_text);
-        setFavorites(new Set(favTexts));
-      })
-      .catch(() => {});
-  }, []);
+  // Fetch favorites with SWR
+  const { data: favData, mutate: mutateFavs } = useSWR<{ favorites: any[] }>('/api/quotes/favorites');
+  const favorites = useMemo(() => {
+    const favTexts = (favData?.favorites ?? []).map((f: any) => f.quote_text);
+    return new Set(favTexts);
+  }, [favData]);
 
   // Auto-advance every 15 seconds
   useEffect(() => {
@@ -109,21 +105,20 @@ export default function QuoteCarousel({ motivator, userId }: QuoteCarouselProps)
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ quote_text: currentQuote.text }),
         });
-        setFavorites(prev => { const n = new Set(prev); n.delete(currentQuote.text); return n; });
       } else {
         await fetch('/api/quotes/favorites', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ quote_text: currentQuote.text, quote_author: currentQuote.author }),
         });
-        setFavorites(prev => new Set(prev).add(currentQuote.text));
       }
+      mutateFavs();
     } catch {
       // silently fail
     } finally {
       setToggling(false);
     }
-  }, [toggling, favorites, currentQuote]);
+  }, [toggling, favorites, currentQuote, mutateFavs]);
 
   // Copy to clipboard
   const shareQuote = useCallback(async () => {
