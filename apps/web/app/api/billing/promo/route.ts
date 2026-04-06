@@ -26,13 +26,58 @@ export async function POST(req: NextRequest) {
     if (!body?.code) return NextResponse.json({ error: 'Promo code required' }, { status: 400 });
 
     const code = body.code.trim();
+    const db = createServiceClient();
+
+    // ── Check organization plans first ──────────────────────────
+    const { data: orgPlan } = await db.from('organization_plans')
+      .select('id, org_name, price_per_user, max_users, users_enrolled')
+      .eq('promo_code', code.toUpperCase())
+      .eq('active', true)
+      .single();
+
+    if (orgPlan) {
+      // Check capacity
+      if (orgPlan.users_enrolled >= orgPlan.max_users) {
+        return NextResponse.json(
+          { error: 'This group plan has reached its member limit. Contact your organization leader.' },
+          { status: 400 },
+        );
+      }
+
+      // Grant Pro features at group pricing
+      await db.from('users').update({
+        subscription_plan: 'pro',
+        subscription_status: 'active',
+        plan_expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        org_plan_id: orgPlan.id,
+      }).eq('id', user.id);
+
+      // Increment enrolled count
+      await db.from('organization_plans')
+        .update({ users_enrolled: orgPlan.users_enrolled + 1 })
+        .eq('id', orgPlan.id);
+
+      auditLog({
+        action: 'settings.changed' as any,
+        userId: user.id,
+        metadata: { promo_code: code, plan: 'pro', org_plan: orgPlan.org_name, type: 'org_plan' },
+      });
+
+      return NextResponse.json({
+        success: true,
+        plan: 'pro',
+        org_name: orgPlan.org_name,
+        message: `Welcome! You now have Pro access through ${orgPlan.org_name}'s group plan.`,
+      });
+    }
+
+    // ── Check static promo codes ────────────────────────────────
     const promo = PROMO_CODES[code];
 
     if (!promo) {
       return NextResponse.json({ error: 'Invalid promo code' }, { status: 400 });
     }
 
-    const db = createServiceClient();
     const expiresAt = new Date(Date.now() + promo.days * 24 * 60 * 60 * 1000).toISOString();
 
     await db.from('users').update({

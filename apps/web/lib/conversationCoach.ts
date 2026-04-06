@@ -8,6 +8,12 @@
 //   2. Longing    — name the real need
 //   3. Roadmap    — point toward growth
 //
+// Hybrid architecture with tiered cost model:
+//   Tier 1 (static)  — Pre-written coaching content, score >= 60
+//   Tier 2 (haiku)   — Haiku personalizes matched content, score 20-59
+//   Tier 3 (sonnet)  — Full Sonnet generation, no match or score < 20
+//   Crisis           — Always Sonnet with crisis-specific prompt
+//
 // Returns a streaming AsyncGenerator for real-time UI delivery.
 // ============================================================
 
@@ -15,6 +21,8 @@ import Anthropic from '@anthropic-ai/sdk';
 import { createServiceClient } from '@/lib/supabase';
 import { decrypt } from '@/lib/encryption';
 import { logApiCost } from '@/lib/costTracker';
+import { findCoachingContent, detectCrisisKeywords } from '@/lib/coachingLookup';
+import type { CoachingPhase } from '@/lib/coachingLookup';
 
 function getAnthropic() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
@@ -36,6 +44,8 @@ interface UserContext {
   currentStreak: number;
   alertDetails: { category?: string; severity?: string; platform?: string; app_name?: string; sent_at?: string } | null;
 }
+
+export type CoachTier = 'static' | 'haiku' | 'sonnet' | 'crisis';
 
 // ─── Context Loader ─────────────────────────────────────────
 
@@ -197,31 +207,235 @@ These are confirmed family-of-origin patterns. If the conversation naturally tou
   return parts.join('\n');
 }
 
+// ─── Crisis System Prompt ───────────────────────────────────
+
+const CRISIS_SYSTEM_PROMPT = `You are the Conversation Coach for Be Candid. The user has expressed thoughts that may indicate they are in crisis.
+
+YOUR ABSOLUTE PRIORITY: Safety first. Before anything else, provide these resources clearly:
+
+CRISIS RESOURCES:
+- 988 Suicide & Crisis Lifeline: Call or text 988 (available 24/7)
+- Crisis Text Line: Text HOME to 741741
+- International Association for Suicide Prevention: https://www.iasp.info/resources/Crisis_Centres/
+
+THEN:
+- Acknowledge their pain without minimizing it
+- Let them know they are not alone
+- Gently encourage them to reach out to one of these resources or a trusted person
+- Stay present and compassionate
+- Do NOT try to coach through the Stringer framework right now — this is not the time for tributaries/longing/roadmap
+- Do NOT use platitudes like "it gets better" or "think of what you have to live for"
+- DO say things like "I hear you" and "What you're feeling right now is real"
+- If they continue to engage, keep validating and gently redirecting toward professional support
+
+You are not a therapist. You are not qualified to handle a crisis. Your job is to be a compassionate bridge to real help.`;
+
+// ─── Phase Detection ────────────────────────────────────────
+
+function detectPhase(
+  history: Array<{ role: 'user' | 'assistant'; content: string }>,
+  messageCount: number,
+): CoachingPhase {
+  if (messageCount === 0) return 'opening';
+  if (messageCount <= 3) return 'tributaries';
+  if (messageCount <= 6) return 'longing';
+  if (messageCount <= 9) return 'roadmap';
+  return 'affirmation';
+}
+
+// ─── Tag Extraction ─────────────────────────────────────────
+
+const TAG_KEYWORDS: Record<string, string[]> = {
+  loneliness: ['lonely', 'alone', 'isolated', 'nobody', 'no one'],
+  stress: ['stressed', 'stress', 'overwhelmed', 'pressure', 'anxious', 'anxiety'],
+  boredom: ['bored', 'boredom', 'nothing to do', 'restless'],
+  shame: ['shame', 'ashamed', 'disgusted', 'worthless', 'failure'],
+  anger: ['angry', 'furious', 'rage', 'mad', 'pissed'],
+  exhaustion: ['tired', 'exhausted', 'burnt out', 'burnout', 'drained'],
+  rejection: ['rejected', 'rejection', 'turned down', 'unwanted'],
+  conflict: ['fight', 'argument', 'conflict', 'yelling', 'screaming'],
+  late_night: ['late at night', 'middle of the night', 'cant sleep', "can't sleep", '2am', '3am', '4am'],
+  relapse: ['relapse', 'again', 'fell', 'slipped', 'gave in'],
+  progress: ['better', 'progress', 'improving', 'streak', 'proud'],
+  marriage: ['wife', 'husband', 'spouse', 'marriage', 'partner'],
+  parenting: ['kids', 'children', 'son', 'daughter', 'parent'],
+  work: ['work', 'job', 'boss', 'career', 'office', 'coworker'],
+};
+
+function extractTags(message: string, history: Array<{ role: 'user' | 'assistant'; content: string }>): string[] {
+  const combined = [message, ...history.slice(-4).map((m) => m.content)].join(' ').toLowerCase();
+  const tags: string[] = [];
+
+  for (const [tag, keywords] of Object.entries(TAG_KEYWORDS)) {
+    if (keywords.some((kw) => combined.includes(kw))) {
+      tags.push(tag);
+    }
+  }
+
+  return tags;
+}
+
+// ─── Haiku Personalization ──────────────────────────────────
+
+async function* personalizeWithHaiku(
+  baseContent: string,
+  followUp: string,
+  userMessage: string,
+  userId: string,
+): AsyncGenerator<string> {
+  const haikuModel = 'claude-haiku-4-5-20251001';
+  const prompt = `You are a warm, compassionate conversation coach. Take this pre-written coaching response and lightly personalize it to feel natural in reply to the user's message. Keep the core meaning intact. Respond in 2-4 sentences.
+
+Pre-written response: "${baseContent}"
+Follow-up question: "${followUp}"
+
+Blend these naturally. Do not add new therapeutic concepts. Just make it feel like a real response to what the user said.`;
+
+  const stream = getAnthropic().messages.stream({
+    model: haikuModel,
+    max_tokens: 400,
+    system: prompt,
+    messages: [{ role: 'user', content: userMessage }],
+  });
+
+  for await (const event of stream) {
+    if (
+      event.type === 'content_block_delta' &&
+      event.delta.type === 'text_delta'
+    ) {
+      yield event.delta.text;
+    }
+  }
+
+  const finalMessage = await stream.finalMessage();
+  logApiCost({
+    feature: 'coach',
+    model: haikuModel,
+    inputTokens: finalMessage.usage.input_tokens,
+    outputTokens: finalMessage.usage.output_tokens,
+    userId,
+    tier: 'haiku',
+  });
+}
+
 // ─── Streaming Coach Response ───────────────────────────────
 
-export async function* streamCoachResponse(params: CoachParams): AsyncGenerator<string> {
+export async function* streamCoachResponse(
+  params: CoachParams,
+): AsyncGenerator<string, { tier: CoachTier }> {
   const { userId, message, history, alertId } = params;
 
-  // Load context
-  const ctx = await loadUserContext(userId, alertId);
+  // ── Step 0: Crisis detection (always wins) ────────────────
+  const isCrisis = detectCrisisKeywords(message);
 
-  // Build messages array
+  if (isCrisis) {
+    const sonnetModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+    const stream = getAnthropic().messages.stream({
+      model: sonnetModel,
+      max_tokens: 800,
+      system: [
+        {
+          type: 'text' as const,
+          text: CRISIS_SYSTEM_PROMPT,
+          cache_control: { type: 'ephemeral' as const },
+        },
+      ],
+      messages: [
+        ...history.map((m) => ({ role: m.role, content: m.content })),
+        { role: 'user' as const, content: message },
+      ],
+    });
+
+    for await (const event of stream) {
+      if (
+        event.type === 'content_block_delta' &&
+        event.delta.type === 'text_delta'
+      ) {
+        yield event.delta.text;
+      }
+    }
+
+    const finalMessage = await stream.finalMessage();
+    logApiCost({
+      feature: 'coach',
+      model: sonnetModel,
+      inputTokens: finalMessage.usage.input_tokens,
+      outputTokens: finalMessage.usage.output_tokens,
+      userId,
+      tier: 'crisis',
+    });
+
+    return { tier: 'crisis' };
+  }
+
+  // ── Step 1: Load context ──────────────────────────────────
+  const ctx = await loadUserContext(userId, alertId);
+  const category = ctx.alertDetails?.category ?? ctx.goals[0] ?? 'general';
+  const sessionMessageCount = history.filter((m) => m.role === 'user').length;
+  const phase = detectPhase(history, sessionMessageCount);
+  const tags = extractTags(message, history);
+
+  // ── Step 2: Look up coaching content ──────────────────────
+  const match = findCoachingContent({
+    category,
+    tags,
+    phase,
+    mood: ctx.recentJournals[0]?.mood,
+    sessionMessageCount,
+  });
+
+  // ── Step 3: Route by tier ─────────────────────────────────
+
+  // Tier 1: Strong match — serve static content directly
+  if (match && match.score >= 60) {
+    const response = match.followUp
+      ? `${match.content}\n\n${match.followUp}`
+      : match.content;
+
+    // Stream character by character for consistent UX
+    const words = response.split(' ');
+    for (const word of words) {
+      yield word + ' ';
+    }
+
+    logApiCost({
+      feature: 'coach',
+      model: 'static-content',
+      inputTokens: 0,
+      outputTokens: 0,
+      userId,
+      tier: 'static',
+    });
+
+    return { tier: 'static' };
+  }
+
+  // Tier 2: Partial match — use Haiku to personalize
+  if (match && match.score >= 20) {
+    yield* personalizeWithHaiku(
+      match.content,
+      match.followUp,
+      message,
+      userId,
+    );
+
+    return { tier: 'haiku' };
+  }
+
+  // Tier 3: No match — full Sonnet generation
   const systemPrompt = buildSystemPrompt(ctx);
+  const sonnetModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
 
   const messages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
 
-  // Add conversation history
   for (const msg of history) {
     messages.push({ role: msg.role, content: msg.content });
   }
 
-  // Add current message
   messages.push({ role: 'user', content: message });
 
-  // Stream from Anthropic with prompt caching on system prompt
-  const model = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
   const stream = getAnthropic().messages.stream({
-    model,
+    model: sonnetModel,
     max_tokens: 600,
     system: [
       {
@@ -242,14 +456,15 @@ export async function* streamCoachResponse(params: CoachParams): AsyncGenerator<
     }
   }
 
-  // Log cost from the final message (stream exposes usage via finalMessage)
   const finalMessage = await stream.finalMessage();
   logApiCost({
     feature: 'coach',
-    model,
+    model: sonnetModel,
     inputTokens: finalMessage.usage.input_tokens,
     outputTokens: finalMessage.usage.output_tokens,
     userId,
     tier: 'sonnet',
   });
+
+  return { tier: 'sonnet' };
 }
