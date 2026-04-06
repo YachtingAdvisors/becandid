@@ -378,10 +378,8 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
 
       // Cache the generated guides
       setCachedGuide(userId, event.category, false, userGuide, partnerGuide);
-    }
 
-    // ── 6. Notify partner (privacy-safe) — runs for all non-solo alerts ──
-    if (!solo && alertRecord) {
+      // ── 6. Notify partner (privacy-safe) ──────────────
       const { data: partner } = await db.from('partners')
         .select('id, partner_user_id, partner_name, partner_email, partner_phone, relationship')
         .eq('user_id', userId)
