@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
 
   const db = createServiceClient();
   const { data: profile } = await db.from('users')
-    .select('subscription_plan, subscription_status, trial_ends_at, stripe_customer_id')
+    .select('subscription_plan, subscription_status, trial_ends_at, stripe_customer_id, grandfathered')
     .eq('id', user.id)
     .single();
 
@@ -99,6 +99,7 @@ export async function GET(req: NextRequest) {
       days_left: trialDaysLeft,
       ends_at: trialEndsAt,
     } : null,
+    grandfathered: !!profile?.grandfathered,
     has_payment_method: !!profile?.stripe_customer_id,
     prices: STRIPE_CONFIG.prices,
   });

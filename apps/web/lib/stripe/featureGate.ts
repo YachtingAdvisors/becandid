@@ -35,9 +35,14 @@ interface GateResult {
 export async function checkFeatureGate(userId: string, feature: FeatureKey): Promise<GateResult> {
   const db = createServiceClient();
   const { data: user } = await db.from('users')
-    .select('subscription_plan, subscription_status')
+    .select('subscription_plan, subscription_status, grandfathered')
     .eq('id', userId)
     .single();
+
+  // Grandfathered users get full access to everything
+  if (user?.grandfathered) {
+    return { allowed: true, plan: 'therapy' as PlanId };
+  }
 
   const plan = (user?.subscription_plan || 'free') as PlanId;
   const status = user?.subscription_status || 'active';
@@ -69,9 +74,14 @@ export async function checkFeatureGate(userId: string, feature: FeatureKey): Pro
 export async function checkAIGuideLimit(userId: string): Promise<GateResult & { used?: number; limit?: number }> {
   const db = createServiceClient();
   const { data: user } = await db.from('users')
-    .select('subscription_plan')
+    .select('subscription_plan, grandfathered')
     .eq('id', userId)
     .single();
+
+  // Grandfathered users get unlimited
+  if (user?.grandfathered) {
+    return { allowed: true, plan: 'therapy' as PlanId };
+  }
 
   const plan = (user?.subscription_plan || 'free') as PlanId;
   const limits = getPlanLimits(plan);
@@ -112,9 +122,14 @@ export async function checkAIGuideLimit(userId: string): Promise<GateResult & { 
 export async function checkPartnerLimit(userId: string): Promise<GateResult & { count?: number; limit?: number }> {
   const db = createServiceClient();
   const { data: user } = await db.from('users')
-    .select('subscription_plan')
+    .select('subscription_plan, grandfathered')
     .eq('id', userId)
     .single();
+
+  // Grandfathered users get unlimited partners
+  if (user?.grandfathered) {
+    return { allowed: true, plan: 'therapy' as PlanId };
+  }
 
   const plan = (user?.subscription_plan || 'free') as PlanId;
   const limits = getPlanLimits(plan);

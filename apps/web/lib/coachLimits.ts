@@ -29,12 +29,17 @@ export async function checkCoachLimit(
   db: SupabaseClient,
   userId: string,
 ): Promise<CoachLimitResult> {
-  // Get user plan
+  // Get user plan + grandfathered status
   const { data: user } = await db
     .from('users')
-    .select('subscription_plan')
+    .select('subscription_plan, grandfathered')
     .eq('id', userId)
     .single();
+
+  // Grandfathered users get unlimited access
+  if (user?.grandfathered) {
+    return { allowed: true, remaining: -1, limit: -1, plan: 'grandfathered' };
+  }
 
   const plan = user?.subscription_plan || 'free';
   const limits = COACH_LIMITS[plan] || COACH_LIMITS.free;
