@@ -13,8 +13,9 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
-import { analyzeImage } from '@/lib/imageAnalysis';
+import { analyzeImage, analyzeScreenshot } from '@/lib/imageAnalysis';
 import { runAlertPipeline } from '@/lib/alertPipeline';
+import type { ScreenshotMetadata } from '@/lib/imageClassifier';
 
 // Rate limit: 20 captures per hour per user
 const captureCounts = new Map<string, { count: number; resetAt: number }>();
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { image } = body;
+    const { image, metadata: rawMetadata } = body;
 
     if (!image || typeof image !== 'string') {
       return NextResponse.json({ error: 'Missing base64 image data' }, { status: 400 });
@@ -79,8 +80,19 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Run Claude Vision analysis
-    const analysis = await analyzeImage(image, 'image/jpeg', userGoals);
+    // Build screenshot metadata for the pre-classifier
+    const screenshotMetadata: ScreenshotMetadata = {
+      activeApp: rawMetadata?.activeApp ?? 'Unknown',
+      activeUrl: rawMetadata?.activeUrl ?? undefined,
+      windowTitle: rawMetadata?.windowTitle ?? undefined,
+      timestamp: rawMetadata?.timestamp ?? new Date().toISOString(),
+      screenChanged: rawMetadata?.screenChanged ?? true,
+    };
+
+    // Run selective analysis: pre-classifier first, Vision only if needed
+    const analysis = rawMetadata
+      ? await analyzeScreenshot(image, 'image/jpeg', screenshotMetadata, userGoals, user.id)
+      : await analyzeImage(image, 'image/jpeg', userGoals, user.id);
 
     // Only create an event if something meaningful was detected
     if (analysis.categories.length > 0 && analysis.confidence > 0.3) {
@@ -98,7 +110,8 @@ export async function POST(req: NextRequest) {
           detected_categories: analysis.categories,
           confidence: analysis.confidence,
           nsfw: analysis.nsfw,
-          app_name: 'Screen Capture',
+          analysis_source: analysis.source,
+          app_name: screenshotMetadata.activeApp || 'Screen Capture',
         },
       }).catch((err) => {
         console.error('[screen-capture] Pipeline error:', err);
@@ -110,6 +123,7 @@ export async function POST(req: NextRequest) {
         categories: analysis.categories,
         severity: analysis.severity,
         event_id: pipelineResult ? 'created' : null,
+        source: analysis.source,
       });
     }
 
@@ -118,6 +132,7 @@ export async function POST(req: NextRequest) {
       categories: analysis.categories,
       severity: analysis.severity,
       event_id: null,
+      source: analysis.source,
     });
   } catch (error) {
     console.error('[screen-capture] Error:', error);

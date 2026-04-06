@@ -39,24 +39,9 @@ function getAnthropic(): Anthropic {
   return _anthropic;
 }
 
-// ── Category mapping for the prompt ──────────────────────────
+// ── Goal → image category mapping (used by both prompt and classifier) ──
 
 const GOAL_TO_IMAGE_CATEGORIES: Record<string, string[]> = {
-  pornography: ['nudity', 'explicit_sexual_content', 'adult_content'],
-  sexting: ['suggestive_content', 'intimate_messaging'],
-  gambling: ['gambling_ui', 'casino_interface', 'betting_slip'],
-  sports_betting: ['sports_betting_ui', 'betting_odds'],
-  dating_apps: ['dating_app_ui', 'dating_profile'],
-  alcohol_drugs: ['alcohol', 'drugs', 'substance_use'],
-  vaping_tobacco: ['vaping', 'tobacco', 'smoking'],
-  social_media: ['social_media_ui', 'social_feed'],
-  gaming: ['gaming_ui', 'game_interface'],
-  impulse_shopping: ['shopping_cart', 'checkout_ui'],
-};
-
-// ── Category-to-image-categories reverse mapping ────────────
-
-const GOAL_TO_DETECTED_CATEGORIES: Record<string, string[]> = {
   pornography: ['nudity', 'explicit_sexual_content', 'adult_content'],
   sexting: ['suggestive_content', 'intimate_messaging'],
   gambling: ['gambling_ui', 'casino_interface', 'betting_slip'],
@@ -89,7 +74,7 @@ export async function analyzeScreenshot(
     // Pre-classifier resolved it — skip Vision entirely
     if (preResult.category) {
       const detectedCategories =
-        GOAL_TO_DETECTED_CATEGORIES[preResult.category] ?? [preResult.category];
+        GOAL_TO_IMAGE_CATEGORIES[preResult.category] ?? [preResult.category];
       return {
         nsfw: preResult.category === 'pornography',
         confidence: preResult.confidence,
@@ -146,7 +131,7 @@ export async function analyzeImage(
   );
 
   if (relevantCategories.length === 0) {
-    return { nsfw: false, confidence: 0, categories: [], severity: 'low' };
+    return { nsfw: false, confidence: 0, categories: [], severity: 'low', source: 'vision' as const };
   }
 
   const systemPrompt = `You are a content safety classifier for a digital wellness app. Your job is to analyze screenshots and images to determine if they contain content matching the user's tracked categories.
@@ -171,8 +156,11 @@ If no categories match, return: {"nsfw": false, "confidence": 0, "categories": [
 Respond with ONLY the JSON object, no explanation.`;
 
   try {
+    const visionModel =
+      process.env.ANTHROPIC_VISION_MODEL || 'claude-haiku-4-5-20251001';
+
     const response = await getAnthropic().messages.create({
-      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
+      model: visionModel,
       max_tokens: 300,
       system: systemPrompt,
       messages: [
@@ -196,6 +184,18 @@ Respond with ONLY the JSON object, no explanation.`;
       ],
     });
 
+    // Log Vision API cost
+    if (userId) {
+      logApiCost({
+        feature: 'screen_capture_vision',
+        model: visionModel,
+        inputTokens: response.usage?.input_tokens ?? 0,
+        outputTokens: response.usage?.output_tokens ?? 0,
+        userId,
+        tier: 'haiku',
+      });
+    }
+
     const text = response.content
       .filter((b): b is Anthropic.TextBlock => b.type === 'text')
       .map((b) => b.text)
@@ -208,10 +208,11 @@ Respond with ONLY the JSON object, no explanation.`;
       confidence: Math.min(1, Math.max(0, Number(parsed.confidence) || 0)),
       categories: Array.isArray(parsed.categories) ? parsed.categories : [],
       severity: ['low', 'medium', 'high'].includes(parsed.severity) ? parsed.severity : 'low',
+      source: 'vision' as const,
     };
   } catch (error) {
     console.error('Image analysis failed:', error);
     // Fail open — don't block on analysis errors
-    return { nsfw: false, confidence: 0, categories: [], severity: 'low' };
+    return { nsfw: false, confidence: 0, categories: [], severity: 'low', source: 'vision' as const };
   }
 }

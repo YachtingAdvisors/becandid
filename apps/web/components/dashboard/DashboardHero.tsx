@@ -108,6 +108,11 @@ export default function DashboardHero({
           {greeting}, {firstName}
         </h1>
 
+        {/* Momentum Score — primary engagement indicator */}
+        <div className="mb-6">
+          <MomentumScore />
+        </div>
+
         {/* Main content row */}
         <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
           {/* Streak ring */}

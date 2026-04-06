@@ -31,6 +31,7 @@ const STEP_BACKGROUNDS: Record<Step, string> = {
   preview: '#5c3a2e',
   partner: '#c47a4a',
   done: '#fbf9f8',
+  'first-journal': '#fbf9f8',
 };
 
 // Progressive lightening through the Stringer pillars (alignment → truth → journey)
@@ -40,12 +41,13 @@ const FULL_PHRASE_LINES = ['Come out', 'of darkness', 'and into', 'the light'];
 
 // Rising sun: maps each step to translateY offset, opacity, and color
 const SUN_STATES: Record<Step, { y: number; opacity: number; color: string; glow: string }> = {
-  goals:     { y: 38,  opacity: 1, color: '#6b3020', glow: 'none' },
-  stringer:  { y: 28,  opacity: 1, color: '#8b4020', glow: '0 0 10px rgba(139,64,32,0.2)' },
-  motivator: { y: 18,  opacity: 1, color: '#a04820', glow: '0 0 15px rgba(160,72,32,0.25)' },
-  preview:   { y: 8,   opacity: 1, color: '#d4803a', glow: '0 0 20px rgba(212,128,58,0.3)' },
-  partner:   { y: 0,   opacity: 1, color: '#e8a84c', glow: '0 0 30px rgba(232,168,76,0.4)' },
-  done:      { y: -8,  opacity: 1, color: '#f0c060', glow: '0 0 40px rgba(240,192,96,0.5)' },
+  goals:            { y: 38,  opacity: 1, color: '#6b3020', glow: 'none' },
+  stringer:         { y: 28,  opacity: 1, color: '#8b4020', glow: '0 0 10px rgba(139,64,32,0.2)' },
+  motivator:        { y: 18,  opacity: 1, color: '#a04820', glow: '0 0 15px rgba(160,72,32,0.25)' },
+  preview:          { y: 8,   opacity: 1, color: '#d4803a', glow: '0 0 20px rgba(212,128,58,0.3)' },
+  partner:          { y: 0,   opacity: 1, color: '#e8a84c', glow: '0 0 30px rgba(232,168,76,0.4)' },
+  done:             { y: -8,  opacity: 1, color: '#f0c060', glow: '0 0 40px rgba(240,192,96,0.5)' },
+  'first-journal':  { y: -8,  opacity: 1, color: '#f0c060', glow: '0 0 40px rgba(240,192,96,0.5)' },
 };
 
 const STRINGER_PILLARS = [
@@ -204,11 +206,42 @@ function OnboardingContent() {
     );
   };
 
+  // ── First journal prompt state ────────────────────────
+  const [journalBecause, setJournalBecause] = useState('');
+  const [journalHardest, setJournalHardest] = useState('');
+  const [journalHope, setJournalHope] = useState('');
+  const [journalSubmitting, setJournalSubmitting] = useState(false);
+
+  const submitFirstJournal = async () => {
+    setJournalSubmitting(true);
+    try {
+      const rivalNames = goals.map((g) => g).join(', ') || 'my rivals';
+      const text = [
+        `Today I'm starting because ${journalBecause.trim() || '___'}.`,
+        `The hardest part about ${rivalNames} is ${journalHardest.trim() || '___'}.`,
+        `One thing I hope to gain from this journey: ${journalHope.trim() || '___'}.`,
+      ].join('\n\n');
+      await fetch('/api/journal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          freewrite: text,
+          trigger_type: 'onboarding',
+          tags: ['first-entry', 'onboarding'],
+        }),
+      });
+      router.push('/dashboard?first=true');
+    } catch {
+      router.push('/dashboard?first=true');
+    }
+    setJournalSubmitting(false);
+  };
+
   // ── Progress bar ──────────────────────────────────────
-  const STEPS: Step[] = ['goals', 'stringer', 'motivator', 'preview', 'partner', 'done'];
+  const STEPS: Step[] = ['goals', 'stringer', 'motivator', 'preview', 'partner', 'done', 'first-journal'];
   const progress = STEPS.indexOf(step) / (STEPS.length - 1);
 
-  const isDoneStep = step === 'done';
+  const isDoneStep = step === 'done' || step === 'first-journal';
 
   // Compute background — within the stringer step, progressively lighten
   const currentBg = step === 'stringer'
@@ -656,7 +689,7 @@ function OnboardingContent() {
         </div>
       )}
 
-      {/* ═══════ STEP 5: Done — redirect to dashboard ═══════ */}
+      {/* ═══════ STEP 5: Done — transition to first journal ═══════ */}
       {step === 'done' && (
         <div className="max-w-md w-full text-center animate-fade-slide">
           <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mx-auto mb-4">
@@ -664,16 +697,98 @@ function OnboardingContent() {
           </div>
           <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">You&apos;re all set</h1>
           <p className="text-sm text-on-surface-variant leading-relaxed mb-8 font-body">
-            {partnerName
-              ? `${partnerName} will receive an email inviting them to be your accountability partner.`
+            {invitedPartners.length > 0
+              ? `Your partner${invitedPartners.length > 1 ? 's' : ''} will receive an email inviting them to join you.`
               : "You're starting in solo mode. Your journal and self-reflection guides are ready."}
           </p>
 
           <button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => setStep('first-journal')}
             className="block w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 text-center">
-            Go to Dashboard →
+            Write Your First Entry →
           </button>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="w-full mt-3 py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body cursor-pointer transition-colors duration-200">
+            Skip for now
+          </button>
+        </div>
+      )}
+
+      {/* ═══════ STEP 6: First Journal Prompt ═══════ */}
+      {step === 'first-journal' && (
+        <div className="max-w-md w-full animate-fade-slide">
+          <div className="text-center mb-6">
+            <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center mx-auto mb-3">
+              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
+            </div>
+            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Your first journal entry</h1>
+            <p className="text-sm text-on-surface-variant leading-relaxed font-body">
+              Fill in the blanks. No pressure — just honest words to mark this moment.
+            </p>
+          </div>
+
+          <div className="space-y-5 bg-surface-container-lowest rounded-3xl p-6 ring-1 ring-outline-variant/10 shadow-sm">
+            {/* Prompt 1 */}
+            <div>
+              <label className="block text-sm font-label font-medium text-on-surface mb-2">
+                Today I&apos;m starting because...
+              </label>
+              <input
+                type="text"
+                value={journalBecause}
+                onChange={(e) => setJournalBecause(e.target.value)}
+                placeholder="I want to be honest with myself"
+                className="w-full px-4 py-3 rounded-2xl bg-surface-container border border-outline-variant/20 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all duration-200"
+              />
+            </div>
+
+            {/* Prompt 2 */}
+            <div>
+              <label className="block text-sm font-label font-medium text-on-surface mb-2">
+                The hardest part about {goals.length > 0 ? 'my rivals' : 'this'} is...
+              </label>
+              <input
+                type="text"
+                value={journalHardest}
+                onChange={(e) => setJournalHardest(e.target.value)}
+                placeholder="feeling like I can't control it"
+                className="w-full px-4 py-3 rounded-2xl bg-surface-container border border-outline-variant/20 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all duration-200"
+              />
+            </div>
+
+            {/* Prompt 3 */}
+            <div>
+              <label className="block text-sm font-label font-medium text-on-surface mb-2">
+                One thing I hope to gain from this journey:
+              </label>
+              <input
+                type="text"
+                value={journalHope}
+                onChange={(e) => setJournalHope(e.target.value)}
+                placeholder="freedom from the shame cycle"
+                className="w-full px-4 py-3 rounded-2xl bg-surface-container border border-outline-variant/20 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-3">
+            <button
+              onClick={submitFirstJournal}
+              disabled={journalSubmitting || (!journalBecause.trim() && !journalHardest.trim() && !journalHope.trim())}
+              className="block w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 text-center">
+              {journalSubmitting ? 'Saving...' : 'Save & Go to Dashboard →'}
+            </button>
+            <button
+              onClick={() => router.push('/dashboard?first=true')}
+              className="w-full py-2 text-xs text-on-surface-variant hover:text-on-surface text-center font-body cursor-pointer transition-colors duration-200">
+              Skip this step
+            </button>
+          </div>
+
+          <p className="text-center text-[10px] text-on-surface-variant/50 mt-4 font-body">
+            This becomes your first Candid Journal entry — encrypted and private.
+          </p>
         </div>
       )}
 

@@ -17,6 +17,11 @@ export const dynamic = 'force-dynamic';
 //      customer.subscription.deleted,
 //      invoice.payment_failed
 //   4. Copy signing secret to STRIPE_WEBHOOK_SECRET env var
+//
+// Database requirement:
+//   The `users` table needs a `payment_failed_at` timestamptz column
+//   for the dunning state machine (tracks first failure date).
+//   ALTER TABLE users ADD COLUMN IF NOT EXISTS payment_failed_at timestamptz;
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -24,7 +29,11 @@ import Stripe from 'stripe';
 import { stripe, syncSubscription } from '@/lib/stripe/server';
 import { STRIPE_CONFIG } from '@/lib/stripe/config';
 import { createServiceClient } from '@/lib/supabase';
-import { sendPaymentFailedEmail } from '@/lib/email/paymentFailed';
+import {
+  sendPaymentFailedEmail,
+  sendPaymentFollowUpEmail,
+  sendDowngradeNotificationEmail,
+} from '@/lib/email/paymentFailed';
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -78,15 +87,31 @@ export async function POST(req: NextRequest) {
         // Find user by Stripe customer ID
         const db = createServiceClient();
         const { data: user } = await db.from('users')
-          .select('id, email, name')
+          .select('id, email, name, subscription_plan, subscription_status, payment_failed_at')
           .eq('stripe_customer_id', customerId)
           .single();
 
         if (user) {
-          // Update status to past_due
-          await db.from('users').update({
-            subscription_status: 'past_due',
-          }).eq('id', user.id);
+          const now = new Date();
+          const attemptCount = invoice.attempt_count ?? 1;
+          const planName = user.subscription_plan === 'therapy' ? 'Therapy' : 'Pro';
+          const isFirstFailure = user.subscription_status !== 'past_due';
+
+          // State machine: active → past_due (first failure)
+          if (isFirstFailure) {
+            await db.from('users').update({
+              subscription_status: 'past_due',
+              payment_failed_at: now.toISOString(),
+            }).eq('id', user.id);
+          }
+
+          // Calculate days since first failure
+          const failedAt = user.payment_failed_at
+            ? new Date(user.payment_failed_at)
+            : now;
+          const daysSinceFirstFailure = Math.floor(
+            (now.getTime() - failedAt.getTime()) / (1000 * 60 * 60 * 24)
+          );
 
           // Audit log
           await db.from('audit_log').insert({
@@ -94,28 +119,75 @@ export async function POST(req: NextRequest) {
             action: 'payment_failed',
             metadata: {
               invoice_id: invoice.id,
-              attempt_count: invoice.attempt_count,
+              attempt_count: attemptCount,
+              days_since_first_failure: daysSinceFirstFailure,
               next_attempt: invoice.next_payment_attempt
                 ? new Date(invoice.next_payment_attempt * 1000).toISOString()
                 : null,
             },
           });
 
-          // Send payment failed email
+          // Dunning email sequence based on days since first failure
           try {
-            await sendPaymentFailedEmail({
-              email: user.email,
-              name: user.name || 'there',
-              attemptCount: invoice.attempt_count ?? 1,
-              nextAttempt: invoice.next_payment_attempt
-                ? new Date(invoice.next_payment_attempt * 1000)
-                : null,
-            });
-          } catch (emailErr) {
-            console.error('[stripe] Payment failed email error:', emailErr);
-          }
+            if (daysSinceFirstFailure >= 7) {
+              // 7+ days: downgrade to free and send final email
+              await db.from('users').update({
+                subscription_plan: 'free',
+                subscription_status: 'canceled',
+                payment_failed_at: null,
+              }).eq('id', user.id);
 
-          console.info(`[stripe] Payment failed for user ${user.id}, attempt ${invoice.attempt_count}`);
+              await db.from('audit_log').insert({
+                user_id: user.id,
+                action: 'subscription_downgraded_nonpayment',
+                metadata: { previous_plan: user.subscription_plan },
+              });
+
+              await sendDowngradeNotificationEmail({
+                email: user.email,
+                name: user.name || 'there',
+                planName,
+              });
+
+              console.info(`[stripe] User ${user.id} downgraded to free after 7 days of failed payment`);
+            } else if (daysSinceFirstFailure >= 3) {
+              // 3+ days: follow-up email with streak data
+              const [streakRes, journalRes] = await Promise.all([
+                db.from('users')
+                  .select('current_streak')
+                  .eq('id', user.id)
+                  .single(),
+                db.from('journal_entries')
+                  .select('id', { count: 'exact', head: true })
+                  .eq('user_id', user.id),
+              ]);
+
+              await sendPaymentFollowUpEmail({
+                email: user.email,
+                name: user.name || 'there',
+                planName,
+                streakDays: streakRes.data?.current_streak ?? 0,
+                journalCount: journalRes.count ?? 0,
+              });
+
+              console.info(`[stripe] Sent follow-up dunning email to user ${user.id} (day ${daysSinceFirstFailure})`);
+            } else {
+              // First failure: gentle heads-up
+              await sendPaymentFailedEmail({
+                email: user.email,
+                name: user.name || 'there',
+                planName,
+                attemptCount,
+                nextAttempt: invoice.next_payment_attempt
+                  ? new Date(invoice.next_payment_attempt * 1000)
+                  : null,
+              });
+
+              console.info(`[stripe] Sent initial dunning email to user ${user.id}, attempt ${attemptCount}`);
+            }
+          } catch (emailErr) {
+            console.error('[stripe] Dunning email error:', emailErr);
+          }
         }
         break;
       }
