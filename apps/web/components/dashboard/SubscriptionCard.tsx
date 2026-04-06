@@ -63,6 +63,32 @@ export default function SubscriptionCard() {
   const planInfo = PLAN_DISPLAY[data.plan] || PLAN_DISPLAY.free;
   const isPaid = data.plan !== 'free';
   const isPastDue = data.status === 'past_due';
+  const isGrandfathered = data.grandfathered === true;
+
+  // Grandfathered users see a special card
+  if (isGrandfathered) {
+    return (
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-lg text-emerald-600" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+            <div>
+              <h3 className="text-sm font-semibold text-on-surface">Subscription</h3>
+              <p className="text-xs font-medium text-emerald-600">Founding Member</p>
+            </div>
+          </div>
+          <span className="text-[10px] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-label font-bold">
+            Full Access
+          </span>
+        </div>
+        <div className="p-3.5 rounded-xl bg-gradient-to-r from-emerald-50 to-primary/5 border border-emerald-100">
+          <p className="text-xs text-emerald-800 font-body leading-relaxed">
+            Thank you for being an early supporter of Be Candid. You have permanent free access to all features — no limits, no trial, no payment required.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
