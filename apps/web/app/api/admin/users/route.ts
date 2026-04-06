@@ -35,9 +35,8 @@ export async function GET(req: NextRequest) {
     'created_at',
     'email',
     'name',
-    'subscription_status',
-    'current_streak',
-    'last_active',
+    'subscription_plan',
+    'last_active_at',
   ];
   const sortColumn = allowedSorts.includes(sort) ? sort : 'created_at';
 
@@ -48,7 +47,7 @@ export async function GET(req: NextRequest) {
   let query = db
     .from('users')
     .select(
-      'id, email, name, goals, subscription_plan, subscription_status, current_streak, monitoring_enabled, created_at, last_active, trial_ends_at',
+      'id, email, name, goals, subscription_plan, subscription_status, monitoring_enabled, created_at, last_active_at, trial_ends_at',
       { count: 'exact' }
     );
 
@@ -57,15 +56,15 @@ export async function GET(req: NextRequest) {
     query = query.or(`email.ilike.%${search}%,name.ilike.%${search}%`);
   }
 
-  // Plan filter
+  // Plan filter (subscription_plan holds free/pro/therapy)
   if (plan === 'free') {
-    query = query.or('subscription_status.eq.free,subscription_status.is.null');
+    query = query.or('subscription_plan.eq.free,subscription_plan.is.null');
   } else if (plan === 'pro') {
-    query = query.or('subscription_status.eq.pro,subscription_status.eq.active');
+    query = query.eq('subscription_plan', 'pro');
   } else if (plan === 'trialing') {
     query = query.eq('subscription_status', 'trialing');
   } else if (plan === 'therapy') {
-    query = query.eq('subscription_status', 'therapy');
+    query = query.eq('subscription_plan', 'therapy');
   }
 
   query = query.order(sortColumn, { ascending: order }).range(from, to);

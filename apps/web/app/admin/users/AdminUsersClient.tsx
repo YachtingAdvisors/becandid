@@ -11,10 +11,9 @@ interface UserRow {
   goals: string[] | null;
   subscription_plan: string | null;
   subscription_status: string | null;
-  current_streak: number;
   monitoring_enabled: boolean;
   created_at: string;
-  last_active: string | null;
+  last_active_at: string | null;
   trial_ends_at: string | null;
 }
 
@@ -33,7 +32,7 @@ interface UserDetail {
 }
 
 type PlanFilter = 'all' | 'free' | 'trialing' | 'pro' | 'therapy';
-type SortField = 'name' | 'email' | 'subscription_status' | 'current_streak' | 'last_active' | 'created_at';
+type SortField = 'name' | 'email' | 'subscription_plan' | 'last_active_at' | 'created_at';
 
 // ─── Main Component ──────────────────────────────────────────
 
@@ -155,7 +154,7 @@ export default function AdminUsersClient() {
     const data = await res.json();
     const rows: UserRow[] = data.users;
 
-    const headers = ['Name', 'Email', 'Plan', 'Status', 'Streak', 'Goals', 'Last Active', 'Joined'];
+    const headers = ['Name', 'Email', 'Plan', 'Status', 'Goals', 'Last Active', 'Joined'];
     const csvRows = [
       headers.join(','),
       ...rows.map((u) =>
@@ -164,9 +163,9 @@ export default function AdminUsersClient() {
           csvEscape(u.email),
           csvEscape(u.subscription_plan || 'free'),
           csvEscape(u.subscription_status || 'free'),
-          u.current_streak,
+
           csvEscape((u.goals || []).join('; ')),
-          u.last_active || '',
+          u.last_active_at || '',
           u.created_at,
         ].join(',')
       ),
@@ -270,9 +269,9 @@ export default function AdminUsersClient() {
                   {([
                     ['name', 'Name'],
                     ['email', 'Email'],
-                    ['subscription_status', 'Plan'],
-                    ['current_streak', 'Streak'],
-                    ['last_active', 'Last Active'],
+                    ['subscription_plan', 'Plan'],
+
+                    ['last_active_at', 'Last Active'],
                     ['created_at', 'Joined'],
                   ] as [SortField, string][]).map(([field, label]) => (
                     <th
@@ -389,17 +388,8 @@ function UserTableRow({
             {status}
           </span>
         </td>
-        <td className="px-4 py-3 text-sm font-body text-on-surface">
-          {user.current_streak > 0 && (
-            <span className="inline-flex items-center gap-0.5">
-              <span className="material-symbols-outlined text-xs text-orange-500">local_fire_department</span>
-              {user.current_streak}
-            </span>
-          )}
-          {user.current_streak === 0 && <span className="text-on-surface-variant">0</span>}
-        </td>
         <td className="px-4 py-3 text-xs font-label text-on-surface-variant">
-          {user.last_active ? formatDate(user.last_active) : 'Never'}
+          {user.last_active_at ? formatDate(user.last_active_at) : 'Never'}
         </td>
         <td className="px-4 py-3 text-xs font-label text-on-surface-variant">
           {formatDate(user.created_at)}
