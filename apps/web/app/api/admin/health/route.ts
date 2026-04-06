@@ -2,12 +2,24 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 // app/api/admin/health/route.ts
 //
-// GET → System health: DB status, recent errors, cron runs.
+// GET → System health: DB status, cron jobs, errors, table
+//       sizes, cost estimates, and uptime.
 // ============================================================
 
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
+
+const CRON_JOBS = [
+  'checkin',
+  'digest',
+  'journal-reminders',
+  'patterns',
+  'focus-segments',
+  'weekly-reflection',
+  'partner-impact',
+  'reengagement',
+];
 
 export async function GET() {
   const supabase = await createServerSupabaseClient();
@@ -20,9 +32,12 @@ export async function GET() {
 
   const db = createServiceClient();
 
+  // ─── Database connectivity ──────────────────────────────────
   let dbConnected = true;
   try {
-    const { error } = await db.from('users').select('id', { count: 'exact', head: true });
+    const { error } = await db
+      .from('users')
+      .select('id', { count: 'exact', head: true });
     if (error) dbConnected = false;
   } catch {
     dbConnected = false;
@@ -32,31 +47,95 @@ export async function GET() {
     Date.now() - 24 * 60 * 60 * 1000
   ).toISOString();
 
-  // Recent errors from audit_log
-  const { count: errorCount } = await db
-    .from('audit_log')
-    .select('id', { count: 'exact', head: true })
-    .in('action', ['error', 'rate_limit_exceeded', 'auth_failure', 'brute_force_lockout'])
-    .gte('created_at', twentyFourHoursAgo);
+  // ─── Parallel fetches ────────────────────────────────────────
+  const [
+    errorCountRes,
+    userCountRes,
+    eventCountRes,
+    journalCountRes,
+    alertCountRes,
+    nudgeCountRes,
+    auditCountRes,
+    partnerCountRes,
+  ] = await Promise.all([
+    // Error count (24h)
+    db
+      .from('audit_log')
+      .select('id', { count: 'exact', head: true })
+      .in('action', [
+        'error',
+        'rate_limit_exceeded',
+        'auth_failure',
+        'brute_force_lockout',
+      ])
+      .gte('created_at', twentyFourHoursAgo),
+    // Table row counts
+    db.from('users').select('id', { count: 'exact', head: true }),
+    db.from('events').select('id', { count: 'exact', head: true }),
+    db.from('stringer_journal').select('id', { count: 'exact', head: true }),
+    db.from('alerts').select('id', { count: 'exact', head: true }),
+    db.from('nudges').select('id', { count: 'exact', head: true }),
+    db.from('audit_log').select('id', { count: 'exact', head: true }),
+    db.from('partners').select('id', { count: 'exact', head: true }),
+  ]);
 
-  // Last cron runs — check audit_log for cron actions
-  const cronJobs = ['checkin', 'digest', 'reengagement', 'journal-reminders', 'partner-impact'];
-  const lastCronRuns: Record<string, string | null> = {};
+  // ─── Cron job status ────────────────────────────────────────
+  const cronStatus: Record<
+    string,
+    {
+      last_run: string | null;
+      result: string | null;
+      users_processed: number | null;
+    }
+  > = {};
 
-  for (const job of cronJobs) {
+  for (const job of CRON_JOBS) {
     const { data } = await db
       .from('audit_log')
-      .select('created_at')
+      .select('created_at, metadata')
       .eq('action', `cron_${job}`)
       .order('created_at', { ascending: false })
       .limit(1);
 
-    lastCronRuns[job] = data?.[0]?.created_at || null;
+    const entry = data?.[0];
+    const meta =
+      entry?.metadata && typeof entry.metadata === 'object'
+        ? (entry.metadata as Record<string, unknown>)
+        : {};
+
+    cronStatus[job] = {
+      last_run: entry?.created_at || null,
+      result: (meta.result as string) || (entry ? 'success' : null),
+      users_processed: (meta.users_processed as number) ?? null,
+    };
   }
+
+  // ─── Cost estimate ──────────────────────────────────────────
+  // Rough estimate based on active user count and average usage.
+  // In production, replace with real cost tracking data.
+  const activeUsers = userCountRes.count || 0;
+  const estimatedDailyCost = activeUsers * 0.02; // ~$0.02 per active user per day
 
   return NextResponse.json({
     db_connected: dbConnected,
-    recent_errors: errorCount || 0,
-    last_cron_runs: lastCronRuns,
+    recent_errors: errorCountRes.count || 0,
+    last_cron_runs: Object.fromEntries(
+      Object.entries(cronStatus).map(([k, v]) => [k, v.last_run])
+    ),
+    cron_status: cronStatus,
+    table_sizes: {
+      users: userCountRes.count || 0,
+      events: eventCountRes.count || 0,
+      stringer_journal: journalCountRes.count || 0,
+      alerts: alertCountRes.count || 0,
+      nudges: nudgeCountRes.count || 0,
+      audit_log: auditCountRes.count || 0,
+      partners: partnerCountRes.count || 0,
+    },
+    cost_estimate: {
+      daily: Math.round(estimatedDailyCost * 100) / 100,
+      monthly: Math.round(estimatedDailyCost * 30 * 100) / 100,
+    },
+    uptime_since: process.env.DEPLOY_TIMESTAMP || null,
   });
 }
