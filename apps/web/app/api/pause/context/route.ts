@@ -121,8 +121,7 @@ export async function GET(req: NextRequest) {
       topValue,
     });
   } catch (err) {
-    console.error('Pause context error:', err);
-    return NextResponse.json({ error: safeError(err) }, { status: 500 });
+    return safeError('GET /api/pause/context', err);
   }
 }
 

@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     if (existing) {
       // Un-heart: remove heart row and decrement count
       await db.from('community_hearts').delete().eq('id', existing.id);
-      await db.rpc('', {}).catch(() => null); // no rpc, do manual update
+      // no rpc, do manual update
       // Decrement hearts count
       const { data: post } = await db
         .from('community_posts')

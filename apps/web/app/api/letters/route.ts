@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { data: letters, error } = await query;
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('GET /api/letters', error);
 
   // Decrypt logic:
   // - Delivered letters: always show content
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     sealed_at: new Date().toISOString(),
   }).select().single();
 
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('POST /api/letters', error);
 
   return NextResponse.json({ letter: { ...letterRow, letter: undefined } }, { status: 201 });
 }
@@ -134,7 +134,7 @@ export async function PATCH(req: NextRequest) {
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('PATCH /api/letters', error);
 
   return NextResponse.json({
     letter: { ...updated, letter: decrypt(updated.letter, user.id) },

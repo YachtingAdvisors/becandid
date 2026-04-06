@@ -216,7 +216,7 @@ export async function PATCH(req: NextRequest) {
       accepted_at: new Date().toISOString(),
     }).eq('id', conn.id);
 
-    if (updateErr) return NextResponse.json({ error: safeError(updateErr) }, { status: 500 });
+    if (updateErr) return safeError('PATCH /api/therapist', updateErr);
 
     // Fetch client name for the response
     const { data: clientRow } = await db.from('users').select('name').eq('id', conn.user_id).single();

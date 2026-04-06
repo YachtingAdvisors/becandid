@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
     note_type: note_type || 'observation',
   }).select('id, created_at').single();
 
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('POST /api/therapist/family-systems', error);
 
   return NextResponse.json({ id: created.id, created_at: created.created_at });
 }
@@ -151,7 +151,7 @@ export async function PATCH(req: NextRequest) {
     .update(patch)
     .eq('id', note_id);
 
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('PATCH /api/therapist/family-systems', error);
 
   return NextResponse.json({ updated: true });
 }
@@ -174,7 +174,7 @@ export async function DELETE(req: NextRequest) {
     .eq('id', noteId)
     .eq('therapist_id', user.id);
 
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('DELETE /api/therapist/family-systems', error);
 
   return NextResponse.json({ deleted: true });
 }

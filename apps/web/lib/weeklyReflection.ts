@@ -121,10 +121,10 @@ export async function generateWeeklyReflection(userId: string): Promise<any> {
       max_tokens: 1000,
       system: [{ type: 'text' as const, text: REFLECTION_PROMPT, cache_control: { type: 'ephemeral' as const } }] as any,
       messages: [{
-        role: 'user',
+        role: 'user' as const,
         content: `Context:\n${contextLines.join('\n')}\n\nJournal entries:\n${entryTexts}`,
       }],
-    });
+    } as any);
 
     logApiCost({
       feature: 'weekly_reflection',
