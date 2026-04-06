@@ -989,4 +989,3 @@ export async function analyzePatterns(userId: string): Promise<PatternAnalysis> 
     session_topics,
   };
 }
->>>>>>> origin/main
