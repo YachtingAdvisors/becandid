@@ -8,10 +8,11 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase';
+import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { rateLimitResponse } from '@/lib/rateLimit';
 import { streamCoachResponse } from '@/lib/conversationCoach';
 import { safeError } from '@/lib/security';
+import { checkCoachLimit } from '@/lib/coachLimits';
 
 // Coach-specific rate limiter: 50 messages/hour
 const coachLimiter = (() => {
@@ -84,6 +85,22 @@ export async function POST(req: NextRequest) {
       return rateLimitResponse(60);
     }
 
+    // Coach session limit by plan
+    const db = createServiceClient();
+    const coachLimit = await checkCoachLimit(db, user.id);
+    if (!coachLimit.allowed) {
+      return new Response(
+        JSON.stringify({
+          error: 'Coach session limit reached',
+          upgrade_url: '/pricing',
+          remaining: 0,
+          limit: coachLimit.limit,
+          plan: coachLimit.plan,
+        }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
     // Parse + validate body
     let body: unknown;
     try {
@@ -102,6 +119,13 @@ export async function POST(req: NextRequest) {
         { status: 400, headers: { 'Content-Type': 'application/json' } },
       );
     }
+
+    // Log coach session usage for limit tracking
+    await db.from('audit_log').insert({
+      user_id: user.id,
+      action: 'coach_session',
+      metadata: { alert_id: validated?.alert_id ?? null },
+    }).catch(() => {});
 
     // Stream response
     const encoder = new TextEncoder();
@@ -136,6 +160,9 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'text/plain; charset=utf-8',
         'Cache-Control': 'no-cache, no-store',
         'X-Content-Type-Options': 'nosniff',
+        'X-Coach-Remaining': String(coachLimit.remaining),
+        'X-Coach-Limit': String(coachLimit.limit),
+        'X-Coach-Plan': coachLimit.plan,
       },
     });
   } catch (err) {

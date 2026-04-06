@@ -17,6 +17,8 @@ import { onOutcomeRated, onBothCompletedOutcome } from '@/lib/relationshipHooks'
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
 import Anthropic from '@anthropic-ai/sdk';
+import { getModel, getMaxTokens } from '@/lib/modelRouter';
+import { logApiCost } from '@/lib/costTracker';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 
@@ -93,14 +95,24 @@ export async function POST(req: NextRequest) {
   if (outcome.user_completed_at && outcome.partner_completed_at && !outcome.ai_reflection) {
     // Generate AI reflection on the conversation
     try {
+      const outcomeModel = getModel('simple');
       const response = await getAnthropic().messages.create({
-        model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
-        max_tokens: 300,
+        model: outcomeModel,
+        max_tokens: getMaxTokens('simple'),
         system: 'You generate brief, warm reflections on accountability conversations. 2-3 sentences max. Acknowledge what went well and offer one gentle suggestion. Grounded in Stringer\'s philosophy: kindness and curiosity over shame. Respond with plain text only.',
         messages: [{
           role: 'user',
           content: `User rated: ${outcome.user_rating}/5, felt: ${outcome.user_felt || 'not specified'}. Partner rated: ${outcome.partner_rating}/5, felt: ${outcome.partner_felt || 'not specified'}.`,
         }],
+      });
+
+      logApiCost({
+        feature: 'conversation_outcome',
+        model: outcomeModel,
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        userId: alertUserId,
+        tier: 'haiku',
       });
 
       const reflection = response.content.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('');

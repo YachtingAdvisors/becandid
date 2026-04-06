@@ -12,6 +12,8 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { decryptJournalEntries } from '@/lib/encryption';
 import { aiGuideLimiter, checkUserRate } from '@/lib/rateLimit';
 import Anthropic from '@anthropic-ai/sdk';
+import { getModel, getMaxTokens } from '@/lib/modelRouter';
+import { logApiCost } from '@/lib/costTracker';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 
@@ -124,11 +126,21 @@ ${themeSummary}
 Generate 3 conversation starters that would help the accountability partner check in meaningfully.`;
 
   try {
+    const starterModel = getModel('moderate');
     const response = await getAnthropic().messages.create({
-      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
-      max_tokens: 800,
+      model: starterModel,
+      max_tokens: getMaxTokens('moderate'),
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
+    });
+
+    logApiCost({
+      feature: 'conversation_starters',
+      model: starterModel,
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      userId: user.id,
+      tier: 'haiku',
     });
 
     const text = response.content

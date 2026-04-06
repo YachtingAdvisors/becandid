@@ -99,6 +99,9 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionEnded, setSessionEnded] = useState(false);
+  const [coachLimitReached, setCoachLimitReached] = useState(false);
+  const [remainingSessions, setRemainingSessions] = useState<number | null>(null);
+  const [sessionPlan, setSessionPlan] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -188,8 +191,22 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
+        if (res.status === 403 && errData.upgrade_url) {
+          setCoachLimitReached(true);
+          // Remove the empty assistant message
+          setMessages((prev) =>
+            prev.filter((m) => m.id !== assistantMsg.id)
+          );
+          return;
+        }
         throw new Error(errData.error || `Request failed (${res.status})`);
       }
+
+      // Read session limit headers
+      const remaining = res.headers.get('X-Coach-Remaining');
+      const plan = res.headers.get('X-Coach-Plan');
+      if (remaining !== null) setRemainingSessions(parseInt(remaining, 10));
+      if (plan) setSessionPlan(plan);
 
       const reader = res.body?.getReader();
       if (!reader) throw new Error('No response stream');
@@ -273,7 +290,14 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
             </div>
             <div>
               <h3 className="font-headline text-base text-on-surface font-medium">Conversation Coach</h3>
-              <p className="font-label text-xs text-on-surface-variant">Guided self-reflection</p>
+              <p className="font-label text-xs text-on-surface-variant">
+                Guided self-reflection
+                {sessionPlan === 'free' && remainingSessions !== null && remainingSessions >= 0 && (
+                  <span className="ml-2 text-on-surface-variant/70">
+                    &middot; {remainingSessions} session{remainingSessions !== 1 ? 's' : ''} remaining
+                  </span>
+                )}
+              </p>
             </div>
           </div>
 
@@ -325,9 +349,35 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
         )}
       </div>
 
+      {/* Coach Limit Paywall */}
+      {coachLimitReached && (
+        <div className="mx-5 mt-4 mb-2">
+          <div className="rounded-2xl p-[1px] bg-gradient-to-br from-[#226779] to-tertiary">
+            <div className="bg-surface-container-lowest rounded-2xl px-6 py-5">
+              <div className="flex items-center gap-2 mb-3">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#226779" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <h4 className="font-headline font-bold text-sm text-on-surface">Session Limit Reached</h4>
+              </div>
+              <p className="font-body text-xs text-on-surface-variant leading-relaxed mb-4">
+                You&apos;ve used your 3 free coaching sessions this month. Upgrade to Pro for unlimited access to the Conversation Coach.
+              </p>
+              <a
+                href="/pricing"
+                className="block text-center px-4 py-2.5 rounded-full bg-[#226779] text-white text-xs font-label font-semibold hover:bg-[#1a5563] transition-colors"
+              >
+                Upgrade to Pro
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Message List */}
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-        {messages.length === 0 && !sessionEnded && (
+        {messages.length === 0 && !sessionEnded && !coachLimitReached && (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="w-14 h-14 rounded-full bg-[#226779]/10 flex items-center justify-center mb-4">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#226779" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -423,7 +473,7 @@ export default function ConversationCoach({ alertId, onEndSession }: Conversatio
       )}
 
       {/* Input Bar */}
-      {!sessionEnded && (
+      {!sessionEnded && !coachLimitReached && (
         <div className="px-5 pb-5 pt-2 border-t border-outline-variant/30">
           <div className="flex items-end gap-2">
             <div className="flex-1 relative">

@@ -14,6 +14,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { createServiceClient } from '@/lib/supabase';
 import { decrypt } from '@/lib/encryption';
+import { logApiCost } from '@/lib/costTracker';
 
 function getAnthropic() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
@@ -217,11 +218,18 @@ export async function* streamCoachResponse(params: CoachParams): AsyncGenerator<
   // Add current message
   messages.push({ role: 'user', content: message });
 
-  // Stream from Anthropic
+  // Stream from Anthropic with prompt caching on system prompt
+  const model = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
   const stream = getAnthropic().messages.stream({
-    model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
+    model,
     max_tokens: 600,
-    system: systemPrompt,
+    system: [
+      {
+        type: 'text' as const,
+        text: systemPrompt,
+        cache_control: { type: 'ephemeral' as const },
+      },
+    ],
     messages,
   });
 
@@ -233,4 +241,15 @@ export async function* streamCoachResponse(params: CoachParams): AsyncGenerator<
       yield event.delta.text;
     }
   }
+
+  // Log cost from the final message (stream exposes usage via finalMessage)
+  const finalMessage = await stream.finalMessage();
+  logApiCost({
+    feature: 'coach',
+    model,
+    inputTokens: finalMessage.usage.input_tokens,
+    outputTokens: finalMessage.usage.output_tokens,
+    userId,
+    tier: 'sonnet',
+  });
 }
