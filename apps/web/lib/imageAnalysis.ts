@@ -5,16 +5,27 @@
 // Analyzes images for concerning content relevant to the
 // user's tracked goals. Uses lazy Anthropic instantiation.
 //
+// COST OPTIMIZATION: A lightweight rule-based pre-classifier
+// (imageClassifier.ts) filters 80-90% of screenshots without
+// any API call. Only ambiguous cases go to Vision (Haiku).
+//
 // PRIVACY: Logs that analysis occurred but NEVER stores the image.
 // ============================================================
 
 import Anthropic from '@anthropic-ai/sdk';
+import {
+  preClassifyScreenshot,
+  type ScreenshotMetadata,
+  type ClassificationResult,
+} from './imageClassifier';
+import { logApiCost } from './costTracker';
 
 export interface ImageAnalysisResult {
   nsfw: boolean;
   confidence: number; // 0-1
   categories: string[]; // e.g., ['nudity', 'gambling_ui', 'dating_app', 'substance']
   severity: 'low' | 'medium' | 'high';
+  source: 'classifier' | 'vision';
 }
 
 // ── Lazy Anthropic client ────────────────────────────────────
@@ -28,7 +39,7 @@ function getAnthropic(): Anthropic {
   return _anthropic;
 }
 
-// ── Category mapping for the prompt ──────────────────────────
+// ── Goal → image category mapping (used by both prompt and classifier) ──
 
 const GOAL_TO_IMAGE_CATEGORIES: Record<string, string[]> = {
   pornography: ['nudity', 'explicit_sexual_content', 'adult_content'],
@@ -41,21 +52,86 @@ const GOAL_TO_IMAGE_CATEGORIES: Record<string, string[]> = {
   social_media: ['social_media_ui', 'social_feed'],
   gaming: ['gaming_ui', 'game_interface'],
   impulse_shopping: ['shopping_cart', 'checkout_ui'],
+  binge_watching: ['streaming_ui', 'video_player'],
+  day_trading: ['trading_ui', 'stock_chart'],
 };
 
-// ── Main analysis function ───────────────────────────────────
+// ── Selective analysis (pre-classifier + Vision fallback) ───
+
+export async function analyzeScreenshot(
+  imageBase64: string,
+  mediaType: 'image/jpeg' | 'image/png' | 'image/webp',
+  metadata: ScreenshotMetadata,
+  userGoals: string[],
+  userId: string
+): Promise<ImageAnalysisResult> {
+  // Step 1: Pre-classify using metadata (FREE — no API call)
+  const preResult = preClassifyScreenshot(metadata);
+
+  logClassifierResult(preResult, userId);
+
+  if (!preResult.needsVisionAnalysis) {
+    // Pre-classifier resolved it — skip Vision entirely
+    if (preResult.category) {
+      const detectedCategories =
+        GOAL_TO_IMAGE_CATEGORIES[preResult.category] ?? [preResult.category];
+      return {
+        nsfw: preResult.category === 'pornography',
+        confidence: preResult.confidence,
+        categories: detectedCategories,
+        severity: preResult.confidence >= 0.9 ? 'high' : 'medium',
+        source: 'classifier',
+      };
+    }
+    // Safe — nothing to flag
+    return {
+      nsfw: false,
+      confidence: 0,
+      categories: [],
+      severity: 'low',
+      source: 'classifier',
+    };
+  }
+
+  // Step 2: Only send to Vision when the pre-classifier says so.
+  // Use Haiku for cost savings — sufficient for content classification.
+  const result = await analyzeImage(imageBase64, mediaType, userGoals, userId);
+  return { ...result, source: 'vision' };
+}
+
+// ── Cost/ratio logging ──────────────────────────────────────
+
+function logClassifierResult(
+  result: ClassificationResult,
+  userId: string
+): void {
+  console.log(
+    JSON.stringify({
+      type: 'screen_capture_classification',
+      needs_vision: result.needsVisionAnalysis,
+      reason: result.reason,
+      category: result.category,
+      confidence: result.confidence,
+      user_id: userId,
+      timestamp: new Date().toISOString(),
+    })
+  );
+}
+
+// ── Vision analysis function (called only when needed) ──────
 
 export async function analyzeImage(
   imageBase64: string,
   mediaType: 'image/jpeg' | 'image/png' | 'image/webp',
-  userGoals: string[]
+  userGoals: string[],
+  userId?: string
 ): Promise<ImageAnalysisResult> {
   const relevantCategories = userGoals.flatMap(
     (goal) => GOAL_TO_IMAGE_CATEGORIES[goal] || []
   );
 
   if (relevantCategories.length === 0) {
-    return { nsfw: false, confidence: 0, categories: [], severity: 'low' };
+    return { nsfw: false, confidence: 0, categories: [], severity: 'low', source: 'vision' as const };
   }
 
   const systemPrompt = `You are a content safety classifier for a digital wellness app. Your job is to analyze screenshots and images to determine if they contain content matching the user's tracked categories.
@@ -80,8 +156,11 @@ If no categories match, return: {"nsfw": false, "confidence": 0, "categories": [
 Respond with ONLY the JSON object, no explanation.`;
 
   try {
+    const visionModel =
+      process.env.ANTHROPIC_VISION_MODEL || 'claude-haiku-4-5-20251001';
+
     const response = await getAnthropic().messages.create({
-      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
+      model: visionModel,
       max_tokens: 300,
       system: systemPrompt,
       messages: [
@@ -105,6 +184,18 @@ Respond with ONLY the JSON object, no explanation.`;
       ],
     });
 
+    // Log Vision API cost
+    if (userId) {
+      logApiCost({
+        feature: 'screen_capture_vision',
+        model: visionModel,
+        inputTokens: response.usage?.input_tokens ?? 0,
+        outputTokens: response.usage?.output_tokens ?? 0,
+        userId,
+        tier: 'haiku',
+      });
+    }
+
     const text = response.content
       .filter((b): b is Anthropic.TextBlock => b.type === 'text')
       .map((b) => b.text)
@@ -117,10 +208,11 @@ Respond with ONLY the JSON object, no explanation.`;
       confidence: Math.min(1, Math.max(0, Number(parsed.confidence) || 0)),
       categories: Array.isArray(parsed.categories) ? parsed.categories : [],
       severity: ['low', 'medium', 'high'].includes(parsed.severity) ? parsed.severity : 'low',
+      source: 'vision' as const,
     };
   } catch (error) {
     console.error('Image analysis failed:', error);
     // Fail open — don't block on analysis errors
-    return { nsfw: false, confidence: 0, categories: [], severity: 'low' };
+    return { nsfw: false, confidence: 0, categories: [], severity: 'low', source: 'vision' as const };
   }
 }

@@ -61,6 +61,14 @@ const DailyInventory = dynamic(
   () => import('@/components/dashboard/DailyInventory'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
 );
+const FirstVisitCoach = dynamic(
+  () => import('@/components/dashboard/FirstVisitCoach'),
+  { ssr: false },
+);
+const TherapistBadge = dynamic(
+  () => import('@/components/dashboard/TherapistBadge'),
+  { ssr: false },
+);
 
 const SEVERITY_STYLES: Record<Severity, string> = {
   low: 'bg-tertiary-container text-on-tertiary-container',
@@ -230,6 +238,16 @@ export default async function DashboardPage() {
         trustPoints={heroTrustPoints}
         goals={profile?.goals ?? []}
       />
+
+      {/* ── Therapist Badge ───────────────────────────────── */}
+      <Suspense fallback={null}>
+        <TherapistBadge />
+      </Suspense>
+
+      {/* ── First Visit Coach ─────────────────────────────── */}
+      <Suspense fallback={null}>
+        <FirstVisitCoach />
+      </Suspense>
 
       {/* ── Daily Commitment Ritual ────────────────────────── */}
       <DailyCommitment />

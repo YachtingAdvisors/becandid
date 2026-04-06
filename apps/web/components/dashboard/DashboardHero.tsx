@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import MomentumScore from './MomentumScore';
 
 interface DashboardHeroProps {
   userName: string;
@@ -106,6 +107,11 @@ export default function DashboardHero({
         <h1 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-on-surface mb-6">
           {greeting}, {firstName}
         </h1>
+
+        {/* Momentum Score — primary engagement indicator */}
+        <div className="mb-6">
+          <MomentumScore />
+        </div>
 
         {/* Main content row */}
         <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">

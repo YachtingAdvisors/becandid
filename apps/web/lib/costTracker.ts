@@ -12,7 +12,7 @@ interface CostLogParams {
   inputTokens: number;
   outputTokens: number;
   userId: string;
-  tier: 'static' | 'haiku' | 'sonnet' | 'crisis';
+  tier: 'static' | 'haiku' | 'sonnet' | 'crisis' | 'cached';
 }
 
 const RATES: Record<string, { input: number; output: number }> = {

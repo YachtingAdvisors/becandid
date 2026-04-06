@@ -43,7 +43,7 @@ const TIERS = [
     id: 'pro',
     name: 'Pro',
     monthlyPrice: 9.99,
-    annualPrice: 99,
+    annualPrice: 79,
     description: 'Full alignment',
     logo: '/pro-logo.png',
     cta: 'Start Free Trial',
@@ -69,7 +69,7 @@ const TIERS = [
     id: 'therapy',
     name: 'Therapy',
     monthlyPrice: 19.99,
-    annualPrice: 179,
+    annualPrice: 159,
     description: 'For anyone wanting Therapy-level insights \u2014 built by a team of psychiatrists and licensed therapists',
     logo: '/therapy-logo.png',
     cta: 'Upgrade',
@@ -148,7 +148,7 @@ export default function PricingPage() {
             >
               Annual{' '}
               <span className="text-cyan-400 text-xs font-bold ml-1">
-                save 17%
+                save 34%
               </span>
             </button>
           </div>
@@ -237,15 +237,24 @@ export default function PricingPage() {
                           {period}
                         </p>
                         {billing === 'annual' && tier.monthlyPrice > 0 && (
-                          <p
-                            className={`text-[10px] mt-0.5 ${
+                          <>
+                            <p
+                              className={`text-[10px] mt-0.5 ${
+                                tier.highlight
+                                  ? 'text-on-primary/60'
+                                  : 'text-stone-500'
+                              }`}
+                            >
+                              ${(tier.annualPrice / 12).toFixed(2)}/mo billed annually
+                            </p>
+                            <p className={`text-[10px] mt-1 font-bold ${
                               tier.highlight
-                                ? 'text-on-primary/60'
-                                : 'text-stone-500'
-                            }`}
-                          >
-                            ${(tier.annualPrice / 12).toFixed(2)}/month
-                          </p>
+                                ? 'text-cyan-200'
+                                : 'text-cyan-400'
+                            }`}>
+                              Save {Math.round((1 - tier.annualPrice / (tier.monthlyPrice * 12)) * 100)}%
+                            </p>
+                          </>
                         )}
                       </>
                     )}
