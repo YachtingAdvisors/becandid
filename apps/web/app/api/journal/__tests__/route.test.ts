@@ -58,7 +58,7 @@ function makeRequest(method: string, url: string, body?: any): NextRequest {
     init.body = JSON.stringify(body);
     init.headers = { 'Content-Type': 'application/json' };
   }
-  return new NextRequest(new URL(url, 'http://localhost:3000'), init);
+  return new NextRequest(new URL(url, 'http://localhost:3000'), init as any);
 }
 
 function mockAuthUser(user: { id: string; email: string } | null) {
@@ -141,7 +141,7 @@ describe('POST /api/journal', () => {
       method: 'POST',
       body: 'not json',
       headers: { 'Content-Type': 'application/json' },
-    });
+    } as any);
 
     const { POST } = await import('../route');
     const res = await POST(req);
@@ -218,7 +218,7 @@ describe('PATCH /api/journal', () => {
       method: 'PATCH',
       body: 'bad json',
       headers: { 'Content-Type': 'application/json' },
-    });
+    } as any);
 
     const { PATCH } = await import('../route');
     const res = await PATCH(req);

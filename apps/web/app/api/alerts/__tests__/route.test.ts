@@ -23,7 +23,7 @@ vi.mock('@/lib/rateLimit', () => ({
 // ── Helpers ──────────────────────────────────────────────────
 
 function makeRequest(method: string, url: string): NextRequest {
-  return new NextRequest(new URL(url, 'http://localhost:3000'), { method });
+  return new NextRequest(new URL(url, 'http://localhost:3000'), { method } as any);
 }
 
 function mockAuthUser(user: { id: string; email: string } | null) {

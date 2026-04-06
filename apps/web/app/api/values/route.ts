@@ -31,7 +31,7 @@ export async function GET() {
       .eq('user_id', user.id)
       .order('rank', { ascending: true });
 
-    if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+    if (error) return safeError('GET /api/values', error);
 
     // Decrypt rival_conflict for each value
     const decrypted = (values || []).map((v) => ({
@@ -41,8 +41,7 @@ export async function GET() {
 
     return NextResponse.json({ values: decrypted });
   } catch (err) {
-    console.error('GET /api/values error:', err);
-    return NextResponse.json({ error: safeError(err) }, { status: 500 });
+    return safeError('GET /api/values', err);
   }
 }
 
@@ -94,11 +93,10 @@ export async function POST(req: NextRequest) {
     }));
 
     const { error } = await db.from('user_values').insert(rows);
-    if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+    if (error) return safeError('POST /api/values', error);
 
     return NextResponse.json({ ok: true, count: rows.length });
   } catch (err) {
-    console.error('POST /api/values error:', err);
-    return NextResponse.json({ error: safeError(err) }, { status: 500 });
+    return safeError('POST /api/values', err);
   }
 }

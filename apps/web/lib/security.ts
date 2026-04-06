@@ -124,7 +124,11 @@ export type AuditAction =
   | 'payment_failed'
   | 'solo_mode_toggled'
   | 'referral.applied'
-  | 'nudge.sent';
+  | 'nudge.sent'
+  | 'push.subscribe'
+  | 'push.unsubscribe'
+  | 'reach_out.sent'
+  | 'coach_session';
 
 interface AuditEntry {
   action: AuditAction;

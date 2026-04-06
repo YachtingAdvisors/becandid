@@ -121,11 +121,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Log coach session usage for limit tracking
-    await db.from('audit_log').insert({
-      user_id: user.id,
-      action: 'coach_session',
-      metadata: { alert_id: validated?.alert_id ?? null },
-    }).catch(() => {});
+    try {
+      await db.from('audit_log').insert({
+        user_id: user.id,
+        action: 'coach_session',
+        metadata: { alert_id: validated?.alert_id ?? null },
+      });
+    } catch {
+      // audit logging should not block the request
+    }
 
     // Stream response
     const encoder = new TextEncoder();

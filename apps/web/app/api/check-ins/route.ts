@@ -47,7 +47,6 @@ export async function GET(req: NextRequest) {
       stats,
     });
   } catch (err: any) {
-    console.error('[GET /api/check-ins]', err);
-    return NextResponse.json({ error: safeError(err) }, { status: 500 });
+    return safeError('GET /api/check-ins', err);
   }
 }
