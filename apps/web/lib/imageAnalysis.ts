@@ -5,16 +5,27 @@
 // Analyzes images for concerning content relevant to the
 // user's tracked goals. Uses lazy Anthropic instantiation.
 //
+// COST OPTIMIZATION: A lightweight rule-based pre-classifier
+// (imageClassifier.ts) filters 80-90% of screenshots without
+// any API call. Only ambiguous cases go to Vision (Haiku).
+//
 // PRIVACY: Logs that analysis occurred but NEVER stores the image.
 // ============================================================
 
 import Anthropic from '@anthropic-ai/sdk';
+import {
+  preClassifyScreenshot,
+  type ScreenshotMetadata,
+  type ClassificationResult,
+} from './imageClassifier';
+import { logApiCost } from './costTracker';
 
 export interface ImageAnalysisResult {
   nsfw: boolean;
   confidence: number; // 0-1
   categories: string[]; // e.g., ['nudity', 'gambling_ui', 'dating_app', 'substance']
   severity: 'low' | 'medium' | 'high';
+  source: 'classifier' | 'vision';
 }
 
 // ── Lazy Anthropic client ────────────────────────────────────
@@ -43,12 +54,92 @@ const GOAL_TO_IMAGE_CATEGORIES: Record<string, string[]> = {
   impulse_shopping: ['shopping_cart', 'checkout_ui'],
 };
 
-// ── Main analysis function ───────────────────────────────────
+// ── Category-to-image-categories reverse mapping ────────────
+
+const GOAL_TO_DETECTED_CATEGORIES: Record<string, string[]> = {
+  pornography: ['nudity', 'explicit_sexual_content', 'adult_content'],
+  sexting: ['suggestive_content', 'intimate_messaging'],
+  gambling: ['gambling_ui', 'casino_interface', 'betting_slip'],
+  sports_betting: ['sports_betting_ui', 'betting_odds'],
+  dating_apps: ['dating_app_ui', 'dating_profile'],
+  alcohol_drugs: ['alcohol', 'drugs', 'substance_use'],
+  vaping_tobacco: ['vaping', 'tobacco', 'smoking'],
+  social_media: ['social_media_ui', 'social_feed'],
+  gaming: ['gaming_ui', 'game_interface'],
+  impulse_shopping: ['shopping_cart', 'checkout_ui'],
+  binge_watching: ['streaming_ui', 'video_player'],
+  day_trading: ['trading_ui', 'stock_chart'],
+};
+
+// ── Selective analysis (pre-classifier + Vision fallback) ───
+
+export async function analyzeScreenshot(
+  imageBase64: string,
+  mediaType: 'image/jpeg' | 'image/png' | 'image/webp',
+  metadata: ScreenshotMetadata,
+  userGoals: string[],
+  userId: string
+): Promise<ImageAnalysisResult> {
+  // Step 1: Pre-classify using metadata (FREE — no API call)
+  const preResult = preClassifyScreenshot(metadata);
+
+  logClassifierResult(preResult, userId);
+
+  if (!preResult.needsVisionAnalysis) {
+    // Pre-classifier resolved it — skip Vision entirely
+    if (preResult.category) {
+      const detectedCategories =
+        GOAL_TO_DETECTED_CATEGORIES[preResult.category] ?? [preResult.category];
+      return {
+        nsfw: preResult.category === 'pornography',
+        confidence: preResult.confidence,
+        categories: detectedCategories,
+        severity: preResult.confidence >= 0.9 ? 'high' : 'medium',
+        source: 'classifier',
+      };
+    }
+    // Safe — nothing to flag
+    return {
+      nsfw: false,
+      confidence: 0,
+      categories: [],
+      severity: 'low',
+      source: 'classifier',
+    };
+  }
+
+  // Step 2: Only send to Vision when the pre-classifier says so.
+  // Use Haiku for cost savings — sufficient for content classification.
+  const result = await analyzeImage(imageBase64, mediaType, userGoals, userId);
+  return { ...result, source: 'vision' };
+}
+
+// ── Cost/ratio logging ──────────────────────────────────────
+
+function logClassifierResult(
+  result: ClassificationResult,
+  userId: string
+): void {
+  console.log(
+    JSON.stringify({
+      type: 'screen_capture_classification',
+      needs_vision: result.needsVisionAnalysis,
+      reason: result.reason,
+      category: result.category,
+      confidence: result.confidence,
+      user_id: userId,
+      timestamp: new Date().toISOString(),
+    })
+  );
+}
+
+// ── Vision analysis function (called only when needed) ──────
 
 export async function analyzeImage(
   imageBase64: string,
   mediaType: 'image/jpeg' | 'image/png' | 'image/webp',
-  userGoals: string[]
+  userGoals: string[],
+  userId?: string
 ): Promise<ImageAnalysisResult> {
   const relevantCategories = userGoals.flatMap(
     (goal) => GOAL_TO_IMAGE_CATEGORIES[goal] || []

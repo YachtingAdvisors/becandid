@@ -22,7 +22,7 @@ import {
   type FoundationalMotivator,
 } from '@be-candid/shared';
 
-type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done';
+type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done' | 'first-journal';
 
 const STEP_BACKGROUNDS: Record<Step, string> = {
   goals: '#0f1218',
