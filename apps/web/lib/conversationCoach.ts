@@ -126,7 +126,7 @@ async function loadUserContext(userId: string, alertId?: string): Promise<UserCo
 
   return {
     goals: userRow.data?.goals ?? [],
-    recentJournals: decryptedJournals,
+    recentJournals: decryptedJournals as UserContext['recentJournals'],
     familyDynamics: (familyNotes.data ?? []).filter((n: any) => n.confirmed),
     currentStreak: streakDays,
     alertDetails,
@@ -333,13 +333,7 @@ export async function* streamCoachResponse(
     const stream = getAnthropic().messages.stream({
       model: sonnetModel,
       max_tokens: 800,
-      system: [
-        {
-          type: 'text' as const,
-          text: CRISIS_SYSTEM_PROMPT,
-          cache_control: { type: 'ephemeral' as const },
-        },
-      ],
+      system: [{ type: 'text' as const, text: CRISIS_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' as const } }] as any,
       messages: [
         ...history.map((m) => ({ role: m.role, content: m.content })),
         { role: 'user' as const, content: message },
@@ -437,13 +431,7 @@ export async function* streamCoachResponse(
   const stream = getAnthropic().messages.stream({
     model: sonnetModel,
     max_tokens: 600,
-    system: [
-      {
-        type: 'text' as const,
-        text: systemPrompt,
-        cache_control: { type: 'ephemeral' as const },
-      },
-    ],
+    system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }] as any,
     messages,
   });
 

@@ -273,13 +273,7 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
       const response = await getAnthropic().messages.create({
         model: soloModel,
         max_tokens: 800,
-        system: [
-          {
-            type: 'text' as const,
-            text: soloSystemText,
-            cache_control: { type: 'ephemeral' as const },
-          },
-        ],
+        system: [{ type: 'text' as const, text: soloSystemText, cache_control: { type: 'ephemeral' as const } }] as any,
         messages: [{
           role: 'user',
           content: `Generate a self-reflection guide for: Category: ${categoryLabel}, Severity: ${event.severity}, Time: ${new Date(event.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}, Day: ${new Date(event.timestamp).toLocaleDateString('en-US', { weekday: 'long' })}`,
@@ -331,13 +325,7 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
       const response = await getAnthropic().messages.create({
         model: partnerModel,
         max_tokens: 1200,
-        system: [
-          {
-            type: 'text' as const,
-            text: systemPrompt,
-            cache_control: { type: 'ephemeral' as const },
-          },
-        ],
+        system: [{ type: 'text' as const, text: systemPrompt, cache_control: { type: 'ephemeral' as const } }] as any,
         messages: [{
           role: 'user',
           content: `Generate conversation guides for: Category: ${categoryLabel}, Severity: ${event.severity}, Time: ${new Date(event.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}, Day: ${new Date(event.timestamp).toLocaleDateString('en-US', { weekday: 'long' })}, User's goals: ${(user.goals || []).map((g: string) => GOAL_LABELS[g as GoalCategory] || g).join(', ')}`,
