@@ -54,7 +54,12 @@ export default function ReferralCard() {
         </div>
         <div>
           <h3 className="font-headline text-base font-bold text-on-surface">Invite Friends</h3>
-          <p className="text-xs text-on-surface-variant font-body">Both of you get 30 days free</p>
+          <p className="text-xs text-on-surface-variant font-body">
+            Both of you get <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-label font-bold text-[11px] tracking-wide">
+              <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>redeem</span>
+              30 DAYS FREE
+            </span>
+          </p>
         </div>
       </div>
 

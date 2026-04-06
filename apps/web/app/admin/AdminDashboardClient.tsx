@@ -289,6 +289,79 @@ function SystemHealth() {
   );
 }
 
+function AnnouncementCard() {
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+  const [error, setError] = useState('');
+
+  const send = async () => {
+    if (!subject.trim() || !message.trim()) return;
+    setSending(true);
+    setResult(null);
+    setError('');
+
+    try {
+      const res = await fetch('/api/admin/announcement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, message }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to send');
+      }
+      const data = await res.json();
+      setResult(data);
+      setSubject('');
+      setMessage('');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Failed to send');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-3">
+      <h2 className="font-headline text-base font-bold text-on-surface">Send Announcement</h2>
+      <input
+        type="text"
+        placeholder="Subject..."
+        value={subject}
+        onChange={(e) => setSubject(e.target.value)}
+        className="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface-container-lowest text-sm font-body text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/30"
+        maxLength={200}
+      />
+      <textarea
+        placeholder="Message to all users..."
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        rows={3}
+        className="w-full px-3 py-2 rounded-xl border border-outline-variant bg-surface-container-lowest text-sm font-body text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+        maxLength={5000}
+      />
+      <div className="flex items-center gap-3">
+        <button
+          onClick={send}
+          disabled={sending || !subject.trim() || !message.trim()}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-on-primary text-sm font-label font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors"
+        >
+          <span className="material-symbols-outlined text-sm">send</span>
+          {sending ? 'Sending...' : 'Send to All Users'}
+        </button>
+        {result && (
+          <span className="text-xs font-label text-green-600">
+            Sent to {result.sent} users{result.failed > 0 ? ` (${result.failed} failed)` : ''}
+          </span>
+        )}
+        {error && <span className="text-xs font-label text-error">{error}</span>}
+      </div>
+    </div>
+  );
+}
+
 function StatCard({
   icon,
   label,
