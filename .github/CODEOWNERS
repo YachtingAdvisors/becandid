@@ -1,0 +1,10 @@
+# Default owners
+* @YachtingAdvisors
+
+# Web app
+apps/web/ @YachtingAdvisors
+
+# Security-sensitive
+apps/web/lib/encryption.ts @YachtingAdvisors
+apps/web/middleware.ts @YachtingAdvisors
+supabase/migrations/ @YachtingAdvisors
