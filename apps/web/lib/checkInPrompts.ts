@@ -7,6 +7,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { getModel, getMaxTokens } from '@/lib/modelRouter';
+import { logApiCost } from '@/lib/costTracker';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 
@@ -81,10 +83,20 @@ Tone: warm, direct, personally relevant. Reference specific context (their strea
 
 Output ONLY the check-in message text, no quotes, no preamble.`;
 
+    const model = getModel('simple');
     const response = await getAnthropic().messages.create({
-      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
-      max_tokens: 200,
+      model,
+      max_tokens: getMaxTokens('simple'),
       messages: [{ role: 'user', content: prompt }],
+    });
+
+    logApiCost({
+      feature: 'check_in',
+      model,
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      userId,
+      tier: 'haiku',
     });
 
     const text = response.content

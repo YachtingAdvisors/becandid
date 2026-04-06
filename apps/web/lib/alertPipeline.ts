@@ -33,6 +33,8 @@ import { generateSpouseAlertEmail } from './email/spouseAlertEmail';
 import { filterContent } from './contentFilter';
 import { sendPartnerAlertSMS, sendUserSelfNotificationSMS } from './sms';
 
+import { logApiCost } from './costTracker';
+
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@becandid.io>';
@@ -199,14 +201,31 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
 
     if (solo) {
       // Solo: self-reflection guide only
+      const soloModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+      const soloSystemText = SOLO_GUIDE_SYSTEM_PROMPT + (categoryGuidance ? `\n\n${categoryGuidance}` : '');
       const response = await getAnthropic().messages.create({
-        model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
+        model: soloModel,
         max_tokens: 800,
-        system: SOLO_GUIDE_SYSTEM_PROMPT + (categoryGuidance ? `\n\n${categoryGuidance}` : ''),
+        system: [
+          {
+            type: 'text' as const,
+            text: soloSystemText,
+            cache_control: { type: 'ephemeral' as const },
+          },
+        ],
         messages: [{
           role: 'user',
           content: `Generate a self-reflection guide for: Category: ${categoryLabel}, Severity: ${event.severity}, Time: ${new Date(event.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}, Day: ${new Date(event.timestamp).toLocaleDateString('en-US', { weekday: 'long' })}`,
         }],
+      });
+
+      logApiCost({
+        feature: 'alert_guide_solo',
+        model: soloModel,
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        userId,
+        tier: 'sonnet',
       });
 
       const guideText = response.content.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('');
@@ -238,14 +257,30 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
         systemPrompt += SPOUSE_GUIDE_ADDITION;
       }
 
+      const partnerModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
       const response = await getAnthropic().messages.create({
-        model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
+        model: partnerModel,
         max_tokens: 1200,
-        system: systemPrompt,
+        system: [
+          {
+            type: 'text' as const,
+            text: systemPrompt,
+            cache_control: { type: 'ephemeral' as const },
+          },
+        ],
         messages: [{
           role: 'user',
           content: `Generate conversation guides for: Category: ${categoryLabel}, Severity: ${event.severity}, Time: ${new Date(event.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}, Day: ${new Date(event.timestamp).toLocaleDateString('en-US', { weekday: 'long' })}, User's goals: ${(user.goals || []).map((g: string) => GOAL_LABELS[g as GoalCategory] || g).join(', ')}`,
         }],
+      });
+
+      logApiCost({
+        feature: 'alert_guide_partner',
+        model: partnerModel,
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        userId,
+        tier: 'sonnet',
       });
 
       const guideText = response.content.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('');

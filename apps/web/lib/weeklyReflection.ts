@@ -21,6 +21,8 @@ import { decryptJournalEntries } from './encryption';
 import { encrypt } from './encryption';
 import { STRINGER_QUOTES } from '@be-candid/shared';
 
+import { logApiCost } from './costTracker';
+
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 
 const REFLECTION_PROMPT = `You are a compassionate, psychologically rigorous reflection writer grounded in Jay Stringer's "Unwanted" framework.
@@ -113,14 +115,30 @@ export async function generateWeeklyReflection(userId: string): Promise<any> {
   }
 
   try {
+    const reflectionModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
     const response = await getAnthropic().messages.create({
-      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
+      model: reflectionModel,
       max_tokens: 1000,
-      system: REFLECTION_PROMPT,
+      system: [
+        {
+          type: 'text' as const,
+          text: REFLECTION_PROMPT,
+          cache_control: { type: 'ephemeral' as const },
+        },
+      ],
       messages: [{
         role: 'user',
         content: `Context:\n${contextLines.join('\n')}\n\nJournal entries:\n${entryTexts}`,
       }],
+    });
+
+    logApiCost({
+      feature: 'weekly_reflection',
+      model: reflectionModel,
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      userId,
+      tier: 'sonnet',
     });
 
     const text = response.content
