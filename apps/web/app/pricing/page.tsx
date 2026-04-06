@@ -300,8 +300,40 @@ export default function PricingPage() {
           })}
         </div>
 
+        {/* Group pricing CTA */}
+        <div className="max-w-5xl mx-auto mt-12">
+          <Link
+            href="/pricing/groups"
+            className="block bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-2xl p-6 hover:border-emerald-500/20 hover:shadow-lg transition-all group"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                  <span
+                    className="material-symbols-outlined text-emerald-400 text-2xl"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    groups
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-headline font-bold text-slate-100 text-base">
+                    Churches & Organizations
+                  </h3>
+                  <p className="text-xs text-slate-400 font-body mt-0.5">
+                    Get Pro features for <span className="text-emerald-400 font-semibold">$7/user/month</span> &mdash; 30% off individual pricing. Privacy-first group plans.
+                  </p>
+                </div>
+              </div>
+              <span className="material-symbols-outlined text-slate-500 group-hover:text-emerald-400 transition-colors flex-shrink-0">
+                arrow_forward
+              </span>
+            </div>
+          </Link>
+        </div>
+
         {/* Footer note */}
-        <div className="max-w-5xl mx-auto mt-12 text-center">
+        <div className="max-w-5xl mx-auto mt-8 text-center">
           <div className="inline-flex items-center gap-2 text-stone-500">
             <span className="material-symbols-outlined text-[18px] text-cyan-400">
               lock

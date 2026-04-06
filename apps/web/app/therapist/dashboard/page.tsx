@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import TherapistReferralSection from './TherapistReferralSection';
 
 export const metadata: Metadata = {
   title: 'Therapist Dashboard',
@@ -151,6 +152,8 @@ export default async function TherapistDashboardPage() {
           ))}
         </div>
       )}
+      {/* Referral Program */}
+      <TherapistReferralSection />
     </div>
   );
 }
