@@ -216,7 +216,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { data: entries, error } = await query;
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('GET /api/journal', error);
 
   if (exportType === 'word') {
     return new NextResponse(buildWordHTML((entries || []) as StringerJournalEntry[]), {
@@ -346,7 +346,7 @@ export async function PATCH(req: NextRequest) {
   const encryptedUpdate = encryptJournalEntry(rawUpdate, user.id);
   const { data, error } = await db.from('stringer_journal').update(encryptedUpdate).eq('id', id).eq('user_id', user.id).select().single();
 
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('PATCH /api/journal', error);
   return NextResponse.json({ entry: data });
 }
 
@@ -365,6 +365,6 @@ export async function DELETE(req: NextRequest) {
 
   const db = createServiceClient();
   const { error } = await db.from('stringer_journal').delete().eq('id', id).eq('user_id', user.id);
-  if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+  if (error) return safeError('DELETE /api/journal', error);
   return NextResponse.json({ deleted: true });
 }

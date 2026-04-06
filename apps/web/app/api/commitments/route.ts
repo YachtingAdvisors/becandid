@@ -63,7 +63,7 @@ export async function GET() {
       .lte('date', today)
       .order('date', { ascending: false });
 
-    if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+    if (error) return safeError('GET /api/commitments', error);
 
     // Decrypt all fields
     const decrypted = (commitments || []).map((c) => ({
@@ -87,8 +87,7 @@ export async function GET() {
       todayDate: today,
     });
   } catch (err) {
-    console.error('GET /api/commitments error:', err);
-    return NextResponse.json({ error: safeError(err) }, { status: 500 });
+    return safeError('GET /api/commitments', err);
   }
 }
 
@@ -131,12 +130,11 @@ export async function POST(req: NextRequest) {
         updated_at: new Date().toISOString(),
       }, { onConflict: 'user_id,date' });
 
-    if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+    if (error) return safeError('POST /api/commitments', error);
 
     return NextResponse.json({ ok: true, date: today });
   } catch (err) {
-    console.error('POST /api/commitments error:', err);
-    return NextResponse.json({ error: safeError(err) }, { status: 500 });
+    return safeError('POST /api/commitments', err);
   }
 }
 
@@ -202,11 +200,10 @@ export async function PATCH(req: NextRequest) {
       .eq('user_id', user.id)
       .eq('date', today);
 
-    if (error) return NextResponse.json({ error: safeError(error) }, { status: 500 });
+    if (error) return safeError('PATCH /api/commitments', error);
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error('PATCH /api/commitments error:', err);
-    return NextResponse.json({ error: safeError(err) }, { status: 500 });
+    return safeError('PATCH /api/commitments', err);
   }
 }
