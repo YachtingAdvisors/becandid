@@ -2,58 +2,134 @@ import type { CoachingEntry } from './types';
 
 export const COACHING_LIBRARY_DIGITAL_GAMBLING: CoachingEntry[] = [
   // ── SOCIAL MEDIA ──────────────────────────────────────────
-  { category: 'social_media', tag: null, phase: 'tributaries', content: "The scroll started somewhere. Before you opened the app, something was happening — or not happening — that made the feed feel necessary.", followUp: "What were you avoiding when you picked up your phone?" },
-  { category: 'social_media', tag: 'loneliness', phase: 'tributaries', content: "Social media promises connection but usually delivers comparison. When you're lonely, the feed feels like company — but it's a room full of people who can't see you.", followUp: "Who do you wish you were actually talking to right now?" },
-  { category: 'social_media', tag: 'stress', phase: 'tributaries', content: "Scrolling when you're stressed is your brain's way of dissociating — checking out without checking out. The relief is real but temporary, and the stress is still there when you look up.", followUp: "What's the stress actually about?" },
-  { category: 'social_media', tag: 'boredom', phase: 'tributaries', content: "Boredom and your phone have become a reflex — there's barely a thought between the feeling and the unlock. What if the boredom is trying to tell you something about how you're spending your time?", followUp: "If you couldn't scroll, what would you actually want to do?" },
-  { category: 'social_media', tag: 'late-night', phase: 'tributaries', content: "Late-night scrolling is often about not wanting to be alone with your own thoughts. The feed fills the silence. But the silence has something to say.", followUp: "What thoughts are you avoiding by staying on your phone?" },
-  { category: 'social_media', tag: null, phase: 'longing', content: "Under the endless scroll is usually a longing to feel connected, informed, or relevant. Those needs are real — but the feed can't meet them. It can only simulate meeting them.", followUp: "What would real connection look like for you today?" },
-  { category: 'social_media', tag: null, phase: 'roadmap', content: "If your phone is the first thing you reach for and the last thing you put down, your life is organized around a screen. What would a day look like if it was organized around what actually matters to you?", followUp: "What's one thing you'd do differently tomorrow morning?" },
-  { category: 'social_media', tag: null, phase: 'opening', content: "Screen time can feel like a small thing, but you're here because part of you knows it's not small anymore. Let's look at what's happening.", followUp: "How much time did you spend scrolling today?" },
-  { category: 'social_media', tag: null, phase: 'affirmation', content: "Noticing the pattern is the first step. Most people never even get here — they just keep scrolling. You stopped.", followUp: "" },
+  // Tributaries
+  { category: 'social_media', tag: null, phase: 'tributaries', content: "You didn't just randomly open the app. Something was happening — or not happening — before the scroll started. Let's rewind and find the moment your thumb reached for the phone.", followUp: "What were you feeling right before you started scrolling?" },
+  { category: 'social_media', tag: 'loneliness', phase: 'tributaries', content: "When you're lonely, the feed feels like a room full of people. But it's a room where nobody actually sees you. The pull to scroll makes sense — you wanted to feel less alone. It's worth asking whether the scrolling delivered.", followUp: "Did you feel more or less connected after the session?" },
+  { category: 'social_media', tag: 'stress', phase: 'tributaries', content: "When life gets heavy, the phone offers an escape hatch — thirty seconds of someone else's life instead of sitting in your own. That's not weakness. It's your brain reaching for a pressure valve.", followUp: "What were you trying to get a break from?" },
+  { category: 'social_media', tag: 'boredom', phase: 'tributaries', content: "Boredom and your phone are best friends — the second one shows up, the other is already in your hand. But boredom is usually a mask for something else. Restlessness. Avoidance. A life that needs something you haven't named yet.", followUp: "If you couldn't scroll, what would you have had to sit with?" },
+  { category: 'social_media', tag: 'late-night', phase: 'tributaries', content: "Late-night scrolling is its own kind of trap — your body is tired but your brain won't quit. The blue light and the infinite feed keep you just awake enough to stay stuck. Something is keeping you from putting it down.", followUp: "What time did you pick up the phone, and what were you avoiding by not sleeping?" },
+
+  // Longing
+  { category: 'social_media', tag: null, phase: 'longing', content: "Underneath the scrolling is usually a longing — to feel included, to be entertained, to matter, to not miss out. What were you actually reaching for when you opened the app?", followUp: "If you could have what you really needed in that moment, what would it be?" },
+  { category: 'social_media', tag: 'loneliness', phase: 'longing', content: "You were looking for connection, and the feed offered a counterfeit version. Likes, comments, stories — they mimic closeness without the vulnerability. What would real connection feel like for you right now?", followUp: "Who in your life could you actually reach out to today?" },
+
+  // Roadmap
+  { category: 'social_media', tag: null, phase: 'roadmap', content: "Your screen time is a mirror — it reflects what's missing, not what's wrong with you. If you keep reaching for the phone, your pattern is telling you something about what your life needs more of.", followUp: "What would a day look like where you didn't need the scroll?" },
+  { category: 'social_media', tag: null, phase: 'roadmap', content: "Freedom from the feed isn't about willpower — it's about building a life compelling enough that the phone isn't the most interesting thing in the room.", followUp: "What's one thing you could do this week that would make your real life feel more full?" },
+
+  // Opening
+  { category: 'social_media', tag: null, phase: 'opening', content: "You noticed the pattern and you're here. That's not small — most people just keep scrolling. Let's talk about what's going on.", followUp: "How are you feeling about your phone use right now?" },
+
+  // Affirmation
+  { category: 'social_media', tag: null, phase: 'affirmation', content: "Awareness is the first crack in any cycle. You noticed what you were doing and chose to be honest about it. That's real progress.", followUp: "" },
 
   // ── BINGE WATCHING ────────────────────────────────────────
-  { category: 'binge_watching', tag: null, phase: 'tributaries', content: "One episode turns into five because stopping means re-entering your actual life. What's in your actual life right now that the show is helping you escape?", followUp: "What were you putting off when you hit 'next episode'?" },
-  { category: 'binge_watching', tag: 'exhaustion', phase: 'tributaries', content: "When you're exhausted, the couch and the remote feel earned. And sometimes they are. But when it becomes the default every night, it's worth asking: is this rest, or is this avoidance?", followUp: "What would actual rest look like — not just numbing out?" },
-  { category: 'binge_watching', tag: 'loneliness', phase: 'tributaries', content: "Characters on screen can feel like company. The show gives you people to care about without the vulnerability of real relationships. That makes sense — but it's a one-way street.", followUp: "When's the last time you spent an evening with a real person?" },
-  { category: 'binge_watching', tag: null, phase: 'longing', content: "Under the binge is usually a need to disappear for a while — from responsibility, from pain, from the gap between where you are and where you want to be.", followUp: "What would you need for that gap to feel smaller?" },
-  { category: 'binge_watching', tag: null, phase: 'roadmap', content: "Your evenings tell the story of your priorities. Not what you say matters — what you actually do with your unstructured time. What story do you want your evenings to tell?", followUp: "What's one evening this week you could reclaim?" },
-  { category: 'binge_watching', tag: null, phase: 'opening', content: "There's no shame in watching TV. The question is whether it's a choice or a default. Let's figure out which one it was today.", followUp: "How many hours did you watch?" },
-  { category: 'binge_watching', tag: null, phase: 'affirmation', content: "Being honest about how you spend your time is harder than it sounds. You're paying attention now, and that changes everything.", followUp: "" },
+  // Tributaries
+  { category: 'binge_watching', tag: null, phase: 'tributaries', content: "One more episode turned into five. That didn't happen by accident — something made it hard to turn off. Let's look at what was happening before you hit play.", followUp: "What was your day like before you started watching?" },
+  { category: 'binge_watching', tag: 'loneliness', phase: 'tributaries', content: "When the house is quiet and the loneliness gets loud, a show gives you characters to be with. They become familiar — almost like company. It makes sense that you'd stay in that world a little longer.", followUp: "Were you watching alone? What did the show give you that the silence didn't?" },
+  { category: 'binge_watching', tag: 'stress', phase: 'tributaries', content: "After a stressful day, sinking into a story is the easiest way to stop thinking. You're not lazy for doing it — you're exhausted and your brain wanted to check out for a while.", followUp: "What were you carrying today that made the escape feel necessary?" },
+  { category: 'binge_watching', tag: 'boredom', phase: 'tributaries', content: "When nothing in your real life feels engaging, a well-written show is always available. But if boredom keeps driving you to the couch, it might be pointing to something deeper than not having plans.", followUp: "What would you have done with those hours if the show didn't exist?" },
+  { category: 'binge_watching', tag: 'late-night', phase: 'tributaries', content: "Late-night bingeing is a way of postponing tomorrow. If you stay in the show, you don't have to face whatever's waiting in the morning. What is it about tomorrow that made tonight hard to end?", followUp: "What's waiting for you tomorrow that you're putting off?" },
+
+  // Longing
+  { category: 'binge_watching', tag: null, phase: 'longing', content: "Behind the binge is a need — for rest, for a world that makes sense, for feeling something without the risk of real life. What were you actually hungry for?", followUp: "If you could have what you truly needed tonight, what would it be?" },
+  { category: 'binge_watching', tag: 'loneliness', phase: 'longing', content: "The characters on screen can start to feel like friends. That longing for companionship is real and important — it just can't be fully met through a screen that can't look back at you.", followUp: "What kind of real-life connection are you missing most?" },
+
+  // Roadmap
+  { category: 'binge_watching', tag: null, phase: 'roadmap', content: "If you keep losing evenings to shows, the question isn't about more discipline. It's about what your evenings are missing. What would an evening you actually chose look like?", followUp: "What's one thing you'd want to do with your evenings if the default wasn't the couch?" },
+  { category: 'binge_watching', tag: null, phase: 'roadmap', content: "There's nothing wrong with watching a good show. The signal is when it stops being a choice and starts being the only thing. Your pattern is telling you something about what your life needs.", followUp: "What would need to change for watching to feel like a choice again?" },
+
+  // Opening
+  { category: 'binge_watching', tag: null, phase: 'opening', content: "You caught yourself in the pattern and decided to talk about it. That honesty matters more than the number of episodes.", followUp: "How long did the session go, and how do you feel about it?" },
+
+  // Affirmation
+  { category: 'binge_watching', tag: null, phase: 'affirmation', content: "You could have just kept watching. Instead you paused and got honest. That's not a small thing — that's the muscle you're building.", followUp: "" },
 
   // ── GAMBLING ──────────────────────────────────────────────
-  { category: 'gambling', tag: null, phase: 'tributaries', content: "The bet wasn't random. Something made the risk feel worth it — or made you stop caring about the consequences. What was happening before you placed it?", followUp: "What were you feeling right before you opened the app?" },
-  { category: 'gambling', tag: 'stress', phase: 'tributaries', content: "When life feels out of control, a bet offers the illusion of control — the chance to make something happen. But the house always has the edge, and the stress doesn't go away.", followUp: "What's feeling out of control in your life right now?" },
-  { category: 'gambling', tag: 'boredom', phase: 'tributaries', content: "Gambling turns boredom into adrenaline in seconds. That dopamine hit is real — and your brain remembers it. But boredom might be telling you your life needs more meaning, not more risk.", followUp: "What's missing that gambling is filling?" },
-  { category: 'gambling', tag: 'anger', phase: 'tributaries', content: "Chasing losses is often about anger — at yourself, at the situation, at the feeling of being behind. The next bet feels like it'll make things right. It won't.", followUp: "What are you actually angry about?" },
-  { category: 'gambling', tag: null, phase: 'longing', content: "Under the gambling is usually a longing for excitement, for a shortcut, for proof that you're lucky or special or that things will turn around. Those feelings are human — the delivery method is the problem.", followUp: "What would 'things turning around' actually look like without the bet?" },
-  { category: 'gambling', tag: null, phase: 'roadmap', content: "If you keep chasing the win, ask yourself: what would winning even solve? If you won big tonight, what would you actually do with it? That answer tells you what you really want.", followUp: "What do you really want that money can't buy?" },
-  { category: 'gambling', tag: null, phase: 'opening', content: "Gambling is one of the hardest patterns to break because the brain treats near-misses like wins. Let's talk about what happened.", followUp: "Did you bet today, or are you thinking about it?" },
-  { category: 'gambling', tag: null, phase: 'affirmation', content: "Every day you don't bet is a day you chose your future over a dopamine hit. That's not small.", followUp: "" },
+  // Tributaries
+  { category: 'gambling', tag: null, phase: 'tributaries', content: "The urge to place a bet doesn't come from nowhere. Something was building before the impulse took over. Let's trace it back — what was happening in your day?", followUp: "When did you first feel the pull today?" },
+  { category: 'gambling', tag: 'loneliness', phase: 'tributaries', content: "Gambling can fill a silence. The rush, the anticipation, the highs and lows — it's a conversation with chance when there's no one else to talk to. What was the loneliness about today?", followUp: "Were you alone when you placed the bet, and what did you need that the bet was standing in for?" },
+  { category: 'gambling', tag: 'stress', phase: 'tributaries', content: "When the pressure is unbearable, a bet offers a strange kind of hope — the fantasy that one win could change everything. That hope is the hook. What's the real pressure about?", followUp: "What would actually relieve the stress you're carrying?" },
+  { category: 'gambling', tag: 'boredom', phase: 'tributaries', content: "Boredom and gambling are a dangerous pair — the bet makes time speed up, makes ordinary moments feel electric. But that electricity always has a bill attached.", followUp: "What was boring about today — and what would genuine excitement look like for you?" },
+  { category: 'gambling', tag: 'late-night', phase: 'tributaries', content: "Late at night, the guardrails come down. The apps are open, no one's watching, and the bets feel less real. But the losses are just as real at midnight as they are at noon.", followUp: "What kept you up, and at what point did the betting start?" },
+
+  // Longing
+  { category: 'gambling', tag: null, phase: 'longing', content: "Under every bet is a longing — for control, for a rush, for proof that luck is on your side, for escape. What were you really chasing when you placed it?", followUp: "What would it feel like to get what you actually need without the risk?" },
+  { category: 'gambling', tag: 'stress', phase: 'longing', content: "The fantasy of a big win is really a fantasy of relief — of the stress disappearing all at once. That need for relief is valid. The roulette wheel just isn't the answer.", followUp: "What would genuine relief look like in your situation?" },
+
+  // Roadmap
+  { category: 'gambling', tag: null, phase: 'roadmap', content: "Gambling tells you something about what you believe you deserve — that you need luck to get ahead, that the normal path isn't enough. What if the normal path is actually where the freedom is?", followUp: "What would your life look like a year from now if you stopped betting today?" },
+  { category: 'gambling', tag: null, phase: 'roadmap', content: "Recovery from gambling isn't just about stopping the bets. It's about building a life where the thrill of the wager isn't the most alive you ever feel.", followUp: "When was the last time you felt a rush from something that didn't cost you?" },
+
+  // Opening
+  { category: 'gambling', tag: null, phase: 'opening', content: "You're here, which means something in you knows this matters. Whatever happened with the bet, let's look at it honestly together.", followUp: "What happened — did you place a bet, or are you fighting the urge?" },
+
+  // Affirmation
+  { category: 'gambling', tag: null, phase: 'affirmation', content: "Gambling thrives in secrecy. The fact that you're naming it out loud is already breaking the cycle's power. Keep going.", followUp: "" },
 
   // ── SPORTS BETTING ────────────────────────────────────────
-  { category: 'sports_betting', tag: null, phase: 'tributaries', content: "Sports betting wraps gambling in something that feels like skill and knowledge. But the trigger isn't about the game — it's about what the bet does for you emotionally.", followUp: "Was it the game you wanted, or the action?" },
-  { category: 'sports_betting', tag: 'stress', phase: 'tributaries', content: "A bet turns a game into something that matters — something that distracts from whatever else is weighing on you. For 3 hours, the stress has somewhere else to go.", followUp: "What stress were you escaping?" },
-  { category: 'sports_betting', tag: null, phase: 'longing', content: "The bet makes you feel like you're in the game, like your knowledge matters, like you have an edge. That longing for mastery and relevance is real — but it belongs in your actual life, not a sportsbook.", followUp: "Where in your real life do you feel like your knowledge and effort matter?" },
-  { category: 'sports_betting', tag: null, phase: 'roadmap', content: "If you spent the same energy you put into lines, odds, and parlays into something you're building — what could you create?", followUp: "What's one thing worth that level of attention?" },
-  { category: 'sports_betting', tag: null, phase: 'opening', content: "Let's talk about the bet. No judgment — just understanding.", followUp: "What did you bet on today?" },
-  { category: 'sports_betting', tag: null, phase: 'affirmation', content: "Walking away from the sportsbook when every ad, every friend, and every notification is pulling you in — that takes real strength.", followUp: "" },
+  // Tributaries
+  { category: 'sports_betting', tag: null, phase: 'tributaries', content: "The game was on and the bet felt like it would make it mean more. But something was happening before you opened the app. Let's find the real starting point.", followUp: "Were you watching the game first, or did you go looking for something to bet on?" },
+  { category: 'sports_betting', tag: 'loneliness', phase: 'tributaries', content: "Sports betting can feel like being part of something — you've got skin in the game, you're invested, you're in it with strangers online. When you're lonely, that simulation of belonging is magnetic.", followUp: "What would it feel like to care about a game without money on it?" },
+  { category: 'sports_betting', tag: 'stress', phase: 'tributaries', content: "When life feels out of control, a well-researched bet can feel like you're exercising skill and control. But the illusion of control is part of what makes sports betting so hard to walk away from.", followUp: "What in your life feels out of your control right now?" },
+  { category: 'sports_betting', tag: 'boredom', phase: 'tributaries', content: "Without a bet, the game is just a game. With one, every play matters. The problem is that you start needing the stakes to feel anything at all.", followUp: "When did regular games stop being enough?" },
+  { category: 'sports_betting', tag: 'late-night', phase: 'tributaries', content: "Late-night lines, live bets, overseas leagues you don't even follow — when the betting extends past the sports you actually care about, that's the habit talking, not the fan.", followUp: "Were you betting on something you'd normally watch, or were you just looking for action?" },
+
+  // Longing
+  { category: 'sports_betting', tag: null, phase: 'longing', content: "Under the bet is usually a longing to feel sharp, to prove you know something, to matter in the outcome. Those needs are real — the sportsbook just isn't where they get met.", followUp: "Where else in your life do you feel that kind of engagement?" },
+  { category: 'sports_betting', tag: 'boredom', phase: 'longing', content: "The bet turns a boring Tuesday into an event. You're craving intensity, engagement, something that makes you feel alive. Those are legitimate needs — the parlay just isn't the healthiest delivery system.", followUp: "What used to make you feel that kind of excitement before betting?" },
+
+  // Roadmap
+  { category: 'sports_betting', tag: null, phase: 'roadmap', content: "You can love sports without the line. The question is whether you've forgotten how — and if so, how to get back to watching a game just because you love the game.", followUp: "What sport did you fall in love with before betting was part of it?" },
+  { category: 'sports_betting', tag: null, phase: 'roadmap', content: "Every bet you don't place isn't deprivation — it's a vote for the life you actually want. The wins never lasted. The losses always did.", followUp: "What's one thing you'd do with the money you'd save in a month without betting?" },
+
+  // Opening
+  { category: 'sports_betting', tag: null, phase: 'opening', content: "Hey — you came here instead of placing another bet. Or maybe you already placed one and you're trying to figure out what just happened. Either way, let's talk.", followUp: "Where are you right now — before a bet, or after one?" },
+
+  // Affirmation
+  { category: 'sports_betting', tag: null, phase: 'affirmation', content: "It takes guts to admit that something you enjoy has turned into something that controls you. Honesty like that is the beginning of getting free.", followUp: "" },
 
   // ── DAY TRADING ───────────────────────────────────────────
-  { category: 'day_trading', tag: null, phase: 'tributaries', content: "Trading looks like productivity, but compulsive trading is gambling wearing a suit. What drove you to the screen today — strategy, or something else?", followUp: "Were you following a plan, or reacting to emotions?" },
-  { category: 'day_trading', tag: 'anxiety', phase: 'tributaries', content: "Watching charts all day keeps your nervous system in fight-or-flight. The anxiety you feel isn't just about the market — the market is amplifying whatever anxiety was already there.", followUp: "If you stepped away from the screen, what would you have to face?" },
-  { category: 'day_trading', tag: null, phase: 'longing', content: "Trading often fills a longing for control, for proof of intelligence, for financial freedom. Those are good goals — but compulsive trading rarely achieves them.", followUp: "What would financial peace actually look like for you?" },
-  { category: 'day_trading', tag: null, phase: 'roadmap', content: "The market will be there tomorrow. Your relationships, your health, your presence — those have expiration dates. What's the trade-off you're actually making?", followUp: "How many hours did you spend watching charts today vs being present with people?" },
-  { category: 'day_trading', tag: null, phase: 'opening', content: "Trading can feel productive even when it's destructive. Let's look at today honestly.", followUp: "Did you stick to your rules today, or did you chase?" },
-  { category: 'day_trading', tag: null, phase: 'affirmation', content: "Recognizing that the trading has become compulsive — not strategic — is the hardest and most honest thing a trader can do.", followUp: "" },
+  // Tributaries
+  { category: 'day_trading', tag: null, phase: 'tributaries', content: "The charts were moving and you couldn't look away. But something was going on before you opened the trading app. What was the real trigger?", followUp: "Were you checking positions, or were you looking for a new trade to feel something?" },
+  { category: 'day_trading', tag: 'loneliness', phase: 'tributaries', content: "The market is always there — ticking, moving, responding. When people aren't, the charts become a kind of companion. A volatile, expensive companion.", followUp: "How much of your day was spent with the market versus with actual people?" },
+  { category: 'day_trading', tag: 'stress', phase: 'tributaries', content: "Day trading under stress is like doubling down on chaos. Your nervous system is already overloaded, and then you add leveraged positions to the mix. What's the stress really about?", followUp: "What's the pressure underneath — is it financial, or is the trading making it financial?" },
+  { category: 'day_trading', tag: 'boredom', phase: 'tributaries', content: "When life feels flat, the market offers a constant stream of drama. Green candles, red candles, the rush of being right, the sting of being wrong. It's entertainment disguised as productivity.", followUp: "If someone watched how you traded today, would it look more like investing or more like gambling?" },
+  { category: 'day_trading', tag: 'late-night', phase: 'tributaries', content: "Watching futures at 2 a.m. or trading foreign markets in the middle of the night — when the trading follows you to bed, it's stopped being a strategy and started being a compulsion.", followUp: "How much sleep did you lose to the screen last night?" },
+
+  // Longing
+  { category: 'day_trading', tag: null, phase: 'longing', content: "Under the trades is usually a longing for financial freedom, for proving you're smart enough, for control in a world that feels chaotic. Those are real desires — but is the daily grind of the chart actually getting you closer?", followUp: "What would financial peace actually look like — not a windfall, but real peace?" },
+  { category: 'day_trading', tag: 'stress', phase: 'longing', content: "The dream is that one big trade solves everything. That's the same promise gambling makes — a shortcut past the hard, slow work of building stability. What would real stability require?", followUp: "If you added up your trading P&L honestly, has it moved you closer to or further from where you want to be?" },
+
+  // Roadmap
+  { category: 'day_trading', tag: null, phase: 'roadmap', content: "There's a difference between investing and compulsive trading. Investing is boring on purpose. If you need the dopamine hit of the daily chart, the trading has become about something other than money.", followUp: "What would it look like to have a financial plan that didn't require you to watch candles all day?" },
+  { category: 'day_trading', tag: null, phase: 'roadmap', content: "The market will always be there tomorrow. Your health, your relationships, your sleep — those have limits. What are you sacrificing for the next trade?", followUp: "What has trading cost you that isn't measured in dollars?" },
+
+  // Opening
+  { category: 'day_trading', tag: null, phase: 'opening', content: "You're stepping back from the charts to look at the bigger picture. That takes more discipline than any trade. Let's talk about what's really going on.", followUp: "How was today — was it a good day or a hard day in the market?" },
+
+  // Affirmation
+  { category: 'day_trading', tag: null, phase: 'affirmation', content: "Admitting that the trading has become something more than a strategy is one of the hardest things to say out loud. You just did. That's real strength.", followUp: "" },
 
   // ── GAMING ────────────────────────────────────────────────
-  { category: 'gaming', tag: null, phase: 'tributaries', content: "Gaming gives you a world where your effort matters, where progress is clear, and where you have control. That's appealing — especially when real life feels the opposite.", followUp: "What's happening in your real life that the game is better than?" },
-  { category: 'gaming', tag: 'loneliness', phase: 'tributaries', content: "Online friends feel real — and in many ways they are. But if gaming is your only source of connection, you're building a social life inside a screen that can't hold you when things get hard.", followUp: "Do you have people in your physical life who know you?" },
-  { category: 'gaming', tag: 'stress', phase: 'tributaries', content: "Gaming after a hard day feels earned. And sometimes it is. But when 'one game' turns into 4 hours and you're up at 2 AM — the stress relief has become its own source of stress.", followUp: "How many hours was it today?" },
-  { category: 'gaming', tag: 'boredom', phase: 'tributaries', content: "Games are engineered to be more interesting than real life. That's not a fair fight. But real life is where your story actually happens.", followUp: "What's one thing in your real life that used to excite you?" },
-  { category: 'gaming', tag: null, phase: 'longing', content: "Under the gaming is usually a need for achievement, mastery, or escape. In the game, your rank matters. Your effort pays off. Your skill is visible. What if those things were true in your actual life too?", followUp: "Where in your real life do you want to level up?" },
-  { category: 'gaming', tag: null, phase: 'roadmap', content: "You've put thousands of hours into virtual worlds. Imagine if even 20% of that went into something you're building in real life. What would you build?", followUp: "What's one real-world skill worth grinding?" },
-  { category: 'gaming', tag: null, phase: 'opening', content: "Gaming isn't the enemy — but you're here because something about it has stopped being fun and started being compulsive. Let's figure out the line.", followUp: "When did gaming stop being a choice and start being a default?" },
-  { category: 'gaming', tag: null, phase: 'affirmation', content: "Stepping away from the game to look at your life honestly? That's a bigger achievement than any raid clear.", followUp: "" },
+  // Tributaries
+  { category: 'gaming', tag: null, phase: 'tributaries', content: "The session went longer than you planned. It always does when something else is going on. Let's look at what was happening before you picked up the controller.", followUp: "What was your day like before the gaming session started?" },
+  { category: 'gaming', tag: 'loneliness', phase: 'tributaries', content: "Online lobbies, guild chats, co-op missions — gaming offers a version of friendship that's always available. When the real world feels empty, it makes sense that you'd go where people know your name, even if it's a gamertag.", followUp: "Are your closest relationships online or offline right now?" },
+  { category: 'gaming', tag: 'stress', phase: 'tributaries', content: "After a brutal day, loading into a game is the fastest way to become someone else for a while — someone with clear objectives and measurable wins. Real life doesn't offer that kind of clarity.", followUp: "What happened today that made escaping feel necessary?" },
+  { category: 'gaming', tag: 'boredom', phase: 'tributaries', content: "Games are engineered to be the most interesting thing in the room. When your real life can't compete with that level of stimulation, the controller wins every time. That's not a character flaw — it's a design problem.", followUp: "What would your day need to include for the game not to be the highlight?" },
+  { category: 'gaming', tag: 'late-night', phase: 'tributaries', content: "One more match. One more raid. One more level. Late-night gaming sessions have a momentum that's hard to break — and the cost shows up the next morning when you're running on fumes.", followUp: "What time did you finally stop, and how did you feel when you did?" },
+
+  // Longing
+  { category: 'gaming', tag: null, phase: 'longing', content: "Games give you what real life often doesn't — progress bars, clear goals, a sense of mastery, community. What were you actually looking for when you logged on?", followUp: "Which of those — progress, mastery, community, escape — is the one you need most right now?" },
+  { category: 'gaming', tag: 'loneliness', phase: 'longing', content: "The longing underneath the gaming is often for belonging — a squad, a crew, people who show up. That need is completely valid. The question is whether the game is supplementing your real connections or replacing them.", followUp: "When was the last time you felt that sense of belonging offline?" },
+
+  // Roadmap
+  { category: 'gaming', tag: null, phase: 'roadmap', content: "Gaming isn't the enemy. The signal is when it stops being something you enjoy and starts being the only place you feel competent or connected. What would it look like to bring some of what gaming gives you into the rest of your life?", followUp: "What's one real-world goal that could give you the same sense of progress?" },
+  { category: 'gaming', tag: null, phase: 'roadmap', content: "You don't have to quit gaming to have a life you're proud of. But you might need to build a life worth logging off for. What would that look like?", followUp: "What's one thing outside of gaming that you've been wanting to invest in?" },
+
+  // Opening
+  { category: 'gaming', tag: null, phase: 'opening', content: "You stepped away from the screen to be here. That's a choice, and it matters. Let's talk about what gaming has been looking like for you lately.", followUp: "How much time did you spend gaming today, and how do you feel about it?" },
+
+  // Affirmation
+  { category: 'gaming', tag: null, phase: 'affirmation', content: "Being honest about how much time you're spending — and why — is harder than any boss fight. You showed up for the real challenge today.", followUp: "" },
 ];
