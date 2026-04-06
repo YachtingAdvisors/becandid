@@ -295,6 +295,140 @@ export default function RevenueClient() {
 
       {/* ── Churn + Revenue by source ────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        {/* ── Business P&L ─────────────────────────────────── */}
+        <div className="md:col-span-2 bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-lg text-on-surface-variant">account_balance</span>
+            <h2 className="font-headline text-base font-bold text-on-surface">Monthly P&amp;L</h2>
+          </div>
+
+          {(() => {
+            // Fixed costs
+            const fixedCosts = {
+              vercel: 20,
+              supabase: 30,
+              domain: 25 / 12, // $25/year → $2.08/mo
+              resend: 0, // free tier
+            };
+            const totalFixed = Object.values(fixedCosts).reduce((a, b) => a + b, 0);
+
+            // Variable costs (token usage estimate based on user count)
+            const totalUsers = (data.subscriptions.pro + data.subscriptions.therapy + data.subscriptions.trialing + data.subscriptions.free) || 1;
+            const activeUsers = Math.max(Math.round(totalUsers * 0.3), 1); // ~30% DAU estimate
+
+            // Token cost estimates per active user/day
+            const coachCostPerDay = 0.005; // hybrid: mostly static, some Haiku
+            const alertCostPerDay = 0.003; // cached + Sonnet fallback
+            const checkinCostPerDay = 0.001; // Haiku
+            const reflectionCostPerWeek = 0.01; // Sonnet, weekly
+            const startersCostPerDay = 0.001; // Haiku, cached 6h
+
+            const dailyTokenCost = activeUsers * (coachCostPerDay + alertCostPerDay + checkinCostPerDay + startersCostPerDay);
+            const weeklyTokenCost = activeUsers * reflectionCostPerWeek;
+            const monthlyTokenCost = (dailyTokenCost * 30) + (weeklyTokenCost * 4.3);
+
+            const totalCosts = totalFixed + monthlyTokenCost;
+            const grossProfit = mrr.total - totalCosts;
+            const grossMargin = mrr.total > 0 ? (grossProfit / mrr.total) * 100 : 0;
+
+            const costRows = [
+              { label: 'Vercel (Pro)', amount: fixedCosts.vercel, type: 'fixed' as const },
+              { label: 'Supabase (Pro)', amount: fixedCosts.supabase, type: 'fixed' as const },
+              { label: 'Domain (becandid.io)', amount: fixedCosts.domain, type: 'fixed' as const },
+              { label: 'Resend (Email)', amount: fixedCosts.resend, type: 'fixed' as const },
+              { label: `Claude API (~${activeUsers} active users)`, amount: monthlyTokenCost, type: 'variable' as const },
+            ];
+
+            return (
+              <div className="space-y-4">
+                {/* Revenue vs Cost summary */}
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="px-4 py-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 text-center">
+                    <p className="text-[10px] font-label font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Gross Revenue</p>
+                    <p className="font-headline text-xl font-extrabold text-emerald-800 dark:text-emerald-300">${mrr.total.toFixed(2)}</p>
+                  </div>
+                  <div className="px-4 py-3 rounded-2xl bg-red-50 dark:bg-red-950/30 text-center">
+                    <p className="text-[10px] font-label font-bold text-red-700 dark:text-red-400 uppercase tracking-wider">Total Costs</p>
+                    <p className="font-headline text-xl font-extrabold text-red-800 dark:text-red-300">${totalCosts.toFixed(2)}</p>
+                  </div>
+                  <div className={`px-4 py-3 rounded-2xl text-center ${grossProfit >= 0 ? 'bg-primary/10' : 'bg-error/10'}`}>
+                    <p className={`text-[10px] font-label font-bold uppercase tracking-wider ${grossProfit >= 0 ? 'text-primary' : 'text-error'}`}>Net Profit</p>
+                    <p className={`font-headline text-xl font-extrabold ${grossProfit >= 0 ? 'text-primary' : 'text-error'}`}>
+                      {grossProfit >= 0 ? '' : '-'}${Math.abs(grossProfit).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Margin indicator */}
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-label font-medium text-on-surface-variant">Gross Margin</span>
+                  <div className="flex-1 h-3 rounded-full bg-surface-container overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        grossMargin >= 70 ? 'bg-emerald-500' : grossMargin >= 50 ? 'bg-primary' : grossMargin >= 30 ? 'bg-tertiary' : 'bg-error'
+                      }`}
+                      style={{ width: `${Math.max(Math.min(grossMargin, 100), 0)}%` }}
+                    />
+                  </div>
+                  <span className={`text-sm font-headline font-extrabold ${
+                    grossMargin >= 70 ? 'text-emerald-600' : grossMargin >= 50 ? 'text-primary' : 'text-error'
+                  }`}>
+                    {grossMargin.toFixed(1)}%
+                  </span>
+                </div>
+
+                {/* Cost breakdown table */}
+                <div className="border border-outline-variant/30 rounded-2xl overflow-hidden">
+                  <div className="px-4 py-2 bg-surface-container-low border-b border-outline-variant/30">
+                    <div className="flex justify-between text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-wider">
+                      <span>Expense</span>
+                      <span>Monthly</span>
+                    </div>
+                  </div>
+                  {costRows.map((row) => (
+                    <div key={row.label} className="flex items-center justify-between px-4 py-2.5 border-b border-outline-variant/10 last:border-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-1.5 h-1.5 rounded-full ${row.type === 'fixed' ? 'bg-outline-variant' : 'bg-tertiary'}`} />
+                        <span className="text-sm font-body text-on-surface">{row.label}</span>
+                      </div>
+                      <span className="text-sm font-headline font-bold text-on-surface">${row.amount.toFixed(2)}</span>
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between px-4 py-2.5 bg-surface-container-low">
+                    <span className="text-sm font-label font-bold text-on-surface">Total</span>
+                    <span className="text-sm font-headline font-extrabold text-on-surface">${totalCosts.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                {/* Token usage breakdown */}
+                <div className="px-4 py-3 rounded-2xl bg-tertiary-container/20 border border-tertiary/10">
+                  <p className="text-[10px] font-label font-bold text-tertiary uppercase tracking-wider mb-2">Claude API Token Breakdown (estimated)</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-body text-on-surface-variant">
+                    <div><span className="font-semibold text-on-surface">Coach:</span> ${(activeUsers * coachCostPerDay * 30).toFixed(2)}/mo</div>
+                    <div><span className="font-semibold text-on-surface">Alerts:</span> ${(activeUsers * alertCostPerDay * 30).toFixed(2)}/mo</div>
+                    <div><span className="font-semibold text-on-surface">Check-ins:</span> ${(activeUsers * checkinCostPerDay * 30).toFixed(2)}/mo</div>
+                    <div><span className="font-semibold text-on-surface">Reflections:</span> ${(activeUsers * reflectionCostPerWeek * 4.3).toFixed(2)}/mo</div>
+                    <div><span className="font-semibold text-on-surface">Starters:</span> ${(activeUsers * startersCostPerDay * 30).toFixed(2)}/mo</div>
+                  </div>
+                </div>
+
+                {/* Legend */}
+                <div className="flex gap-4 text-xs font-label text-on-surface-variant">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-outline-variant" />
+                    Fixed costs
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-tertiary" />
+                    Variable (scales with users)
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
         {/* Churn */}
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
           <div className="flex items-center justify-between">
