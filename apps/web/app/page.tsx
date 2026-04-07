@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
 import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion } from '@/components/LandingSections';
@@ -20,63 +21,63 @@ const FEATURES = [
     icon: 'chat_bubble',
     title: 'Conversation Guides & Ice Breakers',
     desc: 'Evidence-based prompts designed by neurologists and therapists for difficult but necessary digital discussions.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDK75pW4vwBoIKZKqRfXv5nNixz53H86_XDRAM5lFE_qLDRDA_0EaBcExFNNcW2diDMzW7oHfniK5vT0VoDh8ORn6nDCr0bAoTYjdXoKn1JXHixWNHCN-flYfPlrnxYxeG5Q-eArpggt6kseUMEvlK-J3dB7Rfp0Tns9F2koKnKe904q18HbSiSBZrD9zSh5xQev-Mj2Rmdv4u19VE3ebdtEcecyMf1yeEMgGXxigV2uEAzs-KrJzjcwbLwiRFVLZnLuTzU2HNOJQcX',
+    image: '/images/features/conversation-guides.webp',
     alt: 'Glowing geometric nodes connected by light strands representing AI dialogue',
   },
   {
     icon: 'menu_book',
     title: 'Candid Journal',
     desc: 'A private space for reflective record-keeping, helping you track personal growth and interaction history.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfBxh_yzZ7uwgR50MZXnPl8QPW_ME7nN1lPEv_cD822RK8u7V3Of9E95ABemZ6rqV6rm8XlZxJ4wKTkxhiTM_BdCz20_ph4pMvKdJ0nnZ_vWe9SHbw_9L3pktumG67jQ9bcna8kWc8qkdjUObqfyMIRuBTqz8PcOF2YENphyR5zUA8P06cp0atPabHodQTd4U_R_CrPA0NsRlNWahv_-vNun8lbKvIeKrXMWssZuRwXhSxhjkg5EYMZoF14po0DPIq5w_QpV0AJlk5',
+    image: '/images/features/candid-journal.webp',
     alt: 'Minimalist digital journal on a tablet with morning sunlight',
   },
   {
     icon: 'handshake',
     title: 'Partner Awareness',
     desc: 'Shared insights that foster mutual trust without compromising individual privacy or autonomy.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC9z0_qFFcxPTynziBimlO4ZPOQFzK7CzCSyVCv0kNcrKCiAJBxSC5E1phNCkDn9xtVrExQQ87WeZIoheVpMKoAWKh41dsihbIIjOeUaFB8wHt5T--RFXDxFiuZTZO1vz6lISFQaOI04Tym26Ju5v_M3Car6glHvDiYJzZrxsZSfLbsTS8n4qUTvbU1Um6VgboqhHrYBMFUVZrJuwLBTCI0mDrRwx3eM2jkUnm56VUa29YoY5hiWJ-tcB-E4cNfJ-CTTJIPBiHFvTnT',
+    image: '/images/features/partner-awareness.webp',
     alt: 'Two intersecting circles in teal and blue symbolizing mutual understanding',
   },
   {
     icon: 'emergency_home',
     title: 'Crisis Detection',
     desc: 'Advanced sentiment analysis to identify distress signals and offer immediate supportive resources.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2PCBqh0r0XvbXJDoIEsvChMXbblBdWZXVmPnPx8vluAlIIDucgY3v30rMZfGzihOLd5Ia0--KQVA4mZVnXJD-77rO0isDR-vo4892fqZvxWQgm7uSZq9OhnYDnxtgTqiCNcuPpT6Py4FSd930P4VzXmFVT1QixXQxljEZ4m50_VBnJ1Oh7jgkg9h-R962WCiwhhqBP58uSLVH1IcJ2hKPaiEAer8GxO6AKpqR1hzUhFxE9ah4094WMrEQ1KslZWYovr7C_kdy07eD',
+    image: '/images/features/crisis-detection.webp',
     alt: 'Calm wave pattern in warm amber tones representing gentle monitoring',
   },
   {
     icon: 'encrypted',
     title: 'End-to-End Encryption',
     desc: 'State-of-the-art security ensuring your most vulnerable moments stay strictly between you and your trusted circle.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_SmlA10dM0e2T2J0UiwgngHZsGaBJ4JuqCNZAMl1QG4NU9v7tdmC3VWKFAAgak_lSpbNYxCSYrvDlzgYvrmimwqt6xA3UityznZhg10haskT1rixoScFsfQlyOxUPSy4fdt2iwV5XzUl3aCzdGUJ8rHfFoly-qoTP62_ZTq7p6uIvSVJhgSMv1mYaAxBej4h_RoU7Zw7LVBfQJ8TMInGYqDcbbHd0MWedNtXiT--RHCjXowUWZwHMl-8etkYyMXnymYrHzoXbOK3x',
+    image: '/images/features/encryption.webp',
     alt: 'Glass lock icon floating above shimmering data particles in teal and cyan',
   },
   {
     icon: 'center_focus_strong',
     title: 'Alignment Tracking',
     desc: 'Monitor how your digital habits align with your core values and long-term wellness goals.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5Ys--kStjkPby9Zzm20_PmXM5uVfGTfSuggs9r3WJvReEscj7W60sLEU-bUDtF0AeqbE_btr3fg9RPmicpxh6qiQDyEz9kbkYiONgY96ZqIF0rZzvv8n6COzpeCPg7_kjrqpK7j3jkkolkA5PkecMAoDZ2zWxG-K47MB8kCTYKEVOWCWAZ27E-IKn6Qa76TU-IwTauc8Vmc8t8kt1CVrPbj6lj7BcLktihlUai5twB3UU1E20Azu2iAHz59zoPDPhHCQV_js88LSX',
+    image: '/images/features/alignment-tracking.webp',
     alt: 'Data visualization showing harmonic balance representing life-tech alignment',
   },
   {
     icon: 'filter_list',
     title: 'AI Content Filtering',
     desc: 'Smart filters that shield you from toxic environments while highlighting positive, growth-oriented content.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAwFXB-FLuFEzJSGvNSOMO371jUsqU4or47dt12RQUpFyGKy0QYOYry8Y8HDlzk5QZ67tgUAlb-B-d19tir4g-nQ8QL0YgqMU_Prwnu0TABcEXoLJzVSBziYz3qoolNAD6Y618dCgmPAfcj9r_yUuXtYbEKV-2f0zOq_YLPiwbTA4liYmq9KZqjL29E__6ceJEJiW-KUMZC0sNZ-qY2P0HeyFgrtebqakuqHa9UQTP1wb_29AmK24CSjQSB7l_J5O6Bc1DpMOAVtinG',
+    image: '/images/features/content-filtering.webp',
     alt: 'Semi-transparent prism filtering light into a clear beam',
   },
   {
     icon: 'timer',
     title: 'Screen Time Controls',
     desc: 'Intuitive limits that encourage conscious consumption rather than restrictive digital deprivation.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8r5F8dD28slCIYA2s9aKRnx0uApEyC-ppD8DLNUx2-X5FfNFQcdM8OKJUWui0FekVLb68kQfkT-1cwWb0gQV7j7ByCGkWlauhEnJpptHOuNCkSzngOUHFwqnGARySp03UjnzsxG7kMKD62daIP6dBtMNhegwofC7BfwigGdnW2DFs-PBFldta7m6qgayt5m2637au0Hs2oan7RWWi4Gr6M-_qVeB_u4D_pAQFDTMnkNLFI1oxFD0Xqz0DYl8ItG1JsYZqGUPlfwDc',
+    image: '/images/features/screen-time.webp',
     alt: 'Zen garden sand pattern with minimalist clock silhouette',
   },
   {
     icon: 'shield',
     title: 'Guardian Dashboard',
     desc: 'A centralized command center for administrators to oversee safety settings and review collective wellness trends.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfpF--KFSH1cy_6OBg93bKMc1gd14EqwcEEog-t6MRUe8QhOI5SPIUcmoh6l1T6YUBUy4LKdEeuUZrslDB416pE39KXKFVf2lk7_dwje-3Rv7l-EbjKvvro96ASsDf7LTpYNVX3p_gipILTXxWXcR0angm8imcdY9CnP4SZ1neORKJH138yUFYcWIghaEtDYvDyGYr3ELkonIOhGIJ7I2ey1L0cMlqigWN9Kql3bpW-K7ZRT_mIP8RyLiwzFBz7-uetTG33SpOnXgB',
+    image: '/images/features/guardian-dashboard.webp',
     alt: 'Clean structured command center interface with soft glow',
   },
 ];
@@ -184,12 +185,16 @@ export default function LandingPage() {
             <div className="relative hidden lg:block">
               <div className="absolute -inset-8 rounded-full blur-[80px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.2), transparent 70%)' }} />
               <div className="relative glass-card rounded-3xl p-3 transform rotate-1 hover:rotate-0 transition-transform duration-700">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBDhdaLlgxHIo_EQEqTmR12ZxXVjLjZzQR32EdMhoa_Wx7_3glU1nTRHm1c7XAWnFGGPLDLoqo8o-VvOMXB56KxDMWa054TdLlpsZsPPAGJhDElxPH8IYampDAz8ajs9SDk_IwFhdWISX-YRczgAUd6JegtfDruOhiPwoIaYjmDhVLDw8_GbAwE8PW5s2ci5wvWPSmnbu34eIOizHnoY2DJF7DCsL_pt-JSFBs1rj0Qw7_96_k7nUMFbrBYJHX52XfyKK4DnTy6Jp6"
-                  alt="Be Candid dashboard showing integrity score and journaling prompts"
-                  className="w-full h-auto rounded-2xl object-cover"
-                />
+                <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden relative">
+                  <Image
+                    src="/images/features/hero-dashboard.webp"
+                    alt="Be Candid dashboard showing integrity score and journaling prompts"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    priority
+                  />
+                </div>
               </div>
 
               {/* Floating badge top-right */}
@@ -230,12 +235,13 @@ export default function LandingPage() {
                   className="group relative glass-card rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 cursor-pointer"
                 >
                   {/* Image */}
-                  <div className="aspect-[16/10] overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                  <div className="aspect-[16/10] overflow-hidden relative">
+                    <Image
                       src={f.image}
                       alt={f.alt}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   </div>
 
@@ -300,12 +306,13 @@ export default function LandingPage() {
               {/* Right side image */}
               <div className="relative hidden lg:block">
                 <div className="absolute -inset-4 rounded-3xl blur-[60px]" style={{ background: 'rgba(0, 102, 122, 0.1)' }} />
-                <div className="relative rounded-3xl overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo-SYobDlsUK6Jtkhk6AOOLEAwVNupQmSLEPlK8FuQIe6s2NVffDH_R4IbPyToq3JBb_q1CbH2MuJevxCbYMBD03TcBYONX7kOxkb1R4RSBnS07LOFuReuhJ0QXbvHMm9TYaQh0gQEOzNkvBNo9bxfHdGr3BnFynKwkIqWRXSD6AZTKTymbgvo9xYIablHUGDjYReLJ_TGzLgV9aLZI0FhD1y6mjoVmKqYrAocN7xNumX62L_1dhIR5Wu5kHe_TboeF2sqIoh3kROT"
+                <div className="relative rounded-3xl overflow-hidden aspect-[4/3]">
+                  <Image
+                    src="/images/features/sync-devices.webp"
                     alt="Laptop and smartphone showing synchronized Be Candid integrity progress"
-                    className="w-full h-auto rounded-3xl object-cover"
+                    fill
+                    className="object-cover rounded-3xl"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                   {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0c1214] via-transparent to-transparent" />
