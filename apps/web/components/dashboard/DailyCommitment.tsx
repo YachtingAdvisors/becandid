@@ -14,6 +14,7 @@
 
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
+import { useToast } from '@/components/ToastProvider';
 
 interface Commitment {
   id: string;
@@ -54,6 +55,7 @@ export default function DailyCommitment() {
   const [reflection, setReflection] = useState('');
   const [intentionMet, setIntentionMet] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('morning');
   const [showReview, setShowReview] = useState(false);
 
@@ -77,6 +79,7 @@ export default function DailyCommitment() {
       if (res.ok) {
         await mutate();
         setIntention('');
+        toast('Intention saved', 'success');
       }
     } catch {
       // silent
@@ -103,6 +106,7 @@ export default function DailyCommitment() {
         setShowReview(false);
         setReflection('');
         setIntentionMet(null);
+        toast('Reflection saved', 'success');
       }
     } catch {
       // silent
