@@ -66,6 +66,10 @@ const IsolationCheck = dynamic(
   () => import('@/components/dashboard/IsolationCheck'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
 );
+const DoomscrollCheck = dynamic(
+  () => import('@/components/dashboard/DoomscrollCheck'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
+);
 const ProcrastinationCheck = dynamic(
   () => import('@/components/dashboard/ProcrastinationCheck'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
@@ -238,6 +242,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 page-enter">
+      {/* ── Self-Harm Safety Resources (always first) ──────── */}
+      {(profile?.goals ?? []).includes('self_harm') && (
+        <SelfHarmSafetyCard hasPartner={!!partner} />
+      )}
+
       {/* ── First-Time Walkthrough ─────────────────────────── */}
       {showWalkthrough && (
         <WalkthroughWrapper
@@ -273,10 +282,31 @@ export default async function DashboardPage() {
         </Suspense>
       )}
 
+      {/* ── Doomscrolling News Check ────────────────────────── */}
+      {(profile?.goals ?? []).includes('doomscrolling') && (
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+          <DoomscrollCheck />
+        </Suspense>
+      )}
+
       {/* ── Procrastination Check ────────────────────────────── */}
       {(profile?.goals ?? []).includes('procrastination') && (
         <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
           <ProcrastinationCheck />
+        </Suspense>
+      )}
+
+      {/* ── Work-Life Check (Overworking) ──────────────────── */}
+      {(profile?.goals ?? []).includes('overworking') && (
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+          <WorkLifeCheck />
+        </Suspense>
+      )}
+
+      {/* ── Sleep Check (Sleep Avoidance) ──────────────────── */}
+      {(profile?.goals ?? []).includes('sleep_avoidance') && (
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+          <SleepCheck />
         </Suspense>
       )}
 

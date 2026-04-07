@@ -19,8 +19,10 @@ import PartnerPreview from '@/components/onboarding/PartnerPreview';
 import type { GoalCategory, TrackedSubstance } from '@be-candid/shared';
 import {
   MOTIVATOR_LABELS, MOTIVATOR_DESCRIPTIONS,
+  GOAL_LABELS,
   type FoundationalMotivator,
 } from '@be-candid/shared';
+import { GOAL_TIPS } from '@/lib/goalTips';
 
 type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done' | 'first-journal';
 
