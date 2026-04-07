@@ -267,6 +267,114 @@ export default function MethodologyPage() {
         </div>
       </section>
 
+      {/* ── Our Technology ────────────────────────────────────── */}
+      <section className="px-6 py-28 max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <p className="text-teal-400 font-label text-xs font-bold uppercase tracking-widest mb-3">Our Technology</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Smart Detection Without the VPN</h2>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+            Most accountability apps route all your internet traffic through a VPN &mdash; draining your battery, slowing your connection, and breaking other apps. We built something better.
+          </p>
+        </div>
+
+        {/* DNS-only explanation */}
+        <div className="grid lg:grid-cols-2 gap-12 items-start mb-16">
+          <div className="space-y-6">
+            <div className="p-6 rounded-2xl border border-red-500/20 bg-red-500/5">
+              <h3 className="text-lg font-bold text-red-400 mb-3 flex items-center gap-2">
+                <Icon name="block" className="text-xl" />
+                Traditional VPN Approach
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                Apps like Covenant Eyes and Ever Accountable route <strong className="text-white">every packet of your internet traffic</strong> through a VPN tunnel. Every website, every video stream, every app &mdash; all filtered through their servers.
+              </p>
+              <ul className="space-y-2.5 text-sm text-slate-400">
+                <li className="flex items-start gap-2.5">
+                  <Icon name="battery_alert" className="text-red-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">Battery drain</strong> &mdash; VPN processes every packet 24/7, consuming significant power</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Icon name="speed" className="text-red-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">Speed reduction</strong> &mdash; all traffic routes through an extra hop, slowing browsing and streaming</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Icon name="wifi_off" className="text-red-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">Connection drops</strong> &mdash; VPN reconnects constantly, breaking video calls and other apps</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Icon name="business" className="text-red-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">Work conflicts</strong> &mdash; can&apos;t run alongside your company VPN, school network, or other security tools</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Icon name="phone_iphone" className="text-red-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">iOS limitations</strong> &mdash; Apple restricts VPN apps heavily, causing frequent disconnects</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="p-6 rounded-2xl border border-teal-500/20 bg-teal-500/5">
+              <h3 className="text-lg font-bold text-teal-400 mb-3 flex items-center gap-2">
+                <Icon name="verified_user" className="text-xl" />
+                Be Candid&apos;s DNS-Only Approach
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                Instead of routing all traffic, Be Candid only intercepts <strong className="text-white">DNS queries</strong> &mdash; the tiny lookup that happens when your device asks &ldquo;where is this website?&rdquo; Everything else passes through untouched.
+              </p>
+              <ul className="space-y-2.5 text-sm text-slate-400">
+                <li className="flex items-start gap-2.5">
+                  <Icon name="check_circle" className="text-teal-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">~200KB/day</strong> vs gigabytes &mdash; DNS queries are tiny packets (~100 bytes each)</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Icon name="check_circle" className="text-teal-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">Zero speed impact</strong> &mdash; your actual browsing, streaming, and apps run at full speed</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Icon name="check_circle" className="text-teal-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">Minimal battery use</strong> &mdash; processing 2,000 DNS lookups/day is negligible</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Icon name="check_circle" className="text-teal-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">No app conflicts</strong> &mdash; no TLS inspection, no certificate issues, no broken video calls</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Icon name="check_circle" className="text-teal-400 text-base mt-0.5 shrink-0" />
+                  <span><strong className="text-slate-200">Rival-specific</strong> &mdash; only checks domains matching your selected categories, ignoring everything else</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* How it works across platforms */}
+        <div className="grid md:grid-cols-4 gap-4">
+          {[
+            { icon: 'desktop_mac', platform: 'Desktop', method: 'App focus detection + smart screenshot analysis', detail: 'Knows which app is active without touching your network' },
+            { icon: 'language', platform: 'Browser', method: 'Extension reads the active tab URL directly', detail: 'No proxy, no VPN — just the browser API' },
+            { icon: 'phone_android', platform: 'Android', method: 'UsageStatsManager queries app usage natively', detail: 'Built-in Android API, no root or VPN required' },
+            { icon: 'phone_iphone', platform: 'iOS', method: 'DNS-only filtering for domain awareness', detail: 'Minimal footprint — transitioning to Screen Time API' },
+          ].map((p) => (
+            <div key={p.platform} className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
+              <Icon name={p.icon} className="text-teal-400 text-3xl mb-3" />
+              <h4 className="font-bold text-white text-sm mb-1">{p.platform}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed mb-2">{p.method}</p>
+              <p className="text-[10px] text-slate-500">{p.detail}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Privacy promise */}
+        <div className="mt-12 p-6 rounded-2xl bg-teal-500/5 border border-teal-500/10 text-center max-w-2xl mx-auto">
+          <Icon name="shield" className="text-teal-400 text-3xl mb-2" />
+          <h4 className="font-bold text-white text-sm mb-2">Privacy by Architecture</h4>
+          <p className="text-sm text-slate-400 leading-relaxed">
+            DNS queries are checked <strong className="text-teal-300">locally on your device</strong>. Only the category and timing are synced &mdash; never the domain, never the URL, never the content. Your partner sees &ldquo;Social Media &mdash; 9:47 PM&rdquo; &mdash; not which site you visited.
+          </p>
+        </div>
+      </section>
+
       {/* ── CTA (asymmetric 2-column) ──────────────────────────── */}
       <section className="px-6 py-28 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
