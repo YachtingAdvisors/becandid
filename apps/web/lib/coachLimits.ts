@@ -29,6 +29,10 @@ export async function checkCoachLimit(
   db: SupabaseClient,
   userId: string,
 ): Promise<CoachLimitResult> {
+  // BETA: unlimited for everyone
+  const BETA_MODE = true;
+  if (BETA_MODE) return { allowed: true, remaining: -1, limit: -1, plan: 'beta' };
+
   // Get user plan + grandfathered status
   const { data: user } = await db
     .from('users')

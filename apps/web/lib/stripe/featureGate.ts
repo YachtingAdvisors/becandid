@@ -33,6 +33,15 @@ interface GateResult {
 }
 
 export async function checkFeatureGate(userId: string, feature: FeatureKey): Promise<GateResult> {
+  // ── BETA MODE: All features free for everyone ──────────────
+  // During the beta period, all users get full access to every feature.
+  // Remove this block when beta ends and paid plans go live.
+  const BETA_MODE = true;
+  if (BETA_MODE) {
+    return { allowed: true, plan: 'therapy' as PlanId };
+  }
+  // ── END BETA MODE ──────────────────────────────────────────
+
   const db = createServiceClient();
   const { data: user } = await db.from('users')
     .select('subscription_plan, subscription_status, grandfathered')
@@ -72,6 +81,10 @@ export async function checkFeatureGate(userId: string, feature: FeatureKey): Pro
 // ── AI guide rate limiter ───────────────────────────────────
 
 export async function checkAIGuideLimit(userId: string): Promise<GateResult & { used?: number; limit?: number }> {
+  // BETA: unlimited for everyone
+  const BETA_MODE = true;
+  if (BETA_MODE) return { allowed: true, plan: 'therapy' as PlanId };
+
   const db = createServiceClient();
   const { data: user } = await db.from('users')
     .select('subscription_plan, grandfathered')
@@ -120,6 +133,10 @@ export async function checkAIGuideLimit(userId: string): Promise<GateResult & { 
 // ── Partner limit checker ───────────────────────────────────
 
 export async function checkPartnerLimit(userId: string): Promise<GateResult & { count?: number; limit?: number }> {
+  // BETA: unlimited for everyone
+  const BETA_MODE = true;
+  if (BETA_MODE) return { allowed: true, plan: 'therapy' as PlanId };
+
   const db = createServiceClient();
   const { data: user } = await db.from('users')
     .select('subscription_plan, grandfathered')

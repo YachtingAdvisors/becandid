@@ -420,6 +420,58 @@ export default function LandingPage() {
         {/* ── FAQ Accordion ───────────────────────────────── */}
         <FAQAccordion />
 
+        {/* ── Join the Community ─────────────────────────── */}
+        <section className="py-24 lg:py-32 px-6 border-t border-white/5">
+          <div className="max-w-screen-lg mx-auto text-center">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 glass-card rounded-full mb-6">
+              <span className="w-2 h-2 rounded-full bg-[#5865F2] animate-pulse" />
+              <span className="font-label text-xs font-semibold uppercase tracking-widest text-[#5865F2]">Community</span>
+            </div>
+
+            <h2 className="font-headline text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6">
+              Join the Community
+            </h2>
+            <p className="font-body text-lg text-stone-400 leading-relaxed max-w-2xl mx-auto mb-10">
+              Be Candid is built in the open. Join our Discord to share feedback, request features, and connect with others on the same journey.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
+              <a
+                href="https://discord.gg/becandid"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group px-8 py-4 bg-[#5865F2] text-white rounded-full font-label font-bold text-base shadow-lg shadow-[#5865F2]/30 hover:shadow-xl hover:shadow-[#5865F2]/40 hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer inline-flex items-center gap-2.5"
+              >
+                <MaterialIcon name="forum" className="text-xl" />
+                Join our Discord
+                <MaterialIcon name="arrow_forward" className="text-lg group-hover:translate-x-0.5 transition-transform duration-200" />
+              </a>
+              <Link
+                href="/donate"
+                className="px-8 py-4 rounded-full font-label font-bold text-base text-stone-300 hover:text-white glass-card hover:bg-white/[0.06] transition-all duration-200 cursor-pointer inline-flex items-center gap-2.5"
+              >
+                <MaterialIcon name="volunteer_activism" className="text-xl text-emerald-400" />
+                Support the Project
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
+              <div className="glass-card rounded-2xl px-6 py-5">
+                <p className="font-headline text-2xl font-extrabold text-[#5865F2]">140+</p>
+                <p className="font-body text-xs text-stone-400 mt-1">Features built by community feedback</p>
+              </div>
+              <div className="glass-card rounded-2xl px-6 py-5">
+                <p className="font-headline text-2xl font-extrabold text-emerald-400">Free</p>
+                <p className="font-body text-xs text-stone-400 mt-1">During beta &mdash; all features unlocked</p>
+              </div>
+              <div className="glass-card rounded-2xl px-6 py-5">
+                <p className="font-headline text-2xl font-extrabold text-cyan-400">Open</p>
+                <p className="font-body text-xs text-stone-400 mt-1">Built in public with your input</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── Final CTA ───────────────────────────────────── */}
         <section id="cta" className="py-24 lg:py-32 px-6">
           <div className="max-w-screen-lg mx-auto relative">
