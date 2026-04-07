@@ -10,7 +10,8 @@
 // ============================================================
 
 import { checkDomain, checkUrl } from './contentBlocklist';
-import type { GoalCategory } from '@be-candid/shared';
+import type { GoalCategory, TrackedSubstance } from '@be-candid/shared';
+import { SUBSTANCE_CATEGORIES } from '@be-candid/shared';
 
 // ── Public types ────────────────────────────────────────────
 
@@ -171,10 +172,33 @@ const TITLE_KEYWORD_RULES: TitleKeywordRule[] = [
   },
 ];
 
+// ── Substance-specific window title keywords ───────────────
+
+const SUBSTANCE_TITLE_KEYWORDS: Record<string, string[]> = {
+  alcohol: ['bar', 'brewery', 'wine', 'cocktail', 'happy hour', 'tavern', 'pub', 'liquor store', 'beer', 'spirits', 'whiskey', 'vodka', 'rum', 'tequila'],
+  beer: ['brewery', 'beer', 'lager', 'ale', 'ipa', 'craft beer', 'tap room', 'taproom'],
+  wine: ['wine', 'winery', 'vineyard', 'sommelier', 'wine bar', 'wine club'],
+  liquor: ['liquor', 'spirits', 'whiskey', 'vodka', 'rum', 'tequila', 'bourbon', 'gin', 'distillery'],
+  marijuana: ['dispensary', 'cannabis', 'weed', 'thc', 'leafly', 'weedmaps', 'marijuana', 'edibles', 'dab'],
+  cannabis: ['dispensary', 'cannabis', 'weed', 'thc', 'leafly', 'weedmaps', 'marijuana', 'edibles'],
+  cocaine: ['cocaine', 'coke'],
+  opioids: ['opioid', 'painkiller', 'oxy', 'percocet', 'vicodin'],
+  heroin: ['heroin'],
+  fentanyl: ['fentanyl'],
+  methamphetamine: ['meth', 'methamphetamine', 'crystal'],
+  prescription_drugs: ['pill finder', 'drug identifier', 'pharmacy', 'prescription'],
+  vaping: ['vape', 'juul', 'puff bar', 'vaporizer', 'e-liquid', 'ejuice', 'e-juice', 'pod system', 'mod kit'],
+  cigarettes: ['cigarette', 'marlboro', 'camel', 'newport', 'smoking'],
+  nicotine: ['nicotine', 'nic salt', 'nicotine pouch', 'zyn'],
+  kratom: ['kratom', 'mitragyna'],
+  psychedelics: ['psychedelic', 'psilocybin', 'mushroom', 'lsd', 'ayahuasca', 'dmt'],
+};
+
 // ── Main pre-classifier ─────────────────────────────────────
 
 export function preClassifyScreenshot(
-  metadata: ScreenshotMetadata
+  metadata: ScreenshotMetadata,
+  trackedSubstances?: TrackedSubstance[]
 ): ClassificationResult {
   // 1. Skip if screen hasn't changed since last capture
   if (!metadata.screenChanged) {

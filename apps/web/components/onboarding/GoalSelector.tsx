@@ -4,13 +4,18 @@ import { useState, useEffect } from 'react';
 import {
   GOAL_LABELS,
   GOAL_DESCRIPTIONS,
+  SUBSTANCE_LABELS,
+  SUBSTANCES_BY_CATEGORY,
   type GoalCategory,
+  type TrackedSubstance,
 } from '@be-candid/shared';
 import { isIsolationOnlyUser } from '@/lib/isolationMode';
 
 interface GoalSelectorProps {
   selected: GoalCategory[];
   onChange: (goals: GoalCategory[]) => void;
+  trackedSubstances?: TrackedSubstance[];
+  onSubstancesChange?: (substances: TrackedSubstance[]) => void;
   disabled?: boolean;
 }
 
@@ -73,7 +78,7 @@ const CATEGORY_CARDS: { id: GoalCategory; icon: string }[] = [
   { id: 'isolation', icon: 'door_open' },
 ];
 
-export default function GoalSelector({ selected, onChange, disabled }: GoalSelectorProps) {
+export default function GoalSelector({ selected, onChange, trackedSubstances = [], onSubstancesChange, disabled }: GoalSelectorProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -86,10 +91,26 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
     if (disabled) return;
     if (selected.includes(goal)) {
       onChange(selected.filter(g => g !== goal));
+      // Clear substances for this category when deselected
+      if (onSubstancesChange && (goal === 'alcohol_drugs' || goal === 'vaping_tobacco')) {
+        const categorySubstances = SUBSTANCES_BY_CATEGORY[goal] ?? [];
+        onSubstancesChange(trackedSubstances.filter(s => !categorySubstances.includes(s)));
+      }
     } else {
       onChange([...selected, goal]);
     }
   }
+
+  function toggleSubstance(substance: TrackedSubstance) {
+    if (disabled || !onSubstancesChange) return;
+    if (trackedSubstances.includes(substance)) {
+      onSubstancesChange(trackedSubstances.filter(s => s !== substance));
+    } else {
+      onSubstancesChange([...trackedSubstances, substance]);
+    }
+  }
+
+  const hasSubstanceGoal = selected.includes('alcohol_drugs') || selected.includes('vaping_tobacco');
 
   return (
     <div>
@@ -153,6 +174,77 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
           );
         })}
       </div>
+
+      {/* Substance specificity selector */}
+      {hasSubstanceGoal && onSubstancesChange && (
+        <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 ring-1 ring-purple-500/20 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-purple-400 text-lg">science</span>
+            <h4 className="font-headline font-bold text-sm text-white">Which substances are you working on?</h4>
+          </div>
+          <p className="text-xs text-slate-400 leading-relaxed">
+            Be specific so we can tailor detection and coaching to your situation. Select all that apply.
+          </p>
+
+          {selected.includes('alcohol_drugs') && (
+            <div className="space-y-2">
+              <p className="text-xs font-label font-semibold text-purple-300 uppercase tracking-wider">Alcohol & Drugs</p>
+              <div className="flex flex-wrap gap-2">
+                {(SUBSTANCES_BY_CATEGORY['alcohol_drugs'] ?? []).map((substance) => {
+                  const isActive = trackedSubstances.includes(substance);
+                  return (
+                    <button
+                      key={substance}
+                      type="button"
+                      onClick={() => toggleSubstance(substance)}
+                      disabled={disabled}
+                      className={`px-3 py-1.5 rounded-full text-xs font-label font-medium transition-all duration-200 ${
+                        isActive
+                          ? 'bg-purple-500/30 text-purple-200 ring-1 ring-purple-400/50 shadow-sm shadow-purple-500/20'
+                          : 'bg-slate-700/50 text-slate-400 ring-1 ring-slate-600/30 hover:bg-slate-700 hover:text-slate-300'
+                      }`}
+                    >
+                      {isActive && (
+                        <span className="inline-block mr-1">&#10003;</span>
+                      )}
+                      {SUBSTANCE_LABELS[substance]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {selected.includes('vaping_tobacco') && (
+            <div className="space-y-2">
+              <p className="text-xs font-label font-semibold text-purple-300 uppercase tracking-wider">Vaping & Tobacco</p>
+              <div className="flex flex-wrap gap-2">
+                {(SUBSTANCES_BY_CATEGORY['vaping_tobacco'] ?? []).map((substance) => {
+                  const isActive = trackedSubstances.includes(substance);
+                  return (
+                    <button
+                      key={substance}
+                      type="button"
+                      onClick={() => toggleSubstance(substance)}
+                      disabled={disabled}
+                      className={`px-3 py-1.5 rounded-full text-xs font-label font-medium transition-all duration-200 ${
+                        isActive
+                          ? 'bg-purple-500/30 text-purple-200 ring-1 ring-purple-400/50 shadow-sm shadow-purple-500/20'
+                          : 'bg-slate-700/50 text-slate-400 ring-1 ring-slate-600/30 hover:bg-slate-700 hover:text-slate-300'
+                      }`}
+                    >
+                      {isActive && (
+                        <span className="inline-block mr-1">&#10003;</span>
+                      )}
+                      {SUBSTANCE_LABELS[substance]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Custom option */}
       <button
