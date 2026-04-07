@@ -65,6 +65,44 @@ export default function SubscriptionCard() {
   const isPastDue = data.status === 'past_due';
   const isGrandfathered = data.grandfathered === true;
 
+  // BETA MODE: everyone gets full access
+  const BETA_MODE = true;
+  if (BETA_MODE) {
+    return (
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-lg text-violet-600" style={{ fontVariationSettings: "'FILL' 1" }}>science</span>
+            <div>
+              <h3 className="text-sm font-semibold text-on-surface">Subscription</h3>
+              <p className="text-xs font-medium text-violet-600">Free Beta Access</p>
+            </div>
+          </div>
+          <span className="text-[10px] px-2.5 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-200 font-label font-bold">
+            All Features Unlocked
+          </span>
+        </div>
+        <div className="p-3.5 rounded-xl bg-gradient-to-r from-violet-50 to-primary/5 border border-violet-100">
+          <p className="text-xs text-violet-800 font-body leading-relaxed">
+            You&apos;re part of the Be Candid beta. All features are free during this period &mdash; no limits, no credit card required. Your feedback shapes what we build.
+          </p>
+        </div>
+        <div className="mt-3 flex gap-2">
+          <a href="https://discord.gg/becandid" target="_blank" rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-label font-semibold text-violet-700 bg-violet-50 rounded-xl hover:bg-violet-100 transition-colors">
+            <span className="material-symbols-outlined text-sm">forum</span>
+            Join Discord
+          </a>
+          <a href="/donate"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-label font-semibold text-primary bg-primary/10 rounded-xl hover:bg-primary/20 transition-colors">
+            <span className="material-symbols-outlined text-sm">volunteer_activism</span>
+            Support the Project
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   // Grandfathered users see a special card
   if (isGrandfathered) {
     return (

@@ -114,6 +114,18 @@ export default function PricingPage() {
       <PublicNav />
 
       <div className="max-w-screen-2xl mx-auto px-6 py-24">
+        {/* Beta Banner */}
+        <div className="max-w-5xl mx-auto mb-10">
+          <div className="rounded-2xl bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-emerald-500/10 border border-emerald-400/20 px-6 py-5 text-center">
+            <p className="font-headline text-lg md:text-xl font-extrabold text-emerald-400 mb-1">
+              FREE BETA &mdash; All features unlocked for every user. No credit card required.
+            </p>
+            <p className="font-body text-sm text-stone-400">
+              Join our Discord community and help shape the future of Be Candid.
+            </p>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-16 max-w-5xl mx-auto">
           <p className="font-label text-xs uppercase tracking-widest text-cyan-400 mb-4">
@@ -170,11 +182,10 @@ export default function PricingPage() {
                     : 'bg-white/[0.03] backdrop-blur-md border border-white/5 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.3)] hover:border-white/10 hover:shadow-lg'
                 }`}
               >
-                {tier.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-cyan-400/20 text-cyan-300 text-[10px] font-bold font-label uppercase tracking-wider border border-cyan-400/30">
-                    {tier.badge}
-                  </div>
-                )}
+                {/* FREE DURING BETA badge */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-400/20 text-emerald-300 text-[10px] font-bold font-label uppercase tracking-wider border border-emerald-400/30">
+                  Free During Beta
+                </div>
 
                 <div className="text-center mb-8 pt-2">
                   {(tier as any).logo ? (
@@ -218,15 +229,20 @@ export default function PricingPage() {
                       </p>
                     ) : (
                       <>
-                        <p
-                          className={`text-4xl font-headline font-extrabold tracking-tight ${
-                            tier.highlight
-                              ? 'text-on-primary'
-                              : 'text-slate-100'
-                          }`}
-                        >
-                          ${price}
-                        </p>
+                        <div className="flex items-center justify-center gap-3">
+                          <p
+                            className={`text-2xl font-headline font-extrabold tracking-tight line-through opacity-40 ${
+                              tier.highlight
+                                ? 'text-on-primary'
+                                : 'text-slate-100'
+                            }`}
+                          >
+                            ${price}
+                          </p>
+                          <p className="text-4xl font-headline font-extrabold tracking-tight text-emerald-400">
+                            $0
+                          </p>
+                        </div>
                         <p
                           className={`text-xs mt-1 ${
                             tier.highlight
@@ -234,28 +250,8 @@ export default function PricingPage() {
                               : 'text-slate-400'
                           }`}
                         >
-                          {period}
+                          {period} &mdash; <span className="text-emerald-400 font-semibold">free during beta</span>
                         </p>
-                        {billing === 'annual' && tier.monthlyPrice > 0 && (
-                          <>
-                            <p
-                              className={`text-[10px] mt-0.5 ${
-                                tier.highlight
-                                  ? 'text-on-primary/60'
-                                  : 'text-stone-500'
-                              }`}
-                            >
-                              ${(tier.annualPrice / 12).toFixed(2)}/mo billed annually
-                            </p>
-                            <p className={`text-[10px] mt-1 font-bold ${
-                              tier.highlight
-                                ? 'text-cyan-200'
-                                : 'text-cyan-400'
-                            }`}>
-                              Save {Math.round((1 - tier.annualPrice / (tier.monthlyPrice * 12)) * 100)}%
-                            </p>
-                          </>
-                        )}
                       </>
                     )}
                   </div>
@@ -267,25 +263,17 @@ export default function PricingPage() {
                       <span
                         className={`material-symbols-outlined text-[16px] mt-0.5 ${
                           tier.highlight
-                            ? f.included
-                              ? 'text-on-primary'
-                              : 'text-on-primary/30'
-                            : f.included
-                              ? 'text-cyan-400'
-                              : 'text-stone-600'
+                            ? 'text-on-primary'
+                            : 'text-cyan-400'
                         }`}
                       >
-                        {f.included ? 'check' : 'remove'}
+                        check
                       </span>
                       <span
                         className={`text-xs font-body leading-relaxed ${
                           tier.highlight
-                            ? f.included
-                              ? 'text-on-primary'
-                              : 'text-on-primary/40'
-                            : f.included
-                              ? 'text-slate-300'
-                              : 'text-stone-600'
+                            ? 'text-on-primary'
+                            : 'text-slate-300'
                         }`}
                       >
                         {f.text}
@@ -353,6 +341,26 @@ export default function PricingPage() {
               integrity.
             </p>
           </div>
+        </div>
+
+        {/* Community + Support CTAs */}
+        <div className="max-w-5xl mx-auto mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href="https://discord.gg/becandid"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-[#5865F2]/20 text-[#5865F2] border border-[#5865F2]/30 font-label font-bold text-sm hover:bg-[#5865F2]/30 hover:border-[#5865F2]/50 transition-all duration-200"
+          >
+            <span className="material-symbols-outlined text-lg">forum</span>
+            Join our Discord
+          </a>
+          <Link
+            href="/donate"
+            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 font-label font-bold text-sm hover:bg-emerald-500/30 hover:border-emerald-400/50 transition-all duration-200"
+          >
+            <span className="material-symbols-outlined text-lg">volunteer_activism</span>
+            Support the project
+          </Link>
         </div>
 
         <div className="text-center mt-14">

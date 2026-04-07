@@ -31,6 +31,8 @@ const FEATURE_COPY: Record<Feature, { title: string; description: string; emoji:
   partnerLimit: { title: 'Multiple Partners', description: 'Add up to 3 accountability partners with priority levels', emoji: 'handshake' },
 };
 
+const BETA_MODE = true;
+
 export default function Paywall({
   feature,
   requiredPlan = 'pro',
@@ -38,6 +40,8 @@ export default function Paywall({
   feature: Feature;
   requiredPlan?: 'pro' | 'therapy';
 }) {
+  if (BETA_MODE) return null; // Don't show paywall during beta
+
   const [loading, setLoading] = useState(false);
   const [billing, setBilling] = useState<'monthly' | 'annual'>('annual');
 

@@ -43,8 +43,89 @@ export default function DonatePage() {
         </div>
       </section>
 
+      {/* Support Be Candid */}
+      <section className="px-6 pb-16">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-2">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-50 text-violet-700 text-xs font-label font-bold mb-6">
+              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+              Support Be Candid
+            </span>
+          </div>
+          <h2 className="font-headline text-2xl md:text-3xl font-extrabold text-on-surface text-center mb-2">Support Be Candid</h2>
+          <p className="text-sm text-on-surface-variant font-body text-center mb-8 max-w-lg mx-auto">
+            Be Candid is free during beta. Your support keeps it that way.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                amount: 5,
+                name: 'Believer',
+                icon: 'handshake',
+                color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+                perks: 'Name in Discord supporters channel',
+              },
+              {
+                amount: 15,
+                name: 'Builder',
+                icon: 'construction',
+                color: 'text-blue-600 bg-blue-50 border-blue-200',
+                perks: 'Early access to new features + Builder role in Discord',
+              },
+              {
+                amount: 25,
+                name: 'Champion',
+                icon: 'military_tech',
+                color: 'text-amber-600 bg-amber-50 border-amber-200',
+                perks: 'Everything above + monthly call with the founder',
+              },
+              {
+                amount: 0,
+                name: 'One-Time',
+                icon: 'favorite',
+                color: 'text-violet-600 bg-violet-50 border-violet-200',
+                perks: 'One-time donations always welcome',
+              },
+            ].map((tier) => (
+              <a
+                key={tier.name}
+                href={tier.amount > 0
+                  ? `https://donate.stripe.com/test_placeholder?amount=${tier.amount * 100}&recurring=monthly`
+                  : '#student-sponsorship'
+                }
+                target={tier.amount > 0 ? '_blank' : undefined}
+                rel={tier.amount > 0 ? 'noopener noreferrer' : undefined}
+                className={`group rounded-3xl border p-5 text-center hover:ring-2 hover:ring-primary/30 hover:-translate-y-1 transition-all ${tier.color}`}
+              >
+                <span className="material-symbols-outlined text-3xl mb-2 block group-hover:scale-110 transition-transform">
+                  {tier.icon}
+                </span>
+                <p className="font-headline text-xl font-extrabold">
+                  {tier.amount > 0 ? `$${tier.amount}/mo` : 'Any amount'}
+                </p>
+                <p className="font-headline text-sm font-bold mt-0.5">{tier.name}</p>
+                <p className="text-xs font-body mt-2 leading-relaxed opacity-80">{tier.perks}</p>
+              </a>
+            ))}
+          </div>
+
+          <div className="text-center mt-6">
+            <a
+              href="https://discord.gg/becandid"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-label font-bold text-[#5865F2] hover:underline"
+            >
+              <span className="material-symbols-outlined text-base">forum</span>
+              Join our Discord for supporter perks
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Stats */}
-      <section className="px-6 pb-12">
+      <section id="student-sponsorship" className="px-6 pb-12">
         <div className="max-w-3xl mx-auto grid grid-cols-3 gap-4">
           {STATS.map((stat) => (
             <div key={stat.label} className="text-center px-4 py-5 rounded-2xl bg-surface-container-lowest border border-outline-variant">
