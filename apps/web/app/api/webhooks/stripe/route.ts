@@ -56,6 +56,52 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
+
+        // One-time donation
+        if (session.mode === 'payment' && session.metadata?.type === 'donation') {
+          const userId = session.metadata.supabase_user_id;
+          const amountCents = parseInt(session.metadata.amount_cents || '0', 10);
+
+          if (userId) {
+            const db = createServiceClient();
+            const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+            // Get current user to check plan
+            const { data: currentUser } = await db.from('users')
+              .select('subscription_plan, total_donated')
+              .eq('id', userId)
+              .single();
+
+            const update: Record<string, any> = {
+              is_supporter: true,
+              supporter_until: thirtyDaysFromNow,
+              total_donated: (currentUser?.total_donated || 0) + amountCents,
+            };
+
+            // Grant Pro for 30 days if user is on free plan
+            if (!currentUser?.subscription_plan || currentUser.subscription_plan === 'free') {
+              update.subscription_plan = 'pro';
+              update.plan_expires_at = thirtyDaysFromNow;
+            }
+
+            await db.from('users').update(update).eq('id', userId);
+
+            await db.from('audit_log').insert({
+              user_id: userId,
+              action: 'donation_received',
+              metadata: {
+                amount_cents: amountCents,
+                session_id: session.id,
+                supporter_until: thirtyDaysFromNow,
+              },
+            });
+
+            console.info(`[stripe] Donation received: $${(amountCents / 100).toFixed(2)} from user ${userId}`);
+          }
+          break;
+        }
+
+        // Subscription checkout
         if (session.mode === 'subscription' && session.subscription) {
           const subscription = await stripe.subscriptions.retrieve(
             session.subscription as string
