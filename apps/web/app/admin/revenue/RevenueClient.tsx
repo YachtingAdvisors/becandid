@@ -429,6 +429,193 @@ export default function RevenueClient() {
           })()}
         </div>
 
+        {/* ── $7K Net MRR Growth Roadmap ──────────────────────── */}
+        <div className="md:col-span-2 bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-5">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-lg text-emerald-600">rocket_launch</span>
+            <h2 className="font-headline text-base font-bold text-on-surface">Path to $7K Net MRR</h2>
+          </div>
+
+          {(() => {
+            // Current state
+            const currentMrr = mrr.total;
+            const targetNetMrr = 7000;
+
+            // Cost model
+            const fixedCostsMonthly = 52.08; // Vercel $20 + Supabase $30 + Domain $2.08
+            const costPerActiveUser = 0.30; // ~$0.30/mo/active user (hybrid coach + Haiku)
+            const activeUserRatio = 0.30; // 30% of total users are daily active
+
+            // Revenue assumptions
+            const proPrice = 9.99;
+            const therapyPrice = 19.99;
+            const orgPricePerUser = 7.00;
+            const proConversionRate = 0.20; // 20% of users → Pro
+            const therapyConversionRate = 0.05; // 5% → Therapy
+            const orgConversionRate = 0.05; // 5% on org plans
+            const freeRate = 0.70; // 70% stay free
+
+            // Calculate: what total users needed for $7K net MRR?
+            // Net MRR = Gross MRR - Fixed Costs - Variable Costs
+            // Gross MRR per user = (0.20 × $9.99) + (0.05 × $19.99) + (0.05 × $7.00) = $2.00 + $1.00 + $0.35 = $3.35 ARPU
+            // Variable cost per user = 0.30 × $0.30 = $0.09/user/mo
+            // Net per user = $3.35 - $0.09 = $3.26/user/mo
+            // $7K net = $7,000 + $52.08 fixed = $7,052.08 gross needed
+            // Users = $7,052.08 / $3.26 = ~2,163 users
+
+            const arpuBlended = (proConversionRate * proPrice) + (therapyConversionRate * therapyPrice) + (orgConversionRate * orgPricePerUser);
+            const variableCostPerUser = activeUserRatio * costPerActiveUser;
+            const netPerUser = arpuBlended - variableCostPerUser;
+            const usersNeeded = Math.ceil((targetNetMrr + fixedCostsMonthly) / netPerUser);
+
+            const grossAtTarget = usersNeeded * arpuBlended;
+            const variableAtTarget = usersNeeded * variableCostPerUser;
+            const totalCostAtTarget = fixedCostsMonthly + variableAtTarget;
+            const marginAtTarget = ((grossAtTarget - totalCostAtTarget) / grossAtTarget) * 100;
+
+            // Milestones
+            const milestones = [
+              { users: 100, label: 'Early Adopters', netMrr: Math.round(100 * netPerUser - fixedCostsMonthly), icon: 'group' },
+              { users: 500, label: 'Product-Market Fit', netMrr: Math.round(500 * netPerUser - fixedCostsMonthly), icon: 'trending_up' },
+              { users: 1000, label: 'Growth Phase', netMrr: Math.round(1000 * netPerUser - fixedCostsMonthly), icon: 'speed' },
+              { users: usersNeeded, label: '$7K Net MRR', netMrr: targetNetMrr, icon: 'flag' },
+              { users: 5000, label: 'Scale', netMrr: Math.round(5000 * netPerUser - fixedCostsMonthly), icon: 'rocket' },
+            ];
+
+            const totalUsers = (data.subscriptions.pro + data.subscriptions.therapy + data.subscriptions.trialing + data.subscriptions.free) || 0;
+            const progressPct = Math.min((totalUsers / usersNeeded) * 100, 100);
+
+            return (
+              <div className="space-y-5">
+                {/* Target summary */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="px-4 py-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 text-center">
+                    <p className="text-[10px] font-label font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Target</p>
+                    <p className="font-headline text-xl font-extrabold text-emerald-800 dark:text-emerald-300">${targetNetMrr.toLocaleString()}</p>
+                    <p className="text-[9px] text-emerald-600">net MRR/month</p>
+                  </div>
+                  <div className="px-4 py-3 rounded-2xl bg-primary/10 text-center">
+                    <p className="text-[10px] font-label font-bold text-primary uppercase tracking-wider">Users Needed</p>
+                    <p className="font-headline text-xl font-extrabold text-primary">{usersNeeded.toLocaleString()}</p>
+                    <p className="text-[9px] text-on-surface-variant">total signups</p>
+                  </div>
+                  <div className="px-4 py-3 rounded-2xl bg-surface-container text-center">
+                    <p className="text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-wider">Blended ARPU</p>
+                    <p className="font-headline text-xl font-extrabold text-on-surface">${arpuBlended.toFixed(2)}</p>
+                    <p className="text-[9px] text-on-surface-variant">per user/month</p>
+                  </div>
+                  <div className="px-4 py-3 rounded-2xl bg-surface-container text-center">
+                    <p className="text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-wider">Margin at Target</p>
+                    <p className="font-headline text-xl font-extrabold text-on-surface">{marginAtTarget.toFixed(0)}%</p>
+                    <p className="text-[9px] text-on-surface-variant">gross margin</p>
+                  </div>
+                </div>
+
+                {/* Progress bar */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-label font-medium text-on-surface-variant">
+                      Progress: {totalUsers.toLocaleString()} / {usersNeeded.toLocaleString()} users
+                    </span>
+                    <span className="text-xs font-label font-bold text-primary">{progressPct.toFixed(1)}%</span>
+                  </div>
+                  <div className="h-4 rounded-full bg-surface-container overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-primary to-emerald-500 transition-all duration-700"
+                      style={{ width: `${Math.max(progressPct, 1)}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Milestone roadmap */}
+                <div className="space-y-2">
+                  <p className="text-xs font-label font-bold text-on-surface-variant uppercase tracking-wider">Milestones</p>
+                  {milestones.map((m, i) => {
+                    const reached = totalUsers >= m.users;
+                    const isTarget = m.label === '$7K Net MRR';
+                    return (
+                      <div
+                        key={i}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all ${
+                          isTarget
+                            ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'
+                            : reached
+                              ? 'bg-primary/5 border-primary/20'
+                              : 'bg-surface-container-low border-outline-variant/30'
+                        }`}
+                      >
+                        <span className={`material-symbols-outlined text-lg ${
+                          reached ? 'text-emerald-600' : isTarget ? 'text-emerald-500' : 'text-on-surface-variant/40'
+                        }`} style={reached ? { fontVariationSettings: "'FILL' 1" } : undefined}>
+                          {reached ? 'check_circle' : m.icon}
+                        </span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-sm font-label font-bold ${reached ? 'text-on-surface' : 'text-on-surface-variant'}`}>
+                              {m.users.toLocaleString()} users
+                            </span>
+                            {isTarget && (
+                              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-label font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                                TARGET
+                              </span>
+                            )}
+                          </div>
+                          <span className={`text-xs font-body ${reached ? 'text-on-surface-variant' : 'text-on-surface-variant/60'}`}>{m.label}</span>
+                        </div>
+                        <span className={`text-sm font-headline font-extrabold ${
+                          isTarget ? 'text-emerald-700 dark:text-emerald-400' : reached ? 'text-on-surface' : 'text-on-surface-variant/50'
+                        }`}>
+                          ${m.netMrr.toLocaleString()}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Assumptions */}
+                <div className="px-4 py-3 rounded-2xl bg-surface-container-low border border-outline-variant/20">
+                  <p className="text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-wider mb-2">Assumptions</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1 text-xs font-body text-on-surface-variant">
+                    <div>Pro conversion: <span className="font-semibold text-on-surface">{(proConversionRate * 100)}%</span> at ${proPrice}/mo</div>
+                    <div>Therapy conversion: <span className="font-semibold text-on-surface">{(therapyConversionRate * 100)}%</span> at ${therapyPrice}/mo</div>
+                    <div>Org plans: <span className="font-semibold text-on-surface">{(orgConversionRate * 100)}%</span> at ${orgPricePerUser}/user/mo</div>
+                    <div>Free users: <span className="font-semibold text-on-surface">{(freeRate * 100)}%</span></div>
+                    <div>Active rate: <span className="font-semibold text-on-surface">{(activeUserRatio * 100)}%</span> DAU</div>
+                    <div>API cost/active user: <span className="font-semibold text-on-surface">${costPerActiveUser}/mo</span></div>
+                  </div>
+                </div>
+
+                {/* Growth levers */}
+                <div className="px-4 py-3 rounded-2xl bg-primary/5 border border-primary/10">
+                  <p className="text-[10px] font-label font-bold text-primary uppercase tracking-wider mb-2">Growth Levers</p>
+                  <div className="space-y-1.5 text-xs font-body text-on-surface-variant">
+                    <div className="flex items-start gap-2">
+                      <span className="material-symbols-outlined text-xs text-primary mt-0.5">church</span>
+                      <span><span className="font-semibold text-on-surface">Church/Org plans</span> — 10 churches × 20 users = 200 users at $7/mo = $1,400 MRR</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="material-symbols-outlined text-xs text-primary mt-0.5">medical_services</span>
+                      <span><span className="font-semibold text-on-surface">Therapist referrals</span> — 50 therapists × 5 clients = 250 users with higher Therapy conversion</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="material-symbols-outlined text-xs text-primary mt-0.5">share</span>
+                      <span><span className="font-semibold text-on-surface">Referral program</span> — each user invites 1.5 partners → organic growth loop</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="material-symbols-outlined text-xs text-primary mt-0.5">search</span>
+                      <span><span className="font-semibold text-on-surface">SEO blog</span> — "covenant eyes alternative" + 9 more posts targeting competitor keywords</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="material-symbols-outlined text-xs text-primary mt-0.5">campaign</span>
+                      <span><span className="font-semibold text-on-surface">Annual plans</span> — $79/yr (34% off) locks in revenue, reduces churn 3-4×</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
         {/* Churn */}
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-4">
           <div className="flex items-center justify-between">
