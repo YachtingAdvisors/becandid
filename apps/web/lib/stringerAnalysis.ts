@@ -182,6 +182,46 @@ const RIVAL_DYNAMIC_WEIGHTS: Record<GoalCategory, Partial<Record<FamilyDynamic, 
     dismissiveness: 3, abdication: 3, incongruence: 2,
   },
 
+  // Doomscrolling — anxiety-driven news consumption
+  doomscrolling: {
+    rigidity: 2, incongruence: 1,
+  },
+
+  // AI relationships — artificial intimacy replacing real connection
+  ai_relationships: {
+    dismissiveness: 3, enmeshment: 2, abdication: 2,
+  },
+
+  // Overworking — work as avoidance
+  overworking: {
+    rigidity: 3, incongruence: 2, abdication: 1,
+  },
+
+  // Emotional affairs — boundary violations
+  emotional_affairs: {
+    enmeshment: 3, triangulation: 3, incongruence: 2, dismissiveness: 1,
+  },
+
+  // Sleep avoidance — revenge bedtime procrastination
+  sleep_avoidance: {
+    abdication: 2, dismissiveness: 2, rigidity: 1,
+  },
+
+  // Gossip & drama — vicarious emotional engagement
+  gossip_drama: {
+    triangulation: 3, enmeshment: 2, incongruence: 1,
+  },
+
+  // Self-harm recovery — pain externalization
+  self_harm: {
+    dismissiveness: 3, abdication: 2, rigidity: 2, incongruence: 1,
+  },
+
+  // Procrastination — avoidance and task paralysis
+  procrastination: {
+    abdication: 3, dismissiveness: 2, rigidity: 1,
+  },
+
   // Custom — no weighted signals (therapist notes drive analysis)
   custom: {},
 };
