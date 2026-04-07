@@ -6,6 +6,9 @@ import PublicNav from '@/components/PublicNav';
 /* ── Chrome Web Store URL (update once published) ────────────── */
 const CHROME_STORE_URL = '#'; // TODO: replace with Chrome Web Store link after submission
 
+/* ── Windows download URL ────────────────────────────────────── */
+const WINDOWS_DOWNLOAD_URL = 'https://github.com/YachtingAdvisors/becandid/releases/latest'; // TODO: replace with direct .exe link once available
+
 /* ── Reusable icon component ─────────────────────────────────── */
 function MaterialIcon({ name, className = '' }: { name: string; className?: string }) {
   return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
@@ -122,13 +125,18 @@ export default async function DownloadPage() {
                   <MaterialIcon name="pause_circle" className="text-lg" />
                   {' '}macOS — Temporarily Unavailable
                 </div>
-                <div className="w-full px-6 py-3.5 bg-stone-800 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
-                  <MaterialIcon name="schedule" className="text-lg" />
-                  {' '}Windows — Coming Soon
-                </div>
+                <a
+                  href={WINDOWS_DOWNLOAD_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                >
+                  <MaterialIcon name="download" className="text-lg" />
+                  Windows Beta — Download
+                </a>
               </div>
               <p className="text-amber-400/80 text-xs mt-4 text-center">
-                macOS is pending Apple notarization. Windows build is in testing and will be available shortly.
+                macOS is pending Apple notarization. Windows builds are not yet code-signed. You may see a SmartScreen warning — click &quot;More info&quot; &rarr; &quot;Run anyway&quot;.
               </p>
             </div>
 
