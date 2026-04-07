@@ -16,6 +16,7 @@ import WebTrackingProvider from '@/components/dashboard/WebTrackingProvider';
 import IdleTimeout from '@/components/IdleTimeout';
 import RealtimeProvider from '@/components/dashboard/RealtimeProvider';
 import SWRProvider from '@/components/SWRProvider';
+import ReportIssue from '@/components/dashboard/ReportIssue';
 
 // Nav items — some hidden in solo mode
 const NAV_ITEMS = [
@@ -97,6 +98,7 @@ export default async function DashboardLayout({
         </div>
         </SWRProvider>
         <RealtimeProvider />
+        <ReportIssue />
       </main>
     </div>
   );

@@ -11,6 +11,7 @@
     { "path": "/api/cron/journal-reminders", "schedule": "0 8,10,12,14,16,18,20 * * *" },
     { "path": "/api/cron/weekly-reflection", "schedule": "0 19 * * 0" },
     { "path": "/api/cron/focus-segments", "schedule": "0 5,17 * * *" },
-    { "path": "/api/cron/partner-impact", "schedule": "0 19 * * 0" }
+    { "path": "/api/cron/partner-impact", "schedule": "0 19 * * 0" },
+    { "path": "/api/cron/onboarding-emails", "schedule": "0 9 * * *" }
   ]
 }
