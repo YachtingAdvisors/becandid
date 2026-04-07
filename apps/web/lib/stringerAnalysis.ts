@@ -177,6 +177,11 @@ const RIVAL_DYNAMIC_WEIGHTS: Record<GoalCategory, Partial<Record<FamilyDynamic, 
     rigidity: 3, triangulation: 3, incongruence: 2, dismissiveness: 1,
   },
 
+  // Isolation — withdrawal driven by dismissiveness and abdication
+  isolation: {
+    dismissiveness: 3, abdication: 3, incongruence: 2,
+  },
+
   // Custom — no weighted signals (therapist notes drive analysis)
   custom: {},
 };
