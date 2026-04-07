@@ -6,6 +6,7 @@ import {
   GOAL_DESCRIPTIONS,
   type GoalCategory,
 } from '@be-candid/shared';
+import { isIsolationOnlyUser } from '@/lib/isolationMode';
 
 interface GoalSelectorProps {
   selected: GoalCategory[];
@@ -185,6 +186,16 @@ export default function GoalSelector({ selected, onChange, disabled }: GoalSelec
           <span className="material-symbols-outlined text-amber-700 text-lg mt-0.5 flex-shrink-0">info</span>
           <p className="text-xs text-amber-900 font-body leading-relaxed">
             <strong>Heads up:</strong> Our AI monitoring system is trained on the standard categories above. With a custom category, automated detection will be less accurate and the system will rely more heavily on your manual check-ins, journal entries, and self-reported activity to track your progress. You&rsquo;ll get the most out of Be Candid by pairing this with regular honest reflection.
+          </p>
+        </div>
+      )}
+
+      {/* Isolation-only mode explanation */}
+      {isIsolationOnlyUser(selected) && (
+        <div className="mt-3 px-4 py-3 rounded-xl bg-violet-50 ring-1 ring-violet-200/40 flex items-start gap-3">
+          <span className="material-symbols-outlined text-violet-700 text-lg mt-0.5 flex-shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>door_open</span>
+          <p className="text-xs text-violet-900 font-body leading-relaxed">
+            <strong>Isolation mode:</strong> Since isolation is about connection — not screen content — you won&rsquo;t need the desktop app or browser extension. We&rsquo;ll focus on check-ins, journaling, and nudges to help you stay connected.
           </p>
         </div>
       )}
