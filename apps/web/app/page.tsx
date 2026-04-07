@@ -20,63 +20,63 @@ const FEATURES = [
     icon: 'chat_bubble',
     title: 'Conversation Guides & Ice Breakers',
     desc: 'Evidence-based prompts designed by neurologists and therapists for difficult but necessary digital discussions.',
-    image: '',
-    alt: '',
+    image: '/images/features/conversation-guides.webp',
+    alt: 'Glowing geometric nodes connected by light strands representing AI dialogue',
   },
   {
     icon: 'menu_book',
     title: 'Candid Journal',
     desc: 'A private space for reflective record-keeping, helping you track personal growth and interaction history.',
-    image: '',
+    image: '/images/features/candid-journal.webp',
     alt: 'Minimalist digital journal on a tablet with morning sunlight',
   },
   {
     icon: 'handshake',
     title: 'Partner Awareness',
     desc: 'Shared insights that foster mutual trust without compromising individual privacy or autonomy.',
-    image: '',
+    image: '/images/features/partner-awareness.webp',
     alt: 'Two intersecting circles in teal and blue symbolizing mutual understanding',
   },
   {
     icon: 'emergency_home',
     title: 'Crisis Detection',
     desc: 'Advanced sentiment analysis to identify distress signals and offer immediate supportive resources.',
-    image: '',
+    image: '/images/features/crisis-detection.webp',
     alt: 'Calm wave pattern in warm amber tones representing gentle monitoring',
   },
   {
     icon: 'encrypted',
     title: 'End-to-End Encryption',
     desc: 'State-of-the-art security ensuring your most vulnerable moments stay strictly between you and your trusted circle.',
-    image: '',
+    image: '/images/features/encryption.webp',
     alt: 'Glass lock icon floating above shimmering data particles in teal and cyan',
   },
   {
     icon: 'center_focus_strong',
     title: 'Alignment Tracking',
     desc: 'Monitor how your digital habits align with your core values and long-term wellness goals.',
-    image: '',
+    image: '/images/features/alignment-tracking.webp',
     alt: 'Data visualization showing harmonic balance representing life-tech alignment',
   },
   {
     icon: 'filter_list',
     title: 'AI Content Filtering',
     desc: 'Smart filters that shield you from toxic environments while highlighting positive, growth-oriented content.',
-    image: '',
+    image: '/images/features/content-filtering.webp',
     alt: 'Semi-transparent prism filtering light into a clear beam',
   },
   {
     icon: 'timer',
     title: 'Screen Time Controls',
     desc: 'Intuitive limits that encourage conscious consumption rather than restrictive digital deprivation.',
-    image: '',
+    image: '/images/features/screen-time.webp',
     alt: 'Zen garden sand pattern with minimalist clock silhouette',
   },
   {
     icon: 'shield',
     title: 'Guardian Dashboard',
     desc: 'A centralized command center for administrators to oversee safety settings and review collective wellness trends.',
-    image: '',
+    image: '/images/features/guardian-dashboard.webp',
     alt: 'Clean structured command center interface with soft glow',
   },
 ];
@@ -184,41 +184,12 @@ export default function LandingPage() {
             <div className="relative hidden lg:block">
               <div className="absolute -inset-8 rounded-full blur-[80px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.2), transparent 70%)' }} />
               <div className="relative glass-card rounded-3xl p-3 transform rotate-1 hover:rotate-0 transition-transform duration-700">
-                {/* Dashboard mockup — replace with real screenshot when available */}
-                <div className="w-full aspect-[4/3] rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 flex flex-col items-center justify-center p-8 gap-4">
-                  {/* Mockup header */}
-                  <div className="flex items-center gap-3 w-full">
-                    <div className="w-8 h-8 rounded-xl bg-teal-500/20 flex items-center justify-center">
-                      <span className="text-teal-400 text-sm font-bold">C</span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="h-2 w-24 bg-white/10 rounded-full" />
-                      <div className="h-1.5 w-16 bg-white/5 rounded-full mt-1.5" />
-                    </div>
-                  </div>
-                  {/* Mockup momentum ring */}
-                  <div className="w-24 h-24 rounded-full border-4 border-teal-500/30 flex items-center justify-center">
-                    <div className="text-center">
-                      <p className="text-2xl font-extrabold text-teal-400">76</p>
-                      <p className="text-[8px] text-slate-400 uppercase tracking-wider">Momentum</p>
-                    </div>
-                  </div>
-                  {/* Mockup stats row */}
-                  <div className="flex gap-4 w-full justify-center">
-                    {['14 day streak', '23 journals', '4.2 mood'].map((s) => (
-                      <div key={s} className="text-center">
-                        <p className="text-xs font-bold text-white/80">{s.split(' ')[0]}</p>
-                        <p className="text-[9px] text-slate-500">{s.split(' ').slice(1).join(' ')}</p>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Mockup cards */}
-                  <div className="flex gap-2 w-full">
-                    <div className="flex-1 h-10 rounded-lg bg-white/[0.03] border border-white/5" />
-                    <div className="flex-1 h-10 rounded-lg bg-white/[0.03] border border-white/5" />
-                    <div className="flex-1 h-10 rounded-lg bg-white/[0.03] border border-white/5" />
-                  </div>
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/features/hero-dashboard.webp"
+                  alt="Be Candid dashboard showing integrity score and journaling prompts"
+                  className="w-full h-auto rounded-2xl object-cover"
+                />
               </div>
 
               {/* Floating badge top-right */}
@@ -258,9 +229,14 @@ export default function LandingPage() {
                   key={f.title}
                   className="group relative glass-card rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 cursor-pointer"
                 >
-                  {/* Feature visual */}
-                  <div className="aspect-[16/10] overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-800/50 to-slate-900/80">
-                    <span className="material-symbols-outlined text-6xl text-teal-500/30 group-hover:text-teal-500/50 transition-colors duration-500">{f.icon}</span>
+                  {/* Feature image */}
+                  <div className="aspect-[16/10] overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={f.image}
+                      alt={f.alt}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                   </div>
 
                   {/* Content */}
@@ -324,11 +300,13 @@ export default function LandingPage() {
               {/* Right side image */}
               <div className="relative hidden lg:block">
                 <div className="absolute -inset-4 rounded-3xl blur-[60px]" style={{ background: 'rgba(0, 102, 122, 0.1)' }} />
-                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 aspect-[4/3] flex items-center justify-center">
-                  <div className="text-center space-y-3 p-8">
-                    <span className="material-symbols-outlined text-7xl text-teal-500/20">devices</span>
-                    <p className="text-sm text-slate-500">Desktop + Mobile + Browser</p>
-                  </div>
+                <div className="relative rounded-3xl overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/features/sync-devices.webp"
+                    alt="Laptop and smartphone showing synchronized Be Candid progress"
+                    className="w-full h-auto rounded-3xl object-cover"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0c1214] via-transparent to-transparent" />
                 </div>
 
