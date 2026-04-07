@@ -18,6 +18,7 @@ import DashboardHero from '@/components/dashboard/DashboardHero';
 import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
 import FocusChip from '@/components/dashboard/FocusChip';
 import SelfHarmSafetyCard from '@/components/dashboard/SelfHarmSafetyCard';
+import DashboardCustomizer from '@/components/dashboard/DashboardCustomizer';
 
 const WhatsNew = dynamic(
   () => import('@/components/dashboard/WhatsNew'),
@@ -249,22 +250,21 @@ export default async function DashboardPage() {
     first_checkin: (checkinCountRes?.count ?? 0) > 0,
   };
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-8 page-enter">
-      {/* ── Self-Harm Safety Resources (always first) ──────── */}
+  /* ── Build widgets map for customizer ─────────────────── */
+  const widgets: Record<string, React.ReactNode> = {};
+
+  widgets['hero'] = (
+    <>
+      {/* Self-Harm Safety Resources (always above hero) */}
       {(profile?.goals ?? []).includes('self_harm') && (
         <SelfHarmSafetyCard hasPartner={!!partner} />
       )}
-
-      {/* ── First-Time Walkthrough ─────────────────────────── */}
       {showWalkthrough && (
         <WalkthroughWrapper
           userName={profile?.name?.split(' ')[0] ?? ''}
           completedSteps={completedSteps}
         />
       )}
-
-      {/* ── Dashboard Hero ─────────────────────────────────── */}
       <DashboardHero
         userName={profile?.name ?? 'there'}
         currentStreak={currentStreak}
@@ -273,10 +273,8 @@ export default async function DashboardPage() {
         trustPoints={heroTrustPoints}
         goals={profile?.goals ?? []}
       />
-
-      {/* ── Welcome Card for brand-new users ────────────── */}
       {journalCount === 0 && !partner && currentStreak === 0 && (
-        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-8 text-center">
+        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-8 text-center mt-6">
           <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">emoji_people</span>
           <h2 className="font-headline text-xl font-bold text-on-surface mb-2">
             Welcome to Be Candid
@@ -298,118 +296,79 @@ export default async function DashboardPage() {
           </div>
         </div>
       )}
+    </>
+  );
 
-      {/* ── What's New Changelog ─────────────────────────── */}
+  widgets['whats-new'] = (
+    <>
       <WhatsNew />
+      <Suspense fallback={null}><TherapistBadge /></Suspense>
+      <Suspense fallback={null}><FirstVisitCoach /></Suspense>
+    </>
+  );
 
-      {/* ── Therapist Badge ───────────────────────────────── */}
-      <Suspense fallback={null}>
-        <TherapistBadge />
-      </Suspense>
-
-      {/* ── First Visit Coach ─────────────────────────────── */}
-      <Suspense fallback={null}>
-        <FirstVisitCoach />
-      </Suspense>
-
-      {/* ── Scheduled Coach Sessions ──────────────────────── */}
+  widgets['coach'] = (
+    <>
       <ScheduledCoach />
-
-      {/* ── Isolation Connection Check ──────────────────────── */}
       {(profile?.goals ?? []).includes('isolation') && (
-        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
-          <IsolationCheck />
-        </Suspense>
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}><IsolationCheck /></Suspense>
       )}
-
-      {/* ── Doomscrolling News Check ────────────────────────── */}
       {(profile?.goals ?? []).includes('doomscrolling') && (
-        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
-          <DoomscrollCheck />
-        </Suspense>
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}><DoomscrollCheck /></Suspense>
       )}
-
-      {/* ── Procrastination Check ────────────────────────────── */}
       {(profile?.goals ?? []).includes('procrastination') && (
-        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
-          <ProcrastinationCheck />
-        </Suspense>
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}><ProcrastinationCheck /></Suspense>
       )}
-
-      {/* ── Work-Life Check (Overworking) ──────────────────── */}
       {(profile?.goals ?? []).includes('overworking') && (
-        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
-          <WorkLifeCheck />
-        </Suspense>
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}><WorkLifeCheck /></Suspense>
       )}
-
-      {/* ── Sleep Check (Sleep Avoidance) ──────────────────── */}
       {(profile?.goals ?? []).includes('sleep_avoidance') && (
-        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
-          <SleepCheck />
-        </Suspense>
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}><SleepCheck /></Suspense>
       )}
+    </>
+  );
 
-      {/* ── Daily Commitment Ritual ────────────────────────── */}
-      <DailyCommitment />
+  widgets['commitment'] = <DailyCommitment />;
+  widgets['nudges'] = <NudgeBanner />;
+  widgets['mood'] = <QuickMoodCheckin />;
+  widgets['quote'] = <QuoteOfTheDay motivator={profile?.foundational_motivator ?? null} />;
 
-      {/* ── Nudges ─────────────────────────────────────────── */}
-      <NudgeBanner />
+  widgets['challenge'] = (
+    <Suspense fallback={<div className="skeleton-shimmer h-36 rounded-2xl" />}>
+      <DailyChallenge />
+    </Suspense>
+  );
 
-      {/* ── Quick Mood Check-in ────────────────────────────── */}
-      <QuickMoodCheckin />
-
-      {/* ── Quote of the Day ──────────────────────────────── */}
-      <QuoteOfTheDay motivator={profile?.foundational_motivator ?? null} />
-
-      {/* ── Daily Challenge ────────────────────────────────── */}
-      <Suspense fallback={<div className="skeleton-shimmer h-36 rounded-2xl" />}>
-        <DailyChallenge />
-      </Suspense>
-
-      {/* ── Recent Focus Chips ─────────────────────────────── */}
-      {displayChips.length > 0 && (
-        <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
-              <h3 className="font-headline font-bold text-sm text-on-surface">Recent Chips</h3>
-            </div>
-            <Link
-              href="/dashboard/chips"
-              className="text-xs font-label font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-0.5"
-            >
-              View all
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+  if (displayChips.length > 0) {
+    widgets['chips'] = (
+      <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+            <h3 className="font-headline font-bold text-sm text-on-surface">Recent Chips</h3>
+          </div>
+          <Link href="/dashboard/chips" className="text-xs font-label font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-0.5">
+            View all<span className="material-symbols-outlined text-sm">arrow_forward</span>
+          </Link>
+        </div>
+        <div className="flex items-center justify-center gap-4 stagger">
+          {displayChips.map((chip: { days: number; achievedDate: string }) => (
+            <FocusChip key={chip.days} milestone={chip.days} achieved={true} achievedDate={chip.achievedDate} variant="compact" />
+          ))}
+          {displayChips.length < 3 && (
+            <Link href="/dashboard/chips" className="flex flex-col items-center justify-center w-[120px] h-[120px] rounded-2xl border-2 border-dashed border-outline-variant/30 bg-surface-container/30 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 cursor-pointer">
+              <span className="material-symbols-outlined text-on-surface-variant/25 text-2xl">add</span>
+              <span className="text-[9px] font-label font-semibold text-on-surface-variant/30 mt-1">Keep going</span>
             </Link>
-          </div>
-          <div className="flex items-center justify-center gap-4 stagger">
-            {displayChips.map((chip: { days: number; achievedDate: string }) => (
-              <FocusChip
-                key={chip.days}
-                milestone={chip.days}
-                achieved={true}
-                achievedDate={chip.achievedDate}
-                variant="compact"
-              />
-            ))}
-            {displayChips.length < 3 && (
-              <Link
-                href="/dashboard/chips"
-                className="flex flex-col items-center justify-center w-[120px] h-[120px] rounded-2xl border-2 border-dashed border-outline-variant/30 bg-surface-container/30 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-on-surface-variant/25 text-2xl">add</span>
-                <span className="text-[9px] font-label font-semibold text-on-surface-variant/30 mt-1">Keep going</span>
-              </Link>
-            )}
-          </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
+    );
+  }
 
-      {/* ── Referral Card ────────────────────────────────── */}
-      <ReferralCard />
+  widgets['referral'] = <ReferralCard />;
 
-      {/* ── Featured Cards Grid ────────────────────────────── */}
+  widgets['featured'] = (
       <section className="grid grid-cols-2 lg:grid-cols-3 gap-4 stagger">
         {/* Crisis Detection — full width with real data */}
         <Link href="/dashboard/activity" className="col-span-2 lg:col-span-3 group bg-surface-container-low rounded-2xl overflow-hidden shadow-sm ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer p-5">
@@ -572,192 +531,123 @@ export default async function DashboardPage() {
             <span className="material-symbols-outlined text-on-surface-variant/40 group-hover:text-primary transition-colors">chevron_right</span>
           </div>
         </Link>
-      </section>
+    </section>
+  );
 
-      {/* ── Focus Board & Check-in ─────────────────────────── */}
-      <div data-tour="focus-board">
-        <FocusBoardMini />
+  widgets['focus-board'] = (
+    <div data-tour="focus-board"><FocusBoardMini /></div>
+  );
+
+  widgets['checkin'] = <CheckInMini />;
+
+  widgets['relationship'] = (
+    <Suspense fallback={null}><RelationshipMini /></Suspense>
+  );
+
+  widgets['spouse'] = (
+    <Suspense fallback={null}><SpouseImpactAwareness /></Suspense>
+  );
+
+  widgets['screen-content'] = (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <Suspense fallback={null}><ScreenTimeCard /></Suspense>
+      <Suspense fallback={null}><ContentFilterStatus /></Suspense>
+    </div>
+  );
+
+  widgets['growth-journal'] = (
+    <Suspense fallback={null}><GrowthJournalWidget /></Suspense>
+  );
+
+  widgets['inventory'] = (
+    <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+      <DailyInventory compact />
+    </Suspense>
+  );
+
+  widgets['weekly-report'] = (
+    <Link
+      href="/dashboard/report"
+      className="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300"
+    >
+      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+        <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>summarize</span>
       </div>
-      <CheckInMini />
-
-      {/* ── Relationship & Spouse Impact ────────────────────── */}
-      <Suspense fallback={null}>
-        <RelationshipMini />
-      </Suspense>
-      <Suspense fallback={null}>
-        <SpouseImpactAwareness />
-      </Suspense>
-
-      {/* ── Screen Time & Content Filter Widgets ────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Suspense fallback={null}>
-          <ScreenTimeCard />
-        </Suspense>
-        <Suspense fallback={null}>
-          <ContentFilterStatus />
-        </Suspense>
+      <div className="flex-1">
+        <h4 className="font-headline font-bold text-sm text-on-surface">Weekly Accountability Report</h4>
+        <p className="text-[10px] text-on-surface-variant">Print-friendly summary for your group or mentor.</p>
       </div>
+      <span className="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+    </Link>
+  );
 
-      {/* ── Growth Journal Widget ────────────────────────── */}
-      <Suspense fallback={null}>
-        <GrowthJournalWidget />
-      </Suspense>
-
-      {/* ── Daily Inventory (Step 10) ─────────────────────── */}
-      <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
-        <DailyInventory compact />
-      </Suspense>
-
-      {/* ── Weekly Report Link ─────────────────────────────── */}
-      <Link
-        href="/dashboard/report"
-        className="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300"
-      >
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>summarize</span>
-        </div>
-        <div className="flex-1">
-          <h4 className="font-headline font-bold text-sm text-on-surface">Weekly Accountability Report</h4>
-          <p className="text-[10px] text-on-surface-variant">Print-friendly summary for your group or mentor.</p>
-        </div>
-        <span className="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
-      </Link>
-
-      {/* ── Other Services ─────────────────────────────────── */}
-      <section>
-        <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-4">Other Services</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
-          <Link href="/dashboard/conversations" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.conversation} alt="Conversation Guides" className="w-full h-full object-cover" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">Conversation Guides</h4>
-              <p className="text-[10px] text-on-surface-variant">Empathetic prompts for difficult talks.</p>
-            </div>
-            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-          </Link>
-
-          <Link href="/dashboard/stringer-journal" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.journal} alt="Candid Journal" className="w-full h-full object-cover" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">Candid Journal</h4>
-              <p className="text-[10px] text-on-surface-variant">Private space for reflective growth.</p>
-            </div>
-            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-          </Link>
-
-          <Link href="/dashboard/content-filter" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.contentFilter} alt="AI Content Filtering" className="w-full h-full object-cover" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">AI Content Filtering</h4>
-              <p className="text-[10px] text-on-surface-variant">Shielding from toxic environments.</p>
-            </div>
-            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-          </Link>
-
-          <Link href="/dashboard/streaks" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.alignment} alt="Alignment Tracking" className="w-full h-full object-cover" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">Alignment Tracking</h4>
-              <p className="text-[10px] text-on-surface-variant">Sync habits with core values.</p>
-            </div>
-            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-          </Link>
-
-          <Link href="/dashboard/security" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.encryption} alt="End-to-End Encryption" className="w-full h-full object-cover" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">End-to-End Encryption</h4>
-              <p className="text-[10px] text-on-surface-variant">Maximum privacy for interactions.</p>
-            </div>
-            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-          </Link>
-
-          <Link href="/dashboard/values" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
+  widgets['services'] = (
+    <section>
+      <h3 className="font-headline text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-4">Other Services</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
+        {[
+          { href: '/dashboard/conversations', img: IMAGES.conversation, title: 'Conversation Guides', desc: 'Empathetic prompts for difficult talks.' },
+          { href: '/dashboard/stringer-journal', img: IMAGES.journal, title: 'Candid Journal', desc: 'Private space for reflective growth.' },
+          { href: '/dashboard/content-filter', img: IMAGES.contentFilter, title: 'AI Content Filtering', desc: 'Shielding from toxic environments.' },
+          { href: '/dashboard/streaks', img: IMAGES.alignment, title: 'Alignment Tracking', desc: 'Sync habits with core values.' },
+          { href: '/dashboard/security', img: IMAGES.encryption, title: 'End-to-End Encryption', desc: 'Maximum privacy for interactions.' },
+          { href: '/dashboard/values', icon: 'diamond', title: 'Values Clarification', desc: 'Align actions with core values.' },
+          { href: '/dashboard/commitments', icon: 'wb_twilight', title: 'Daily Commitment', desc: 'Morning intentions, evening reflections.' },
+          { href: '/dashboard/checkins', icon: 'check_circle', title: 'Quick Check-in', desc: "Log how you're doing right now." },
+        ].map(svc => (
+          <Link key={svc.href} href={svc.href} className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>diamond</span>
+              {svc.img ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={svc.img} alt={svc.title} className="w-full h-full object-cover" />
+              ) : (
+                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>{svc.icon}</span>
+              )}
             </div>
             <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">Values Clarification</h4>
-              <p className="text-[10px] text-on-surface-variant">Align actions with core values.</p>
+              <h4 className="font-headline font-bold text-sm text-on-surface">{svc.title}</h4>
+              <p className="text-[10px] text-on-surface-variant">{svc.desc}</p>
             </div>
             <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
           </Link>
+        ))}
+      </div>
+    </section>
+  );
 
-          <Link href="/dashboard/commitments" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>wb_twilight</span>
-            </div>
-            <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">Daily Commitment</h4>
-              <p className="text-[10px] text-on-surface-variant">Morning intentions, evening reflections.</p>
-            </div>
-            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-          </Link>
-
-          <Link href="/dashboard/checkins" className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-            </div>
-            <div className="flex-1">
-              <h4 className="font-headline font-bold text-sm text-on-surface">Quick Check-in</h4>
-              <p className="text-[10px] text-on-surface-variant">Log how you&apos;re doing right now.</p>
-            </div>
-            <span className="material-symbols-outlined text-outline-variant">chevron_right</span>
-          </Link>
+  if (events.length > 0) {
+    widgets['events'] = (
+      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20">
+          <h3 className="font-headline text-sm font-bold text-on-surface">Recent Events</h3>
+          <Link href="/dashboard/activity" className="text-xs text-primary font-label font-medium hover:underline cursor-pointer">View all</Link>
         </div>
-      </section>
-
-      {/* ── Recent Events ──────────────────────────────────── */}
-      {events.length > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20">
-            <h3 className="font-headline text-sm font-bold text-on-surface">Recent Events</h3>
-            <Link href="/dashboard/activity" className="text-xs text-primary font-label font-medium hover:underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded">
-              View all
-            </Link>
-          </div>
-          <div className="divide-y divide-outline-variant/20">
-            {events.map((event: any) => (
-              <div key={event.id} className="flex items-center gap-3 px-5 py-3.5">
-                <span className="material-symbols-outlined text-primary text-xl flex-shrink-0">
-                  monitoring
-                </span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-on-surface font-body">
-                    {GOAL_LABELS[event.category as GoalCategory] ?? event.category}
-                  </div>
-                  <div className="text-xs text-on-surface-variant font-label">
-                    {event.app_name && `${event.app_name} \u00B7 `}
-                    {event.platform} &middot; {timeAgo(event.timestamp)}
-                  </div>
+        <div className="divide-y divide-outline-variant/20">
+          {events.map((event: any) => (
+            <div key={event.id} className="flex items-center gap-3 px-5 py-3.5">
+              <span className="material-symbols-outlined text-primary text-xl flex-shrink-0">monitoring</span>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-on-surface font-body">{GOAL_LABELS[event.category as GoalCategory] ?? event.category}</div>
+                <div className="text-xs text-on-surface-variant font-label">
+                  {event.app_name && `${event.app_name} \u00B7 `}
+                  {event.platform} &middot; {timeAgo(event.timestamp)}
                 </div>
-                <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold ${SEVERITY_STYLES[event.severity as Severity]}`}>
-                  {event.severity}
-                </span>
               </div>
-            ))}
-          </div>
+              <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-label font-semibold ${SEVERITY_STYLES[event.severity as Severity]}`}>{event.severity}</span>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {/* ── Pending Conversations ──────────────────────────── */}
+  return (
+    <div className="max-w-4xl mx-auto page-enter">
+      <DashboardCustomizer widgets={widgets} />
+
+      {/* Pending conversations (always visible, not customizable) */}
       {pendingConversations > 0 && (
-        <div className="bg-tertiary-container rounded-2xl p-5">
+        <div className="bg-tertiary-container rounded-2xl p-5 mt-8">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -773,7 +663,7 @@ export default async function DashboardPage() {
             </div>
             <Link
               href="/dashboard/conversations"
-              className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-bold rounded-full hover:opacity-90 transition-opacity flex-shrink-0 uppercase tracking-wider cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="px-4 py-2 bg-primary text-on-primary text-sm font-label font-bold rounded-full hover:opacity-90 transition-opacity flex-shrink-0 uppercase tracking-wider cursor-pointer"
             >
               View
             </Link>

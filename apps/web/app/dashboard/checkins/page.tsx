@@ -29,6 +29,7 @@ export default function CheckInsPage() {
   const [checkIns, setCheckIns] = useState<CheckIn[]>([]);
   const [stats, setStats] = useState<CheckInStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'partial' | 'completed' | 'expired'>('all');
   const { ToastContainer, showMilestones } = useMilestoneToasts();
 
@@ -44,6 +45,23 @@ export default function CheckInsPage() {
   }, []);
 
   useEffect(() => { fetchCheckIns(); }, [fetchCheckIns]);
+
+  async function handleCheckInNow() {
+    setCreating(true);
+    try {
+      const res = await fetch('/api/check-ins/create', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error ?? 'Could not create check-in');
+        return;
+      }
+      fetchCheckIns();
+    } catch {
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setCreating(false);
+    }
+  }
 
   function handleConfirmed(checkInId: string, newStatus: string, milestones: string[]) {
     // Optimistic update
@@ -67,14 +85,24 @@ export default function CheckInsPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <ToastContainer />
 
-      <div className="flex items-center gap-3">
-        <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-        <div>
-          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Check-ins</h1>
-          <p className="text-sm text-on-surface-variant font-body">
-            Both you and your partner confirm each check-in for it to count.
-          </p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+          <div>
+            <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Check-ins</h1>
+            <p className="text-sm text-on-surface-variant font-body">
+              Both you and your partner confirm each check-in for it to count.
+            </p>
+          </div>
         </div>
+        <button
+          onClick={handleCheckInNow}
+          disabled={creating || checkIns.some(ci => ci.status === 'pending' || ci.status === 'partial')}
+          className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-full font-label font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span className="material-symbols-outlined text-lg">{creating ? 'hourglass_top' : 'add_circle'}</span>
+          {creating ? 'Creating...' : 'Check In Now'}
+        </button>
       </div>
 
       {/* Philosophy callout */}
@@ -157,9 +185,19 @@ export default function CheckInsPage() {
           </h3>
           <p className="text-sm text-on-surface-variant font-body max-w-md mx-auto leading-relaxed">
             {filter === 'all'
-              ? 'Check-ins are short, honest moments between you and your partner. Once your partner is connected and your schedule is set, they\u2019ll appear here automatically.'
+              ? 'Check-ins are short, honest moments of reflection. Start one now or set up a schedule in Settings.'
               : 'Try a different filter to see other check-ins.'}
           </p>
+          {filter === 'all' && (
+            <button
+              onClick={handleCheckInNow}
+              disabled={creating}
+              className="mt-4 inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-full font-label font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-lg">add_circle</span>
+              {creating ? 'Creating...' : 'Start Your First Check-in'}
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-3">
