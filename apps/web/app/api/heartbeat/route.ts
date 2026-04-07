@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isIsolationOnlyUser } from '@/lib/isolationMode';
+import { isNonScanUser } from '@/lib/isolationMode';
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     .single();
 
   const goals: string[] = profileData?.goals ?? [];
-  const isolationOnly = isIsolationOnlyUser(goals);
+  const isolationOnly = isNonScanUser(goals);
 
   const { data, error, count } = await db
     .from('users')
@@ -97,7 +97,7 @@ export async function GET(req: NextRequest) {
 
   // Isolation-only users don't need the desktop app at all
   const userGoals: string[] = data?.goals ?? [];
-  const isolationOnly = isIsolationOnlyUser(userGoals);
+  const isolationOnly = isNonScanUser(userGoals);
 
   return NextResponse.json({
     app_running: appRunning,

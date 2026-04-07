@@ -497,6 +497,50 @@ export default function SettingsScreen() {
           </Pressable>
         </View>
 
+        {/* More Features — Web Parity */}
+        <Text style={styles.sectionTitle}>More Features</Text>
+        <View style={styles.card}>
+          <Pressable style={styles.editLink} onPress={() => router.push('/community')}>
+            <View style={styles.toggleLabelRow}>
+              <Ionicons name="chatbubbles-outline" size={18} color={C.primary} />
+              <Text style={styles.editLinkText}>Community</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.primary} />
+          </Pressable>
+          <View style={styles.separator} />
+          <Pressable style={styles.editLink} onPress={() => router.push('/groups')}>
+            <View style={styles.toggleLabelRow}>
+              <Ionicons name="people-outline" size={18} color={C.primary} />
+              <Text style={styles.editLinkText}>Groups</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.primary} />
+          </Pressable>
+          <View style={styles.separator} />
+          <Pressable style={styles.editLink} onPress={() => router.push('/values')}>
+            <View style={styles.toggleLabelRow}>
+              <Ionicons name="compass-outline" size={18} color={C.primary} />
+              <Text style={styles.editLinkText}>Values</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.primary} />
+          </Pressable>
+          <View style={styles.separator} />
+          <Pressable style={styles.editLink} onPress={() => router.push('/amends')}>
+            <View style={styles.toggleLabelRow}>
+              <Ionicons name="hand-left-outline" size={18} color={C.primary} />
+              <Text style={styles.editLinkText}>Amends</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.primary} />
+          </Pressable>
+          <View style={styles.separator} />
+          <Pressable style={styles.editLink} onPress={() => router.push('/letters')}>
+            <View style={styles.toggleLabelRow}>
+              <Ionicons name="mail-outline" size={18} color={C.primary} />
+              <Text style={styles.editLinkText}>Letters</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={C.primary} />
+          </Pressable>
+        </View>
+
         {/* Sign Out */}
         <Pressable style={styles.signOutButton} onPress={handleSignOut}>
           <Ionicons name="log-out-outline" size={20} color={C.error} />

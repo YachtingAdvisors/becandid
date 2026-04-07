@@ -17,6 +17,7 @@ import Link from 'next/link';
 import DashboardHero from '@/components/dashboard/DashboardHero';
 import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
 import FocusChip from '@/components/dashboard/FocusChip';
+import SelfHarmSafetyCard from '@/components/dashboard/SelfHarmSafetyCard';
 
 const DailyChallenge = dynamic(
   () => import('@/components/dashboard/DailyChallenge'),
@@ -63,6 +64,18 @@ const DailyInventory = dynamic(
 );
 const IsolationCheck = dynamic(
   () => import('@/components/dashboard/IsolationCheck'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
+);
+const ProcrastinationCheck = dynamic(
+  () => import('@/components/dashboard/ProcrastinationCheck'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
+);
+const WorkLifeCheck = dynamic(
+  () => import('@/components/dashboard/WorkLifeCheck'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
+);
+const SleepCheck = dynamic(
+  () => import('@/components/dashboard/SleepCheck'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
 );
 const FirstVisitCoach = dynamic(
@@ -257,6 +270,13 @@ export default async function DashboardPage() {
       {(profile?.goals ?? []).includes('isolation') && (
         <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
           <IsolationCheck />
+        </Suspense>
+      )}
+
+      {/* ── Procrastination Check ────────────────────────────── */}
+      {(profile?.goals ?? []).includes('procrastination') && (
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+          <ProcrastinationCheck />
         </Suspense>
       )}
 

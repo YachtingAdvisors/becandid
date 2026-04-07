@@ -119,6 +119,17 @@ export const THERAPEUTIC_PROMPTS: Array<{ text: string; category: 'reflection' |
   { text: "What does your partner need to hear from you that you haven't said yet?", category: 'relationship' },
   { text: "Name one way someone loved you well this week.", category: 'relationship' },
   { text: "What would trust look like fully rebuilt in your closest relationship?", category: 'relationship' },
+
+  // Emotional affairs
+  { text: "If your partner could read your texts from today, would anything make them uncomfortable? Write about why.", category: 'relationship' },
+  { text: "What are you getting from this person that you're not getting at home? Name it honestly.", category: 'relationship' },
+
+  // Procrastination
+  { text: "What's the ONE thing you've been avoiding? Write it down. Now write the feeling that comes up when you think about doing it.", category: 'reflection' },
+  { text: "If procrastination is protection, what is it protecting you from?", category: 'reflection' },
+
+  // AI relationships
+  { text: "What would you lose if you deleted the AI companion app? What would you gain?", category: 'imagination' },
 ];
 
 export const STRINGER_QUOTES = [

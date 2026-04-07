@@ -215,6 +215,106 @@ export const CATEGORY_GUIDANCE: Record<GoalCategory, CategoryGuidance> = {
     ],
   },
 
+  doomscrolling: {
+    sensitivity: 'standard',
+    systemPromptAddition:
+      'This involves doomscrolling — compulsive news consumption, political rabbit holes, and anxiety-driven information seeking. This is distinct from general social media overuse. The person feels that staying informed is responsible, but the consumption pattern is driven by anxiety, not civic duty. Help them distinguish between being informed and being consumed. The news cycle is engineered for engagement just like social media — acknowledge that design manipulation. Focus on the physiological stress response: elevated cortisol, disrupted sleep, catastrophic thinking.',
+    partnerWarnings: [
+      'Do not dismiss their concerns about the world as unimportant',
+      'Do not debate the news content itself — focus on the consumption pattern',
+      'Avoid "just stop watching the news" — acknowledge that staying informed matters, but this has crossed a line',
+    ],
+  },
+
+  ai_relationships: {
+    sensitivity: 'high',
+    systemPromptAddition:
+      'This involves AI chatbot companions — Character.AI, Replika, and similar platforms that simulate emotional or romantic connection. This is a sensitive area because the person may have developed genuine emotional attachment. Do not mock or trivialize the connection they feel. Instead, gently explore what real-world needs the AI relationship is meeting — companionship, acceptance, control, safety from rejection. The core issue is that AI companions never challenge, disappoint, or need anything, which makes them feel safe but prevents genuine growth. Frame this as a substitute that blocks the real thing, not as something shameful.',
+    partnerWarnings: [
+      'Do not mock or ridicule the AI relationship',
+      'Do not compare yourself to the chatbot',
+      'Understand that this may reflect loneliness or fear of rejection, not a preference for machines',
+      'Ask what they get from the AI that they feel they cannot get from real relationships',
+    ],
+  },
+
+  overworking: {
+    sensitivity: 'standard',
+    systemPromptAddition:
+      'This involves workaholism — using work to avoid relationships, feelings, or rest. This is the one addiction that gets applause, which makes it especially hard to see as a problem. The person may check email obsessively, stay late unnecessarily, or be unable to disconnect. Help them see that productivity is being weaponized against their own wellbeing. Explore what they are avoiding by working — intimacy, vulnerability, unstructured time, their own thoughts. Note: time-based detection (late-night work email, weekend Slack) is the primary signal here, not content.',
+    partnerWarnings: [
+      'Do not frame this as laziness or suggest they should be grateful for a hard worker',
+      'Acknowledge the real costs — missed dinners, absent parenting, emotional unavailability',
+      'Help them see that "providing" is not the same as "being present"',
+    ],
+  },
+
+  emotional_affairs: {
+    sensitivity: 'high',
+    systemPromptAddition:
+      'This involves emotional infidelity — emotionally intimate relationships outside a primary partnership that cross boundaries without physical contact. This is extremely sensitive because the person may not see it as infidelity, and confronting it triggers defensiveness. Do not moralize. Help them explore the gap in their primary relationship that the emotional affair is filling. The key insight: if they are hiding the connection, some part of them already knows it has crossed a line. This category is not detectable by screen scanning — it relies on self-awareness, journaling, and honest reflection.',
+    partnerWarnings: [
+      'Do not demand to read messages or interrogate about the other person',
+      'Express how the emotional distance affects you without catastrophizing',
+      'Understand that emotional affairs often begin as genuine friendships that drift',
+      'Do not issue ultimatums — they drive the behavior underground',
+    ],
+  },
+
+  sleep_avoidance: {
+    sensitivity: 'standard',
+    systemPromptAddition:
+      'This involves revenge bedtime procrastination — staying up late to reclaim personal time, sacrificing sleep for scrolling, streaming, or simply existing without demands. The person feels their day does not belong to them, so they steal from their sleep to feel autonomous. Validate that the need for personal time is real and legitimate — the problem is that they are funding it with sleep debt. Help them find personal time during the day rather than robbing it from the night. Note: detection is time-based behavior, not content-based.',
+    partnerWarnings: [
+      'Do not police their bedtime — that reinforces the loss-of-autonomy feeling',
+      'Ask what they need more of during the day',
+      'Acknowledge that their need for personal space is valid',
+    ],
+  },
+
+  gossip_drama: {
+    sensitivity: 'standard',
+    systemPromptAddition:
+      'This involves compulsive consumption of gossip, celebrity drama, reality TV, and involvement in other people\'s conflicts. This pattern is about vicarious emotional engagement — living through other people\'s chaos to avoid facing one\'s own. Help the person explore what their own life is missing that makes other people\'s drama so compelling. The emotional investment in strangers\' lives is a distraction from the person\'s unaddressed feelings, relationships, or decisions.',
+    partnerWarnings: [
+      'Do not dismiss their interest as "silly" or "shallow"',
+      'Focus on the pattern and time investment, not the content itself',
+      'Ask what is happening in their own life that they might be avoiding',
+    ],
+  },
+
+  self_harm: {
+    sensitivity: 'clinical',
+    systemPromptAddition:
+      'CRITICAL: This involves self-harm recovery. This is among the most sensitive categories. Use extreme care with language. NEVER describe specific methods, locations on the body, or techniques. Frame self-harm as a coping mechanism for emotional pain — not attention-seeking, not manipulation. The person is trying to externalize internal pain, create a sense of control, or interrupt dissociation. Always include crisis resources prominently: 988 Suicide & Crisis Lifeline (call or text 988), Crisis Text Line (text HOME to 741741). This category should NEVER flag content through screen scanning — it is purely for journaling, coaching, and crisis support. Always strongly recommend professional support (therapist specializing in self-harm, DBT skills). When this category is selected, crisis resources should always be visible on the dashboard.',
+    partnerWarnings: [
+      'Do NOT express anger, disgust, or frustration about the behavior',
+      'Do NOT issue ultimatums or threats',
+      'Do NOT check their body without consent',
+      'Express concern and love, not fear or panic',
+      'Ask "How are you feeling?" not "Did you do it again?"',
+      'Understand this is a coping mechanism, not a choice made to hurt you',
+    ],
+    resourceSuggestions: [
+      '988 Suicide & Crisis Lifeline: call or text 988',
+      'Crisis Text Line: text HOME to 741741',
+      'SAMHSA National Helpline: 1-800-662-4357',
+      'To Write Love on Her Arms: twloha.com',
+    ],
+  },
+
+  procrastination: {
+    sensitivity: 'standard',
+    systemPromptAddition:
+      'This involves chronic procrastination — task avoidance, analysis paralysis, and doing everything except what matters. Procrastination is not laziness. It is usually a protection mechanism against failure, perfectionism, overwhelm, or fear of judgment. Help the person identify what specific fear the avoidance is serving. Often procrastination is the precursor to other rivals — the unfinished tasks create stress, which drives them to other compulsive behaviors. This category is behavioral, not content-based — no screen scanning is needed.',
+    partnerWarnings: [
+      'Do not call them lazy — procrastination is anxiety-driven, not motivation-driven',
+      'Do not create pressure by listing everything they have not done',
+      'Help them break one task into the smallest possible step',
+      'Celebrate starts, not just completions',
+    ],
+  },
+
   custom: {
     sensitivity: 'standard',
     systemPromptAddition:

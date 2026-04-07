@@ -56,4 +56,15 @@ export const COACHING_LIBRARY_DIGITAL_GAMBLING: CoachingEntry[] = [
   { category: 'gaming', tags: [], phase: 'roadmap', content: "You've put thousands of hours into virtual worlds. Imagine if even 20% of that went into something you're building in real life. What would you build?", followUp: "What's one real-world skill worth grinding?" },
   { category: 'gaming', tags: [], phase: 'opening', content: "Gaming isn't the enemy — but you're here because something about it has stopped being fun and started being compulsive. Let's figure out the line.", followUp: "When did gaming stop being a choice and start being a default?" },
   { category: 'gaming', tags: [], phase: 'affirmation', content: "Stepping away from the game to look at your life honestly? That's a bigger achievement than any raid clear.", followUp: "" },
+
+  // ── DOOMSCROLLING ────────────────────────────────────────
+  { category: 'doomscrolling', tags: [], phase: 'tributaries', content: "The news cycle is designed to make you feel like looking away is irresponsible. But knowing everything doesn't change anything — it just keeps you anxious.", followUp: "How much time did you spend reading the news today?" },
+  { category: 'doomscrolling', tags: ['anxiety'], phase: 'tributaries', content: "Your brain treats the news like a threat scanner. But the threats it's finding are mostly ones you can't control. The anxiety is real, but the solution isn't more scrolling.", followUp: "What specific story are you most anxious about right now?" },
+  { category: 'doomscrolling', tags: [], phase: 'longing', content: "Under the doomscrolling is a longing for control — if you know what's coming, maybe you can prepare. But preparation and panic are different things.", followUp: "What would feeling prepared without the panic actually look like?" },
+  { category: 'doomscrolling', tags: [], phase: 'affirmation', content: "Putting down the news to be present in your actual life isn't ignorance — it's wisdom.", followUp: "" },
+
+  // ── GOSSIP & DRAMA ───────────────────────────────────────
+  { category: 'gossip_drama', tags: [], phase: 'tributaries', content: "Other people's chaos is compelling because it distracts you from your own. Their drama gives you something to react to that isn't your own life.", followUp: "What in your own life are you avoiding by watching theirs?" },
+  { category: 'gossip_drama', tags: [], phase: 'longing', content: "Under the gossip is often a longing to feel connected, to be in the know, to have something to talk about. But borrowed stories aren't yours to live.", followUp: "What would it feel like to be as invested in your own story as you are in theirs?" },
+  { category: 'gossip_drama', tags: [], phase: 'affirmation', content: "Choosing to invest in your own story instead of watching someone else's — that takes real intention.", followUp: "" },
 ];
