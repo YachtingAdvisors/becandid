@@ -135,15 +135,16 @@ export default function LandingPage() {
 
       <main>
         {/* ── Hero Section ─────────────────────────────────── */}
-        <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 px-6 lg:px-12 max-w-screen-2xl mx-auto min-h-[90vh] flex flex-col justify-center">
-          {/* Decorative blur orbs */}
+        <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 min-h-[90vh] flex flex-col justify-center">
+          {/* Decorative blur orbs — full viewport width */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-20 -right-40 w-[600px] h-[600px] rounded-full blur-[160px]" style={{ background: 'rgba(0, 102, 122, 0.15)' }} />
-            <div className="absolute -bottom-20 -left-40 w-[500px] h-[500px] rounded-full blur-[140px]" style={{ background: 'rgba(123, 211, 237, 0.08)' }} />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[200px]" style={{ background: 'rgba(0, 102, 122, 0.06)' }} />
+            <div className="absolute top-20 -right-20 w-[800px] h-[800px] rounded-full blur-[200px]" style={{ background: 'rgba(0, 102, 122, 0.15)' }} />
+            <div className="absolute -bottom-20 -left-20 w-[600px] h-[600px] rounded-full blur-[160px]" style={{ background: 'rgba(123, 211, 237, 0.08)' }} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full blur-[240px]" style={{ background: 'rgba(0, 102, 122, 0.06)' }} />
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center relative z-10">
+          <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 w-full relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
             <div className="space-y-8 max-w-xl">
               {/* Badge */}
               <div className="inline-flex items-center gap-2.5 px-4 py-2 glass-card rounded-full">
@@ -267,6 +268,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </section>
 
