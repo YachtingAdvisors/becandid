@@ -17,6 +17,7 @@ import IdleTimeout from '@/components/IdleTimeout';
 import RealtimeProvider from '@/components/dashboard/RealtimeProvider';
 import SWRProvider from '@/components/SWRProvider';
 import BuildWithUs from '@/components/dashboard/BuildWithUs';
+import ToastProvider from '@/components/ToastProvider';
 
 // Nav items — some hidden in solo mode
 const NAV_ITEMS = [
@@ -74,6 +75,7 @@ export default async function DashboardLayout({
   }
 
   return (
+    <ToastProvider>
     <div className="flex min-h-screen bg-background">
       <IdleTimeout />
       <Sidebar
@@ -101,5 +103,6 @@ export default async function DashboardLayout({
         <BuildWithUs />
       </main>
     </div>
+    </ToastProvider>
   );
 }

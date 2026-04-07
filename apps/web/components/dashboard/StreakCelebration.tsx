@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 // ─── Types ────────────────────────────────────────────────────
 interface StreakCelebrationProps {
@@ -63,6 +64,7 @@ function generateParticles(count: number): Particle[] {
 
 // ─── Component ────────────────────────────────────────────────
 export default function StreakCelebration({ milestone, onDismiss }: StreakCelebrationProps) {
+  const prefersReducedMotion = useReducedMotion();
   const [visible, setVisible] = useState(false);
   const [particles] = useState(() => generateParticles(25));
 

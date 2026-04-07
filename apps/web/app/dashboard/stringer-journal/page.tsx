@@ -584,14 +584,18 @@ export default function StringerJournalPage() {
           {loading ? (
             <div className="flex justify-center py-16"><div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>
           ) : entries.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-3">{'\uD83D\uDCD3'}</div>
-              <h3 className="text-lg font-headline font-bold text-on-surface mb-2">Your journal is empty</h3>
-              <p className="text-sm text-on-surface-variant font-body max-w-sm mx-auto mb-5">
-                Your patterns aren&apos;t random &mdash; they&apos;re a roadmap to alignment. Start tracing the tributaries.
+            <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-10 text-center">
+              <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">edit_note</span>
+              <h3 className="text-lg font-headline font-bold text-on-surface mb-2">Your journal is waiting</h3>
+              <p className="text-sm text-on-surface-variant font-body max-w-md mx-auto mb-6 leading-relaxed">
+                This is where you&apos;ll make sense of what&apos;s happening beneath the surface.
+                Start with whatever&apos;s on your mind &mdash; there&apos;s no wrong way to begin.
               </p>
               <button onClick={() => { resetForm(); setView('write'); }}
-                className="px-5 py-2.5 min-h-[44px] text-sm font-label font-medium rounded-2xl bg-primary text-on-primary cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200">Write Your First Entry</button>
+                className="inline-flex items-center gap-2 px-6 py-3 min-h-[44px] text-sm font-label font-semibold rounded-2xl bg-primary text-on-primary cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200">
+                <span className="material-symbols-outlined text-lg">edit_note</span>
+                Write your first entry
+              </button>
             </div>
           ) : (
             <>

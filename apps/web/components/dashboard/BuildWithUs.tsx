@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ToastProvider';
 
 const FEEDBACK_TYPES = [
   { key: 'idea', label: 'I have an idea', icon: 'lightbulb' },
@@ -16,7 +17,7 @@ export default function BuildWithUs() {
   const [type, setType] = useState('');
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async () => {
     if (!type || !message.trim()) return;

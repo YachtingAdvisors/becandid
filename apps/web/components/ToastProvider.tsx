@@ -42,7 +42,7 @@ function ToastItem({ toast: t, onDismiss }: { toast: Toast; onDismiss: (id: stri
       className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-lg bg-surface-container-lowest border border-outline-variant cursor-pointer transition-all duration-300 ease-out hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary/30 ${
         t.exiting
           ? 'opacity-0 translate-y-2 pointer-events-none'
-          : 'opacity-100 translate-y-0 animate-slide-up'
+          : 'opacity-100 translate-y-0 animate-fade-up'
       }`}
       aria-label="Dismiss notification"
     >
