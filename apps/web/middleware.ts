@@ -27,7 +27,7 @@ const PUBLIC_PATHS = [
 ];
 
 const CRON_PATHS = ['/api/cron'];
-const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/partners/accept', '/api/webhooks/', '/api/og'];
+const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/partners/accept', '/api/webhooks/', '/api/og', '/api/auth/check-lockout', '/api/auth/record-attempt', '/api/auth/sessions'];
 
 // ─── Content Security Policy ─────────────────────────────────
 function buildCSP(): string {
