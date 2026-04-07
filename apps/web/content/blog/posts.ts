@@ -5,7 +5,6 @@
 import { BLOG_POSTS_BATCH2 } from './posts-batch2';
 import { BLOG_POSTS_BATCH3 } from './posts-batch3';
 import { BLOG_POSTS_BATCH4 } from './posts-batch4';
-import { BLOG_POSTS_BATCH5 } from './posts-batch5';
 
 export interface BlogPost {
   slug: string;
@@ -265,5 +264,4 @@ export const BLOG_POSTS: BlogPost[] = [
   ...BLOG_POSTS_BATCH2,
   ...BLOG_POSTS_BATCH3,
   ...BLOG_POSTS_BATCH4,
-  ...BLOG_POSTS_BATCH5,
 ];
