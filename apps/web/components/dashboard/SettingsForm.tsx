@@ -7,6 +7,7 @@ import {
   STREAK_MODE_LABELS, STREAK_MODE_SHORT,
   MOTIVATOR_LABELS, MOTIVATOR_DESCRIPTIONS,
   type GoalCategory, type StreakMode, type FoundationalMotivator,
+  type TrackedSubstance,
 } from '@be-candid/shared';
 import GoalSelector from '../onboarding/GoalSelector';
 import TimezonePicker from './TimezonePicker';
@@ -18,6 +19,7 @@ interface SettingsFormProps {
     name: string;
     phone?: string;
     goals: GoalCategory[];
+    tracked_substances?: TrackedSubstance[];
     monitoring_enabled: boolean;
     streak_mode: StreakMode;
     timezone: string;
@@ -35,6 +37,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
   const [name, setName] = useState(profile.name || '');
   const [phone, setPhone] = useState(profile.phone || '');
   const [goals, setGoals] = useState<GoalCategory[]>(profile.goals || []);
+  const [trackedSubstances, setTrackedSubstances] = useState<TrackedSubstance[]>(profile.tracked_substances || []);
   const [monitoringEnabled, setMonitoringEnabled] = useState(profile.monitoring_enabled ?? true);
   const [showPauseModal, setShowPauseModal] = useState(false);
   const [pauseReason, setPauseReason] = useState('');
@@ -80,6 +83,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
         name: name.trim(),
         phone: phone.trim() || undefined,
         goals,
+        tracked_substances: trackedSubstances,
         monitoring_enabled: monitoringEnabled,
         streak_mode: streakMode,
         timezone,
@@ -280,7 +284,13 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
           </p>
         </div>
 
-        <GoalSelector selected={goals} onChange={setGoals} disabled={loading} />
+        <GoalSelector
+          selected={goals}
+          onChange={setGoals}
+          trackedSubstances={trackedSubstances}
+          onSubstancesChange={setTrackedSubstances}
+          disabled={loading}
+        />
       </section>
 
       {/* ── Fasting ───────────────────────────────────────── */}

@@ -16,7 +16,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import GoalSelector from '@/components/onboarding/GoalSelector';
 import PartnerPreview from '@/components/onboarding/PartnerPreview';
-import type { GoalCategory } from '@be-candid/shared';
+import type { GoalCategory, TrackedSubstance } from '@be-candid/shared';
 import {
   MOTIVATOR_LABELS, MOTIVATOR_DESCRIPTIONS,
   type FoundationalMotivator,
@@ -77,6 +77,7 @@ function OnboardingContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   const [goals, setGoals] = useState<GoalCategory[]>([]);
+  const [trackedSubstances, setTrackedSubstances] = useState<TrackedSubstance[]>([]);
   const [stringerStep, setStringerStep] = useState(0);
   const [partnerName, setPartnerName] = useState('');
   const [partnerEmail, setPartnerEmail] = useState('');
@@ -115,7 +116,7 @@ function OnboardingContent() {
       await fetch('/api/auth/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goals }),
+        body: JSON.stringify({ goals, tracked_substances: trackedSubstances }),
       });
       setStep('stringer');
     } catch (e) { setError('Failed to save goals'); }
@@ -341,7 +342,7 @@ function OnboardingContent() {
             </p>
           </div>
 
-          <GoalSelector selected={goals} onChange={setGoals} />
+          <GoalSelector selected={goals} onChange={setGoals} trackedSubstances={trackedSubstances} onSubstancesChange={setTrackedSubstances} />
           {error && <p className="text-sm text-error mt-3 text-center font-body">{error}</p>}
 
           {/* Fixed Footer CTA */}

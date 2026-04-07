@@ -12,7 +12,8 @@
 //   FLAGGED_DOMAINS      — domains that are flagged, not blocked
 // ============================================================
 
-import type { GoalCategory } from '@be-candid/shared';
+import type { GoalCategory, TrackedSubstance } from '@be-candid/shared';
+import { SUBSTANCE_CATEGORIES } from '@be-candid/shared';
 
 export interface BlocklistEntry {
   domain: string;
@@ -86,6 +87,25 @@ export const BLOCKED_DOMAINS: BlocklistEntry[] = [
   { domain: 'drizly.com', category: 'alcohol_drugs', confidence: 0.8 },
   { domain: 'totalwine.com', category: 'alcohol_drugs', confidence: 0.7 },
   { domain: 'minibar.com', category: 'alcohol_drugs', confidence: 0.8 },
+  { domain: 'winc.com', category: 'alcohol_drugs', confidence: 0.7 },
+  { domain: 'untappd.com', category: 'alcohol_drugs', confidence: 0.7 },
+  { domain: 'vivino.com', category: 'alcohol_drugs', confidence: 0.7 },
+  { domain: 'wine.com', category: 'alcohol_drugs', confidence: 0.7 },
+  { domain: 'bevmo.com', category: 'alcohol_drugs', confidence: 0.7 },
+
+  // Cannabis
+  { domain: 'leafly.com', category: 'alcohol_drugs', confidence: 0.8 },
+  { domain: 'weedmaps.com', category: 'alcohol_drugs', confidence: 0.8 },
+  { domain: 'dutchie.com', category: 'alcohol_drugs', confidence: 0.8 },
+  { domain: 'eaze.com', category: 'alcohol_drugs', confidence: 0.8 },
+  { domain: 'iheartjane.com', category: 'alcohol_drugs', confidence: 0.8 },
+
+  // Vaping
+  { domain: 'vapewild.com', category: 'vaping_tobacco', confidence: 0.8 },
+  { domain: 'elementvape.com', category: 'vaping_tobacco', confidence: 0.8 },
+  { domain: 'directvapor.com', category: 'vaping_tobacco', confidence: 0.8 },
+  { domain: 'ejuice.deals', category: 'vaping_tobacco', confidence: 0.8 },
+  { domain: 'vaporfi.com', category: 'vaping_tobacco', confidence: 0.8 },
 ];
 
 // ── Flagged domains (monitored, not auto-blocked) ────────────
@@ -226,4 +246,51 @@ export function checkUrl(url: string): BlocklistResult & { urlPatternMatch?: { c
 export function getCategoryForDomain(domain: string): GoalCategory | null {
   const result = checkDomain(domain);
   return result.entry?.category ?? null;
+}
+
+// ── Substance-specific domain lists ─────────────────────────
+
+const SUBSTANCE_DOMAINS: Record<string, string[]> = {
+  alcohol: ['drizly.com', 'totalwine.com', 'minibar.com', 'winc.com', 'untappd.com', 'vivino.com', 'wine.com', 'bevmo.com'],
+  beer: ['untappd.com', 'beeradvocate.com', 'ratebeer.com'],
+  wine: ['winc.com', 'vivino.com', 'wine.com', 'nakedwines.com'],
+  liquor: ['totalwine.com', 'minibar.com', 'drizly.com', 'reservebar.com'],
+  marijuana: ['leafly.com', 'weedmaps.com', 'dutchie.com', 'eaze.com', 'iheartjane.com'],
+  cannabis: ['leafly.com', 'weedmaps.com', 'dutchie.com', 'eaze.com', 'iheartjane.com'],
+  vaping: ['vapewild.com', 'elementvape.com', 'directvapor.com', 'ejuice.deals', 'vaporfi.com'],
+  cigarettes: ['cigarettesexpress.com'],
+  nicotine: ['vapewild.com', 'elementvape.com', 'nicokick.com'],
+  kratom: ['kratomspot.com', 'mitragaia.com'],
+};
+
+/**
+ * Check if a domain is relevant to the user's tracked substances.
+ * Returns a result only if the domain matches one of the user's
+ * specific substances. Returns null if no substance-specific match.
+ */
+export function checkDomainForSubstances(
+  domain: string,
+  trackedSubstances: TrackedSubstance[]
+): BlocklistResult | null {
+  const normalized = extractDomain(domain.toLowerCase());
+
+  for (const substance of trackedSubstances) {
+    const domains = SUBSTANCE_DOMAINS[substance];
+    if (!domains) continue;
+    if (domains.includes(normalized)) {
+      const parentCategory = SUBSTANCE_CATEGORIES[substance];
+      return {
+        found: true,
+        blocked: true,
+        flagged: false,
+        entry: {
+          domain: normalized,
+          category: parentCategory,
+          confidence: 0.8,
+        },
+      };
+    }
+  }
+
+  return null;
 }

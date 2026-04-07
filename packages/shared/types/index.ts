@@ -40,6 +40,82 @@ export type GoalCategory =
   // Other
   | 'custom';
 
+// ─── Tracked Substances ─────────────────────────────────────
+
+export type TrackedSubstance =
+  | 'alcohol'
+  | 'beer'
+  | 'wine'
+  | 'liquor'
+  | 'marijuana'
+  | 'cannabis'
+  | 'cocaine'
+  | 'opioids'
+  | 'heroin'
+  | 'fentanyl'
+  | 'methamphetamine'
+  | 'prescription_drugs'
+  | 'vaping'
+  | 'cigarettes'
+  | 'nicotine'
+  | 'kratom'
+  | 'psychedelics'
+  | 'other';
+
+export const SUBSTANCE_LABELS: Record<TrackedSubstance, string> = {
+  alcohol: 'Alcohol (general)',
+  beer: 'Beer',
+  wine: 'Wine',
+  liquor: 'Liquor/Spirits',
+  marijuana: 'Marijuana/Cannabis',
+  cannabis: 'Cannabis/THC',
+  cocaine: 'Cocaine',
+  opioids: 'Opioids/Painkillers',
+  heroin: 'Heroin',
+  fentanyl: 'Fentanyl',
+  methamphetamine: 'Methamphetamine',
+  prescription_drugs: 'Prescription Drug Misuse',
+  vaping: 'Vaping/E-cigarettes',
+  cigarettes: 'Cigarettes',
+  nicotine: 'Nicotine (general)',
+  kratom: 'Kratom',
+  psychedelics: 'Psychedelics',
+  other: 'Other Substance',
+};
+
+// Map substances to their parent GoalCategory
+export const SUBSTANCE_CATEGORIES: Record<TrackedSubstance, GoalCategory> = {
+  alcohol: 'alcohol_drugs',
+  beer: 'alcohol_drugs',
+  wine: 'alcohol_drugs',
+  liquor: 'alcohol_drugs',
+  marijuana: 'alcohol_drugs',
+  cannabis: 'alcohol_drugs',
+  cocaine: 'alcohol_drugs',
+  opioids: 'alcohol_drugs',
+  heroin: 'alcohol_drugs',
+  fentanyl: 'alcohol_drugs',
+  methamphetamine: 'alcohol_drugs',
+  prescription_drugs: 'alcohol_drugs',
+  vaping: 'vaping_tobacco',
+  cigarettes: 'vaping_tobacco',
+  nicotine: 'vaping_tobacco',
+  kratom: 'alcohol_drugs',
+  psychedelics: 'alcohol_drugs',
+  other: 'alcohol_drugs',
+};
+
+// Substances available for each parent category
+export const SUBSTANCES_BY_CATEGORY: Record<string, TrackedSubstance[]> = {
+  alcohol_drugs: [
+    'alcohol', 'beer', 'wine', 'liquor',
+    'marijuana', 'cannabis',
+    'cocaine', 'opioids', 'heroin', 'fentanyl', 'methamphetamine',
+    'prescription_drugs', 'kratom', 'psychedelics', 'other',
+  ],
+  vaping_tobacco: ['vaping', 'cigarettes', 'nicotine'],
+};
+
 // ─── Category Groups (for onboarding UI) ─────────────────────
 
 export interface CategoryGroup {
@@ -222,6 +298,7 @@ export interface User {
   name: string;
   phone?: string;
   goals: GoalCategory[];
+  tracked_substances?: TrackedSubstance[];
   partner_id?: string;
   relationship_type: RelationshipType;
   monitoring_enabled: boolean;

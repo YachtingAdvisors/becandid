@@ -6,6 +6,9 @@ import PublicNav from '@/components/PublicNav';
 /* ── Chrome Web Store URL (update once published) ────────────── */
 const CHROME_STORE_URL = '#'; // TODO: replace with Chrome Web Store link after submission
 
+/* ── Windows download URL ────────────────────────────────────── */
+const WINDOWS_DOWNLOAD_URL = 'https://github.com/YachtingAdvisors/becandid/releases/latest'; // TODO: replace with direct .exe link once available
+
 /* ── Reusable icon component ─────────────────────────────────── */
 function MaterialIcon({ name, className = '' }: { name: string; className?: string }) {
   return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
@@ -117,12 +120,23 @@ export default async function DownloadPage() {
                 ))}
               </ul>
 
-              <div className="w-full px-6 py-3.5 bg-stone-700 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
-                <MaterialIcon name="pause_circle" className="text-lg" />
-                {' '}macOS — Temporarily Unavailable
+              <div className="space-y-3">
+                <div className="w-full px-6 py-3.5 bg-stone-700 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
+                  <MaterialIcon name="pause_circle" className="text-lg" />
+                  {' '}macOS — Temporarily Unavailable
+                </div>
+                <a
+                  href={WINDOWS_DOWNLOAD_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                >
+                  <MaterialIcon name="download" className="text-lg" />
+                  Windows Beta — Download
+                </a>
               </div>
               <p className="text-amber-400/80 text-xs mt-4 text-center">
-                The macOS build is being updated for Apple notarization. Check back soon.
+                macOS is pending Apple notarization. Windows builds are not yet code-signed. You may see a SmartScreen warning — click &quot;More info&quot; &rarr; &quot;Run anyway&quot;.
               </p>
             </div>
 
@@ -152,19 +166,17 @@ export default async function DownloadPage() {
                 ))}
               </ul>
 
-              <div className="flex gap-2">
+              <div className="space-y-2">
                 <a
-                  href="#"
-                  className="flex-1 inline-flex items-center gap-2 justify-center px-4 py-3.5 bg-stone-800 hover:bg-stone-700 text-white rounded-full font-label font-bold text-sm tracking-wide transition-all duration-200 cursor-pointer"
+                  href="mailto:shawn@becandid.io?subject=Android%20Beta%20Access&body=I%27d%20like%20to%20join%20the%20Be%20Candid%20Android%20beta."
+                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
                 >
-                  App Store
+                  <MaterialIcon name="science" className="text-lg" />
+                  Join Android Beta
                 </a>
-                <a
-                  href="#"
-                  className="flex-1 inline-flex items-center gap-2 justify-center px-4 py-3.5 bg-stone-800 hover:bg-stone-700 text-white rounded-full font-label font-bold text-sm tracking-wide transition-all duration-200 cursor-pointer"
-                >
-                  Play Store
-                </a>
+                <div className="w-full px-4 py-3.5 bg-stone-800 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
+                  App Store — Coming Soon
+                </div>
               </div>
 
               <p className="text-stone-500 text-xs mt-4 text-center">

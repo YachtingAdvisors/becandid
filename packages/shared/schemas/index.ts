@@ -31,18 +31,29 @@ export const CreateEventSchema = z.object({
   duration_seconds: z.number().int().positive().optional(),
 });
 
+export const TrackedSubstanceSchema = z.enum([
+  'alcohol', 'beer', 'wine', 'liquor',
+  'marijuana', 'cannabis',
+  'cocaine', 'opioids', 'heroin', 'fentanyl', 'methamphetamine',
+  'prescription_drugs',
+  'vaping', 'cigarettes', 'nicotine',
+  'kratom', 'psychedelics', 'other',
+]);
+
 export const UpdateProfileSchema = z.object({
-  name:               z.string().min(1).optional(),
-  phone:              z.string().optional(),
-  goals:              z.array(GoalCategorySchema).optional(),
-  monitoring_enabled: z.boolean().optional(),
-  nudge_enabled:      z.boolean().optional(),
-  check_in_enabled:   z.boolean().optional(),
-  check_in_hour:      z.number().int().min(0).max(23).optional(),
-  check_in_frequency: z.enum(['daily', 'every_2_days', 'every_3_days', 'weekly', 'every_2_weeks']).optional(),
-  timezone:           z.string().optional(),
-  streak_mode:        StreakModeSchema.optional(),
-  relationship_type:  RelationshipTypeSchema.optional(),
+  name:                z.string().min(1).optional(),
+  phone:               z.string().optional(),
+  goals:               z.array(GoalCategorySchema).optional(),
+  tracked_substances:  z.array(TrackedSubstanceSchema).optional(),
+  monitoring_enabled:  z.boolean().optional(),
+  nudge_enabled:       z.boolean().optional(),
+  check_in_enabled:    z.boolean().optional(),
+  check_in_hour:       z.number().int().min(0).max(23).optional(),
+  check_in_frequency:  z.enum(['daily', 'every_2_days', 'every_3_days', 'weekly', 'every_2_weeks']).optional(),
+  timezone:            z.string().optional(),
+  streak_mode:         StreakModeSchema.optional(),
+  relationship_type:   RelationshipTypeSchema.optional(),
+  foundational_motivator: z.string().optional(),
 });
 
 export const OnboardingSchema = z.object({

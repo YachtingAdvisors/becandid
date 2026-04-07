@@ -8,6 +8,7 @@
 
 const { app, BrowserWindow, powerMonitor, ipcMain, systemPreferences, desktopCapturer } = require('electron');
 const path = require('path');
+const { autoUpdater } = require('electron-updater');
 const { isAuthenticated, signIn, fetchSettings } = require('./auth');
 const { startCapturing, stopCapturing, setPaused, captureOnce } = require('./capturer');
 const { createTray, destroyTray } = require('./tray');
@@ -27,6 +28,9 @@ if (process.platform === 'darwin') {
 let loginWindow = null;
 
 app.whenReady().then(async () => {
+  // Check for updates and notify the user when one is available
+  autoUpdater.checkForUpdatesAndNotify();
+
   // Request screen recording permission immediately on macOS
   // This triggers the system permission prompt on first launch
   if (process.platform === 'darwin') {
