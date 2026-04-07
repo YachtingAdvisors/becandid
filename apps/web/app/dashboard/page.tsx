@@ -19,6 +19,15 @@ import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
 import FocusChip from '@/components/dashboard/FocusChip';
 import SelfHarmSafetyCard from '@/components/dashboard/SelfHarmSafetyCard';
 
+const WhatsNew = dynamic(
+  () => import('@/components/dashboard/WhatsNew'),
+  { ssr: false },
+);
+const ScheduledCoach = dynamic(
+  () => import('@/components/dashboard/ScheduledCoach'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-3xl" /> },
+);
+
 const DailyChallenge = dynamic(
   () => import('@/components/dashboard/DailyChallenge'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-2xl" /> },
@@ -265,6 +274,9 @@ export default async function DashboardPage() {
         goals={profile?.goals ?? []}
       />
 
+      {/* ── What's New Changelog ─────────────────────────── */}
+      <WhatsNew />
+
       {/* ── Therapist Badge ───────────────────────────────── */}
       <Suspense fallback={null}>
         <TherapistBadge />
@@ -274,6 +286,9 @@ export default async function DashboardPage() {
       <Suspense fallback={null}>
         <FirstVisitCoach />
       </Suspense>
+
+      {/* ── Scheduled Coach Sessions ──────────────────────── */}
+      <ScheduledCoach />
 
       {/* ── Isolation Connection Check ──────────────────────── */}
       {(profile?.goals ?? []).includes('isolation') && (
@@ -567,6 +582,21 @@ export default async function DashboardPage() {
       <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
         <DailyInventory compact />
       </Suspense>
+
+      {/* ── Weekly Report Link ─────────────────────────────── */}
+      <Link
+        href="/dashboard/report"
+        className="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300"
+      >
+        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>summarize</span>
+        </div>
+        <div className="flex-1">
+          <h4 className="font-headline font-bold text-sm text-on-surface">Weekly Accountability Report</h4>
+          <p className="text-[10px] text-on-surface-variant">Print-friendly summary for your group or mentor.</p>
+        </div>
+        <span className="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+      </Link>
 
       {/* ── Other Services ─────────────────────────────────── */}
       <section>

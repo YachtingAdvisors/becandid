@@ -24,10 +24,11 @@ import {
 } from '@be-candid/shared';
 import { GOAL_TIPS } from '@/lib/goalTips';
 
-type Step = 'goals' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done' | 'first-journal';
+type Step = 'goals' | 'goal-tips' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done' | 'first-journal';
 
 const STEP_BACKGROUNDS: Record<Step, string> = {
   goals: '#0f1218',
+  'goal-tips': '#111419',
   stringer: '#1a1520',
   motivator: '#2d1f2e',
   preview: '#5c3a2e',
@@ -44,6 +45,7 @@ const FULL_PHRASE_LINES = ['Come out', 'of darkness', 'and into', 'the light'];
 // Rising sun: maps each step to translateY offset, opacity, and color
 const SUN_STATES: Record<Step, { y: number; opacity: number; color: string; glow: string }> = {
   goals:            { y: 38,  opacity: 1, color: '#6b3020', glow: 'none' },
+  'goal-tips':      { y: 34,  opacity: 1, color: '#7b3820', glow: '0 0 6px rgba(123,56,32,0.15)' },
   stringer:         { y: 28,  opacity: 1, color: '#8b4020', glow: '0 0 10px rgba(139,64,32,0.2)' },
   motivator:        { y: 18,  opacity: 1, color: '#a04820', glow: '0 0 15px rgba(160,72,32,0.25)' },
   preview:          { y: 8,   opacity: 1, color: '#d4803a', glow: '0 0 20px rgba(212,128,58,0.3)' },
@@ -120,7 +122,7 @@ function OnboardingContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goals, tracked_substances: trackedSubstances }),
       });
-      setStep('stringer');
+      setStep(goals.length > 0 ? 'goal-tips' : 'stringer');
     } catch (e) { setError('Failed to save goals'); }
     setLoading(false);
   };
@@ -241,7 +243,7 @@ function OnboardingContent() {
   };
 
   // ── Progress bar ──────────────────────────────────────
-  const STEPS: Step[] = ['goals', 'stringer', 'motivator', 'preview', 'partner', 'done', 'first-journal'];
+  const STEPS: Step[] = ['goals', 'goal-tips', 'stringer', 'motivator', 'preview', 'partner', 'done', 'first-journal'];
   const progress = STEPS.indexOf(step) / (STEPS.length - 1);
 
   const isDoneStep = step === 'done' || step === 'first-journal';
@@ -361,6 +363,74 @@ function OnboardingContent() {
                 {loading ? 'Saving...' : `Continue with ${goals.length} rival${goals.length !== 1 ? 's' : ''}`}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════ STEP 1b: Goal-Specific Tips ═══════ */}
+      {step === 'goal-tips' && (
+        <div className="max-w-lg w-full animate-fade-slide">
+          <div className="text-center mb-8">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
+            </div>
+            <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">Tips for your journey</h1>
+            <p className="text-sm text-slate-400 font-body leading-relaxed">
+              Quick wins to set yourself up for success with your selected rivals.
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            {goals.slice(0, 3).map((category) => {
+              const tips = GOAL_TIPS[category];
+              if (!tips || tips.length === 0) return null;
+              return (
+                <div
+                  key={category}
+                  className="rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/5 ring-1 ring-primary/10 overflow-hidden"
+                >
+                  <div className="px-5 py-3 border-b border-white/5 flex items-center gap-3">
+                    <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
+                      {tips[0].icon}
+                    </span>
+                    <span className="text-sm font-label font-bold text-slate-100">
+                      {GOAL_LABELS[category]}
+                    </span>
+                  </div>
+                  <ul className="px-5 py-3 space-y-3">
+                    {tips.map((t, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="material-symbols-outlined text-slate-400 text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 0" }}>
+                          {t.icon}
+                        </span>
+                        <span className="text-sm text-slate-300 font-body leading-relaxed">{t.tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+
+          {goals.length > 3 && (
+            <p className="text-xs text-slate-500 text-center mt-3 font-body">
+              +{goals.length - 3} more — you can review all tips in Settings later.
+            </p>
+          )}
+
+          <div className="flex gap-3 mt-8">
+            <button
+              onClick={() => setStep('goals')}
+              className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
+            >
+              &larr; Back
+            </button>
+            <button
+              onClick={() => setStep('stringer')}
+              className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
+            >
+              Got it &mdash; continue &rarr;
+            </button>
           </div>
         </div>
       )}

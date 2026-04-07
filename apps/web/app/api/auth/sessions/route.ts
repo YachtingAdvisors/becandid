@@ -65,9 +65,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Update user's last_active_at
+    // Update user's last_active_at and reset churn stage (user is active)
     await db.from('users')
-      .update({ last_active_at: new Date().toISOString() })
+      .update({ last_active_at: new Date().toISOString(), churn_stage: 0 })
       .eq('id', user.id);
 
     return NextResponse.json({ success: true });
