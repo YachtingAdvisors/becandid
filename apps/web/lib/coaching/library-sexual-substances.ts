@@ -58,4 +58,16 @@ export const COACHING_LIBRARY_SEXUAL_SUBSTANCES: CoachingEntry[] = [
   { category: 'vaping_tobacco', tags: [], phase: 'roadmap', content: "You know this isn't the person you want to be. Every time you notice that gap between who you are and who you want to be — that's growth, not failure.", followUp: "What does freedom from nicotine look like for you?" },
   { category: 'vaping_tobacco', tags: [], phase: 'opening', content: "Nicotine is one of the hardest things to walk away from. Let's talk about what today looked like.", followUp: "How many times did you reach for it today?" },
   { category: 'vaping_tobacco', tags: [], phase: 'affirmation', content: "Every craving you sit with instead of acting on is rewiring your brain. It doesn't feel like progress in the moment, but it is.", followUp: "" },
+
+  // ── ALCOHOL (substance-specific) ─────────────────────────
+  { category: 'alcohol_drugs', tags: ['alcohol'], phase: 'tributaries', content: "The bottle promises relief but charges interest — every drink borrows peace from tomorrow to pay for numbness tonight. What happened today that made the trade feel worth it?", followUp: "What were you trying to stop feeling?" },
+  { category: 'alcohol_drugs', tags: ['alcohol'], phase: 'longing', content: "Alcohol is the world's most socially accepted escape hatch. Everyone around you is pouring one, and you're supposed to just... not. The longing isn't for the drink — it's for the permission to stop carrying whatever you're carrying.", followUp: "What would you need to put down — emotionally — to not need the drink?" },
+
+  // ── MARIJUANA (substance-specific) ───────────────────────
+  { category: 'alcohol_drugs', tags: ['marijuana', 'cannabis'], phase: 'tributaries', content: "Cannabis numbs the edges, but the edges are where the growth happens. The sharp parts of your day — the anxiety, the boredom, the restlessness — are trying to tell you something. What are they saying?", followUp: "What does your day look like when you're not high?" },
+  { category: 'alcohol_drugs', tags: ['marijuana', 'cannabis'], phase: 'longing', content: "The high makes everything feel softer, slower, more bearable. That's real. But so is the fog the next morning, and the goals that keep sliding. What are you reaching for underneath the smoke?", followUp: "What would your life look like with the clarity you keep trading away?" },
+
+  // ── NICOTINE / VAPING (substance-specific) ───────────────
+  { category: 'vaping_tobacco', tags: ['vaping', 'nicotine'], phase: 'tributaries', content: "The craving feels physical, but underneath it is a rhythm — a ritual your body expects. Step outside, inhale, exhale, feel something shift. What if the ritual could stay and the nicotine could go?", followUp: "When do you reach for it most — and what's happening right before?" },
+  { category: 'vaping_tobacco', tags: ['vaping', 'nicotine'], phase: 'longing', content: "Nicotine promised you a pause button for life. Three minutes of nothing but you and the hit. But every pause gets shorter and the need gets louder. What would a real pause look like — one that doesn't come with a leash?", followUp: "What does freedom from nicotine look like in your daily life?" },
 ];

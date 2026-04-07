@@ -61,15 +61,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Image too large. Max 5MB.' }, { status: 400 });
     }
 
-    // Fetch user goals
+    // Fetch user goals and tracked substances
     const db = createServiceClient();
     const { data: profile } = await db
       .from('users')
-      .select('goals')
+      .select('goals, tracked_substances')
       .eq('id', user.id)
       .single();
 
     const userGoals: string[] = profile?.goals || [];
+    const trackedSubstances: string[] = profile?.tracked_substances || [];
     if (userGoals.length === 0) {
       return NextResponse.json({
         analyzed: true,
@@ -90,9 +91,10 @@ export async function POST(req: NextRequest) {
     };
 
     // Run selective analysis: pre-classifier first, Vision only if needed
+    const substances = trackedSubstances as import('@be-candid/shared').TrackedSubstance[];
     const analysis = rawMetadata
-      ? await analyzeScreenshot(image, 'image/jpeg', screenshotMetadata, userGoals, user.id)
-      : await analyzeImage(image, 'image/jpeg', userGoals, user.id);
+      ? await analyzeScreenshot(image, 'image/jpeg', screenshotMetadata, userGoals, user.id, substances)
+      : await analyzeImage(image, 'image/jpeg', userGoals, user.id, substances);
 
     // Only create an event if something meaningful was detected
     if (analysis.categories.length > 0 && analysis.confidence > 0.3) {

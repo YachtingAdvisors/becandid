@@ -52,7 +52,9 @@
         "POST_NOTIFICATIONS",
         "VIBRATE",
         "INTERNET",
-        "ACCESS_NETWORK_STATE"
+        "ACCESS_NETWORK_STATE",
+        "FOREGROUND_SERVICE",
+        "QUERY_ALL_PACKAGES"
       ]
     },
     "web": {
