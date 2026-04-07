@@ -9,6 +9,7 @@ import { BLOG_POSTS_NICHE1 } from './posts-niche1';
 import { BLOG_POSTS_NICHE2 } from './posts-niche2';
 import { BLOG_POSTS_NICHE3 } from './posts-niche3';
 import { BLOG_POSTS_NICHE4 } from './posts-niche4';
+import { BLOG_POSTS_FAITH1 } from './posts-faith1';
 
 export interface BlogPost {
   slug: string;
@@ -272,4 +273,5 @@ export const BLOG_POSTS: BlogPost[] = [
   ...BLOG_POSTS_NICHE2,
   ...BLOG_POSTS_NICHE3,
   ...BLOG_POSTS_NICHE4,
+  ...BLOG_POSTS_FAITH1,
 ];
