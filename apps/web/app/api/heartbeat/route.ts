@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { isIsolationOnlyUser } from '@/lib/isolationMode';
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -15,6 +16,18 @@ export async function POST(req: NextRequest) {
 
   const db = createServiceClient();
   const now = new Date().toISOString();
+
+  // For isolation-only users, still accept the heartbeat (to know they're alive)
+  // but don't require the desktop app — they don't need screen scanning.
+  const { data: profileData } = await db
+    .from('users')
+    .select('goals')
+    .eq('id', user.id)
+    .single();
+
+  const goals: string[] = profileData?.goals ?? [];
+  const isolationOnly = isIsolationOnlyUser(goals);
+
   const { data, error, count } = await db
     .from('users')
     .update({ last_heartbeat: now })
@@ -32,7 +45,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'User not found in public.users', user_id: user.id, email: user.email });
   }
 
-  return NextResponse.json({ ok: true, user_id: user.id, email: user.email, rows_updated: rowsUpdated });
+  return NextResponse.json({ ok: true, user_id: user.id, email: user.email, rows_updated: rowsUpdated, isolation_only: isolationOnly });
 }
 
 export async function GET(req: NextRequest) {
@@ -59,7 +72,7 @@ export async function GET(req: NextRequest) {
   // Try with last_heartbeat column
   const { data, error } = await db
     .from('users')
-    .select('email, last_heartbeat, monitoring_enabled')
+    .select('email, last_heartbeat, monitoring_enabled, goals')
     .eq('id', userId)
     .single();
 
@@ -82,10 +95,15 @@ export async function GET(req: NextRequest) {
   // We intentionally do NOT query other users to avoid leaking email addresses.
   const mismatch = !appRunning && lastHeartbeat > 0;
 
+  // Isolation-only users don't need the desktop app at all
+  const userGoals: string[] = data?.goals ?? [];
+  const isolationOnly = isIsolationOnlyUser(userGoals);
+
   return NextResponse.json({
     app_running: appRunning,
     monitoring_enabled: data?.monitoring_enabled ?? false,
     last_heartbeat: data?.last_heartbeat ?? null,
     mismatch,
+    isolation_only: isolationOnly,
   });
 }

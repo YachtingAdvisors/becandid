@@ -1,6 +1,18 @@
 import type { CoachingEntry } from './types';
 
 export const COACHING_LIBRARY_OTHER: CoachingEntry[] = [
+  // ── ISOLATION & WITHDRAWAL ─────────────────────────────────
+  { category: 'isolation', tags: [], phase: 'tributaries', content: "Isolation feels like self-protection, but it's your rival in disguise. When did you start pulling away? Something happened before the door closed.", followUp: "What were you protecting yourself from when you started withdrawing?" },
+  { category: 'isolation', tags: ['loneliness'], phase: 'tributaries', content: "The cruel irony of isolation is that it's driven by loneliness but deepens it. You pull away because connection feels risky, and then the distance confirms the fear.", followUp: "Who did you pull away from first, and why?" },
+  { category: 'isolation', tags: ['shame'], phase: 'tributaries', content: "Shame tells you that if people really knew you, they'd leave. So you leave first. But hiding doesn't protect you — it just guarantees the loneliness shame predicted.", followUp: "What would people see if you let them close right now?" },
+  { category: 'isolation', tags: ['exhaustion'], phase: 'tributaries', content: "Sometimes withdrawal isn't about fear — it's about being depleted. When you have nothing left to give, isolation feels like the only way to survive. But you can't refuel alone forever.", followUp: "What's draining you so much that being around people feels impossible?" },
+  { category: 'isolation', tags: [], phase: 'longing', content: "Under every closed door is a longing to be known without being judged. You want connection — you just don't trust it to be safe. That longing is worth listening to.", followUp: "What would it feel like to be fully known and still accepted?" },
+  { category: 'isolation', tags: [], phase: 'longing', content: "The withdrawal is protecting you from rejection, from vulnerability, from being seen. But it's also blocking the thing you need most — someone who stays.", followUp: "Who in your life has stayed, even when things got hard?" },
+  { category: 'isolation', tags: [], phase: 'roadmap', content: "Connection doesn't have to start with a deep conversation. It can start with a text, a meme, a 'thinking of you.' The bar is lower than your rival tells you it is.", followUp: "Who could you reach out to in the next hour with a simple message?" },
+  { category: 'isolation', tags: [], phase: 'roadmap', content: "Your rival wants you to believe that being alone is safer. But look at what isolation has cost you — missed moments, fading friendships, a shrinking world. Connection is the way out.", followUp: "What's one relationship you want to rebuild?" },
+  { category: 'isolation', tags: [], phase: 'opening', content: "Isolation is a quiet rival — it doesn't announce itself like other struggles. It just slowly turns down the volume on your life until you're alone with the silence.", followUp: "How long has it been since you spent real time with someone?" },
+  { category: 'isolation', tags: [], phase: 'affirmation', content: "Choosing to reach out when every instinct says to withdraw — that's courage. Your rival loses ground every time you send that text, make that call, or walk through that door.", followUp: "" },
+
   // ── EATING DISORDER ───────────────────────────────────────
   { category: 'eating_disorder', tags: [], phase: 'tributaries', content: "The relationship with food and your body didn't start today. Something triggered the urge to restrict, purge, or binge. Let's trace it back gently.", followUp: "What happened today that made you feel out of control?" },
   { category: 'eating_disorder', tags: ['shame'], phase: 'tributaries', content: "Shame about your body is one of the cruelest loops — it drives the behavior, then the behavior deepens the shame. You deserve better than that cycle.", followUp: "Whose voice do you hear when you look in the mirror?" },
@@ -73,4 +85,22 @@ export const COACHING_LIBRARY_OTHER: CoachingEntry[] = [
   { category: 'general', tags: [], phase: 'roadmap', content: "Imagine telling your future self about this moment. What would you want them to know you chose?", followUp: "What choice would make you proud tomorrow morning?" },
   { category: 'general', tags: [], phase: 'longing', content: "Every struggle has a legitimate need underneath it. Not the behavior — but the ache that drove you to it. Name the ache.", followUp: "What did you actually need in that moment?" },
   { category: 'general', tags: [], phase: 'longing', content: "You were reaching for something real — belonging, rest, significance, tenderness. The method was wrong, but the longing was right. Let's honor the longing.", followUp: "Which of those words resonates most: belonging, rest, significance, or tenderness?" },
+
+  // ── PREDICTIVE COACHING CONTENT ────────────────────────────
+
+  // Time-risk predictions
+  { category: 'general', tags: ['predictive', 'time_risk'], phase: 'roadmap', content: "It's the time of day your patterns show up. Not because you're weak — because your body remembers. Let's get ahead of it tonight instead of reacting after.", followUp: "What could you do in the next 30 minutes to change the trajectory of your evening?" },
+  { category: 'general', tags: ['predictive', 'time_risk'], phase: 'tributaries', content: "Your data shows this window is when things get hard. That's not a sentence — it's an invitation to plan differently. The pattern is only a pattern until you interrupt it.", followUp: "What usually happens right before you give in at this time? Can we change that one thing?" },
+
+  // Category escalation predictions
+  { category: 'general', tags: ['predictive', 'category_escalation'], phase: 'tributaries', content: "The scrolling has been heavy today. That's often a setup for something else — not because you're choosing it, but because your brain is already in seek mode. Switching tasks now is easier than stopping later.", followUp: "What are you actually looking for when you scroll? Name it honestly." },
+  { category: 'general', tags: ['predictive', 'category_escalation'], phase: 'roadmap', content: "When screen time climbs like this, it's usually medicating something. The content escalation is a symptom, not the disease. What's underneath the scroll today?", followUp: "If you put the phone down right now, what feeling would you have to sit with?" },
+
+  // Mood decline predictions
+  { category: 'general', tags: ['predictive', 'mood_decline'], phase: 'longing', content: "Your mood has been sliding. That's not failure — it's information. Your emotional reserves are low, which means your defenses are too. This is when reaching out matters most.", followUp: "Who could you talk to today — not about your struggle, just to feel connected?" },
+  { category: 'general', tags: ['predictive', 'mood_decline'], phase: 'tributaries', content: "A dipping mood doesn't guarantee a setback, but it does mean your guard is down. The version of you that's struggling right now needs compassion, not willpower. What would help you feel even slightly better tonight?", followUp: "What's one thing that usually lifts your mood, even a little?" },
+
+  // Trigger combo predictions
+  { category: 'general', tags: ['predictive', 'trigger_combo'], phase: 'roadmap', content: "Multiple triggers lined up today. Your coach is here before things get harder — not after. This is the moment where one different choice changes the whole night.", followUp: "Which trigger feels heaviest right now? Let's start there." },
+  { category: 'general', tags: ['predictive', 'trigger_combo'], phase: 'tributaries', content: "When stress, exhaustion, and isolation stack up, your brain stops choosing and starts defaulting. You're not there yet — but you're close. What's one thing you can do right now to break the stack?", followUp: "Can you remove yourself from the environment for even 15 minutes?" },
 ];

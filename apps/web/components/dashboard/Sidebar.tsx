@@ -46,6 +46,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
   const [open, setOpen] = useState(false);
   const [appRunning, setAppRunning] = useState<boolean | null>(null); // null = loading
   const [mismatch, setMismatch] = useState(false);
+  const [isolationOnly, setIsolationOnly] = useState(false);
   const [showTroubleshoot, setShowTroubleshoot] = useState(false);
   const [checking, setChecking] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -88,6 +89,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
         if (d) {
           setAppRunning(d.app_running === true);
           setMismatch(d.mismatch === true);
+          setIsolationOnly(d.isolation_only === true);
         }
       })
       .catch((e) => {
@@ -150,6 +152,12 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
           <div className="px-3 py-2 rounded-2xl bg-surface-container flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30" />
             <span className="text-xs text-on-surface-variant font-label font-medium">Checking connection...</span>
+          </div>
+        ) : isolationOnly ? (
+          <div className="px-3 py-2 rounded-2xl bg-violet-50 ring-1 ring-violet-200/50 flex items-center gap-2">
+            <span className="material-symbols-outlined text-violet-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>door_open</span>
+            <span className="text-xs text-violet-700 font-label font-bold flex-1 text-left">Isolation Mode</span>
+            <span className="text-[9px] text-violet-500 font-label">No scan needed</span>
           </div>
         ) : (
           <div>

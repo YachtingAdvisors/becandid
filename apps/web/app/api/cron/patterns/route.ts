@@ -13,6 +13,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { detectPatterns } from '@/lib/patternDetector';
+import { detectPredictivePatterns, type PredictiveAlert } from '@/lib/predictivePatterns';
 import { analyzePartnerFatigue, sendFatigueWarning } from '@/lib/partnerFatigue';
 import { verifyCronAuth } from '@/lib/cronAuth';
 
@@ -22,6 +23,7 @@ export async function GET(req: NextRequest) {
 
   const db = createServiceClient();
   let patternsDetected = 0;
+  let predictiveAlertsDetected = 0;
   let fatigueWarnings = 0;
   let errors = 0;
 
@@ -31,13 +33,54 @@ export async function GET(req: NextRequest) {
 
   for (const user of users) {
     try {
-      // 1. Pattern detection
+      // 1. Pattern detection (reactive)
       const patterns = await detectPatterns(db, user.id);
       patternsDetected += patterns.length;
 
-      // 2. Vulnerability window checks (handled inside detectPatterns)
+      // 2. Predictive pattern detection
+      const predictiveAlerts = await detectPredictivePatterns(db, user.id, 'America/New_York');
+      if (predictiveAlerts.length > 0) {
+        // Dedup: don't send the same predictive pattern within 48 hours
+        const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+        const { data: recentPredictive } = await db
+          .from('nudges')
+          .select('trigger_type, category')
+          .eq('user_id', user.id)
+          .eq('trigger_type', 'predictive')
+          .gte('sent_at', twoDaysAgo);
 
-      // 3. Partner fatigue (skip for solo mode users)
+        const recentPredictiveSet = new Set(
+          (recentPredictive ?? []).map((n: { trigger_type: string; category: string | null }) =>
+            `${n.trigger_type}:${n.category ?? ''}`
+          )
+        );
+
+        const newPredictive = predictiveAlerts.filter(
+          (a: PredictiveAlert) => !recentPredictiveSet.has(`predictive:${a.category ?? ''}`)
+        );
+
+        if (newPredictive.length > 0) {
+          await db.from('nudges').insert(
+            newPredictive.map((a: PredictiveAlert) => ({
+              user_id: user.id,
+              category: a.category ?? null,
+              trigger_type: 'predictive',
+              message: a.message,
+              severity: a.confidence >= 0.7 ? 'warning' : 'info',
+              metadata: {
+                predictive_type: a.type,
+                confidence: a.confidence,
+                suggested_action: a.suggested_action,
+              },
+            }))
+          );
+          predictiveAlertsDetected += newPredictive.length;
+        }
+      }
+
+      // 3. Vulnerability window checks (handled inside detectPatterns)
+
+      // 4. Partner fatigue (skip for solo mode users)
       if (!user.solo_mode) {
         const fatigue = await analyzePartnerFatigue(user.id);
         if (fatigue.fatigued) {
@@ -51,7 +94,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // 4. Reset weekly partner alert counters on Mondays
+  // 5. Reset weekly partner alert counters on Mondays
   const today = new Date();
   if (today.getUTCDay() === 1 && today.getUTCHours() < 1) {
     await db.from('partners').update({
@@ -63,6 +106,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     processed: users.length,
     patterns_detected: patternsDetected,
+    predictive_alerts: predictiveAlertsDetected,
     fatigue_warnings: fatigueWarnings,
     errors,
   });

@@ -61,6 +61,10 @@ const DailyInventory = dynamic(
   () => import('@/components/dashboard/DailyInventory'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
 );
+const IsolationCheck = dynamic(
+  () => import('@/components/dashboard/IsolationCheck'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
+);
 const FirstVisitCoach = dynamic(
   () => import('@/components/dashboard/FirstVisitCoach'),
   { ssr: false },
@@ -248,6 +252,13 @@ export default async function DashboardPage() {
       <Suspense fallback={null}>
         <FirstVisitCoach />
       </Suspense>
+
+      {/* ── Isolation Connection Check ──────────────────────── */}
+      {(profile?.goals ?? []).includes('isolation') && (
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+          <IsolationCheck />
+        </Suspense>
+      )}
 
       {/* ── Daily Commitment Ritual ────────────────────────── */}
       <DailyCommitment />
