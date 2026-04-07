@@ -198,25 +198,47 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Floating badge top-right */}
+              {/* Floating badge: 256-bit Encrypted — top-right */}
               <div className="absolute -top-5 -right-5 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <MaterialIcon name="verified_user" className="text-emerald-400 text-base" filled />
+                  <MaterialIcon name="lock" className="text-emerald-400 text-base" filled />
                 </div>
                 <div>
-                  <p className="font-label text-xs font-semibold text-white">256-bit</p>
-                  <p className="font-label text-[10px] text-stone-500">Encrypted</p>
+                  <p className="font-label text-xs font-semibold text-white">256-bit Encrypted</p>
+                  <p className="font-label text-[10px] text-stone-500">Zero-knowledge architecture</p>
                 </div>
               </div>
 
-              {/* Floating notification bottom-left */}
+              {/* Floating badge: Stringer Framework — bottom-left */}
               <div className="absolute -bottom-3 -left-6 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
-                <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
-                  <MaterialIcon name="trending_up" className="text-cyan-400 text-base" />
+                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
+                  <MaterialIcon name="psychology" className="text-amber-400 text-base" filled />
                 </div>
                 <div>
-                  <p className="font-label text-xs font-semibold text-white">14 day streak</p>
-                  <p className="font-label text-[10px] text-stone-500">Personal best</p>
+                  <p className="font-label text-xs font-semibold text-white">Stringer Framework</p>
+                  <p className="font-label text-[10px] text-stone-500">Based on <em>Unwanted</em> research</p>
+                </div>
+              </div>
+
+              {/* Floating badge: HIPAA Ready — top-left */}
+              <div className="absolute top-12 -left-10 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+                <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                  <MaterialIcon name="health_and_safety" className="text-cyan-400 text-base" filled />
+                </div>
+                <div>
+                  <p className="font-label text-xs font-semibold text-white">HIPAA Ready</p>
+                  <p className="font-label text-[10px] text-stone-500">Healthcare-grade privacy</p>
+                </div>
+              </div>
+
+              {/* Floating badge: AI Pattern Detection — bottom-right */}
+              <div className="absolute -bottom-5 right-8 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+                <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                  <MaterialIcon name="neurology" className="text-purple-400 text-base" filled />
+                </div>
+                <div>
+                  <p className="font-label text-xs font-semibold text-white">AI Pattern Detection</p>
+                  <p className="font-label text-[10px] text-stone-500">Behavioral insight engine</p>
                 </div>
               </div>
             </div>
