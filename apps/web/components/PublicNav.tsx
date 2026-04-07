@@ -14,7 +14,7 @@ export default function PublicNav() {
     { href: '/pricing', label: 'Pricing' },
     { href: '/therapists', label: 'Therapists' },
     { href: '/blog', label: 'Blog' },
-    { href: '/donate', label: 'Give Access' },
+    { href: 'https://becandid.org', label: '.org' },
     { href: '/download', label: 'Download' },
   ];
 
