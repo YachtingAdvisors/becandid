@@ -1,6 +1,15 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
+
+const HeroPlayer = dynamic(() => import('@/components/remotion/HeroPlayer'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full aspect-[4/3] rounded-xl bg-gradient-to-br from-[#0e1a1d] to-[#0c1518] animate-pulse" />
+  ),
+});
 import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion } from '@/components/LandingSections';
 import { softwareAppSchema, organizationSchema, faqSchema } from '@/lib/structuredData';
 
@@ -20,63 +29,63 @@ const FEATURES = [
     icon: 'chat_bubble',
     title: 'Conversation Guides & Ice Breakers',
     desc: 'Evidence-based prompts designed by neurologists and therapists for difficult but necessary digital discussions.',
-    image: '',
-    alt: '',
+    image: '/images/features/conversation-guides.webp',
+    alt: 'Glowing geometric nodes connected by light strands representing AI dialogue',
   },
   {
     icon: 'menu_book',
     title: 'Candid Journal',
     desc: 'A private space for reflective record-keeping, helping you track personal growth and interaction history.',
-    image: '',
+    image: '/images/features/candid-journal.webp',
     alt: 'Minimalist digital journal on a tablet with morning sunlight',
   },
   {
     icon: 'handshake',
     title: 'Partner Awareness',
     desc: 'Shared insights that foster mutual trust without compromising individual privacy or autonomy.',
-    image: '',
+    image: '/images/features/partner-awareness.webp',
     alt: 'Two intersecting circles in teal and blue symbolizing mutual understanding',
   },
   {
     icon: 'emergency_home',
     title: 'Crisis Detection',
     desc: 'Advanced sentiment analysis to identify distress signals and offer immediate supportive resources.',
-    image: '',
+    image: '/images/features/crisis-detection.webp',
     alt: 'Calm wave pattern in warm amber tones representing gentle monitoring',
   },
   {
     icon: 'encrypted',
     title: 'End-to-End Encryption',
     desc: 'State-of-the-art security ensuring your most vulnerable moments stay strictly between you and your trusted circle.',
-    image: '',
+    image: '/images/features/encryption.webp',
     alt: 'Glass lock icon floating above shimmering data particles in teal and cyan',
   },
   {
     icon: 'center_focus_strong',
     title: 'Alignment Tracking',
     desc: 'Monitor how your digital habits align with your core values and long-term wellness goals.',
-    image: '',
+    image: '/images/features/alignment-tracking.webp',
     alt: 'Data visualization showing harmonic balance representing life-tech alignment',
   },
   {
     icon: 'filter_list',
     title: 'AI Content Filtering',
     desc: 'Smart filters that shield you from toxic environments while highlighting positive, growth-oriented content.',
-    image: '',
+    image: '/images/features/content-filtering.webp',
     alt: 'Semi-transparent prism filtering light into a clear beam',
   },
   {
     icon: 'timer',
     title: 'Screen Time Controls',
     desc: 'Intuitive limits that encourage conscious consumption rather than restrictive digital deprivation.',
-    image: '',
+    image: '/images/features/screen-time.webp',
     alt: 'Zen garden sand pattern with minimalist clock silhouette',
   },
   {
     icon: 'shield',
     title: 'Guardian Dashboard',
     desc: 'A centralized command center for administrators to oversee safety settings and review collective wellness trends.',
-    image: '',
+    image: '/images/features/guardian-dashboard.webp',
     alt: 'Clean structured command center interface with soft glow',
   },
 ];
@@ -145,7 +154,7 @@ export default function LandingPage() {
               {/* Headline */}
               <h1 className="font-headline text-[2.75rem] sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold tracking-tight leading-[1.08]">
                 <span className="text-glow">Recovery starts with{' '}</span>
-                <span className="bg-gradient-to-r from-cyan-400 via-primary to-emerald-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
                   radical honesty.
                 </span>
               </h1>
@@ -180,55 +189,56 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Hero Phone Mockup */}
+            {/* Hero Animated Dashboard */}
             <div className="relative hidden lg:block">
-              <div className="absolute -inset-8 rounded-full blur-[80px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.2), transparent 70%)' }} />
-              <div className="relative glass-card rounded-3xl p-3 transform rotate-1 hover:rotate-0 transition-transform duration-700">
-                {/* Dashboard mockup — replace with real screenshot when available */}
-                <div className="w-full aspect-[4/3] rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 flex flex-col items-center justify-center p-8 gap-4">
-                  {/* Mockup header */}
-                  <div className="flex items-center gap-3 w-full">
-                    <div className="w-8 h-8 rounded-xl bg-teal-500/20 flex items-center justify-center">
-                      <span className="text-teal-400 text-sm font-bold">C</span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="h-2 w-24 bg-white/10 rounded-full" />
-                      <div className="h-1.5 w-16 bg-white/5 rounded-full mt-1.5" />
-                    </div>
-                  </div>
-                  {/* Mockup momentum ring */}
-                  <div className="w-24 h-24 rounded-full border-4 border-teal-500/30 flex items-center justify-center">
-                    <div className="text-center">
-                      <p className="text-2xl font-extrabold text-teal-400">76</p>
-                      <p className="text-[8px] text-slate-400 uppercase tracking-wider">Momentum</p>
-                    </div>
-                  </div>
-                  {/* Mockup stats row */}
-                  <div className="flex gap-4 w-full justify-center">
-                    {['14 day streak', '23 journals', '4.2 mood'].map((s) => (
-                      <div key={s} className="text-center">
-                        <p className="text-xs font-bold text-white/80">{s.split(' ')[0]}</p>
-                        <p className="text-[9px] text-slate-500">{s.split(' ').slice(1).join(' ')}</p>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Mockup cards */}
-                  <div className="flex gap-2 w-full">
-                    <div className="flex-1 h-10 rounded-lg bg-white/[0.03] border border-white/5" />
-                    <div className="flex-1 h-10 rounded-lg bg-white/[0.03] border border-white/5" />
-                    <div className="flex-1 h-10 rounded-lg bg-white/[0.03] border border-white/5" />
-                  </div>
+              <div className="absolute -inset-12 rounded-full blur-[100px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.25), transparent 70%)' }} />
+              <div className="relative glass-card rounded-3xl p-4 transform rotate-1 hover:rotate-0 transition-transform duration-700 shadow-2xl shadow-primary/10">
+                <div className="w-full aspect-[4/3] rounded-xl overflow-hidden">
+                  <HeroPlayer />
                 </div>
               </div>
 
-              {/* Floating badge top-right */}
-              <div className="absolute -top-4 -right-4 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5">
+              {/* Floating badge: 256-bit Encrypted — top-right */}
+              <div className="absolute -top-5 -right-5 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <MaterialIcon name="check" className="text-emerald-400 text-base" />
+                  <MaterialIcon name="lock" className="text-emerald-400 text-base" filled />
                 </div>
                 <div>
-                  <p className="font-label text-xs font-semibold text-white">256-bit</p>
-                  <p className="font-label text-[10px] text-stone-500">Encrypted</p>
+                  <p className="font-label text-xs font-semibold text-white">256-bit Encrypted</p>
+                  <p className="font-label text-[10px] text-stone-500">Zero-knowledge architecture</p>
+                </div>
+              </div>
+
+              {/* Floating badge: Stringer Framework — bottom-left */}
+              <div className="absolute -bottom-3 -left-6 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
+                  <MaterialIcon name="psychology" className="text-amber-400 text-base" filled />
+                </div>
+                <div>
+                  <p className="font-label text-xs font-semibold text-white">Stringer Framework</p>
+                  <p className="font-label text-[10px] text-stone-500">Based on <em>Unwanted</em> research</p>
+                </div>
+              </div>
+
+              {/* Floating badge: HIPAA Ready — top-left */}
+              <div className="absolute top-12 -left-10 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+                <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                  <MaterialIcon name="health_and_safety" className="text-cyan-400 text-base" filled />
+                </div>
+                <div>
+                  <p className="font-label text-xs font-semibold text-white">HIPAA Ready</p>
+                  <p className="font-label text-[10px] text-stone-500">Healthcare-grade privacy</p>
+                </div>
+              </div>
+
+              {/* Floating badge: AI Pattern Detection — bottom-right */}
+              <div className="absolute -bottom-5 right-8 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+                <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                  <MaterialIcon name="neurology" className="text-purple-400 text-base" filled />
+                </div>
+                <div>
+                  <p className="font-label text-xs font-semibold text-white">AI Pattern Detection</p>
+                  <p className="font-label text-[10px] text-stone-500">Behavioral insight engine</p>
                 </div>
               </div>
             </div>
@@ -258,9 +268,15 @@ export default function LandingPage() {
                   key={f.title}
                   className="group relative glass-card rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 cursor-pointer"
                 >
-                  {/* Feature visual */}
-                  <div className="aspect-[16/10] overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-800/50 to-slate-900/80">
-                    <span className="material-symbols-outlined text-6xl text-teal-500/30 group-hover:text-teal-500/50 transition-colors duration-500">{f.icon}</span>
+                  {/* Image */}
+                  <div className="aspect-[16/10] overflow-hidden relative">
+                    <Image
+                      src={f.image}
+                      alt={f.alt}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
                   </div>
 
                   {/* Content */}
@@ -324,11 +340,15 @@ export default function LandingPage() {
               {/* Right side image */}
               <div className="relative hidden lg:block">
                 <div className="absolute -inset-4 rounded-3xl blur-[60px]" style={{ background: 'rgba(0, 102, 122, 0.1)' }} />
-                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 aspect-[4/3] flex items-center justify-center">
-                  <div className="text-center space-y-3 p-8">
-                    <span className="material-symbols-outlined text-7xl text-teal-500/20">devices</span>
-                    <p className="text-sm text-slate-500">Desktop + Mobile + Browser</p>
-                  </div>
+                <div className="relative rounded-3xl overflow-hidden aspect-[4/3]">
+                  <Image
+                    src="/images/features/sync-devices.webp"
+                    alt="Laptop and smartphone showing synchronized Be Candid integrity progress"
+                    fill
+                    className="object-cover rounded-3xl"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                  {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0c1214] via-transparent to-transparent" />
                 </div>
 
