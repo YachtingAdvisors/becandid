@@ -10,6 +10,12 @@ import { BLOG_POSTS_NICHE2 } from './posts-niche2';
 import { BLOG_POSTS_NICHE3 } from './posts-niche3';
 import { BLOG_POSTS_NICHE4 } from './posts-niche4';
 import { BLOG_POSTS_FAITH1 } from './posts-faith1';
+import { BLOG_POSTS_FAITH2 } from './posts-faith2';
+import { BLOG_POSTS_STATS1 } from './posts-stats1';
+import { BLOG_POSTS_STATS2 } from './posts-stats2';
+import { BLOG_POSTS_STATS3 } from './posts-stats3';
+import { BLOG_POSTS_STATS4 } from './posts-stats4';
+import { BLOG_POSTS_STATS5 } from './posts-stats5';
 
 export interface BlogPost {
   slug: string;
@@ -274,4 +280,10 @@ export const BLOG_POSTS: BlogPost[] = [
   ...BLOG_POSTS_NICHE3,
   ...BLOG_POSTS_NICHE4,
   ...BLOG_POSTS_FAITH1,
+  ...BLOG_POSTS_FAITH2,
+  ...BLOG_POSTS_STATS1,
+  ...BLOG_POSTS_STATS2,
+  ...BLOG_POSTS_STATS3,
+  ...BLOG_POSTS_STATS4,
+  ...BLOG_POSTS_STATS5,
 ];
