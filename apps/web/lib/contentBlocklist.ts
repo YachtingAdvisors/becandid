@@ -106,6 +106,18 @@ export const BLOCKED_DOMAINS: BlocklistEntry[] = [
   { domain: 'directvapor.com', category: 'vaping_tobacco', confidence: 0.8 },
   { domain: 'ejuice.deals', category: 'vaping_tobacco', confidence: 0.8 },
   { domain: 'vaporfi.com', category: 'vaping_tobacco', confidence: 0.8 },
+
+  // AI Companion/Relationship sites
+  { domain: 'character.ai', category: 'ai_relationships', confidence: 1.0 },
+  { domain: 'beta.character.ai', category: 'ai_relationships', confidence: 1.0 },
+  { domain: 'replika.com', category: 'ai_relationships', confidence: 1.0 },
+  { domain: 'chai-research.com', category: 'ai_relationships', confidence: 0.9 },
+  { domain: 'crushon.ai', category: 'ai_relationships', confidence: 1.0 },
+  { domain: 'janitorai.com', category: 'ai_relationships', confidence: 1.0 },
+  { domain: 'candy.ai', category: 'ai_relationships', confidence: 1.0 },
+  { domain: 'muah.ai', category: 'ai_relationships', confidence: 1.0 },
+  { domain: 'romantic.ai', category: 'ai_relationships', confidence: 1.0 },
+  { domain: 'nomi.ai', category: 'ai_relationships', confidence: 1.0 },
 ];
 
 // ── Flagged domains (monitored, not auto-blocked) ────────────

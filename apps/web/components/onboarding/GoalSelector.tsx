@@ -9,7 +9,7 @@ import {
   type GoalCategory,
   type TrackedSubstance,
 } from '@be-candid/shared';
-import { isIsolationOnlyUser } from '@/lib/isolationMode';
+import { isNonScanUser } from '@/lib/isolationMode';
 
 interface GoalSelectorProps {
   selected: GoalCategory[];
@@ -282,12 +282,12 @@ export default function GoalSelector({ selected, onChange, trackedSubstances = [
         </div>
       )}
 
-      {/* Isolation-only mode explanation */}
-      {isIsolationOnlyUser(selected) && (
+      {/* Non-scan mode explanation */}
+      {isNonScanUser(selected) && (
         <div className="mt-3 px-4 py-3 rounded-xl bg-violet-50 ring-1 ring-violet-200/40 flex items-start gap-3">
           <span className="material-symbols-outlined text-violet-700 text-lg mt-0.5 flex-shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>door_open</span>
           <p className="text-xs text-violet-900 font-body leading-relaxed">
-            <strong>Isolation mode:</strong> Since isolation is about connection — not screen content — you won&rsquo;t need the desktop app or browser extension. We&rsquo;ll focus on check-ins, journaling, and nudges to help you stay connected.
+            <strong>No scanning needed:</strong> Your selected rivals are behavioral — not screen-based — so you won&rsquo;t need the desktop app or browser extension. We&rsquo;ll focus on check-ins, journaling, and nudges to help you build better habits.
           </p>
         </div>
       )}

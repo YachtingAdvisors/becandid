@@ -217,6 +217,12 @@ function InnerLayout() {
         <Stack.Screen name="fasting" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="referrals" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="reflections" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="community" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="groups" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="group-detail" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="values" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="amends" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="letters" options={{ animation: 'slide_from_right' }} />
       </Stack>
     </>
   );

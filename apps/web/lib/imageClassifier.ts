@@ -170,6 +170,27 @@ const TITLE_KEYWORD_RULES: TitleKeywordRule[] = [
     category: 'day_trading',
     confidence: 0.6,
   },
+  // Doomscrolling — news/politics overconsumption
+  {
+    patterns:
+      /\b(cnn|fox\s*news|msnbc|reuters|associated\s*press|nytimes|washington\s*post|reddit\s*politics|breaking\s*news)\b/i,
+    category: 'doomscrolling',
+    confidence: 0.6,
+  },
+  // AI chatbot companions
+  {
+    patterns:
+      /\b(character\.ai|replika|chai\s*app|crushon|janitor\s*ai|candy\.ai)\b/i,
+    category: 'ai_relationships',
+    confidence: 0.85,
+  },
+  // Gossip & drama
+  {
+    patterns:
+      /\b(tmz|e!\s*news|daily\s*mail|people\s*magazine|us\s*weekly|reality\s*tv)\b/i,
+    category: 'gossip_drama',
+    confidence: 0.6,
+  },
 ];
 
 // ── Substance-specific window title keywords ───────────────

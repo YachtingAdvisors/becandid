@@ -19,6 +19,7 @@ export type GoalCategory =
   | 'social_media'
   | 'binge_watching'
   | 'impulse_shopping'
+  | 'doomscrolling'
   // Substances & recovery
   | 'alcohol_drugs'
   | 'vaping_tobacco'
@@ -31,12 +32,24 @@ export type GoalCategory =
   | 'day_trading'
   // Dating & relationships
   | 'dating_apps'
+  | 'emotional_affairs'
   // Gaming
   | 'gaming'
   // Rage & outrage
   | 'rage_content'
+  | 'gossip_drama'
   // Isolation & withdrawal
   | 'isolation'
+  // AI & Virtual
+  | 'ai_relationships'
+  // Overworking
+  | 'overworking'
+  // Sleep & Rest
+  | 'sleep_avoidance'
+  // Recovery & Healing
+  | 'self_harm'
+  // Productivity
+  | 'procrastination'
   // Other
   | 'custom';
 
@@ -134,9 +147,9 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
   },
   {
     label: 'Compulsive Consumption',
-    description: 'Scrolling, streaming, and shopping loops',
+    description: 'Scrolling, streaming, shopping loops, and doomscrolling',
     icon: '📱',
-    categories: ['social_media', 'binge_watching', 'impulse_shopping'],
+    categories: ['social_media', 'binge_watching', 'impulse_shopping', 'doomscrolling'],
   },
   {
     label: 'Substances & Recovery',
@@ -158,9 +171,9 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
   },
   {
     label: 'Dating & Relationships',
-    description: 'Compulsive swiping and validation-seeking',
+    description: 'Compulsive swiping, validation-seeking, and emotional infidelity',
     icon: '💔',
-    categories: ['dating_apps'],
+    categories: ['dating_apps', 'emotional_affairs'],
   },
   {
     label: 'Gaming',
@@ -170,15 +183,45 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
   },
   {
     label: 'Rage & Outrage',
-    description: 'Political rage, hate content, comment wars',
+    description: 'Political rage, hate content, comment wars, gossip, and drama',
     icon: '🔥',
-    categories: ['rage_content'],
+    categories: ['rage_content', 'gossip_drama'],
   },
   {
     label: 'Isolation & Withdrawal',
     description: 'Pulling away from people, avoiding connection, hiding',
     icon: '🚪',
     categories: ['isolation'],
+  },
+  {
+    label: 'AI & Virtual',
+    description: 'AI chatbot companions replacing real human connection',
+    icon: '🤖',
+    categories: ['ai_relationships'],
+  },
+  {
+    label: 'Overworking',
+    description: 'Using work to avoid relationships, feelings, or rest',
+    icon: '💼',
+    categories: ['overworking'],
+  },
+  {
+    label: 'Sleep & Rest',
+    description: 'Revenge bedtime procrastination and sleep avoidance',
+    icon: '🌙',
+    categories: ['sleep_avoidance'],
+  },
+  {
+    label: 'Recovery & Healing',
+    description: 'Recovery from self-harm with crisis support and safety features',
+    icon: '🩹',
+    categories: ['self_harm'],
+  },
+  {
+    label: 'Productivity',
+    description: 'Task avoidance, analysis paralysis, and procrastination',
+    icon: '⏳',
+    categories: ['procrastination'],
   },
 ];
 
@@ -190,6 +233,7 @@ export const GOAL_LABELS: Record<GoalCategory, string> = {
   social_media:     'Social Media & News',
   binge_watching:   'Binge Watching',
   impulse_shopping: 'Impulse Shopping',
+  doomscrolling:    'Doomscrolling',
   alcohol_drugs:    'Alcohol & Drugs',
   vaping_tobacco:   'Vaping & Tobacco',
   eating_disorder:  'Eating Disorder Content',
@@ -198,9 +242,16 @@ export const GOAL_LABELS: Record<GoalCategory, string> = {
   sports_betting:   'Sports Betting',
   day_trading:      'Day Trading',
   dating_apps:      'Dating Apps',
+  emotional_affairs: 'Emotional Affairs',
   gaming:           'Excessive Gaming',
   rage_content:     'Rage & Outrage Content',
+  gossip_drama:     'Gossip & Drama',
   isolation:        'Isolation & Withdrawal',
+  ai_relationships: 'AI Relationships',
+  overworking:      'Overworking',
+  sleep_avoidance:  'Sleep Avoidance',
+  self_harm:        'Self-Harm Recovery',
+  procrastination:  'Procrastination',
   custom:           'Custom',
 };
 
@@ -210,6 +261,7 @@ export const GOAL_DESCRIPTIONS: Record<GoalCategory, string> = {
   social_media:     'Instagram, TikTok, X, Reddit, news feeds — scrolling, doomscrolling, and overuse',
   binge_watching:   'Netflix, YouTube rabbit holes, streaming marathons',
   impulse_shopping: 'Amazon, online shopping sprees, cart addiction',
+  doomscrolling:    'News addiction, political rabbit holes, doomscrolling, anxiety-driven information consumption',
   alcohol_drugs:    'Bar finders, delivery apps, content romanticizing use',
   vaping_tobacco:   'Vape shops, tobacco content, nicotine-related apps',
   eating_disorder:  'Pro-ED communities, extreme diet content, thinspo',
@@ -218,9 +270,16 @@ export const GOAL_DESCRIPTIONS: Record<GoalCategory, string> = {
   sports_betting:   'DraftKings, FanDuel, bet tracking apps',
   day_trading:      'Crypto trading, meme stocks, compulsive market watching',
   dating_apps:      'Tinder, Hinge, Bumble — compulsive swiping',
+  emotional_affairs: 'Emotionally intimate relationships outside your primary relationship — confiding, texting constantly, crossing boundaries without physical contact',
   gaming:           'Extended gaming sessions, ranked addiction',
   rage_content:     'Political outrage, hate forums, comment arguments',
+  gossip_drama:     'Reality TV obsession, group chat drama, compulsive involvement in other people\'s business, celebrity gossip',
   isolation:        'Pulling away from people, canceling plans, hiding in your room, avoiding calls',
+  ai_relationships: 'Character.AI, Replika, romantic AI companions — replacing real connection with artificial intimacy',
+  overworking:      'Using work to avoid relationships, feelings, or rest. Staying late, checking email obsessively, inability to disconnect',
+  sleep_avoidance:  'Staying up late to reclaim personal time, revenge bedtime procrastination, sacrificing sleep for scrolling or streaming',
+  self_harm:        'Recovery from self-harm behaviors. This category includes extra safety features and crisis resources.',
+  procrastination:  'Task avoidance, analysis paralysis, doing everything except what matters. Often the precursor to other rivals.',
   custom:           'Define your own category to monitor',
 };
 
@@ -233,6 +292,7 @@ export function getCategoryEmoji(category: GoalCategory): string {
     social_media:     '📱',
     binge_watching:   '📺',
     impulse_shopping: '🛒',
+    doomscrolling:    '📰',
     alcohol_drugs:    '🍷',
     vaping_tobacco:   '🚬',
     eating_disorder:  '⚠️',
@@ -241,9 +301,16 @@ export function getCategoryEmoji(category: GoalCategory): string {
     sports_betting:   '🏈',
     day_trading:      '📈',
     dating_apps:      '💔',
+    emotional_affairs: '💭',
     gaming:           '🎮',
     rage_content:     '😤',
+    gossip_drama:     '🗣️',
     isolation:        '🚪',
+    ai_relationships: '🤖',
+    overworking:      '💼',
+    sleep_avoidance:  '🌙',
+    self_harm:        '🩹',
+    procrastination:  '⏳',
     custom:           '⚙️',
   };
   return map[category] ?? '⚠️';
@@ -279,14 +346,19 @@ export const STREAK_MODE_SHORT: Record<StreakMode, string> = {
 
 export const ALL_GOAL_CATEGORIES: GoalCategory[] = [
   'pornography', 'sexting',
-  'social_media', 'binge_watching', 'impulse_shopping',
+  'social_media', 'binge_watching', 'impulse_shopping', 'doomscrolling',
   'alcohol_drugs', 'vaping_tobacco',
   'eating_disorder', 'body_checking',
   'gambling', 'sports_betting', 'day_trading',
-  'dating_apps',
+  'dating_apps', 'emotional_affairs',
   'gaming',
-  'rage_content',
+  'rage_content', 'gossip_drama',
   'isolation',
+  'ai_relationships',
+  'overworking',
+  'sleep_avoidance',
+  'self_harm',
+  'procrastination',
   'custom',
 ];
 
