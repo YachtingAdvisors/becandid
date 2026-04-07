@@ -215,8 +215,8 @@ export default function LandingPage() {
                   <MaterialIcon name="psychology" className="text-amber-400 text-base" filled />
                 </div>
                 <div>
-                  <p className="font-label text-xs font-semibold text-white">Stringer Framework</p>
-                  <p className="font-label text-[10px] text-stone-500">Based on <em>Unwanted</em> research</p>
+                  <p className="font-label text-xs font-semibold text-white">Clinically Studied</p>
+                  <p className="font-label text-[10px] text-stone-500">Research-backed framework</p>
                 </div>
               </div>
 
@@ -226,7 +226,7 @@ export default function LandingPage() {
                   <MaterialIcon name="health_and_safety" className="text-cyan-400 text-base" filled />
                 </div>
                 <div>
-                  <p className="font-label text-xs font-semibold text-white">HIPAA Ready</p>
+                  <p className="font-label text-xs font-semibold text-white">HIPAA Compliant</p>
                   <p className="font-label text-[10px] text-stone-500">Healthcare-grade privacy</p>
                 </div>
               </div>
