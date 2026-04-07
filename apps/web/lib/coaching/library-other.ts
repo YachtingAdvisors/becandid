@@ -76,6 +76,27 @@ export const COACHING_LIBRARY_OTHER: CoachingEntry[] = [
   { category: 'crisis', tags: [], phase: 'opening', content: "I'm concerned about what you've shared. Before we go further, I want to make sure you're safe. If you're thinking about hurting yourself, please contact the 988 Suicide & Crisis Lifeline by calling or texting 988.", followUp: "Are you safe right now?" },
   { category: 'crisis', tags: [], phase: 'affirmation', content: "Reaching out when you're in this much pain is one of the bravest things a person can do. You are not alone. 988 is there 24/7. So is Crisis Text Line — text HOME to 741741.", followUp: "" },
 
+  // ── AI RELATIONSHIPS ───────────────────────────────────────
+  { category: 'ai_relationships', tags: [], phase: 'tributaries', content: "The chatbot never challenges you, never disappoints you, never needs anything from you. That's exactly why it can't give you what real connection gives.", followUp: "What does real connection give you that the AI can't?" },
+  { category: 'ai_relationships', tags: [], phase: 'tributaries', content: "When did talking to an AI start feeling easier than talking to a person? That's the moment worth examining.", followUp: "What makes human conversation feel harder right now?" },
+  { category: 'ai_relationships', tags: [], phase: 'longing', content: "Under the AI conversation is a longing to be heard without the risk of being judged. That need is real — but the relationship isn't.", followUp: "Who in your life could you risk being honest with?" },
+  { category: 'ai_relationships', tags: [], phase: 'roadmap', content: "Every hour spent with an AI companion is an hour not spent building the uncomfortable, messy, real connections that actually change your life.", followUp: "What's one real relationship you could invest that time in instead?" },
+  { category: 'ai_relationships', tags: [], phase: 'affirmation', content: "Choosing a real conversation over a perfect artificial one — that's choosing growth over comfort.", followUp: "" },
+
+  // ── EMOTIONAL AFFAIRS ─────────────────────────────────────
+  { category: 'emotional_affairs', tags: [], phase: 'tributaries', content: "You're not doing anything 'wrong' — and that's exactly what makes it so hard to see. But if you're hiding the texts, some part of you already knows.", followUp: "What are you hiding, and from whom?" },
+  { category: 'emotional_affairs', tags: [], phase: 'tributaries', content: "The emotional affair usually starts where the primary relationship has a gap. What's the gap?", followUp: "What's missing in your primary relationship that this person fills?" },
+  { category: 'emotional_affairs', tags: [], phase: 'longing', content: "You're looking for someone who sees you, gets you, makes you feel alive. Those are real needs — but meeting them outside your relationship builds a wall inside it.", followUp: "When did you stop feeling seen in your primary relationship?" },
+  { category: 'emotional_affairs', tags: [], phase: 'roadmap', content: "What if you brought this same energy — the texting, the vulnerability, the excitement — back to the person you committed to? What would that require?", followUp: "What's one vulnerable thing you could say to your partner this week?" },
+  { category: 'emotional_affairs', tags: [], phase: 'affirmation', content: "Choosing transparency over secrecy in your relationships is one of the hardest and most important things you can do.", followUp: "" },
+
+  // ── PROCRASTINATION ───────────────────────────────────────
+  { category: 'procrastination', tags: [], phase: 'tributaries', content: "You're not lazy. You're overwhelmed, or afraid, or perfectionistic. Procrastination is protection from something. Let's find what.", followUp: "What's the task you're avoiding, and what feeling comes up when you think about it?" },
+  { category: 'procrastination', tags: [], phase: 'tributaries', content: "The task you're avoiding has a feeling attached to it. Not the task itself — the feeling. What is it? Fear of failure? Fear of success? Fear of being seen?", followUp: "Name the feeling honestly." },
+  { category: 'procrastination', tags: [], phase: 'longing', content: "Under the avoidance is usually a longing for safety — the safety of not trying, not failing, not being judged. But safety and aliveness rarely coexist.", followUp: "What would it feel like to be fully alive and doing the hard thing?" },
+  { category: 'procrastination', tags: [], phase: 'roadmap', content: "What if you committed to just 5 minutes? Not finishing — just starting. Most procrastination breaks the moment you begin.", followUp: "What's the smallest possible first step you could take right now?" },
+  { category: 'procrastination', tags: [], phase: 'affirmation', content: "Starting the thing you've been avoiding, even imperfectly, is braver than perfecting the thing that doesn't matter.", followUp: "" },
+
   // ── GENERAL FALLBACK ──────────────────────────────────────
   { category: 'general', tags: [], phase: 'opening', content: "You're here, and that matters. Whatever brought you to this moment, we're going to look at it together — with curiosity, not judgment.", followUp: "What's on your mind?" },
   { category: 'general', tags: [], phase: 'opening', content: "Something happened, or something's about to happen, and you chose to come here instead of acting on autopilot. That's already a different choice than last time.", followUp: "What's going on?" },

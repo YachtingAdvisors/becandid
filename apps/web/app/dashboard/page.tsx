@@ -65,6 +65,10 @@ const IsolationCheck = dynamic(
   () => import('@/components/dashboard/IsolationCheck'),
   { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
 );
+const ProcrastinationCheck = dynamic(
+  () => import('@/components/dashboard/ProcrastinationCheck'),
+  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
+);
 const FirstVisitCoach = dynamic(
   () => import('@/components/dashboard/FirstVisitCoach'),
   { ssr: false },
@@ -257,6 +261,13 @@ export default async function DashboardPage() {
       {(profile?.goals ?? []).includes('isolation') && (
         <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
           <IsolationCheck />
+        </Suspense>
+      )}
+
+      {/* ── Procrastination Check ────────────────────────────── */}
+      {(profile?.goals ?? []).includes('procrastination') && (
+        <Suspense fallback={<div className="skeleton-shimmer h-48 rounded-2xl" />}>
+          <ProcrastinationCheck />
         </Suspense>
       )}
 

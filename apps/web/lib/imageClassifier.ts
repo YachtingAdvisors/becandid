@@ -173,7 +173,7 @@ const TITLE_KEYWORD_RULES: TitleKeywordRule[] = [
   // Doomscrolling — news/politics overconsumption
   {
     patterns:
-      /\b(cnn|fox\s*news|msnbc|reuters|associated\s*press|nytimes|washington\s*post|reddit\s*politics|breaking\s*news)\b/i,
+      /\b(breaking\s*news|cnn|fox\s*news|msnbc|politics|election|trump|biden|congress|supreme\s*court|scandal|reuters|associated\s*press|nytimes|washington\s*post|politico|huffpost|breitbart|drudge\s*report)\b/i,
     category: 'doomscrolling',
     confidence: 0.6,
   },
@@ -187,7 +187,7 @@ const TITLE_KEYWORD_RULES: TitleKeywordRule[] = [
   // Gossip & drama
   {
     patterns:
-      /\b(tmz|e!\s*news|daily\s*mail|people\s*magazine|us\s*weekly|reality\s*tv)\b/i,
+      /\b(tmz|celebrity|reality\s*tv|housewives|bachelor|kardashian|gossip|scandal|drama|e!\s*news|daily\s*mail|people\s*magazine|us\s*weekly|page\s*six|hollywood\s*life)\b/i,
     category: 'gossip_drama',
     confidence: 0.6,
   },

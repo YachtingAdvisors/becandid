@@ -145,6 +145,35 @@ export const FLAGGED_DOMAINS: BlocklistEntry[] = [
   { domain: 'shein.com', category: 'impulse_shopping', confidence: 0.5 },
   { domain: 'temu.com', category: 'impulse_shopping', confidence: 0.5 },
   { domain: 'wish.com', category: 'impulse_shopping', confidence: 0.5 },
+
+  // Doomscrolling — news/politics overconsumption
+  // NOTE: Only flagged for users with 'doomscrolling' in their goals.
+  // Reading news is normal; it's only a rival when the user identifies it as one.
+  { domain: 'cnn.com', category: 'doomscrolling', confidence: 0.5 },
+  { domain: 'foxnews.com', category: 'doomscrolling', confidence: 0.5 },
+  { domain: 'msnbc.com', category: 'doomscrolling', confidence: 0.5 },
+  { domain: 'bbc.com', category: 'doomscrolling', confidence: 0.4 },
+  { domain: 'reuters.com', category: 'doomscrolling', confidence: 0.4 },
+  { domain: 'apnews.com', category: 'doomscrolling', confidence: 0.4 },
+  { domain: 'nytimes.com', category: 'doomscrolling', confidence: 0.4 },
+  { domain: 'washingtonpost.com', category: 'doomscrolling', confidence: 0.4 },
+  { domain: 'politico.com', category: 'doomscrolling', confidence: 0.5 },
+  { domain: 'thehill.com', category: 'doomscrolling', confidence: 0.5 },
+  { domain: 'dailywire.com', category: 'doomscrolling', confidence: 0.5 },
+  { domain: 'huffpost.com', category: 'doomscrolling', confidence: 0.5 },
+  { domain: 'breitbart.com', category: 'doomscrolling', confidence: 0.5 },
+  { domain: 'drudgereport.com', category: 'doomscrolling', confidence: 0.5 },
+
+  // Gossip & drama
+  { domain: 'tmz.com', category: 'gossip_drama', confidence: 0.5 },
+  { domain: 'eonline.com', category: 'gossip_drama', confidence: 0.5 },
+  { domain: 'pagesix.com', category: 'gossip_drama', confidence: 0.5 },
+  { domain: 'usmagazine.com', category: 'gossip_drama', confidence: 0.5 },
+  { domain: 'people.com', category: 'gossip_drama', confidence: 0.4 },
+  { domain: 'dailymail.co.uk', category: 'gossip_drama', confidence: 0.5 },
+  { domain: 'hollywoodlife.com', category: 'gossip_drama', confidence: 0.5 },
+  { domain: 'justjared.com', category: 'gossip_drama', confidence: 0.5 },
+  { domain: 'perezhilton.com', category: 'gossip_drama', confidence: 0.5 },
 ];
 
 // ── TLD patterns (blocked by extension) ──────────────────────
