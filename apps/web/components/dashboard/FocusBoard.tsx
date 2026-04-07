@@ -166,7 +166,7 @@ export default function FocusBoard() {
   const { balance, streak, heatmap, recentActions, milestones } = stats;
 
   // Show a welcome callout when the board is brand new (no streak yet)
-  const isBrandNew = streak.streakDays === 0 && heatmap.every((d: any) => d.morning === 'focused' && d.evening === 'focused');
+  const isBrandNew = streak === 0 && heatmap.every((d: any) => d.morning === 'focused' && d.evening === 'focused');
 
   // Count today's status
   const today = heatmap[heatmap.length - 1];
