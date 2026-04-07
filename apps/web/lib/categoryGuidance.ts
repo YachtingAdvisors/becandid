@@ -203,6 +203,18 @@ export const CATEGORY_GUIDANCE: Record<GoalCategory, CategoryGuidance> = {
     ],
   },
 
+  isolation: {
+    sensitivity: 'standard',
+    systemPromptAddition:
+      'This involves isolation and withdrawal from connection. The person\'s rival is not a substance or screen — it\'s the pattern of pulling away from people. Focus on connection, not content monitoring. Frame isolation as a protective response that has outlived its usefulness. Encourage small, concrete steps toward connection rather than dramatic overhauls.',
+    partnerWarnings: [
+      'Do not take their withdrawal personally',
+      'Do not overwhelm them with demands for contact',
+      'Reach out gently and consistently — even if they do not respond immediately',
+      'Celebrate small connection moments rather than pointing out absences',
+    ],
+  },
+
   custom: {
     sensitivity: 'standard',
     systemPromptAddition:
