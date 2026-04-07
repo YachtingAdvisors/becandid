@@ -47,6 +47,12 @@ nsis:
   oneClick: true
   perMachine: false
 
+# ── Auto-Update ──────────────────────────────────────────────
+publish:
+  provider: github
+  owner: YachtingAdvisors
+  repo: becandid
+
 # ── DMG ──────────────────────────────────────────────────────
 dmg:
   title: Be Candid
