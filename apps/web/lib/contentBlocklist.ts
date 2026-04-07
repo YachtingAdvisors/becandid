@@ -12,7 +12,8 @@
 //   FLAGGED_DOMAINS      — domains that are flagged, not blocked
 // ============================================================
 
-import type { GoalCategory } from '@be-candid/shared';
+import type { GoalCategory, TrackedSubstance } from '@be-candid/shared';
+import { SUBSTANCE_CATEGORIES } from '@be-candid/shared';
 
 export interface BlocklistEntry {
   domain: string;

@@ -231,7 +231,15 @@ export function preClassifyScreenshot(
     }
   }
 
-  // 3. Check window title for keyword matches
+  // 3. Check window title for substance-specific keywords
+  if (metadata.windowTitle && trackedSubstances && trackedSubstances.length > 0) {
+    const substanceResult = matchSubstanceTitle(metadata.windowTitle, trackedSubstances);
+    if (substanceResult) {
+      return substanceResult;
+    }
+  }
+
+  // 4. Check window title for keyword matches
   if (metadata.windowTitle) {
     const titleResult = matchWindowTitle(metadata.windowTitle);
     if (titleResult) {
@@ -239,7 +247,7 @@ export function preClassifyScreenshot(
     }
   }
 
-  // 4. Check if the active app is a known safe app
+  // 5. Check if the active app is a known safe app
   if (SAFE_APPS.has(appNormalized)) {
     return {
       needsVisionAnalysis: false,
@@ -249,7 +257,7 @@ export function preClassifyScreenshot(
     };
   }
 
-  // 5. Browser is active but URL is unknown — need Vision
+  // 6. Browser is active but URL is unknown — need Vision
   if (BROWSER_APPS.has(appNormalized)) {
     if (!metadata.activeUrl) {
       return {
@@ -268,7 +276,7 @@ export function preClassifyScreenshot(
     };
   }
 
-  // 6. Check if app name itself matches a known pattern
+  // 7. Check if app name itself matches a known pattern
   const appResult = matchAppName(appNormalized);
   if (appResult) {
     return {
@@ -279,7 +287,7 @@ export function preClassifyScreenshot(
     };
   }
 
-  // 7. Unknown / unrecognized app — send to Vision
+  // 8. Unknown / unrecognized app — send to Vision
   return {
     needsVisionAnalysis: true,
     category: null,
@@ -324,6 +332,33 @@ function matchWindowTitle(
         confidence: rule.confidence,
         reason: 'title_keyword_match',
       };
+    }
+  }
+  return null;
+}
+
+/**
+ * Match window title against substance-specific keywords,
+ * only flagging substances the user is actively tracking.
+ */
+function matchSubstanceTitle(
+  title: string,
+  trackedSubstances: TrackedSubstance[]
+): ClassificationResult | null {
+  const titleLower = title.toLowerCase();
+  for (const substance of trackedSubstances) {
+    const keywords = SUBSTANCE_TITLE_KEYWORDS[substance];
+    if (!keywords) continue;
+    for (const keyword of keywords) {
+      if (titleLower.includes(keyword.toLowerCase())) {
+        const parentCategory = SUBSTANCE_CATEGORIES[substance];
+        return {
+          needsVisionAnalysis: false,
+          category: parentCategory,
+          confidence: 0.75,
+          reason: `substance_keyword_match:${substance}:${keyword}`,
+        };
+      }
     }
   }
   return null;

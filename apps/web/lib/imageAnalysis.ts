@@ -19,6 +19,8 @@ import {
   type ClassificationResult,
 } from './imageClassifier';
 import { logApiCost } from './costTracker';
+import type { TrackedSubstance } from '@be-candid/shared';
+import { SUBSTANCE_LABELS } from '@be-candid/shared';
 
 export interface ImageAnalysisResult {
   nsfw: boolean;
@@ -63,10 +65,11 @@ export async function analyzeScreenshot(
   mediaType: 'image/jpeg' | 'image/png' | 'image/webp',
   metadata: ScreenshotMetadata,
   userGoals: string[],
-  userId: string
+  userId: string,
+  trackedSubstances?: TrackedSubstance[]
 ): Promise<ImageAnalysisResult> {
   // Step 1: Pre-classify using metadata (FREE — no API call)
-  const preResult = preClassifyScreenshot(metadata);
+  const preResult = preClassifyScreenshot(metadata, trackedSubstances);
 
   logClassifierResult(preResult, userId);
 
@@ -95,7 +98,7 @@ export async function analyzeScreenshot(
 
   // Step 2: Only send to Vision when the pre-classifier says so.
   // Use Haiku for cost savings — sufficient for content classification.
-  const result = await analyzeImage(imageBase64, mediaType, userGoals, userId);
+  const result = await analyzeImage(imageBase64, mediaType, userGoals, userId, trackedSubstances);
   return { ...result, source: 'vision' };
 }
 
@@ -124,7 +127,8 @@ export async function analyzeImage(
   imageBase64: string,
   mediaType: 'image/jpeg' | 'image/png' | 'image/webp',
   userGoals: string[],
-  userId?: string
+  userId?: string,
+  trackedSubstances?: TrackedSubstance[]
 ): Promise<ImageAnalysisResult> {
   const relevantCategories = userGoals.flatMap(
     (goal) => GOAL_TO_IMAGE_CATEGORIES[goal] || []
@@ -134,9 +138,13 @@ export async function analyzeImage(
     return { nsfw: false, confidence: 0, categories: [], severity: 'low', source: 'vision' as const };
   }
 
+  // Build substance-aware context for the prompt
+  const substanceContext = buildSubstancePromptContext(userGoals, trackedSubstances);
+
   const systemPrompt = `You are a content safety classifier for a digital wellness app. Your job is to analyze screenshots and images to determine if they contain content matching the user's tracked categories.
 
 Analyze the image and determine if it contains content matching ANY of these categories: ${relevantCategories.join(', ')}
+${substanceContext}
 
 You MUST respond with ONLY valid JSON in this exact format:
 {
@@ -215,4 +223,31 @@ Respond with ONLY the JSON object, no explanation.`;
     // Fail open — don't block on analysis errors
     return { nsfw: false, confidence: 0, categories: [], severity: 'low', source: 'vision' as const };
   }
+}
+
+// ── Substance-aware prompt context ─────────────────────────
+
+function buildSubstancePromptContext(
+  userGoals: string[],
+  trackedSubstances?: TrackedSubstance[]
+): string {
+  const hasSubstanceGoal =
+    userGoals.includes('alcohol_drugs') || userGoals.includes('vaping_tobacco');
+
+  if (!hasSubstanceGoal) return '';
+
+  if (trackedSubstances && trackedSubstances.length > 0) {
+    const substanceNames = trackedSubstances
+      .map((s) => SUBSTANCE_LABELS[s])
+      .join(', ');
+    return `
+SUBSTANCE-SPECIFIC MONITORING:
+The user is specifically monitoring these substances: ${substanceNames}.
+Check if this screenshot shows: bars, liquor stores, dispensaries, drink menus, substance-related content, delivery apps, or any content related to these specific substances.
+Do NOT flag other substances the user is not tracking. Only flag content related to the substances listed above.`;
+  }
+
+  return `
+SUBSTANCE MONITORING:
+The user is tracking substance-related content. Check for bars, liquor stores, dispensaries, drink menus, substance-related content, or delivery apps.`;
 }
