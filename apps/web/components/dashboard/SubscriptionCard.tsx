@@ -28,6 +28,8 @@ export default function SubscriptionCard() {
   const [promoSuccess, setPromoSuccess] = useState('');
   const [applyingPromo, setApplyingPromo] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
+  const [donationAmount, setDonationAmount] = useState('');
+  const [donationLoading, setDonationLoading] = useState(false);
 
   const openCheckout = async (billing: 'monthly' | 'annual', plan: 'pro' | 'therapy' = 'pro') => {
     setActionLoading(true);
@@ -283,6 +285,65 @@ export default function SubscriptionCard() {
           )}
         </div>
       )}
+
+      {/* Supporter badge */}
+      {data.supporter?.is_supporter && (
+        <div className="mt-3 flex items-center gap-2 p-2.5 rounded-lg bg-amber-50 ring-1 ring-amber-200/30">
+          <span className="material-symbols-outlined text-amber-500 text-base">favorite</span>
+          <span className="text-xs font-bold text-amber-700">Supporter</span>
+          {data.supporter.supporter_until && (
+            <span className="text-[10px] text-amber-600 ml-auto">
+              Pro until {new Date(data.supporter.supporter_until).toLocaleDateString()}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Support / Donate */}
+      <div className="mt-3 p-3 rounded-xl bg-surface-container-low ring-1 ring-outline-variant/10">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="material-symbols-outlined text-base text-amber-500">volunteer_activism</span>
+          <p className="text-xs font-semibold text-on-surface">Support Be Candid</p>
+        </div>
+        <p className="text-[10px] text-on-surface-variant mb-2.5">
+          Any donation gives you 30 days of Pro + a Supporter badge.
+        </p>
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-on-surface-variant">$</span>
+            <input
+              type="number"
+              min="1"
+              step="1"
+              value={donationAmount}
+              onChange={e => setDonationAmount(e.target.value)}
+              placeholder="5"
+              className="w-full pl-7 pr-3 py-2 text-sm rounded-lg border border-outline-variant focus:outline-none focus:ring-2 focus:ring-amber-400/30 font-body"
+            />
+          </div>
+          <button
+            onClick={async () => {
+              const amt = parseFloat(donationAmount);
+              if (!amt || amt < 1) return;
+              setDonationLoading(true);
+              try {
+                const res = await fetch('/api/billing/donate', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ amount: amt }),
+                });
+                const result = await res.json();
+                if (result.url) window.location.href = result.url;
+              } catch (e) { console.error(e); }
+              setDonationLoading(false);
+            }}
+            disabled={donationLoading || !donationAmount || parseFloat(donationAmount) < 1}
+            className="px-4 py-2 text-sm font-bold rounded-lg bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-50 transition-all cursor-pointer"
+          >
+            {donationLoading ? '...' : 'Donate'}
+          </button>
+        </div>
+      </div>
 
       {/* Upgrade to Therapy from Pro */}
       {data.plan === 'pro' && (
