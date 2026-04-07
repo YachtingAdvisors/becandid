@@ -5,6 +5,10 @@
 import { BLOG_POSTS_BATCH2 } from './posts-batch2';
 import { BLOG_POSTS_BATCH3 } from './posts-batch3';
 import { BLOG_POSTS_BATCH4 } from './posts-batch4';
+import { BLOG_POSTS_NICHE1 } from './posts-niche1';
+import { BLOG_POSTS_NICHE2 } from './posts-niche2';
+import { BLOG_POSTS_NICHE3 } from './posts-niche3';
+import { BLOG_POSTS_NICHE4 } from './posts-niche4';
 
 export interface BlogPost {
   slug: string;
@@ -264,4 +268,8 @@ export const BLOG_POSTS: BlogPost[] = [
   ...BLOG_POSTS_BATCH2,
   ...BLOG_POSTS_BATCH3,
   ...BLOG_POSTS_BATCH4,
+  ...BLOG_POSTS_NICHE1,
+  ...BLOG_POSTS_NICHE2,
+  ...BLOG_POSTS_NICHE3,
+  ...BLOG_POSTS_NICHE4,
 ];
