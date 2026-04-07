@@ -2,6 +2,10 @@
 // Blog Posts — Static content for SEO and content marketing
 // ============================================================
 
+import { BLOG_POSTS_BATCH2 } from './posts-batch2';
+import { BLOG_POSTS_BATCH3 } from './posts-batch3';
+import { BLOG_POSTS_BATCH4 } from './posts-batch4';
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -135,4 +139,129 @@ export const BLOG_POSTS: BlogPost[] = [
       <p>Digital wellness is a practice, not a destination. You'll have good weeks and bad weeks. The goal isn't perfection — it's awareness. As long as you're paying attention to the gap between your values and your habits, you're moving in the right direction.</p>
     `,
   },
+  {
+    slug: 'covenant-eyes-alternatives',
+    title: 'Covenant Eyes Alternatives: Why Accountability Beats Surveillance',
+    description:
+      'Comparing accountability-first tools like Be Candid with screenshot-based monitoring like Covenant Eyes — and why the philosophical difference matters for lasting change.',
+    date: '2026-04-04',
+    author: 'Be Candid Team',
+    readTime: '7 min read',
+    tags: ['accountability', 'covenant eyes', 'porn addiction recovery'],
+    content: `
+      <p>If you have ever searched for accountability software, you have almost certainly come across Covenant Eyes. It has been around for over two decades, and for many people it has been a genuine lifeline. We respect that. But if you are here reading about alternatives, something about the approach probably does not feel right for you — and that instinct is worth exploring.</p>
+
+      <h2>How Covenant Eyes Works</h2>
+      <p>Covenant Eyes monitors your devices by capturing screenshots of your activity at regular intervals. Those screenshots are analyzed by an AI system and flagged if they contain potentially problematic content. Your accountability partner — a spouse, friend, pastor, or mentor — receives a report that may include those flagged screenshots along with a summary of your browsing patterns.</p>
+      <p>For some people, this works. The knowledge that someone will literally see what you are looking at creates a strong deterrent. If that is what you need right now, there is no shame in using it.</p>
+      <p>But for many others, this model creates problems that undermine the very recovery it is trying to support.</p>
+
+      <h2>The Problem with Screenshot Surveillance</h2>
+      <h3>It Erodes Dignity</h3>
+      <p>Recovery requires rebuilding your sense of self. When every click is captured and reviewed, the implicit message is: you cannot be trusted. That framing keeps you in a shame cycle rather than helping you grow out of it. Research consistently shows that shame is one of the least effective motivators for lasting behavior change.</p>
+
+      <h3>It Strains Relationships</h3>
+      <p>When a spouse is the accountability partner receiving screenshots, the dynamic shifts from partner to parole officer. The person in recovery feels surveilled. The partner receiving reports feels burdened with the role of monitor. Neither person asked for that dynamic, and it can damage the very relationship both people are trying to protect.</p>
+
+      <h3>It Focuses on the Wrong Layer</h3>
+      <p>Screenshots tell you <em>what</em> someone looked at. They tell you nothing about <em>why</em>. Was it a moment of loneliness? Stress from work? An old trigger pattern? The surface behavior is just the visible tip. Real recovery happens when you understand and address the emotional currents underneath.</p>
+
+      <h2>The Accountability-First Alternative</h2>
+      <p>Be Candid takes a fundamentally different approach. We believe that accountability should respect your dignity while still keeping you honest. Here is what that looks like in practice:</p>
+
+      <h3>No Screenshots, No Browsing History</h3>
+      <p>We do not capture screenshots of your screen. We do not log the specific websites you visit. Instead, Be Candid tracks patterns — categories of usage, time spent, and behavioral trends — without exposing the granular details that make surveillance feel dehumanizing.</p>
+
+      <h3>Conversation Guides Instead of Reports</h3>
+      <p>When Be Candid detects a pattern worth discussing, it does not just send a report to your accountability partner. It generates a conversation guide — a structured prompt that helps both of you talk about what is actually going on. Instead of "here is what they looked at," the framing becomes "here is a pattern worth exploring together."</p>
+
+      <h3>A Therapist Portal for Professional Support</h3>
+      <p>Be Candid includes a dedicated therapist portal so licensed professionals can be part of your accountability circle. Your therapist sees the patterns that matter for clinical insight without the voyeuristic detail of screenshot reports. This keeps accountability grounded in therapeutic best practices rather than surveillance logic.</p>
+
+      <h3>Built on Research, Not Fear</h3>
+      <p>Our approach draws on motivational interviewing principles, self-determination theory, and the work of researchers like Jay Stringer who study the emotional tributaries behind unwanted sexual behavior. Fear of being caught is a short-term motivator. Understanding yourself is a long-term one.</p>
+
+      <h2>Who Is Be Candid For?</h2>
+      <p>Be Candid is built for people who want to change — not people who need to be caught. If you are someone who has already acknowledged a problem and wants support that treats you like an adult, this approach will resonate.</p>
+      <p>It is also built for partners and spouses who want to support recovery without becoming a warden. And for therapists who want clinical-grade insight without ethically questionable monitoring tools.</p>
+
+      <h2>A Fair Comparison</h2>
+      <p>Covenant Eyes and Be Candid are solving different problems with different philosophies. Covenant Eyes asks: how do we prevent someone from accessing harmful content? Be Candid asks: how do we help someone understand why they reach for it in the first place?</p>
+      <p>Neither question is wrong. But we believe the second one leads to deeper, more sustainable change.</p>
+
+      <h2>Try Be Candid Free</h2>
+      <p>If you are looking for accountability that respects your dignity — software that helps you grow instead of just monitoring you — <strong>try Be Candid free</strong>. Accountability that treats you like the person you are becoming, not the person you are afraid of being.</p>
+    `,
+  },
+  {
+    slug: 'how-to-talk-to-partner-about-porn-addiction',
+    title: 'How to Talk to Your Partner About Porn Addiction',
+    description:
+      'A practical guide to having the conversation about porn addiction with your partner — what to say, what not to say, and how to create space for honesty instead of shame.',
+    date: '2026-03-31',
+    author: 'Be Candid Team',
+    readTime: '8 min read',
+    tags: ['relationships', 'porn addiction', 'communication', 'couples'],
+    content: `
+      <p>This might be the hardest conversation you will ever have. Whether you are the one struggling or the one who just found out, the words you choose in this moment will shape everything that comes after. Get it right, and you open a door to real healing. Get it wrong, and that door slams shut — sometimes for years.</p>
+      <p>This guide is for both sides of the conversation. The principles are the same regardless of which seat you are in: lead with honesty, stay curious, and resist the pull of shame.</p>
+
+      <h2>Before You Say Anything</h2>
+      <h3>Check Your Timing</h3>
+      <p>Do not have this conversation in the heat of a fight. Do not bring it up right before bed, during a family gathering, or when either of you is exhausted. Choose a moment when you both have emotional bandwidth — a quiet evening, a weekend morning, a walk where you are side by side rather than face to face. Side-by-side conversations feel less confrontational and often lead to more honest exchanges.</p>
+
+      <h3>Get Clear on Your Intention</h3>
+      <p>Ask yourself: am I bringing this up to punish or to heal? If there is any part of you that wants to weaponize this information, wait. Process your own feelings first — with a therapist, a trusted friend, or in a journal. The conversation will still be there when you are ready to approach it with care instead of fury.</p>
+
+      <h3>Prepare for Imperfection</h3>
+      <p>This conversation will not go perfectly. Someone will say the wrong thing. There will be awkward silences. That is normal. You are not aiming for a flawless exchange — you are aiming for an honest one.</p>
+
+      <h2>If You Are the One Struggling</h2>
+      <h3>Lead with Vulnerability, Not Confession</h3>
+      <p>There is a difference between dumping every detail on your partner and honestly naming what you are going through. Your partner does not need a forensic account of your behavior. They need to hear three things: that you are struggling, that you want to change, and that you are asking for their support.</p>
+      <p>Try something like: <em>"I need to tell you something that is hard for me to say. I have been struggling with porn, and it is not who I want to be. I am telling you because I do not want to carry this alone anymore, and because you deserve honesty."</em></p>
+
+      <h3>Do Not Minimize or Rationalize</h3>
+      <p>Resist the urge to soften the truth with qualifiers like "it was only a few times" or "everyone does it." Minimizing signals that you are not taking it seriously, which makes your partner feel like their reaction is an overreaction. Name the problem plainly. Your partner can handle the truth better than they can handle feeling gaslit.</p>
+
+      <h3>Give Them Space to React</h3>
+      <p>Your partner may cry, get angry, go quiet, or ask to leave the room. All of those responses are valid. Do not rush to fix their feelings. Do not say "please do not be upset." Sit with the discomfort. Their reaction is not your enemy — it is their honest response, and it deserves room to exist.</p>
+
+      <h2>If You Are the One Who Found Out</h2>
+      <h3>Ask "What Do You Need?" Not "Why Did You Do This?"</h3>
+      <p>Your first instinct will be to ask why. That is understandable. But "why" in this moment almost always sounds like an accusation, and it will push your partner into defense mode. A more productive opening is: <em>"I need some time to process this. Can you tell me what you need from me right now?"</em></p>
+      <p>This does two things: it buys you processing time, and it signals that you are willing to engage rather than just react.</p>
+
+      <h3>Separate the Person from the Behavior</h3>
+      <p>This is critical. Your partner is not their worst behavior. Addiction — and compulsive sexual behavior often functions like addiction — hijacks the brain's reward system. That does not excuse anything, but it does provide context. You can be deeply hurt by what someone did while still holding space for the person they are trying to become.</p>
+
+      <h3>Resist the Urge to Investigate</h3>
+      <p>The desire to know every detail — what, when, how often, what kind — is powerful. But that information rarely helps you heal. It usually creates intrusive mental images that haunt you for months. Ask for what you genuinely need to feel safe. That might be transparency about current behavior and a plan for change. It probably is not a full browsing history.</p>
+
+      <h2>What Not to Say</h2>
+      <ul>
+        <li><strong>"Am I not enough for you?"</strong> — This frames their struggle as your failure, which it is not. Porn addiction is not about the partner's attractiveness or adequacy.</li>
+        <li><strong>"You are disgusting."</strong> — Shame drives compulsive behavior underground. It does not end it. The research is unambiguous on this point.</li>
+        <li><strong>"I will never trust you again."</strong> — You might feel this right now, and that is valid. But stating it as a permanent verdict closes the door on the very recovery you might want later.</li>
+        <li><strong>"Just stop."</strong> — If willpower alone could fix this, no one would struggle. Dismissing the complexity of the issue signals that you do not understand what they are facing.</li>
+        <li><strong>"I need to see your phone."</strong> — Surveillance is not the same as accountability. One is imposed; the other is chosen. The difference matters enormously for long-term trust.</li>
+      </ul>
+
+      <h2>Building a Path Forward Together</h2>
+      <h3>Agree on What Accountability Looks Like</h3>
+      <p>Talk about what transparency and accountability mean to both of you. This is not one person setting rules for the other — it is a shared agreement. Maybe it means using an accountability tool together. Maybe it means regular check-in conversations. Maybe it means involving a therapist. The form matters less than the fact that you are both choosing it willingly.</p>
+
+      <h3>Set Realistic Expectations</h3>
+      <p>Recovery is not linear. There will be setbacks. Agreeing in advance on how to handle setbacks — without panic, without punishment, with honest conversation — makes them survivable rather than catastrophic.</p>
+
+      <h3>Get Professional Support</h3>
+      <p>A therapist who specializes in sexual behavior or addiction can provide a framework that neither of you has to build from scratch. Couples therapy can also help you navigate the relational damage while individual therapy addresses the underlying patterns. You do not have to figure this out alone.</p>
+
+      <h2>When You Need Help with the Conversation</h2>
+      <p><strong>Be Candid generates conversation guides for exactly these moments.</strong> When patterns emerge that are worth discussing, Be Candid does not just flag them — it provides a structured, compassionate framework for the conversation itself. Because knowing something needs to be said is only half the battle. Knowing <em>how</em> to say it is the other half.</p>
+    `,
+  },
+  ...BLOG_POSTS_BATCH2,
+  ...BLOG_POSTS_BATCH3,
+  ...BLOG_POSTS_BATCH4,
 ];
