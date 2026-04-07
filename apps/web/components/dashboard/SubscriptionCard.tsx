@@ -90,7 +90,7 @@ export default function SubscriptionCard() {
           </p>
         </div>
         <div className="mt-3 flex gap-2">
-          <a href="https://discord.gg/becandid" target="_blank" rel="noopener noreferrer"
+          <a href="https://discord.gg/sCkyPuqf6" target="_blank" rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-label font-semibold text-violet-700 bg-violet-50 rounded-xl hover:bg-violet-100 transition-colors">
             <span className="material-symbols-outlined text-sm">forum</span>
             Join Discord

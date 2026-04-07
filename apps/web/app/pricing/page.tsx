@@ -346,7 +346,7 @@ export default function PricingPage() {
         {/* Community + Support CTAs */}
         <div className="max-w-5xl mx-auto mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="https://discord.gg/becandid"
+            href="https://discord.gg/sCkyPuqf6"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-[#5865F2]/20 text-[#5865F2] border border-[#5865F2]/30 font-label font-bold text-sm hover:bg-[#5865F2]/30 hover:border-[#5865F2]/50 transition-all duration-200"

@@ -112,7 +112,7 @@ export default function DonatePage() {
 
           <div className="text-center mt-6">
             <a
-              href="https://discord.gg/becandid"
+              href="https://discord.gg/sCkyPuqf6"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-label font-bold text-[#5865F2] hover:underline"

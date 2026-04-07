@@ -478,7 +478,7 @@ export default function LandingPage() {
 
             <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
               <a
-                href="https://discord.gg/becandid"
+                href="https://discord.gg/sCkyPuqf6"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group px-8 py-4 bg-[#5865F2] text-white rounded-full font-label font-bold text-base shadow-lg shadow-[#5865F2]/30 hover:shadow-xl hover:shadow-[#5865F2]/40 hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer inline-flex items-center gap-2.5"

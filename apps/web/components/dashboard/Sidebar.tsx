@@ -312,7 +312,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       {/* Discord link */}
       <div className="px-3 pb-2">
         <a
-          href="https://discord.gg/becandid"
+          href="https://discord.gg/sCkyPuqf6"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium text-[#5865F2] bg-[#5865F2]/10 ring-1 ring-[#5865F2]/20 cursor-pointer hover:bg-[#5865F2]/20 hover:ring-[#5865F2]/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5865F2]/30"
