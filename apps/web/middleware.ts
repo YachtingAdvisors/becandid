@@ -20,10 +20,14 @@ const PUBLIC_PATHS = [
   '/blog',
   '/therapists',
   '/methodology',
+  '/why-becandid',
+  '/download',
+  '/donate',
+  '/pause',
 ];
 
 const CRON_PATHS = ['/api/cron'];
-const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/partners/accept', '/api/webhooks/'];
+const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/partners/accept', '/api/webhooks/', '/api/og'];
 
 // ─── Content Security Policy ─────────────────────────────────
 function buildCSP(): string {
