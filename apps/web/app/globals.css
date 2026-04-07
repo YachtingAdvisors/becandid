@@ -72,7 +72,7 @@
   --color-surface-container-highest: #323538;
 
   --color-on-surface: #e2e3e3;
-  --color-on-surface-variant: #bfc0c0;
+  --color-on-surface-variant: #c8c9c9;
 
   --color-outline: #898a8a;
   --color-outline-variant: #434445;
@@ -106,7 +106,7 @@
     --color-surface-container-highest: #323538;
 
     --color-on-surface: #e2e3e3;
-    --color-on-surface-variant: #bfc0c0;
+    --color-on-surface-variant: #c8c9c9;
 
     --color-outline: #898a8a;
     --color-outline-variant: #434445;
@@ -371,3 +371,70 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
 /* ─── Dark Mode: scrollbar ──────────────────────────────── */
 .dark ::-webkit-scrollbar-thumb { background: #434445; }
 .dark ::-webkit-scrollbar-thumb:hover { background: #898a8a; }
+
+/* ─── Reduced Motion ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Re-enable functional transitions as instant */
+  /* Toggle switches — still move, just instantly */
+  [role="switch"],
+  [type="checkbox"] {
+    transition: background-color 0s, transform 0s !important;
+  }
+
+  /* Progress bars — still show width */
+  [role="progressbar"],
+  .h-1.rounded-full.bg-primary {
+    transition: width 0s !important;
+  }
+
+  /* Tooltips — still appear */
+  [role="tooltip"] {
+    transition: opacity 0s !important;
+  }
+
+  /* Skeleton shimmer off */
+  .skeleton-shimmer {
+    animation: none !important;
+    background: var(--color-surface-container-low) !important;
+  }
+
+  /* Stagger children visible immediately */
+  .stagger > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Page entrance visible immediately */
+  .page-enter {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Breathing exercise circles static */
+  .breathing-inhale,
+  .breathing-hold,
+  .breathing-exhale,
+  .breathing-fade-in {
+    animation: none !important;
+  }
+
+  /* Focus pulse off */
+  .animate-focus-pulse {
+    animation: none !important;
+  }
+
+  /* Shatter / slide animations off */
+  .animate-shatter,
+  .animate-fade-slide {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}

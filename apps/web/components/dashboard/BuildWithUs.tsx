@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ToastProvider';
 
 const FEEDBACK_TYPES = [
   { key: 'idea', label: 'I have an idea', icon: 'lightbulb' },
@@ -16,7 +17,7 @@ export default function BuildWithUs() {
   const [type, setType] = useState('');
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async () => {
     if (!type || !message.trim()) return;
@@ -27,8 +28,10 @@ export default function BuildWithUs() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, message: message.trim() }),
       });
-      setSent(true);
-      setTimeout(() => { setSent(false); setOpen(false); setType(''); setMessage(''); }, 4000);
+      toast('Thank you for building with us', 'success', 4000);
+      setOpen(false);
+      setType('');
+      setMessage('');
     } catch {
       // silent fail — email fallback below
     }
@@ -49,15 +52,21 @@ export default function BuildWithUs() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-80 bg-surface-container-lowest rounded-3xl border border-outline-variant shadow-2xl overflow-hidden">
+    <div
+      className="fixed bottom-6 right-6 z-50 w-80 bg-surface-container-lowest rounded-3xl border border-outline-variant shadow-2xl overflow-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="build-with-us-title"
+      onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false); }}
+    >
       {/* Header */}
       <div className="px-4 py-3 border-b border-outline-variant/30 bg-gradient-to-r from-primary/5 to-tertiary/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-lg text-primary">construction</span>
-            <h3 className="font-headline text-sm font-bold text-on-surface">Build With Us</h3>
+            <h3 id="build-with-us-title" className="font-headline text-sm font-bold text-on-surface">Build With Us</h3>
           </div>
-          <button onClick={() => setOpen(false)} className="text-on-surface-variant hover:text-on-surface" aria-label="Close">
+          <button onClick={() => setOpen(false)} className="text-on-surface-variant hover:text-on-surface" aria-label="Close" autoFocus>
             <span className="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
@@ -66,13 +75,6 @@ export default function BuildWithUs() {
         </p>
       </div>
 
-      {sent ? (
-        <div className="px-4 py-8 text-center">
-          <span className="material-symbols-outlined text-3xl text-emerald-600 mb-2 block" style={{ fontVariationSettings: "'FILL' 1" }}>volunteer_activism</span>
-          <p className="text-sm font-body text-on-surface font-medium">Thank you for building with us.</p>
-          <p className="text-xs text-on-surface-variant mt-1">Your input directly shapes what we work on next.</p>
-        </div>
-      ) : (
         <div className="p-4 space-y-3">
           {/* Feedback type */}
           <div className="grid grid-cols-2 gap-1.5">
@@ -129,7 +131,6 @@ export default function BuildWithUs() {
             Every feature in this app was shaped by people like you.
           </p>
         </div>
-      )}
     </div>
   );
 }

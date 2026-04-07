@@ -165,6 +165,9 @@ export default function FocusBoard() {
 
   const { balance, streak, heatmap, recentActions, milestones } = stats;
 
+  // Show a welcome callout when the board is brand new (no streak yet)
+  const isBrandNew = streak === 0 && heatmap.every((d: any) => d.morning === 'focused' && d.evening === 'focused');
+
   // Count today's status
   const today = heatmap[heatmap.length - 1];
   const todayFocusedCount = today
@@ -180,6 +183,17 @@ export default function FocusBoard() {
 
   return (
     <div className="space-y-5">
+      {/* ─── Brand-new user callout ───────────────────────── */}
+      {isBrandNew && (
+        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-6 text-center">
+          <span className="material-symbols-outlined text-3xl text-on-surface-variant/40 mb-2 block">local_fire_department</span>
+          <h3 className="font-headline text-base font-bold text-on-surface mb-1">Your focus board starts today</h3>
+          <p className="text-sm text-on-surface-variant font-body max-w-md mx-auto leading-relaxed">
+            Each day has two halves &mdash; morning and evening. Stay focused through both to build your streak.
+          </p>
+        </div>
+      )}
+
       {/* ─── Top Stats Row ─────────────────────────────────── */}
       <div className="grid grid-cols-3 gap-3">
         {/* Trust Points */}

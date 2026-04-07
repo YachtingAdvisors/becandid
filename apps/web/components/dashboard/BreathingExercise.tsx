@@ -8,6 +8,7 @@
 // ============================================================
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -49,6 +50,7 @@ export default function BreathingExercise({
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [fadeOut, setFadeOut] = useState(false);
 
+  const prefersReducedMotion = useReducedMotion();
   const isInline = variant === 'inline';
   const circleSize = isInline ? 140 : 200;
 
@@ -135,8 +137,9 @@ export default function BreathingExercise({
   }, [phase, onComplete]);
 
   // ── Circle animation class ─────────────────────────────
-  const circleAnimClass =
-    phase === 'inhale'
+  const circleAnimClass = prefersReducedMotion
+    ? ''
+    : phase === 'inhale'
       ? 'breathing-inhale'
       : phase === 'hold'
         ? 'breathing-hold'
@@ -149,6 +152,15 @@ export default function BreathingExercise({
   const glowOpacity =
     phase === 'inhale' || phase === 'hold' ? 'opacity-60' : 'opacity-20';
 
+  // ── Reduced motion: static circle scale based on phase ──
+  const staticScale = prefersReducedMotion
+    ? phase === 'inhale' || phase === 'hold'
+      ? 'scale-100'
+      : phase === 'exhale'
+        ? 'scale-[0.6]'
+        : ''
+    : '';
+
   return (
     <div className={`flex flex-col items-center gap-${isInline ? '4' : '6'}`}>
       {/* Breathing circle */}
@@ -156,14 +168,16 @@ export default function BreathingExercise({
         className="relative flex items-center justify-center"
         style={{ width: circleSize, height: circleSize }}
       >
-        {/* Glow */}
-        <div
-          className={`absolute inset-0 rounded-full bg-[#226779]/30 blur-2xl transition-opacity duration-1000 ${glowOpacity} pointer-events-none`}
-        />
+        {/* Glow — hidden for reduced motion */}
+        {!prefersReducedMotion && (
+          <div
+            className={`absolute inset-0 rounded-full bg-[#226779]/30 blur-2xl transition-opacity duration-1000 ${glowOpacity} pointer-events-none`}
+          />
+        )}
 
         {/* Circle */}
         <div
-          className={`relative rounded-full border-2 border-[#226779]/40 flex items-center justify-center ${circleAnimClass}`}
+          className={`relative rounded-full border-2 border-[#226779]/40 flex items-center justify-center ${circleAnimClass} ${staticScale}`}
           style={{ width: circleSize, height: circleSize }}
         >
           {/* Inner gradient */}

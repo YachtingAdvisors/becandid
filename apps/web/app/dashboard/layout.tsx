@@ -17,6 +17,7 @@ import IdleTimeout from '@/components/IdleTimeout';
 import RealtimeProvider from '@/components/dashboard/RealtimeProvider';
 import SWRProvider from '@/components/SWRProvider';
 import BuildWithUs from '@/components/dashboard/BuildWithUs';
+import ToastProvider from '@/components/ToastProvider';
 
 // Nav items — some hidden in solo mode
 const NAV_ITEMS = [
@@ -74,7 +75,14 @@ export default async function DashboardLayout({
   }
 
   return (
+    <ToastProvider>
     <div className="flex min-h-screen bg-background">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-on-primary focus:rounded-lg focus:text-sm focus:font-semibold"
+      >
+        Skip to content
+      </a>
       <IdleTimeout />
       <Sidebar
         userName={profile?.name ?? user.email ?? 'User'}
@@ -85,7 +93,7 @@ export default async function DashboardLayout({
         navItems={visibleNav}
         soloMode={isSolo}
       />
-      <main className="flex-1 min-w-0 pt-16 pb-20 lg:pt-0 lg:pb-0 relative">
+      <main id="main-content" className="flex-1 min-w-0 pt-16 pb-20 lg:pt-0 lg:pb-0 relative">
         {/* Subtle top gradient decorative element */}
         <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary/[0.03] dark:from-primary/[0.06] to-transparent pointer-events-none" />
         <WebTrackingProvider />
@@ -101,5 +109,6 @@ export default async function DashboardLayout({
         <BuildWithUs />
       </main>
     </div>
+    </ToastProvider>
   );
 }

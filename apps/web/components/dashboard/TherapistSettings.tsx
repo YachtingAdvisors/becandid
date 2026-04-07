@@ -13,6 +13,7 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
+import { useToast } from '@/components/ToastProvider';
 
 interface Connection {
   id: string;
@@ -43,6 +44,7 @@ export default function TherapistSettings() {
   const [name, setName] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+  const { toast } = useToast();
 
   const [findingSent, setFindingSent] = useState(false);
 
@@ -58,7 +60,7 @@ export default function TherapistSettings() {
       });
       const data = await res.json();
       if (data.error) { setError(data.error); }
-      else { setEmail(''); setName(''); setShowInvite(false); mutate(); }
+      else { setEmail(''); setName(''); setShowInvite(false); mutate(); toast('Invite sent', 'success'); }
     } catch (e) { setError('Failed to send invite'); }
     setSending(false);
   };
@@ -207,6 +209,7 @@ export default function TherapistSettings() {
             setFindingSent(true);
             try {
               await fetch('/api/therapist/find', { method: 'POST' });
+              toast("We'll be in touch!", 'success');
             } catch { /* fire and forget */ }
           }}
           disabled={findingSent}

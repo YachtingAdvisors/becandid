@@ -109,7 +109,13 @@ export default function IdleTimeout() {
   const seconds = countdown % 60;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="idle-timeout-title"
+      onKeyDown={(e) => { if (e.key === 'Escape') handleStaySignedIn(); }}
+    >
       <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-8 max-w-md w-full mx-4 shadow-2xl">
         {/* Icon */}
         <div className="flex justify-center mb-4">
@@ -119,7 +125,7 @@ export default function IdleTimeout() {
         </div>
 
         {/* Content */}
-        <h2 className="text-xl font-headline font-bold text-on-surface text-center mb-2">
+        <h2 id="idle-timeout-title" className="text-xl font-headline font-bold text-on-surface text-center mb-2">
           Session Expiring
         </h2>
         <p className="text-sm font-body text-on-surface-variant text-center mb-6">
@@ -134,6 +140,7 @@ export default function IdleTimeout() {
         <div className="flex flex-col gap-3">
           <button
             onClick={handleStaySignedIn}
+            autoFocus
             className="w-full py-3 bg-primary text-on-primary text-sm font-headline font-bold rounded-full hover:brightness-110 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30"
           >
             Stay Signed In

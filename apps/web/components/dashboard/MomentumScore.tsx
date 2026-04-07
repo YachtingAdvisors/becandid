@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface MomentumBreakdown {
   streak: number;
@@ -88,6 +89,7 @@ function getTrendLabel(trend: 'rising' | 'falling' | 'stable'): string {
 // ─── Component ──────────────────────────────────────────────
 
 export default function MomentumScore() {
+  const prefersReducedMotion = useReducedMotion();
   const [data, setData] = useState<MomentumData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -179,8 +181,8 @@ export default function MomentumScore() {
               strokeWidth={strokeWidth}
               strokeLinecap="round"
               strokeDasharray={circumference}
-              strokeDashoffset={mounted ? dashOffset : circumference}
-              style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+              strokeDashoffset={mounted || prefersReducedMotion ? dashOffset : circumference}
+              style={prefersReducedMotion ? undefined : { transition: 'stroke-dashoffset 1s ease-out' }}
             />
           </svg>
           {/* Center number */}

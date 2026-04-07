@@ -281,10 +281,11 @@ export default function PartnerPage() {
           {/* No partner — show CTA or inline form */}
           {!showForm ? (
             <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-8 text-center">
-              <div className="text-4xl mb-4">{'\uD83E\uDD1D'}</div>
-              <h3 className="font-headline text-xl font-bold text-on-surface mb-2">No partner yet</h3>
-              <p className="text-sm text-on-surface-variant font-body mb-3">
-                Invite someone you trust to be your accountability partner.
+              <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">handshake</span>
+              <h3 className="font-headline text-xl font-bold text-on-surface mb-2">Accountability changes everything</h3>
+              <p className="text-sm text-on-surface-variant font-body mb-3 max-w-md mx-auto leading-relaxed">
+                Invite someone you trust &mdash; a friend, spouse, mentor, or coach.
+                They&apos;ll see your focus status, never your browsing.
               </p>
               <div className="flex items-center justify-center gap-3 mb-3 px-4 py-3 rounded-2xl bg-primary-container/20">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

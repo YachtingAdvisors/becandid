@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import useSWR from 'swr';
+import { useToast } from '@/components/ToastProvider';
 
 interface ChallengeData {
   id: string;
@@ -24,6 +25,7 @@ export default function DailyChallenge() {
   const { data: challenge, error, isLoading: loading, mutate } = useSWR<ChallengeData>('/api/challenges');
   const [completing, setCompleting] = useState(false);
   const [justCompleted, setJustCompleted] = useState(false);
+  const { toast } = useToast();
 
   // Sync justCompleted when data arrives already completed
   if (challenge?.completed && !justCompleted) setJustCompleted(true);
@@ -37,6 +39,7 @@ export default function DailyChallenge() {
         const data = await res.json();
         mutate(data, false);
         setJustCompleted(true);
+        toast('Challenge completed!', 'success');
       }
     } catch {
       // silently fail
