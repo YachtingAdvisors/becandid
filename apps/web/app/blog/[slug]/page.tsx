@@ -21,6 +21,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = BLOG_POSTS.find(p => p.slug === slug);
   if (!post) return { title: 'Not Found' };
 
+  const ogImageUrl = `https://becandid.io/api/og?${new URLSearchParams({
+    title: post.title,
+    subtitle: post.tags[0] || 'Blog',
+    description: post.description,
+  })}`;
+
   return {
     title: post.title,
     description: post.description,
@@ -31,11 +37,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: post.date,
       authors: [post.author],
       tags: post.tags,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.description,
+      images: [ogImageUrl],
     },
   };
 }
@@ -92,13 +100,27 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </header>
 
+      {/* Hero image */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`/api/og?${new URLSearchParams({ title: post.title, subtitle: post.tags[0] || 'Blog', description: post.description })}`}
+        alt={post.title}
+        width={1200}
+        height={630}
+        loading="eager"
+        className="w-full rounded-2xl mb-10 ring-1 ring-white/10"
+        style={{ aspectRatio: '1200/630' }}
+      />
+
       {/* Article content */}
       <article
-        className="prose prose-invert max-w-none
+        className="prose prose-lg prose-invert max-w-none
           prose-headings:font-headline prose-headings:tracking-tight prose-headings:text-slate-100
-          prose-h2:text-xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4
-          prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3
-          prose-p:font-body prose-p:text-slate-400 prose-p:leading-relaxed prose-p:mb-4
+          prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4
+          prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3
+          prose-p:font-body prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-4
+          prose-li:text-slate-300
+          prose-hr:border-stone-700/50
           prose-em:text-teal-400 prose-em:not-italic prose-em:font-medium
           prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline"
         dangerouslySetInnerHTML={{ __html: post.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').replace(/on\w+="[^"]*"/gi, '') }}
