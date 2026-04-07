@@ -18,7 +18,7 @@ import { useRouter } from 'expo-router';
 import { AuthProvider } from '../src/contexts/AuthContext';
 import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
 import { startHeartbeat, stopHeartbeat } from '../src/lib/heartbeat';
-import { setupPushNotifications, getScreenFromNotification } from '../src/lib/push/setup';
+import { setupPushNotifications } from '../src/lib/push/setup';
 import { startOfflineQueueListener, syncPendingEvents } from '../src/lib/offlineQueue';
 import { supabase } from '../src/lib/supabase';
 import { updateCachedBlocklist } from '../src/lib/contentFilter.client';
@@ -223,6 +223,8 @@ function InnerLayout() {
         <Stack.Screen name="values" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="amends" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="letters" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="doomscrolling" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="gossip-drama" options={{ animation: 'slide_from_right' }} />
       </Stack>
     </>
   );
