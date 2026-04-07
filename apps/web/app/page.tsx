@@ -146,7 +146,7 @@ export default function LandingPage() {
               {/* Headline */}
               <h1 className="font-headline text-[2.75rem] sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold tracking-tight leading-[1.08]">
                 <span className="text-glow">Recovery starts with{' '}</span>
-                <span className="bg-gradient-to-r from-cyan-400 via-primary to-emerald-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
                   radical honesty.
                 </span>
               </h1>
@@ -181,30 +181,148 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Hero Phone Mockup */}
+            {/* Hero Product Mockup */}
             <div className="relative hidden lg:block">
-              <div className="absolute -inset-8 rounded-full blur-[80px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.2), transparent 70%)' }} />
-              <div className="relative glass-card rounded-3xl p-3 transform rotate-1 hover:rotate-0 transition-transform duration-700">
-                <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden relative">
-                  <Image
-                    src="/images/features/hero-dashboard.webp"
-                    alt="Be Candid dashboard showing integrity score and journaling prompts"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    priority
-                  />
+              <div className="absolute -inset-12 rounded-full blur-[100px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.25), transparent 70%)' }} />
+              <div className="relative glass-card rounded-3xl p-4 transform rotate-1 hover:rotate-0 transition-transform duration-700 shadow-2xl shadow-primary/10">
+                {/* Browser chrome bar */}
+                <div className="flex items-center gap-2 px-3 py-2.5 rounded-t-xl bg-slate-900/80 border-b border-white/5">
+                  <div className="flex gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+                  </div>
+                  <div className="flex-1 mx-8">
+                    <div className="h-5 rounded-md bg-white/[0.06] flex items-center justify-center">
+                      <span className="text-[10px] text-stone-500 font-mono">app.becandid.io/dashboard</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dashboard content */}
+                <div className="bg-gradient-to-br from-[#0e1a1d] via-[#0f1c20] to-[#0c1518] rounded-b-xl p-5 space-y-4">
+                  {/* Top bar */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center">
+                        <span className="text-white text-xs font-black">C</span>
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-semibold text-white/90">My Sanctuary</p>
+                        <p className="text-[9px] text-stone-500">Good morning, Shawn</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 px-2.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        <span className="text-[9px] font-semibold text-emerald-400">All Clear</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Main grid */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {/* Momentum ring - spans 1 col */}
+                    <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 flex flex-col items-center justify-center">
+                      <div className="relative w-20 h-20">
+                        <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
+                          <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
+                          <circle cx="40" cy="40" r="34" fill="none" stroke="url(#ring-gradient)" strokeWidth="6" strokeLinecap="round" strokeDasharray="214" strokeDashoffset="51" />
+                          <defs>
+                            <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="#22d3ee" />
+                              <stop offset="100%" stopColor="#10b981" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <p className="text-xl font-black text-white leading-none">76</p>
+                          <p className="text-[7px] uppercase tracking-widest text-stone-500 mt-0.5">Momentum</p>
+                        </div>
+                      </div>
+                      <p className="text-[9px] text-stone-500 mt-2">+4 from yesterday</p>
+                    </div>
+
+                    {/* Stats column */}
+                    <div className="col-span-2 grid grid-cols-2 gap-2.5">
+                      {[
+                        { label: 'Day Streak', value: '14', icon: 'local_fire_department', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+                        { label: 'Trust Points', value: '2,340', icon: 'workspace_premium', color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
+                        { label: 'Journals', value: '23', icon: 'menu_book', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+                        { label: 'Avg Mood', value: '4.2', icon: 'mood', color: 'text-purple-400', bg: 'bg-purple-500/10' },
+                      ].map((s) => (
+                        <div key={s.label} className="bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <div className={`w-5 h-5 rounded-md ${s.bg} flex items-center justify-center`}>
+                              <span className={`material-symbols-outlined text-[11px] ${s.color}`}>{s.icon}</span>
+                            </div>
+                            <span className="text-[8px] uppercase tracking-wider text-stone-500">{s.label}</span>
+                          </div>
+                          <p className="text-sm font-bold text-white/90">{s.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Journal prompt card */}
+                  <div className="bg-gradient-to-r from-primary/10 to-cyan-500/5 border border-primary/20 rounded-xl p-3.5">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="material-symbols-outlined text-sm text-primary">edit_note</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/80 mb-0.5">Today&apos;s Reflection</p>
+                        <p className="text-xs text-stone-300 leading-relaxed">What was happening right before the urge? Trace the emotional trail back...</p>
+                      </div>
+                      <div className="h-7 px-2.5 rounded-lg bg-primary/20 flex items-center shrink-0">
+                        <span className="text-[10px] font-semibold text-primary">Write</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mini activity feed */}
+                  <div className="flex gap-2.5">
+                    <div className="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5">
+                      <p className="text-[8px] uppercase tracking-wider text-stone-500 mb-1.5">Focus Today</p>
+                      <div className="flex gap-1">
+                        {[...Array(8)].map((_, j) => (
+                          <div key={j} className={`flex-1 h-4 rounded-sm ${j < 5 ? 'bg-emerald-500/40' : j < 6 ? 'bg-amber-500/30' : 'bg-white/[0.06]'}`} />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-lg p-2.5">
+                      <p className="text-[8px] uppercase tracking-wider text-stone-500 mb-1.5">Partner Status</p>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-primary flex items-center justify-center">
+                          <span className="text-[8px] font-bold text-white">S</span>
+                        </div>
+                        <span className="text-[10px] text-stone-400">Connected</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 ml-auto" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Floating badge top-right */}
-              <div className="absolute -top-4 -right-4 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5">
+              <div className="absolute -top-5 -right-5 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <MaterialIcon name="check" className="text-emerald-400 text-base" />
+                  <MaterialIcon name="verified_user" className="text-emerald-400 text-base" filled />
                 </div>
                 <div>
                   <p className="font-label text-xs font-semibold text-white">256-bit</p>
                   <p className="font-label text-[10px] text-stone-500">Encrypted</p>
+                </div>
+              </div>
+
+              {/* Floating notification bottom-left */}
+              <div className="absolute -bottom-3 -left-6 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+                <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                  <MaterialIcon name="trending_up" className="text-cyan-400 text-base" />
+                </div>
+                <div>
+                  <p className="font-label text-xs font-semibold text-white">14 day streak</p>
+                  <p className="font-label text-[10px] text-stone-500">Personal best</p>
                 </div>
               </div>
             </div>
