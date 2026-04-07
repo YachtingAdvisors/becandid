@@ -91,7 +91,9 @@ export default function StreakCelebration({ milestone, onDismiss }: StreakCelebr
         visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
       onClick={dismiss}
+      onKeyDown={(e) => { if (e.key === 'Escape') dismiss(); }}
       role="dialog"
+      aria-modal="true"
       aria-label={`Streak celebration: ${message}`}
     >
       {/* Backdrop */}
@@ -104,25 +106,27 @@ export default function StreakCelebration({ milestone, onDismiss }: StreakCelebr
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Confetti particles */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-visible">
-          {particles.map((p) => (
-            <div
-              key={p.id}
-              className={`absolute ${p.color} ${p.isSquare ? 'rounded-sm' : 'rounded-full'}`}
-              style={{
-                width: p.size,
-                height: p.size,
-                '--confetti-x': `${p.x}px`,
-                '--confetti-y': `${p.y}px`,
-                '--confetti-r': `${p.rotation}deg`,
-                animation: `confetti-burst ${p.duration}s ease-out ${p.delay}s both`,
-              } as React.CSSProperties}
-            />
-          ))}
-        </div>
+        {/* Confetti particles — skip for reduced motion */}
+        {!prefersReducedMotion && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-visible">
+            {particles.map((p) => (
+              <div
+                key={p.id}
+                className={`absolute ${p.color} ${p.isSquare ? 'rounded-sm' : 'rounded-full'}`}
+                style={{
+                  width: p.size,
+                  height: p.size,
+                  '--confetti-x': `${p.x}px`,
+                  '--confetti-y': `${p.y}px`,
+                  '--confetti-r': `${p.rotation}deg`,
+                  animation: `confetti-burst ${p.duration}s ease-out ${p.delay}s both`,
+                } as React.CSSProperties}
+              />
+            ))}
+          </div>
+        )}
 
-        {/* Animated ring with milestone number */}
+        {/* Ring with milestone number — show at final position for reduced motion */}
         <div className="relative w-28 h-28 mx-auto mb-5">
           <svg className="w-full h-full" viewBox="0 0 100 100">
             {/* Background ring */}
@@ -142,8 +146,11 @@ export default function StreakCelebration({ milestone, onDismiss }: StreakCelebr
               strokeLinecap="round"
               className="text-primary"
               strokeDasharray="283"
-              strokeDashoffset="283"
-              style={{
+              strokeDashoffset={prefersReducedMotion ? '0' : '283'}
+              style={prefersReducedMotion ? {
+                transformOrigin: 'center',
+                transform: 'rotate(-90deg)',
+              } : {
                 animation: 'ring-draw 1.2s ease-out 0.2s forwards',
                 transformOrigin: 'center',
                 transform: 'rotate(-90deg)',
@@ -153,7 +160,7 @@ export default function StreakCelebration({ milestone, onDismiss }: StreakCelebr
           {/* Number */}
           <div
             className="absolute inset-0 flex items-center justify-center"
-            style={{ animation: 'number-pop 0.6s ease-out 0.5s both' }}
+            style={prefersReducedMotion ? undefined : { animation: 'number-pop 0.6s ease-out 0.5s both' }}
           >
             <span className="text-3xl font-headline font-bold text-primary">
               {milestone}
@@ -161,10 +168,10 @@ export default function StreakCelebration({ milestone, onDismiss }: StreakCelebr
           </div>
         </div>
 
-        {/* Badge icon */}
+        {/* Badge icon — show immediately for reduced motion */}
         <div
           className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-50 border-2 border-amber-300 mb-4"
-          style={{ animation: 'badge-bounce 0.7s ease-out 0.8s both' }}
+          style={prefersReducedMotion ? undefined : { animation: 'badge-bounce 0.7s ease-out 0.8s both' }}
         >
           <span
             className="material-symbols-outlined text-2xl text-amber-600"
@@ -186,6 +193,7 @@ export default function StreakCelebration({ milestone, onDismiss }: StreakCelebr
         <div className="flex gap-3 justify-center">
           <button
             onClick={dismiss}
+            autoFocus
             className="px-5 py-2.5 min-h-[44px] text-sm font-label font-medium rounded-2xl bg-primary text-on-primary cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 transition-all duration-200"
           >
             Keep Going

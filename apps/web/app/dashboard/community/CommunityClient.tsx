@@ -297,16 +297,21 @@ export default function CommunityClient({ initialPosts }: { initialPosts: Post[]
       ) : (
         /* Empty State */
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-10 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl text-primary">forum</span>
-          </div>
-          <h2 className="text-lg font-headline font-semibold text-on-surface mb-2">
-            Be the First to Share
+          <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">forum</span>
+          <h2 className="text-lg font-headline font-bold text-on-surface mb-2">
+            Be the first to share
           </h2>
-          <p className="text-sm text-on-surface-variant max-w-md mx-auto leading-relaxed font-body">
-            This is a safe, anonymous space to celebrate wins, share milestones, and encourage each other.
-            Your name is hidden &mdash; only your anonymous alias is shown.
+          <p className="text-sm text-on-surface-variant max-w-md mx-auto leading-relaxed font-body mb-6">
+            This is a space for anonymous wins, encouragement, and honesty.
+            No names, no judgment.
           </p>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-label font-semibold bg-primary text-on-primary hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-lg">add_comment</span>
+            Share something
+          </button>
         </div>
       )}
     </div>

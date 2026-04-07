@@ -93,7 +93,13 @@ export default function WhatsNew() {
   const latest = CHANGELOG[CHANGELOG.length - 1];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onKeyDown={(e) => { if (e.key === 'Escape') dismiss(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="whats-new-title"
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-scrim/40 backdrop-blur-sm animate-in fade-in duration-200"
@@ -113,7 +119,7 @@ export default function WhatsNew() {
               new_releases
             </span>
             <div>
-              <h2 className="font-headline font-bold text-lg text-on-primary">
+              <h2 id="whats-new-title" className="font-headline font-bold text-lg text-on-primary">
                 What&apos;s New
               </h2>
               <p className="text-on-primary/70 text-xs font-label">
@@ -168,6 +174,7 @@ export default function WhatsNew() {
 
           <button
             onClick={dismiss}
+            autoFocus
             className="px-5 py-2.5 bg-primary text-on-primary rounded-full text-sm font-label font-bold hover:bg-primary/90 active:scale-[0.97] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2"
           >
             Got it

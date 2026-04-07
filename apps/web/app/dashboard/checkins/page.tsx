@@ -150,15 +150,15 @@ export default function CheckInsPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-12 text-center">
-          <span className="material-symbols-outlined text-on-surface-variant/60 text-5xl mb-4 block">assignment</span>
-          <h3 className="font-headline font-bold text-on-surface text-xl mb-2">
-            {filter === 'all' ? 'No check-ins yet' : `No ${filter} check-ins`}
+        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-10 text-center">
+          <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">fact_check</span>
+          <h3 className="font-headline font-bold text-on-surface text-lg mb-2">
+            {filter === 'all' ? 'Your check-ins start here' : `No ${filter} check-ins`}
           </h3>
-          <p className="text-sm text-on-surface-variant font-body">
+          <p className="text-sm text-on-surface-variant font-body max-w-md mx-auto leading-relaxed">
             {filter === 'all'
-              ? 'Check-ins will appear here based on your frequency setting.'
-              : 'Try a different filter.'}
+              ? 'Check-ins are short, honest moments between you and your partner. Once your partner is connected and your schedule is set, they\u2019ll appear here automatically.'
+              : 'Try a different filter to see other check-ins.'}
           </p>
         </div>
       ) : (

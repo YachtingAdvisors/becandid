@@ -79,6 +79,7 @@ export default function NudgeBanner() {
         return (
           <div
             key={nudge.id}
+            role={isPredictive ? 'alert' : undefined}
             className={`${style.bg} ${style.border} border rounded-2xl px-4 py-3 flex items-start gap-3 ${isPredictive ? 'ring-1 ring-amber-200/40' : ''}`}
           >
             <span className={`material-symbols-outlined text-lg flex-shrink-0 mt-0.5 ${isPredictive ? 'text-amber-600' : ''}`} style={isPredictive ? { fontVariationSettings: "'FILL' 1" } : undefined}>

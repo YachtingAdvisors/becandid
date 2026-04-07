@@ -217,6 +217,18 @@ export default function MoodHeatmap({ moods, journals }: MoodHeatmapProps) {
         ))}
         <span className="text-[10px] font-label text-on-surface-variant/60 ml-1">High</span>
       </div>
+
+      {/* Empty state when no moods logged */}
+      {moods.length === 0 && (
+        <div className="mt-6 pt-5 border-t border-outline-variant/20 text-center">
+          <span className="material-symbols-outlined text-3xl text-on-surface-variant/40 mb-2 block">mood</span>
+          <h3 className="font-headline text-base font-bold text-on-surface mb-1">No moods logged yet</h3>
+          <p className="text-sm text-on-surface-variant font-body max-w-sm mx-auto leading-relaxed">
+            Your mood colors will fill in as you journal and complete check-ins.
+            Each day becomes a tile in your emotional story.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

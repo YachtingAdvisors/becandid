@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import useSWR from 'swr';
+import { useToast } from '@/components/ToastProvider';
 
 interface Starter {
   text: string;
@@ -14,6 +15,7 @@ interface ConversationStartersProps {
 
 export default function ConversationStarters({ monitoredUserId }: ConversationStartersProps) {
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const { toast } = useToast();
 
   const { data: apiData, error: fetchError, isLoading: loading } = useSWR<any>(
     `/api/partner/conversation-starters?user_id=${monitoredUserId}`,
@@ -29,6 +31,7 @@ export default function ConversationStarters({ monitoredUserId }: ConversationSt
       await navigator.clipboard.writeText(text);
       setCopiedIdx(idx);
       setTimeout(() => setCopiedIdx(null), 2500);
+      toast('Copied to clipboard', 'success');
     } catch {
       // Fallback for older browsers
       const textarea = document.createElement('textarea');
@@ -41,8 +44,9 @@ export default function ConversationStarters({ monitoredUserId }: ConversationSt
       document.body.removeChild(textarea);
       setCopiedIdx(idx);
       setTimeout(() => setCopiedIdx(null), 2500);
+      toast('Copied to clipboard', 'success');
     }
-  }, []);
+  }, [toast]);
 
   // Theme pill colors
   const themeColors: Record<string, string> = {
@@ -146,13 +150,6 @@ export default function ConversationStarters({ monitoredUserId }: ConversationSt
         ))}
       </div>
 
-      {/* Toast */}
-      {copiedIdx !== null && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-inverse-surface text-inverse-on-surface rounded-full shadow-xl font-label text-sm font-medium animate-fade-up flex items-center gap-2">
-          <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-          Copied to clipboard
-        </div>
-      )}
     </div>
   );
 }

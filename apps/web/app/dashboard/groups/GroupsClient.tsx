@@ -237,16 +237,13 @@ export default function GroupsClient({ initialGroups }: { initialGroups: Group[]
       ) : (
         /* Empty State */
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-10 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl text-primary">diversity_3</span>
-          </div>
-          <h2 className="text-lg font-headline font-semibold text-on-surface mb-2">
-            Stronger Together
+          <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">diversity_3</span>
+          <h2 className="text-lg font-headline font-bold text-on-surface mb-2">
+            Stronger together
           </h2>
           <p className="text-sm text-on-surface-variant max-w-md mx-auto leading-relaxed mb-6 font-body">
-            Start a group with friends, mentors, or your recovery community.
-            Share anonymized focus boards, check in daily, and hold each other accountable
-            without exposing personal details.
+            Create or join a small group. You&apos;ll see each other&apos;s focus status
+            anonymously and check in regularly.
           </p>
           <div className="flex justify-center gap-3">
             <button

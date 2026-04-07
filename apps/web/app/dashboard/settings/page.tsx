@@ -7,6 +7,7 @@ import SubscriptionCard from '@/components/dashboard/SubscriptionCard';
 import JournalSettings from '@/components/dashboard/JournalSettings';
 import PrivacySettings from '@/components/dashboard/PrivacySettings';
 import MFASetup from '@/components/dashboard/MFASetup';
+import ActiveSessions from '@/components/dashboard/ActiveSessions';
 import SoloModeToggle from '@/components/dashboard/SoloModeToggle';
 import TherapistSettings from '@/components/dashboard/TherapistSettings';
 import CategoryTimeLimits from '@/components/dashboard/CategoryTimeLimits';
@@ -129,6 +130,7 @@ export default async function SettingsPage() {
     <>
       <PrivacySettings />
       <MFASetup />
+      <ActiveSessions />
       {/* Data Export */}
       <section className="bg-surface-container-lowest rounded-3xl p-5 space-y-3 ring-1 ring-outline-variant/10 shadow-sm">
         <h2 className="font-headline text-lg font-bold text-on-surface">Your Data</h2>

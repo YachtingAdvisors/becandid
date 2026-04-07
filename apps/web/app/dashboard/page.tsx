@@ -274,6 +274,31 @@ export default async function DashboardPage() {
         goals={profile?.goals ?? []}
       />
 
+      {/* ── Welcome Card for brand-new users ────────────── */}
+      {journalCount === 0 && !partner && currentStreak === 0 && (
+        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-8 text-center">
+          <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">emoji_people</span>
+          <h2 className="font-headline text-xl font-bold text-on-surface mb-2">
+            Welcome to Be Candid
+          </h2>
+          <p className="text-sm text-on-surface-variant font-body max-w-lg mx-auto leading-relaxed mb-5">
+            This is your accountability command center. Everything here is built to help you
+            grow &mdash; privately, honestly, and at your own pace. Start by exploring your focus board,
+            writing a journal entry, or inviting a partner.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/dashboard/focus" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-label font-semibold bg-primary text-on-primary hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200">
+              <span className="material-symbols-outlined text-lg">center_focus_strong</span>
+              View Focus Board
+            </Link>
+            <Link href="/dashboard/stringer-journal" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-label font-semibold bg-surface-container-low text-on-surface ring-1 ring-outline-variant hover:bg-surface-container transition-all duration-200">
+              <span className="material-symbols-outlined text-lg">edit_note</span>
+              Start Journaling
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* ── What's New Changelog ─────────────────────────── */}
       <WhatsNew />
 
