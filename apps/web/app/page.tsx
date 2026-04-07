@@ -189,7 +189,32 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Hero Animated Dashboard */}
+            {/* Hero Animated Dashboard — Mobile */}
+            <div className="relative lg:hidden mt-10">
+              <div className="absolute -inset-6 rounded-full blur-[80px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.2), transparent 70%)' }} />
+              <div className="relative glass-card rounded-2xl p-3 shadow-xl shadow-primary/10">
+                <div className="w-full aspect-[4/3] rounded-xl overflow-hidden">
+                  <HeroPlayer />
+                </div>
+              </div>
+              {/* Mobile trust pills */}
+              <div className="flex flex-wrap justify-center gap-2 mt-4">
+                <div className="glass-card px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                  <MaterialIcon name="lock" className="text-emerald-400 text-xs" filled />
+                  <span className="font-label text-[10px] font-semibold text-white">256-bit Encrypted</span>
+                </div>
+                <div className="glass-card px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                  <MaterialIcon name="health_and_safety" className="text-cyan-400 text-xs" filled />
+                  <span className="font-label text-[10px] font-semibold text-white">HIPAA Compliant</span>
+                </div>
+                <div className="glass-card px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                  <MaterialIcon name="psychology" className="text-amber-400 text-xs" filled />
+                  <span className="font-label text-[10px] font-semibold text-white">Clinically Studied</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Hero Animated Dashboard — Desktop */}
             <div className="relative hidden lg:block">
               <div className="absolute -inset-12 rounded-full blur-[100px]" style={{ background: 'radial-gradient(circle, rgba(0, 102, 122, 0.25), transparent 70%)' }} />
               <div className="relative glass-card rounded-3xl p-4 transform rotate-1 hover:rotate-0 transition-transform duration-700 shadow-2xl shadow-primary/10">
