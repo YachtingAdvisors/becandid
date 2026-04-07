@@ -35,6 +35,8 @@ export type GoalCategory =
   | 'gaming'
   // Rage & outrage
   | 'rage_content'
+  // Isolation & withdrawal
+  | 'isolation'
   // Other
   | 'custom';
 
@@ -96,6 +98,12 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
     icon: '🔥',
     categories: ['rage_content'],
   },
+  {
+    label: 'Isolation & Withdrawal',
+    description: 'Pulling away from people, avoiding connection, hiding',
+    icon: '🚪',
+    categories: ['isolation'],
+  },
 ];
 
 // ─── Display Labels ──────────────────────────────────────────
@@ -116,6 +124,7 @@ export const GOAL_LABELS: Record<GoalCategory, string> = {
   dating_apps:      'Dating Apps',
   gaming:           'Excessive Gaming',
   rage_content:     'Rage & Outrage Content',
+  isolation:        'Isolation & Withdrawal',
   custom:           'Custom',
 };
 
@@ -135,6 +144,7 @@ export const GOAL_DESCRIPTIONS: Record<GoalCategory, string> = {
   dating_apps:      'Tinder, Hinge, Bumble — compulsive swiping',
   gaming:           'Extended gaming sessions, ranked addiction',
   rage_content:     'Political outrage, hate forums, comment arguments',
+  isolation:        'Pulling away from people, canceling plans, hiding in your room, avoiding calls',
   custom:           'Define your own category to monitor',
 };
 
@@ -157,6 +167,7 @@ export function getCategoryEmoji(category: GoalCategory): string {
     dating_apps:      '💔',
     gaming:           '🎮',
     rage_content:     '😤',
+    isolation:        '🚪',
     custom:           '⚙️',
   };
   return map[category] ?? '⚠️';
@@ -199,6 +210,7 @@ export const ALL_GOAL_CATEGORIES: GoalCategory[] = [
   'dating_apps',
   'gaming',
   'rage_content',
+  'isolation',
   'custom',
 ];
 

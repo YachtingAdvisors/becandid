@@ -30,6 +30,7 @@ const CATEGORY_GLOW: Partial<Record<GoalCategory, string>> = {
   dating_apps: 'shadow-pink-400/20',
   gaming: 'shadow-violet-500/20',
   rage_content: 'shadow-red-400/20',
+  isolation: 'shadow-violet-500/20',
 };
 
 const CATEGORY_ACCENT_RING: Partial<Record<GoalCategory, string>> = {
@@ -48,6 +49,7 @@ const CATEGORY_ACCENT_RING: Partial<Record<GoalCategory, string>> = {
   dating_apps: 'ring-pink-400/20',
   gaming: 'ring-violet-500/20',
   rage_content: 'ring-red-400/20',
+  isolation: 'ring-violet-500/20',
 };
 
 /* Individual category cards with material icons */
@@ -67,6 +69,7 @@ const CATEGORY_CARDS: { id: GoalCategory; icon: string }[] = [
   { id: 'dating_apps', icon: 'favorite' },
   { id: 'gaming', icon: 'sports_esports' },
   { id: 'rage_content', icon: 'mode_comment' },
+  { id: 'isolation', icon: 'door_open' },
 ];
 
 export default function GoalSelector({ selected, onChange, disabled }: GoalSelectorProps) {
