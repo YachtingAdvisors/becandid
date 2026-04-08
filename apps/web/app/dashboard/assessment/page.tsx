@@ -174,16 +174,18 @@ function calculateResults(selected: Set<string>): { id: RivalId; label: string; 
 
 /* ─── Component ──────────────────────────────────────────── */
 export default function AssessmentPage() {
-  const [step, setStep] = useState(0); // 0..3 = questions, 4 = results
+  const [step, setStep] = useState(0); // 0..3 = questions, 4 = results, 5 = pick rivals
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [chosenRivals, setChosenRivals] = useState<Set<RivalId>>(new Set());
   const [saving, setSaving] = useState(false);
 
   const currentStep = STEPS[step];
-  const isResults = step >= STEPS.length;
+  const isResults = step === STEPS.length;
+  const isPickRivals = step === STEPS.length + 1;
 
   const results = useMemo(
-    () => (isResults ? calculateResults(selected) : []),
-    [isResults, selected]
+    () => (step >= STEPS.length ? calculateResults(selected) : []),
+    [step, selected]
   );
 
   function toggle(word: string) {
@@ -196,21 +198,39 @@ export default function AssessmentPage() {
   }
 
   function next() {
-    if (step < STEPS.length) setStep(step + 1);
+    if (step < STEPS.length + 1) setStep(step + 1);
   }
 
   function prev() {
     if (step > 0) setStep(step - 1);
   }
 
-  async function saveResults() {
+  function toggleRival(id: RivalId) {
+    setChosenRivals(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function goToPickRivals() {
+    const preselected = new Set<RivalId>();
+    results.forEach((r, i) => {
+      if (r.pct >= 50 || i < 3) preselected.add(r.id);
+    });
+    setChosenRivals(preselected);
+    setStep(STEPS.length + 1);
+  }
+
+  async function saveAndStart() {
     setSaving(true);
-    const topRivals = results.slice(0, 8).map(r => r.id);
+    const rivals = Array.from(chosenRivals);
     try {
       await fetch('/api/auth/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goals: topRivals }),
+        body: JSON.stringify({ goals: rivals }),
       });
     } catch {}
     setSaving(false);
@@ -321,12 +341,12 @@ export default function AssessmentPage() {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
           <button
-            onClick={saveResults}
-            disabled={saving || results.length === 0}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-full font-label font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
+            onClick={goToPickRivals}
+            disabled={results.length === 0}
+            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-on-primary rounded-full font-label font-bold text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-lg">save</span>
-            {saving ? 'Saving...' : 'Save & Set as My Rivals'}
+            Choose My Rivals
+            <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
           </button>
           <button
             onClick={() => { setStep(0); setSelected(new Set()); }}
@@ -335,12 +355,6 @@ export default function AssessmentPage() {
             <span className="material-symbols-outlined text-base">refresh</span>
             Retake Assessment
           </button>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-label font-semibold text-sm text-on-surface-variant hover:text-primary transition-colors"
-          >
-            Skip for now
-          </Link>
         </div>
 
         {/* Disclaimer */}
@@ -349,6 +363,77 @@ export default function AssessmentPage() {
           Results are based on behavioral pattern indicators from your self-reported responses.
           If you are in crisis, call or text 988.
         </p>
+      </div>
+    );
+  }
+
+  /* ── Rival Picker Screen ──────────────────────────────── */
+  if (isPickRivals) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-8">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
+            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>target</span>
+          </div>
+          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">
+            Select Your Rivals
+          </h1>
+          <p className="text-sm text-on-surface-variant font-body max-w-md mx-auto leading-relaxed">
+            Based on your results, select the struggles that best describe what you&apos;re facing. You can choose as many as apply.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {results.map(rival => {
+            const isChosen = chosenRivals.has(rival.id);
+            return (
+              <button
+                key={rival.id}
+                onClick={() => toggleRival(rival.id)}
+                className={`relative flex items-center gap-3 p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer ${
+                  isChosen
+                    ? 'bg-primary/10 ring-2 ring-primary shadow-lg shadow-primary/10'
+                    : 'bg-surface-container-lowest ring-1 ring-outline-variant/20 hover:ring-primary/30'
+                }`}
+              >
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                  isChosen ? 'bg-primary' : 'bg-surface-container ring-1 ring-outline-variant/30'
+                }`}>
+                  {isChosen && <span className="material-symbols-outlined text-on-primary text-sm">check</span>}
+                </div>
+                <div className={`w-10 h-10 rounded-xl ${rival.color} flex items-center justify-center shrink-0`}>
+                  <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{rival.icon}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-headline font-bold text-sm text-on-surface">{rival.label}</h3>
+                  <p className="text-xs text-on-surface-variant">{rival.pct}% match</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className="text-center text-sm text-on-surface-variant font-label">
+          {chosenRivals.size} rival{chosenRivals.size !== 1 ? 's' : ''} selected
+        </p>
+
+        <div className="flex flex-col items-center gap-3 pt-2">
+          <button
+            onClick={saveAndStart}
+            disabled={saving || chosenRivals.size === 0}
+            className="group inline-flex items-center gap-2 px-10 py-4 bg-primary text-on-primary rounded-full font-label font-bold text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Start Your Journey'}
+            <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+          </button>
+          <button
+            onClick={() => setStep(STEPS.length)}
+            className="inline-flex items-center gap-1.5 text-sm font-label font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-base">arrow_back</span>
+            Back to results
+          </button>
+        </div>
       </div>
     );
   }

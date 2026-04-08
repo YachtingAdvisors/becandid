@@ -174,16 +174,18 @@ function calculateResults(selected: Set<string>): { id: RivalId; label: string; 
 
 /* ─── Component ──────────────────────────────────────────── */
 export default function AssessmentClient() {
-  const [step, setStep] = useState(0); // 0..3 = questions, 4 = results
+  const [step, setStep] = useState(0); // 0..3 = questions, 4 = results, 5 = pick rivals
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [chosenRivals, setChosenRivals] = useState<Set<RivalId>>(new Set());
   const [saving, setSaving] = useState(false);
 
   const currentStep = STEPS[step];
-  const isResults = step >= STEPS.length;
+  const isResults = step === STEPS.length;
+  const isPickRivals = step === STEPS.length + 1;
 
   const results = useMemo(
-    () => (isResults ? calculateResults(selected) : []),
-    [isResults, selected]
+    () => (step >= STEPS.length ? calculateResults(selected) : []),
+    [step, selected]
   );
 
   function toggle(word: string) {
@@ -196,22 +198,40 @@ export default function AssessmentClient() {
   }
 
   function next() {
-    if (step < STEPS.length) setStep(step + 1);
+    if (step < STEPS.length + 1) setStep(step + 1);
   }
 
   function prev() {
     if (step > 0) setStep(step - 1);
   }
 
-  async function saveResults() {
+  function toggleRival(id: RivalId) {
+    setChosenRivals(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function goToPickRivals() {
+    // Pre-select top rivals (70%+ or top 3, whichever is more)
+    const preselected = new Set<RivalId>();
+    results.forEach((r, i) => {
+      if (r.pct >= 50 || i < 3) preselected.add(r.id);
+    });
+    setChosenRivals(preselected);
+    setStep(STEPS.length + 1);
+  }
+
+  async function saveAndStart() {
     setSaving(true);
-    // Try saving if user is logged in, otherwise redirect to signup
+    const rivals = Array.from(chosenRivals);
     try {
-      const topRivals = results.slice(0, 8).map(r => r.id);
       const res = await fetch('/api/auth/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goals: topRivals }),
+        body: JSON.stringify({ goals: rivals }),
       });
       if (res.ok) {
         window.location.href = '/dashboard';
@@ -219,7 +239,6 @@ export default function AssessmentClient() {
       }
     } catch {}
     setSaving(false);
-    // Not logged in — redirect to signup
     window.location.href = '/auth/signup';
   }
 
@@ -327,34 +346,109 @@ export default function AssessmentClient() {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
           <button
-            onClick={saveResults}
-            disabled={saving || results.length === 0}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-label font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
+            onClick={goToPickRivals}
+            disabled={results.length === 0}
+            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/30 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-lg">save</span>
-            {saving ? 'Saving...' : 'Start Your Journey'}
+            Choose My Rivals
+            <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
           </button>
           <button
             onClick={() => { setStep(0); setSelected(new Set()); }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-label font-semibold text-sm text-white-variant hover:text-primary transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-label font-semibold text-sm text-stone-400 hover:text-primary transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-base">refresh</span>
             Retake Assessment
           </button>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-label font-semibold text-sm text-white-variant hover:text-primary transition-colors"
-          >
-            Skip for now
-          </Link>
         </div>
 
         {/* Disclaimer */}
-        <p className="text-[10px] text-center text-white-variant/50 font-body leading-relaxed max-w-md mx-auto">
+        <p className="text-[10px] text-center text-stone-500 font-body leading-relaxed max-w-md mx-auto">
           This assessment is for self-awareness purposes only and is not a clinical diagnosis.
           Results are based on behavioral pattern indicators from your self-reported responses.
           If you are in crisis, call or text 988.
         </p>
+      </div>
+    );
+  }
+
+  /* ── Rival Picker Screen ──────────────────────────────── */
+  if (isPickRivals) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-8">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
+            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>target</span>
+          </div>
+          <h1 className="font-headline text-2xl font-extrabold tracking-tight text-white">
+            Select Your Rivals
+          </h1>
+          <p className="text-sm text-stone-400 font-body max-w-md mx-auto leading-relaxed">
+            Based on your results, select the struggles that best describe what you&apos;re facing. You can choose as many as apply.
+          </p>
+        </div>
+
+        {/* Rival cards — multi-select */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {results.map(rival => {
+            const isChosen = chosenRivals.has(rival.id);
+            return (
+              <button
+                key={rival.id}
+                onClick={() => toggleRival(rival.id)}
+                className={`relative flex items-center gap-3 p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer ${
+                  isChosen
+                    ? 'bg-primary/15 ring-2 ring-primary shadow-lg shadow-primary/10'
+                    : 'bg-white/[0.05] ring-1 ring-white/10 hover:ring-primary/30 hover:bg-white/[0.08]'
+                }`}
+              >
+                {/* Checkbox */}
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                  isChosen ? 'bg-primary' : 'bg-white/10 ring-1 ring-white/20'
+                }`}>
+                  {isChosen && (
+                    <span className="material-symbols-outlined text-white text-sm">check</span>
+                  )}
+                </div>
+
+                {/* Icon */}
+                <div className={`w-10 h-10 rounded-xl ${rival.color} flex items-center justify-center shrink-0`}>
+                  <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{rival.icon}</span>
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-headline font-bold text-sm text-white">{rival.label}</h3>
+                  <p className="text-xs text-stone-400">{rival.pct}% match</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Selected count */}
+        <p className="text-center text-sm text-stone-400 font-label">
+          {chosenRivals.size} rival{chosenRivals.size !== 1 ? 's' : ''} selected
+        </p>
+
+        {/* Actions */}
+        <div className="flex flex-col items-center gap-3 pt-2">
+          <button
+            onClick={saveAndStart}
+            disabled={saving || chosenRivals.size === 0}
+            className="group inline-flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/30 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Start Your Journey'}
+            <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+          </button>
+          <button
+            onClick={() => setStep(STEPS.length)}
+            className="inline-flex items-center gap-1.5 text-sm font-label font-semibold text-stone-400 hover:text-primary transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-base">arrow_back</span>
+            Back to results
+          </button>
+        </div>
       </div>
     );
   }
