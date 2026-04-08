@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
+import TransformationJourney from './TransformationJourney';
 
 export const metadata: Metadata = {
   title: 'Methodology — Unwanted Behavior Is Never Random',
@@ -62,77 +63,8 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* ── Three Pillars ──────────────────────────────────────── */}
-      <section className="px-6 py-28 max-w-7xl mx-auto">
-        {/* Section header */}
-        <div className="flex items-center gap-6 mb-4">
-          <h2 className="text-3xl md:text-4xl font-bold whitespace-nowrap">Framework Informed by Jay Stringer&apos;s Research</h2>
-          <div className="flex-1 h-px bg-stone-800/60" />
-        </div>
-        <p className="text-slate-400 text-lg mb-16 max-w-2xl">
-          Every journal entry and AI conversation guide follows three questions drawn from
-          Jay Stringer&apos;s <em>Unwanted</em> research. Each one peels back a layer.
-        </p>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Pillar 1 — Tributaries */}
-          <div className="bg-stone-900/40 backdrop-blur-md border border-stone-800/50 p-10 rounded-2xl hover:bg-stone-800/60 transition-all duration-500">
-            <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center mb-6">
-              <Icon name="water" className="text-teal-400 text-2xl" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-3">Tributaries</h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              What was happening in the hours or days before? What were you feeling?
-              Where were you? Who were you with &mdash; or avoiding?
-            </p>
-            <p className="text-slate-500 text-xs leading-relaxed mb-8">
-              Unwanted behavior doesn&apos;t appear out of nowhere. It follows a current.
-              Tributaries help you trace the stream back to its source.
-            </p>
-            <div className="border-t border-stone-800/50 pt-4">
-              <span className="text-stone-500 text-xs font-semibold tracking-widest uppercase">Question 01</span>
-            </div>
-          </div>
-
-          {/* Pillar 2 — Unmet Longings (offset) */}
-          <div className="bg-stone-900/40 backdrop-blur-md border border-stone-800/50 p-10 rounded-2xl hover:bg-stone-800/60 transition-all duration-500 md:translate-y-8">
-            <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center mb-6">
-              <Icon name="heart_broken" className="text-teal-400 text-2xl" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-3">Unmet Longings</h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              What did you actually need in that moment? Connection? Rest?
-              Validation? Escape from something specific?
-            </p>
-            <p className="text-slate-500 text-xs leading-relaxed mb-8">
-              The behavior was never the point &mdash; it was a counterfeit solution to a real need.
-              Naming the longing is where healing begins.
-            </p>
-            <div className="border-t border-stone-800/50 pt-4">
-              <span className="text-stone-500 text-xs font-semibold tracking-widest uppercase">Question 02</span>
-            </div>
-          </div>
-
-          {/* Pillar 3 — Roadmap */}
-          <div className="bg-stone-900/40 backdrop-blur-md border border-stone-800/50 p-10 rounded-2xl hover:bg-stone-800/60 transition-all duration-500">
-            <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center mb-6">
-              <Icon name="map" className="text-teal-400 text-2xl" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-3">Roadmap</h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              What does this pattern reveal about what needs attention in your life?
-              What&apos;s one thing you could do differently next time?
-            </p>
-            <p className="text-slate-500 text-xs leading-relaxed mb-8">
-              Your struggle is not a dead end. It&apos;s a map. The roadmap turns what you learn
-              about yourself into a single, concrete next step.
-            </p>
-            <div className="border-t border-stone-800/50 pt-4">
-              <span className="text-stone-500 text-xs font-semibold tracking-widest uppercase">Question 03</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ── Transformation Journey (interactive client component) ─ */}
+      <TransformationJourney />
 
       {/* ── How It Works Pipeline ─────────────────────────────── */}
       <section className="px-6 py-28 max-w-7xl mx-auto">
