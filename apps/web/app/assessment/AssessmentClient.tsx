@@ -641,7 +641,7 @@ export default function AssessmentClient() {
     const rivals = Array.from(chosenRivals);
     try {
       const res = await fetch('/api/auth/profile', {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goals: rivals }),
       });
@@ -871,7 +871,7 @@ export default function AssessmentClient() {
             Choose Your Rivals &amp; Growth Path
           </h1>
           <p className="text-sm text-white-variant font-body max-w-md mx-auto leading-relaxed">
-            Select the struggles you want to focus on. Each rival has a growth direction you&apos;ll be climbing toward.
+            Select the struggles you want to focus on. Each rival has a growth direction you&apos;ll be climbing toward. You can always change these later in Settings.
           </p>
         </div>
 
@@ -886,15 +886,21 @@ export default function AssessmentClient() {
           </div>
         </div>
 
-        {/* Count + warning */}
+        {/* Count + feedback */}
         <div className="flex items-center justify-between">
           <p className="text-sm text-white-variant font-label">
             <span className="font-bold text-white">{chosenRivals.size}</span> selected
           </p>
-          {chosenRivals.size > 2 && (
+          {chosenRivals.size >= 6 && (
             <div className="flex items-center gap-1.5 text-amber-500">
               <span className="material-symbols-outlined text-sm">warning</span>
-              <span className="text-xs font-label font-semibold">Consider narrowing your focus</span>
+              <span className="text-xs font-label font-semibold">Consider narrowing your focus — you can always add more later in Settings</span>
+            </div>
+          )}
+          {chosenRivals.size >= 3 && chosenRivals.size < 6 && (
+            <div className="flex items-center gap-1.5 text-white-variant">
+              <span className="material-symbols-outlined text-sm">info</span>
+              <span className="text-xs font-label">Solid selection — you can adjust anytime</span>
             </div>
           )}
           {chosenRivals.size <= 2 && chosenRivals.size > 0 && (

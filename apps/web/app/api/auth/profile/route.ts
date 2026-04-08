@@ -51,10 +51,57 @@ export async function PATCH(req: NextRequest) {
     }
 
     const db = createServiceClient();
+
+    // If goals are changing, fetch old goals for comparison
+    let oldGoals: string[] | null = null;
+    if (updateData.goals) {
+      const { data: current } = await db.from('users').select('goals, name').eq('id', user.id).single();
+      oldGoals = current?.goals ?? [];
+    }
+
     const { error } = await db.from('users').update(updateData).eq('id', user.id);
     if (error) return safeError('PATCH /api/auth/profile', error);
 
     auditLog({ action: 'profile.update', userId: user.id, metadata: { fields: Object.keys(parsed.data) } });
+
+    // Notify partner when rivals change
+    if (updateData.goals && oldGoals) {
+      const newGoals: string[] = updateData.goals;
+      const added = newGoals.filter((g: string) => !oldGoals!.includes(g));
+      const removed = oldGoals.filter((g: string) => !newGoals.includes(g));
+
+      if (added.length > 0 || removed.length > 0) {
+        try {
+          const { data: partner } = await db
+            .from('partners')
+            .select('partner_email, partner_name, partner_user_id')
+            .eq('user_id', user.id)
+            .eq('status', 'active')
+            .maybeSingle();
+
+          const { data: profile } = await db.from('users').select('name').eq('id', user.id).single();
+
+          if (partner?.partner_email) {
+            const { Resend } = await import('resend');
+            const resend = new Resend(process.env.RESEND_API_KEY!);
+            const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@updates.becandid.io';
+            const userName = profile?.name ?? 'Your partner';
+
+            const addedList = added.length > 0 ? `<p style="margin:0 0 8px;"><strong>New focus areas:</strong> ${added.join(', ')}</p>` : '';
+            const removedList = removed.length > 0 ? `<p style="margin:0 0 8px;"><strong>Removed:</strong> ${removed.join(', ')}</p>` : '';
+
+            await resend.emails.send({
+              from,
+              to: partner.partner_email,
+              subject: `${userName} updated their rivals`,
+              html: `<p><strong>${userName}</strong> has updated the rivals they're focusing on.</p>${addedList}${removedList}<p>This means their growth direction may be shifting. Check in with them about what they're climbing toward.</p>`,
+            });
+          }
+        } catch (notifErr) {
+          console.error('[auth/profile] Partner notification on goals change failed:', notifErr);
+        }
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
