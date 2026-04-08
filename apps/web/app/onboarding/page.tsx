@@ -24,7 +24,7 @@ import {
 } from '@be-candid/shared';
 import { GOAL_TIPS } from '@/lib/goalTips';
 
-type Step = 'goals' | 'goal-tips' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'done' | 'first-journal';
+type Step = 'goals' | 'goal-tips' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'rival-assessment' | 'done' | 'first-journal';
 
 const STEP_BACKGROUNDS: Record<Step, string> = {
   goals: '#0f1218',
@@ -33,6 +33,7 @@ const STEP_BACKGROUNDS: Record<Step, string> = {
   motivator: '#2d1f2e',
   preview: '#5c3a2e',
   partner: '#c47a4a',
+  'rival-assessment': '#e0c8a8',
   done: '#fbf9f8',
   'first-journal': '#fbf9f8',
 };
@@ -50,6 +51,7 @@ const SUN_STATES: Record<Step, { y: number; opacity: number; color: string; glow
   motivator:        { y: 18,  opacity: 1, color: '#a04820', glow: '0 0 15px rgba(160,72,32,0.25)' },
   preview:          { y: 8,   opacity: 1, color: '#d4803a', glow: '0 0 20px rgba(212,128,58,0.3)' },
   partner:          { y: 0,   opacity: 1, color: '#e8a84c', glow: '0 0 30px rgba(232,168,76,0.4)' },
+  'rival-assessment': { y: -4, opacity: 1, color: '#ecc454', glow: '0 0 35px rgba(236,196,84,0.45)' },
   done:             { y: -8,  opacity: 1, color: '#f0c060', glow: '0 0 40px rgba(240,192,96,0.5)' },
   'first-journal':  { y: -8,  opacity: 1, color: '#f0c060', glow: '0 0 40px rgba(240,192,96,0.5)' },
 };
@@ -243,7 +245,7 @@ function OnboardingContent() {
   };
 
   // ── Progress bar ──────────────────────────────────────
-  const STEPS: Step[] = ['goals', 'goal-tips', 'stringer', 'motivator', 'preview', 'partner', 'done', 'first-journal'];
+  const STEPS: Step[] = ['goals', 'goal-tips', 'stringer', 'motivator', 'preview', 'partner', 'rival-assessment', 'done', 'first-journal'];
   const progress = STEPS.indexOf(step) / (STEPS.length - 1);
 
   const isDoneStep = step === 'done' || step === 'first-journal';
