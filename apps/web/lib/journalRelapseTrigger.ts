@@ -104,16 +104,16 @@ export async function triggerRelapseJournal(
       Hey ${user.name || 'there'} — something came up a little while ago. Your partner has been notified and your conversation guide is ready.
     </p>
     <p style="font-size:14px;color:#4b5563;line-height:1.7;margin:0 0 16px;">
-      But before anything else, Stringer would ask you to get curious — not critical. This moment has something to teach you.
+      But before anything else — compassion before analysis. This moment has something to teach you about what you're climbing toward.
     </p>
     <div style="background:#faf5ff;border-left:3px solid #8b5cf6;border-radius:0 10px 10px 0;padding:14px 18px;margin:0 0 20px;">
       <p style="margin:0;font-size:14px;color:#4c1d95;line-height:1.6;font-style:italic;">${prompt}</p>
     </div>
-    <div style="background:#f8fafc;border-radius:10px;padding:14px;margin:0 0 20px;">
-      <p style="margin:0 0 8px;font-size:12px;color:#374151;">Three questions to sit with:</p>
-      <p style="margin:0 0 6px;font-size:12px;color:#6b7280;">🌊 What was happening — emotionally — before this?</p>
-      <p style="margin:0 0 6px;font-size:12px;color:#6b7280;">💛 What did you actually need?</p>
-      <p style="margin:0;font-size:12px;color:#6b7280;">🧭 What is this revealing about the life you want?</p>
+    <div style="background:#f0fdf4;border-radius:10px;padding:14px;margin:0 0 20px;">
+      <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#166534;">Your growth journey — three questions:</p>
+      <p style="margin:0 0 6px;font-size:12px;color:#15803d;">🌊 What were you sliding into — escaping, numbing, chasing, or guarding?</p>
+      <p style="margin:0 0 6px;font-size:12px;color:#15803d;">💛 What were you actually reaching for — presence, belonging, connection?</p>
+      <p style="margin:0;font-size:12px;color:#15803d;">🧭 What would climbing into that growth direction look like tomorrow?</p>
     </div>
     <a href="${journalUrl}" style="display:block;text-align:center;background:#4f46e5;color:#fff;text-decoration:none;padding:13px 24px;border-radius:10px;font-weight:600;font-size:14px;">
       Open Your Journal →

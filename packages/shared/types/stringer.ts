@@ -42,94 +42,94 @@ export const STRINGER_PROMPTS: StringerPrompt[] = [
     id: 'tributaries',
     label: 'The Tributaries',
     question: 'What was happening in your life — emotionally, relationally, physically — in the hours or days before this moment?',
-    hint: 'Stringer teaches that unwanted behavior is never random. Trace the stream back to its source.',
+    hint: 'Stringer teaches that unwanted behavior is never random. Trace the stream back to its source. Were you escaping, numbing, chasing, performing, punishing, controlling, fantasizing, or guarding?',
   },
   {
     id: 'longing',
     label: 'The Unmet Longing',
     question: 'What emotions were present? What did you actually need in that moment?',
-    hint: 'Beneath every struggle is a legitimate longing — for belonging, for rest, for agency, for tenderness.',
+    hint: 'Beneath every struggle is a legitimate longing — for presence, for experiencing life fully, for belonging, for compassion, for real connection, for trust.',
   },
   {
     id: 'roadmap',
     label: 'The Roadmap',
-    question: 'What might this struggle be revealing about the life you actually want to live?',
-    hint: 'Your struggle is a sign pointing to where your pain is.',
+    question: 'What might this struggle be revealing about what you\'re climbing toward?',
+    hint: 'Every coping pattern has a growth direction. Escaping → Presence. Numbing → Experiencing. Chasing → Building. What are you climbing into?',
   },
 ];
 
 // Notification-friendly prompts — shorter, more personal,
 // rotated through for daily/scheduled reminders
 export const JOURNAL_NOTIFICATION_PROMPTS = [
-  // Tributaries-flavored
-  "What's been weighing on you today? Trace it back.",
-  "Before you scroll or check out tonight — what happened today that's unprocessed?",
-  "Were you seen today? Really seen? Write about it.",
-  "What conflict or tension are you carrying right now?",
-  "When did you feel most alone today?",
-  // Longing-flavored
-  "What did you actually need today that you didn't get?",
-  "If you could ask for one thing right now without judgment, what would it be?",
-  "Where in your body are you holding something? What does it want?",
-  "What would tenderness look like for you tonight?",
-  "Name one legitimate need you tried to meet in the wrong place today.",
-  // Roadmap-flavored
-  "If today's struggle is a sign, what is it pointing to?",
-  "What kind of life would make this pattern unnecessary?",
-  "What are you saying yes to that you actually want to say no to?",
-  "Imagine telling someone you trust about today. What would you want them to know?",
-  "What would freedom look like tomorrow morning?",
+  // Tributaries-flavored (what pattern were you sliding into?)
+  "What's been weighing on you today? Were you escaping, numbing, or guarding?",
+  "Before you scroll or check out tonight — were you sliding into numbing or escaping? What happened?",
+  "Were you seen today? Really seen? Or were you performing for belonging?",
+  "What conflict or tension are you carrying? Is it pulling you toward controlling or guarding?",
+  "When did you feel most alone today? Were you fantasizing connection instead of seeking it?",
+  // Longing-flavored (what growth are you reaching for?)
+  "What did you actually need today? Presence? Belonging? Real connection?",
+  "If you could ask for one thing right now — compassion, trust, belonging — what would it be?",
+  "Where in your body are you holding something? Is it asking for experiencing instead of numbing?",
+  "What would it look like to climb into compassion for yourself tonight?",
+  "Name one need you tried to meet through escaping. What would building look like instead?",
+  // Roadmap-flavored (what are you climbing toward?)
+  "If today's struggle is a sign, is it pointing you toward presence or connection?",
+  "What kind of life would make this pattern unnecessary? One built on belonging? Trusting? Building?",
+  "What are you saying yes to that pulls you away from the person you're becoming?",
+  "Imagine telling someone you trust about today. Would they see someone climbing toward compassion?",
+  "What would it look like to wake up tomorrow already practicing surrendering or trusting?",
 ];
 
 // Post-relapse prompts — more direct, acknowledging what just happened
 export const RELAPSE_NOTIFICATION_PROMPTS = [
-  "Something came up. Before the shame sets in — what were you feeling 30 minutes ago?",
-  "This moment isn't a verdict. It's information. What is it telling you?",
-  "Stringer says freedom is found through kindness and curiosity. Start there. What happened?",
-  "You don't have to figure it all out right now. Just write what's true.",
-  "What were you reaching for? Not the screen — the thing beneath it.",
-  "The behavior is the signal, not the problem. What's the signal saying?",
-  "Before you spiral — name one thing you needed today that you didn't get.",
-  "Your partner was notified. That takes courage. Now write for yourself.",
+  "Something came up. Before the shame sets in — were you escaping, numbing, or chasing? Name it without judgment.",
+  "This moment isn't a verdict. It's information. Were you sliding into an old pattern? What growth direction does it point to?",
+  "Compassion before analysis. What were you feeling? What would the you who's climbing toward presence say right now?",
+  "You don't have to figure it all out right now. Just write what's true. You're still someone climbing toward something better.",
+  "What were you reaching for? Not the screen — the thing beneath it. Belonging? Connection? Rest? That longing is real.",
+  "The behavior is a signal pointing to a legitimate need. Were you numbing when you needed experiencing? Escaping when you needed presence?",
+  "Before you spiral into punishing — name one thing you needed today that you didn't get. Then name the growth direction it points to.",
+  "Your partner was notified. That takes courage. They're your ally in climbing toward connection and trust. Now write for yourself.",
 ];
 
 // Therapeutic journal prompts — deeper, category-based prompts
 // for the PromptPicker component in the journal write flow
 export const THERAPEUTIC_PROMPTS: Array<{ text: string; category: 'reflection' | 'letter' | 'imagination' | 'body' | 'relationship' }> = [
-  // Reflection
-  { text: "What would your younger self think of who you are today?", category: 'reflection' },
-  { text: "If shame had a voice, what would it say? Now write what you'd say back.", category: 'reflection' },
-  { text: "What's one belief about yourself that you've outgrown?", category: 'reflection' },
-  { text: "What are you avoiding right now? Name it honestly.", category: 'reflection' },
+  // Reflection — with growth transformation verbs
+  { text: "What would your younger self think of who you are today? What would they say about the person climbing toward presence and compassion?", category: 'reflection' },
+  { text: "If shame had a voice, what would it say? Now write what compassion would say back. Which voice are you climbing toward?", category: 'reflection' },
+  { text: "What's one belief about yourself that you've outgrown? What new belief are you building in its place?", category: 'reflection' },
+  { text: "What are you avoiding right now? Are you escaping or numbing? Name it — then name what experiencing it fully would feel like.", category: 'reflection' },
 
-  // Letter
-  { text: "Write a letter to the person you hurt most recently.", category: 'letter' },
-  { text: "Write a letter from your future self — 5 years from now, healthy and free.", category: 'letter' },
-  { text: "Write a thank-you note to someone who showed you grace.", category: 'letter' },
+  // Letter — reframed around growth
+  { text: "Write a letter to the person you hurt most recently. What would someone climbing toward compassion and connecting say?", category: 'letter' },
+  { text: "Write a letter from your future self — the version of you who has fully arrived in presence, belonging, and trust. What does that person want you to know?", category: 'letter' },
+  { text: "Write a thank-you note to someone who modeled real connection for you — not performance, but genuine belonging.", category: 'letter' },
 
-  // Imagination
-  { text: "Describe a single day in the life you want to be living one year from now.", category: 'imagination' },
-  { text: "If you could tell one person your full story without judgment, who would it be and what would you say?", category: 'imagination' },
+  // Imagination — climbing into the future
+  { text: "Describe a single day in the life you're climbing toward. What does presence feel like at breakfast? What does belonging feel like at dinner?", category: 'imagination' },
+  { text: "If you could tell one person your full story — the escaping, the numbing, the climbing — without judgment, who would it be?", category: 'imagination' },
 
-  // Body
-  { text: "Where in your body do you feel tension right now? Describe it.", category: 'body' },
-  { text: "What does rest actually feel like for you? When was the last time you truly rested?", category: 'body' },
+  // Body — experiencing vs. numbing
+  { text: "Where in your body do you feel tension right now? Instead of numbing it, try experiencing it. Describe what it feels like to stay.", category: 'body' },
+  { text: "What does surrendering feel like in your body? Not giving up — letting go. When was the last time you truly rested without guilt?", category: 'body' },
 
-  // Relationship
-  { text: "What does your partner need to hear from you that you haven't said yet?", category: 'relationship' },
-  { text: "Name one way someone loved you well this week.", category: 'relationship' },
-  { text: "What would trust look like fully rebuilt in your closest relationship?", category: 'relationship' },
+  // Relationship — connecting and belonging
+  { text: "What does your partner need to hear from you? Not performing — real connecting. What truth would deepen your belonging together?", category: 'relationship' },
+  { text: "Name one way someone loved you well this week. Did you let it in, or were you guarding? What would trusting look like?", category: 'relationship' },
+  { text: "What would trust look like fully rebuilt? Not controlling the outcome — surrendering to the process of reconnection.", category: 'relationship' },
 
-  // Emotional affairs
-  { text: "If your partner could read your texts from today, would anything make them uncomfortable? Write about why.", category: 'relationship' },
-  { text: "What are you getting from this person that you're not getting at home? Name it honestly.", category: 'relationship' },
+  // Emotional affairs — fantasizing vs. connecting
+  { text: "If your partner could see who you've been talking to, would they feel safe? Are you fantasizing connection or building it?", category: 'relationship' },
+  { text: "What are you getting from this person that you're not getting at home? Is it real belonging — or are you performing for approval?", category: 'relationship' },
 
-  // Procrastination
-  { text: "What's the ONE thing you've been avoiding? Write it down. Now write the feeling that comes up when you think about doing it.", category: 'reflection' },
-  { text: "If procrastination is protection, what is it protecting you from?", category: 'reflection' },
+  // Procrastination — escaping vs. building
+  { text: "What's the ONE thing you've been escaping from? Write it down. Now ask: what would building look like instead of avoiding?", category: 'reflection' },
+  { text: "If procrastination is escaping disguised as rest, what are you actually running from? What would presence with that task feel like?", category: 'reflection' },
 
-  // AI relationships
-  { text: "What would you lose if you deleted the AI companion app? What would you gain?", category: 'imagination' },
+  // AI relationships — fantasizing vs. connecting
+  { text: "What would you lose if you deleted the AI companion? What would you gain by climbing from fantasizing into real connecting?", category: 'imagination' },
 ];
 
 export const STRINGER_QUOTES = [
