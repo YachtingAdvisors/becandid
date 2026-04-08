@@ -20,6 +20,7 @@ import FocusChip from '@/components/dashboard/FocusChip';
 import SelfHarmSafetyCard from '@/components/dashboard/SelfHarmSafetyCard';
 import DashboardCustomizer from '@/components/dashboard/DashboardCustomizer';
 import RivalAssessmentAccordion from '@/components/dashboard/RivalAssessmentAccordion';
+import PrivacyBadge from '@/components/dashboard/PrivacyBadge';
 
 const WhatsNew = dynamic(
   () => import('@/components/dashboard/WhatsNew'),
@@ -382,7 +383,10 @@ export default async function DashboardPage() {
               </div>
               <div>
                 <h3 className="font-headline font-bold text-lg text-on-surface">Crisis Detection</h3>
-                <p className="text-xs text-on-surface-variant">Real-time activity monitoring</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs text-on-surface-variant">Real-time activity monitoring</p>
+                  <PrivacyBadge sharedWith={partner?.partner_name} />
+                </div>
               </div>
             </div>
             <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
@@ -501,7 +505,10 @@ export default async function DashboardPage() {
             )}
           </div>
           <h3 className="font-headline font-bold text-sm text-on-surface">Candid Journal</h3>
-          <p className="text-[10px] text-on-surface-variant leading-tight mt-1">Private space for reflective growth.</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-[10px] text-on-surface-variant leading-tight">Private space for reflective growth.</p>
+            <PrivacyBadge />
+          </div>
         </Link>
 
         {/* Partner Awareness — full width with real partner data */}

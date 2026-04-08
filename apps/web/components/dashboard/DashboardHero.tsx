@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import MomentumScore from './MomentumScore';
+import MilestoneCelebration from './MilestoneCelebration';
 
 interface DashboardHeroProps {
   userName: string;
@@ -57,11 +58,23 @@ export default function DashboardHero({
 }: DashboardHeroProps) {
   const [greeting, setGreeting] = useState('Good morning');
   const [mounted, setMounted] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+
+  const CELEBRATION_MILESTONES = [1, 3, 7, 14, 30, 60, 90, 180, 365];
 
   useEffect(() => {
     setGreeting(getGreeting());
     setMounted(true);
-  }, []);
+
+    // Show celebration if streak exactly hits a milestone and not already seen today
+    if (CELEBRATION_MILESTONES.includes(currentStreak)) {
+      const key = `milestone-celebrated-${currentStreak}`;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, 'true');
+        setShowCelebration(true);
+      }
+    }
+  }, [currentStreak]);
 
   const firstName = userName?.split(' ')[0] || 'there';
   const nextMilestone = getNextMilestone(currentStreak);
@@ -93,6 +106,16 @@ export default function DashboardHero({
   const rivalsTracked = goals.length;
 
   return (
+    <>
+    {/* Milestone celebration modal */}
+    {showCelebration && (
+      <MilestoneCelebration
+        milestone={currentStreak}
+        userName={firstName}
+        communityCount={Math.floor(Math.random() * 400) + 50}
+        onDismiss={() => setShowCelebration(false)}
+      />
+    )}
     <section
       className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${bgGradient} p-6 sm:p-8`}
     >
@@ -248,5 +271,6 @@ export default function DashboardHero({
         }
       `}</style>
     </section>
+    </>
   );
 }
