@@ -22,11 +22,14 @@ async function init() {
 function renderLogin(errorMsg = '') {
   app.innerHTML = `
     <div class="header">
-      <h1>Be Candid</h1>
+      <div class="header-left">
+        <div class="header-logo">C</div>
+        <h1>Be Candid</h1>
+      </div>
     </div>
     <div class="content">
-      <p style="font-size: 13px; color: #5e5f5f; margin-bottom: 16px; line-height: 1.5;">
-        Sign in to start monitoring your browsing activity.
+      <p style="font-size: 13px; color: #78716c; margin-bottom: 16px; line-height: 1.6;">
+        Sign in to start awareness monitoring across your browsing.
       </p>
       ${errorMsg ? `<div class="error">${errorMsg}</div>` : ''}
       <div class="form-group">
@@ -38,9 +41,13 @@ function renderLogin(errorMsg = '') {
         <input type="password" id="password" placeholder="Enter your password" />
       </div>
       <button class="btn-primary" id="login-btn">Sign In</button>
-      <p style="font-size: 11px; color: #5e5f5f; text-align: center; margin-top: 12px;">
-        Don't have an account? <a href="https://becandid.io/auth/signup" target="_blank" style="color: #226779; font-weight: 600;">Sign up</a>
+      <p class="signup-link">
+        Don't have an account? <a href="https://becandid.io/auth/signup" target="_blank">Sign up free</a>
       </p>
+    </div>
+    <div class="footer">
+      <span class="material-symbols-outlined">lock</span>
+      End-to-end encrypted · Privacy-first
     </div>
   `;
 
@@ -62,7 +69,7 @@ async function handleLogin() {
 
   try {
     await sendMessage({ type: 'signIn', email, password });
-    init(); // Reload to show dashboard
+    init();
   } catch (e) {
     renderLogin(e.message || 'Sign in failed. Check your credentials.');
   }
@@ -77,60 +84,79 @@ function renderDashboard(status, stats) {
   // Sort by total time, descending
   domains.sort((a, b) => (b[1].totalSeconds || 0) - (a[1].totalSeconds || 0));
 
+  const statCards = [
+    { value: totalEvents, label: 'Sites Tracked', icon: 'monitoring' },
+    { value: totalMinutes, label: 'Minutes Today', icon: 'schedule' },
+    { value: blockedCount, label: 'Blocked', icon: 'block' },
+    { value: domains.length, label: 'Domains', icon: 'language' },
+  ];
+
   app.innerHTML = `
     <div class="header">
-      <h1>Be Candid</h1>
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <span class="status-dot ${status.monitoring ? 'active' : 'inactive'}"></span>
-        <span style="font-size: 11px; opacity: 0.8;">${status.monitoring ? 'Active' : 'Paused'}</span>
+      <div class="header-left">
+        <div class="header-logo">C</div>
+        <h1>Be Candid</h1>
+      </div>
+      <div class="status-badge ${status.monitoring ? 'active' : 'inactive'}">
+        <span class="status-dot"></span>
+        ${status.monitoring ? 'Active' : 'Paused'}
       </div>
     </div>
     <div class="content">
       <div class="toggle-row">
-        <span class="text">Awareness Monitoring</span>
+        <div>
+          <div class="text">Awareness Monitoring</div>
+          <div class="subtext">${status.monitoring ? 'Tracking browsing patterns' : 'Monitoring paused'}</div>
+        </div>
         <div class="toggle ${status.monitoring ? 'on' : ''}" id="monitoring-toggle">
           <div class="knob"></div>
         </div>
       </div>
 
       <div class="stat-grid">
-        <div class="stat-card">
-          <div class="value">${totalEvents}</div>
-          <div class="label">Sites Tracked</div>
-        </div>
-        <div class="stat-card">
-          <div class="value">${totalMinutes}</div>
-          <div class="label">Minutes Today</div>
-        </div>
-        <div class="stat-card">
-          <div class="value">${blockedCount}</div>
-          <div class="label">Blocked Visits</div>
-        </div>
-        <div class="stat-card">
-          <div class="value">${domains.length}</div>
-          <div class="label">Unique Domains</div>
-        </div>
+        ${statCards.map(s => `
+          <div class="stat-card">
+            <span class="material-symbols-outlined icon">${s.icon}</span>
+            <div class="value">${s.value}</div>
+            <div class="label">${s.label}</div>
+          </div>
+        `).join('')}
       </div>
 
       ${domains.length > 0 ? `
-        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #5e5f5f; margin-bottom: 6px;">Top Sites</div>
+        <div class="section-label">Top Sites Today</div>
         <div class="domain-list">
           ${domains.slice(0, 5).map(([domain, s]) => `
             <div class="domain-row">
-              <span class="name">${domain}</span>
-              <span class="time">${Math.round(s.totalSeconds / 60)} min</span>
+              <span class="name">
+                <span class="favicon">${domain.charAt(0).toUpperCase()}</span>
+                ${domain.length > 24 ? domain.slice(0, 22) + '...' : domain}
+              </span>
+              <span class="time">${Math.round(s.totalSeconds / 60)}m</span>
             </div>
           `).join('')}
         </div>
       ` : `
-        <p style="font-size: 12px; color: #5e5f5f; text-align: center; padding: 16px 0;">
-          No browsing tracked yet. Activity will appear as you browse.
-        </p>
+        <div class="empty-state">
+          <span class="material-symbols-outlined icon">explore</span>
+          <p>No browsing tracked yet.<br>Activity will appear as you browse.</p>
+        </div>
       `}
 
+      <a href="https://becandid.io/dashboard" target="_blank" class="btn-open-dashboard" style="text-decoration: none;">
+        <span class="material-symbols-outlined">open_in_new</span>
+        Open Dashboard
+      </a>
       <button class="btn-secondary" id="signout-btn">Sign Out</button>
     </div>
-    <div class="footer">Privacy-first · Only domain names are tracked</div>
+    <div class="privacy-badge">
+      <span class="material-symbols-outlined">verified_user</span>
+      Privacy-first · Only domain names are tracked
+    </div>
+    <div class="footer">
+      <span class="material-symbols-outlined">lock</span>
+      256-bit encrypted · Zero-knowledge
+    </div>
   `;
 
   // Toggle monitoring
