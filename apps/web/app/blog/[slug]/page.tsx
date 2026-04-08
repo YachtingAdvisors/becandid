@@ -1,8 +1,13 @@
-import { getAllBlogPosts } from '@/content/blog/loader';
-
-const BLOG_POSTS = getAllBlogPosts();
+import { getAllBlogPosts, getSeoPublishedPosts } from '@/content/blog/loader';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+
+async function getAllPosts() {
+  const staticPosts = getAllBlogPosts();
+  const seoPosts = await getSeoPublishedPosts();
+  const slugs = new Set(staticPosts.map(p => p.slug));
+  return [...staticPosts, ...seoPosts.filter(p => !slugs.has(p.slug))];
+}
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import ShareButton from '@/components/ShareButton';
@@ -13,12 +18,12 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return BLOG_POSTS.map(post => ({ slug: post.slug }));
+  return (await getAllPosts()).map(post => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = BLOG_POSTS.find(p => p.slug === slug);
+  const post = (await getAllPosts()).find(p => p.slug === slug);
   if (!post) return { title: 'Not Found' };
 
   const ogImageUrl = `https://becandid.io/api/og?${new URLSearchParams({
@@ -50,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = BLOG_POSTS.find(p => p.slug === slug);
+  const post = (await getAllPosts()).find(p => p.slug === slug);
   if (!post) notFound();
 
   return (

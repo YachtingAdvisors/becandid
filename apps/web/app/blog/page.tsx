@@ -1,10 +1,15 @@
-import { getAllBlogPosts } from '@/content/blog/loader';
-
-const BLOG_POSTS = getAllBlogPosts();
+import { getAllBlogPosts, getSeoPublishedPosts } from '@/content/blog/loader';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 
-export default function BlogIndexPage() {
+export default async function BlogIndexPage() {
+  const staticPosts = getAllBlogPosts();
+  const seoPosts = await getSeoPublishedPosts();
+  // Merge, dedupe by slug, sort newest first
+  const slugs = new Set(staticPosts.map(p => p.slug));
+  const allPosts = [...staticPosts, ...seoPosts.filter(p => !slugs.has(p.slug))]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const BLOG_POSTS = allPosts;
   return (
     <main className="max-w-4xl mx-auto px-6 py-16">
       <JsonLd
