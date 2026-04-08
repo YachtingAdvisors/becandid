@@ -138,9 +138,207 @@ const STEPS: Step[] = [
       { text: '"They don\'t appreciate me enough"', weights: { emotional_affairs: 3, dating_apps: 2, overworking: 2, rage_content: 1 } },
     ],
   },
+  {
+    title: 'Coping & Avoidance Style',
+    subtitle: 'Select behaviors you use when life gets hard.',
+    icon: 'shield_person',
+    words: [
+      { text: 'I withdraw and isolate', weights: { isolation: 3, gaming: 2, binge_watching: 2, sleep_avoidance: 1 } },
+      { text: 'I seek intensity or thrills', weights: { gambling: 3, sports_betting: 2, day_trading: 2, pornography: 2 } },
+      { text: 'I numb out with screens', weights: { binge_watching: 3, social_media: 3, gaming: 2, doomscrolling: 1 } },
+      { text: 'I control what I eat or how I look', weights: { eating_disorder: 3, body_checking: 3 } },
+      { text: 'I overwork to feel valuable', weights: { overworking: 3, procrastination: 1 } },
+      { text: 'I people-please to avoid conflict', weights: { emotional_affairs: 2, social_media: 2, gossip_drama: 1, overworking: 1 } },
+      { text: 'I use substances to cope', weights: { alcohol_drugs: 3, vaping_tobacco: 3 } },
+      { text: 'I seek out secret relationships', weights: { sexting: 3, emotional_affairs: 3, dating_apps: 2, ai_relationships: 2 } },
+      { text: 'I buy things to feel better', weights: { impulse_shopping: 3, gambling: 1 } },
+      { text: 'I doom-spiral into worst-case thinking', weights: { doomscrolling: 3, rage_content: 2, self_harm: 1 } },
+      { text: 'I punish myself mentally or physically', weights: { self_harm: 3, overworking: 1, eating_disorder: 1 } },
+      { text: 'I outsource my emotions to AI or parasocial figures', weights: { ai_relationships: 3, binge_watching: 2, gossip_drama: 1 } },
+    ],
+  },
 ];
 
 const TOTAL_WORDS = STEPS.reduce((sum, s) => sum + s.words.length, 0);
+
+/* ─── Coping/Personality type definitions ───────────────── */
+type CopingTypeId = 'escapist' | 'numbing' | 'thrill_seeking' | 'approval_seeking' | 'self_punishing' | 'control_oriented' | 'fantasy_bonding' | 'hypervigilant';
+
+interface CopingType {
+  id: CopingTypeId;
+  label: string;
+  icon: string;
+  color: string;
+  description: string;
+  insight: string;
+}
+
+const COPING_TYPES: CopingType[] = [
+  {
+    id: 'escapist',
+    label: 'The Escapist',
+    icon: 'flight',
+    color: 'bg-indigo-500',
+    description: 'You cope by mentally checking out — through screens, stories, or alternate worlds. Reality feels heavy, so you seek exits.',
+    insight: 'Your need to escape often signals unprocessed stress or unmet needs. The Stringer journal can help you trace what you\'re running from.',
+  },
+  {
+    id: 'numbing',
+    label: 'The Numbifier',
+    icon: 'blur_on',
+    color: 'bg-slate-500',
+    description: 'You cope by turning down the emotional volume — substances, scrolling, bingeing — anything to not feel the hard things.',
+    insight: 'Numbing protects you short-term but disconnects you from the emotions that drive growth. Start by naming what you\'re avoiding.',
+  },
+  {
+    id: 'thrill_seeking',
+    label: 'The Thrill Seeker',
+    icon: 'local_fire_department',
+    color: 'bg-orange-500',
+    description: 'You cope by chasing intensity — risk, excitement, novelty. Calm feels uncomfortable, so you seek the next dopamine hit.',
+    insight: 'The chase often masks a deeper need for meaning or connection. Channel that energy into goals that build rather than deplete.',
+  },
+  {
+    id: 'approval_seeking',
+    label: 'The Approval Seeker',
+    icon: 'thumb_up',
+    color: 'bg-pink-500',
+    description: 'You cope by seeking external validation — likes, attention, reassurance. Your worth feels contingent on others\' reactions.',
+    insight: 'The need for approval often traces back to early experiences of conditional love. Building internal validation is your growth edge.',
+  },
+  {
+    id: 'self_punishing',
+    label: 'The Self-Punisher',
+    icon: 'gavel',
+    color: 'bg-red-700',
+    description: 'You cope by turning pain inward — through harsh self-talk, overworking to exhaustion, or physically punishing yourself.',
+    insight: 'Self-punishment is often misdirected shame. You deserve compassion, not punishment. A partner or therapist can help rewrite this pattern.',
+  },
+  {
+    id: 'control_oriented',
+    label: 'The Controller',
+    icon: 'tune',
+    color: 'bg-amber-600',
+    description: 'You cope by tightening control — over your body, schedule, diet, or environment. If you can control it, it can\'t hurt you.',
+    insight: 'The need for control often signals fear of chaos from earlier in life. Practicing small acts of surrender builds genuine resilience.',
+  },
+  {
+    id: 'fantasy_bonding',
+    label: 'The Fantasy Bonder',
+    icon: 'auto_awesome',
+    color: 'bg-purple-500',
+    description: 'You cope by building relationships with screens — AI companions, fictional characters, or parasocial figures — instead of real people.',
+    insight: 'Simulated intimacy feels safe because it can\'t reject you. But it also can\'t truly see you. Real connection requires vulnerability.',
+  },
+  {
+    id: 'hypervigilant',
+    label: 'The Hypervigilant',
+    icon: 'visibility',
+    color: 'bg-cyan-600',
+    description: 'You cope by staying constantly alert — scanning for threats, doom-reading, monitoring everything. Relaxing feels dangerous.',
+    insight: 'Hypervigilance is your nervous system stuck in protection mode. Grounding practices and safe relationships can help you regulate.',
+  },
+];
+
+// Map words → coping type scores
+const COPING_WORD_MAP: Record<string, Partial<Record<CopingTypeId, number>>> = {
+  // Emotional
+  'Lonely': { fantasy_bonding: 2, approval_seeking: 1 },
+  'Bored': { escapist: 3, thrill_seeking: 1 },
+  'Anxious': { hypervigilant: 3, numbing: 1 },
+  'Restless': { thrill_seeking: 2, escapist: 1 },
+  'Numb': { numbing: 3 },
+  'Ashamed': { self_punishing: 3, numbing: 1 },
+  'Overwhelmed': { numbing: 2, escapist: 2, control_oriented: 1 },
+  'Envious': { approval_seeking: 2, control_oriented: 1 },
+  'Angry': { self_punishing: 1, thrill_seeking: 1 },
+  'Driven': { control_oriented: 3 },
+  'Empty': { numbing: 2, fantasy_bonding: 2, escapist: 1 },
+  'Insecure': { approval_seeking: 3, control_oriented: 1 },
+  'Guilty': { self_punishing: 2, numbing: 1 },
+  'Trapped': { escapist: 3, self_punishing: 1 },
+  'Curious': { thrill_seeking: 2 },
+  'Competitive': { thrill_seeking: 2, control_oriented: 2 },
+  // Behavioral
+  'Staying up too late': { escapist: 2, numbing: 1 },
+  'Checking my phone first thing': { hypervigilant: 2, approval_seeking: 1 },
+  'Losing track of time online': { escapist: 3, numbing: 1 },
+  "Spending money I shouldn't": { thrill_seeking: 2, numbing: 1 },
+  'Keeping secrets from people close to me': { self_punishing: 1, fantasy_bonding: 1 },
+  'Avoiding responsibilities': { escapist: 2, numbing: 1 },
+  'Working through meals and weekends': { control_oriented: 3, self_punishing: 1 },
+  'Comparing myself to others': { approval_seeking: 3, control_oriented: 1 },
+  'Canceling plans to be alone': { escapist: 2, numbing: 1 },
+  'Using substances to relax': { numbing: 3 },
+  'Refreshing feeds compulsively': { hypervigilant: 3, approval_seeking: 1 },
+  'Making impulsive decisions': { thrill_seeking: 3 },
+  'Chasing the next win': { thrill_seeking: 3 },
+  'Seeking validation from strangers': { approval_seeking: 3 },
+  "Talking to someone I shouldn't be": { fantasy_bonding: 2, thrill_seeking: 1 },
+  'Watching "just one more" episode': { escapist: 3, numbing: 1 },
+  // Triggers
+  'After an argument': { numbing: 1, self_punishing: 1 },
+  'Late at night alone': { escapist: 2, fantasy_bonding: 1 },
+  'When I feel left out': { approval_seeking: 2, fantasy_bonding: 1 },
+  'During stressful deadlines': { control_oriented: 2, escapist: 1 },
+  "When I'm home alone": { escapist: 2, numbing: 1, fantasy_bonding: 1 },
+  'After a bad day at work': { numbing: 2, thrill_seeking: 1 },
+  'Scrolling in bed': { escapist: 2, hypervigilant: 1 },
+  'When my self-esteem is low': { approval_seeking: 2, self_punishing: 2, control_oriented: 1 },
+  'When boredom hits': { thrill_seeking: 2, escapist: 2 },
+  'During social gatherings': { numbing: 2, approval_seeking: 1 },
+  'When I need to escape reality': { escapist: 3 },
+  'After seeing upsetting news': { hypervigilant: 3, numbing: 1 },
+  // Inner dialogue
+  "\"Just this once won't hurt\"": { thrill_seeking: 2, numbing: 1 },
+  "\"I deserve this after what I've been through\"": { numbing: 2, thrill_seeking: 1 },
+  '"Nobody really understands me"': { fantasy_bonding: 3, escapist: 1 },
+  '"I need to be more productive"': { control_oriented: 3, self_punishing: 1 },
+  '"What are they saying about me?"': { hypervigilant: 3, approval_seeking: 2 },
+  "\"I'll stop after this one\"": { escapist: 2, numbing: 1 },
+  '"I can win it back"': { thrill_seeking: 3 },
+  '"If I looked different, things would be better"': { control_oriented: 2, approval_seeking: 2, self_punishing: 1 },
+  '"Everyone else can handle it, why can\'t I?"': { self_punishing: 3, approval_seeking: 1 },
+  '"I just need something to take the edge off"': { numbing: 3 },
+  "\"I'll deal with it tomorrow\"": { escapist: 2, numbing: 1 },
+  '"They don\'t appreciate me enough"': { approval_seeking: 2, self_punishing: 1 },
+  // Coping step
+  'I withdraw and isolate': { escapist: 3, numbing: 1 },
+  'I seek intensity or thrills': { thrill_seeking: 3 },
+  'I numb out with screens': { numbing: 3, escapist: 1 },
+  'I control what I eat or how I look': { control_oriented: 3 },
+  'I overwork to feel valuable': { control_oriented: 2, self_punishing: 2 },
+  'I people-please to avoid conflict': { approval_seeking: 3 },
+  'I use substances to cope': { numbing: 3 },
+  'I seek out secret relationships': { fantasy_bonding: 3, thrill_seeking: 1 },
+  'I buy things to feel better': { numbing: 2, thrill_seeking: 1 },
+  'I doom-spiral into worst-case thinking': { hypervigilant: 3, self_punishing: 1 },
+  'I punish myself mentally or physically': { self_punishing: 3 },
+  'I outsource my emotions to AI or parasocial figures': { fantasy_bonding: 3 },
+};
+
+function calculateCopingTypes(selected: Set<string>): { type: CopingType; pct: number }[] {
+  const scores: Partial<Record<CopingTypeId, number>> = {};
+  const maxPossible: Partial<Record<CopingTypeId, number>> = {};
+
+  for (const [word, weights] of Object.entries(COPING_WORD_MAP)) {
+    for (const [typeId, weight] of Object.entries(weights)) {
+      const tid = typeId as CopingTypeId;
+      maxPossible[tid] = (maxPossible[tid] ?? 0) + weight;
+      if (selected.has(word)) {
+        scores[tid] = (scores[tid] ?? 0) + weight;
+      }
+    }
+  }
+
+  return COPING_TYPES
+    .map(type => ({
+      type,
+      pct: Math.round(((scores[type.id] ?? 0) / (maxPossible[type.id] ?? 1)) * 100),
+    }))
+    .filter(t => t.pct > 0)
+    .sort((a, b) => b.pct - a.pct);
+}
 
 /* ─── Scoring ────────────────────────────────────────────── */
 function calculateResults(selected: Set<string>): { id: RivalId; label: string; icon: string; color: string; pct: number }[] {
@@ -188,6 +386,11 @@ export default function AssessmentClient() {
     [step, selected]
   );
 
+  const copingResults = useMemo(
+    () => (step >= STEPS.length ? calculateCopingTypes(selected) : []),
+    [step, selected]
+  );
+
   function toggle(word: string) {
     setSelected(prev => {
       const next = new Set(prev);
@@ -215,7 +418,6 @@ export default function AssessmentClient() {
   }
 
   function goToPickRivals() {
-    // Pre-select top rivals (70%+ or top 3, whichever is more)
     const preselected = new Set<RivalId>();
     results.forEach((r, i) => {
       if (r.pct >= 50 || i < 3) preselected.add(r.id);
@@ -327,6 +529,65 @@ export default function AssessmentClient() {
           </div>
         )}
 
+        {/* ── Personality / Coping Profile ─────────────────── */}
+        {copingResults.length > 0 && (
+          <div className="space-y-4">
+            <div className="text-center space-y-2 pt-4">
+              <h2 className="font-headline text-xl font-extrabold tracking-tight text-white">
+                Your Coping Profile
+              </h2>
+              <p className="text-sm text-white-variant font-body max-w-md mx-auto">
+                How you tend to cope when life gets difficult — your avoidance and self-protection patterns.
+              </p>
+            </div>
+
+            {/* Top 3 coping types as detailed cards */}
+            {copingResults.slice(0, 3).map((item, idx) => (
+              <div
+                key={item.type.id}
+                className={`bg-white/[0.05] rounded-2xl ring-1 ring-white/10/10 p-5 space-y-3 ${idx === 0 ? 'shadow-md ring-primary/20' : ''}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-11 h-11 rounded-xl ${item.type.color} flex items-center justify-center shrink-0`}>
+                    <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>{item.type.icon}</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-headline font-bold text-base text-white">{item.type.label}</h3>
+                      <span className={`font-headline font-bold text-sm ${item.pct >= 60 ? 'text-primary' : 'text-white-variant'}`}>{item.pct}%</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-white/10 overflow-hidden mt-1">
+                      <div className={`h-full rounded-full ${item.type.color} transition-all duration-700 ease-out`} style={{ width: `${item.pct}%` }} />
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm text-white-variant font-body leading-relaxed">{item.type.description}</p>
+                <div className="flex items-start gap-2 bg-primary/5 rounded-xl p-3">
+                  <span className="material-symbols-outlined text-primary text-sm mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
+                  <p className="text-xs text-white font-body leading-relaxed">{item.type.insight}</p>
+                </div>
+              </div>
+            ))}
+
+            {/* Remaining types as compact list */}
+            {copingResults.length > 3 && (
+              <div className="grid grid-cols-2 gap-2">
+                {copingResults.slice(3).map(item => (
+                  <div key={item.type.id} className="bg-white/[0.05] rounded-xl ring-1 ring-white/10/10 p-3 flex items-center gap-2.5">
+                    <div className={`w-8 h-8 rounded-lg ${item.type.color} flex items-center justify-center shrink-0`}>
+                      <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{item.type.icon}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-label font-bold text-xs text-white truncate">{item.type.label}</p>
+                      <p className="text-[10px] text-white-variant">{item.pct}%</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Legend */}
         <div className="flex items-center justify-center gap-6 text-xs text-white-variant font-label">
           <div className="flex items-center gap-1.5">
@@ -348,14 +609,14 @@ export default function AssessmentClient() {
           <button
             onClick={goToPickRivals}
             disabled={results.length === 0}
-            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/30 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
+            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
           >
             Choose My Rivals
             <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
           </button>
           <button
             onClick={() => { setStep(0); setSelected(new Set()); }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-label font-semibold text-sm text-stone-400 hover:text-primary transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-label font-semibold text-sm text-white-variant hover:text-primary transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-base">refresh</span>
             Retake Assessment
@@ -363,7 +624,7 @@ export default function AssessmentClient() {
         </div>
 
         {/* Disclaimer */}
-        <p className="text-[10px] text-center text-stone-500 font-body leading-relaxed max-w-md mx-auto">
+        <p className="text-[10px] text-center text-white-variant/50 font-body leading-relaxed max-w-md mx-auto">
           This assessment is for self-awareness purposes only and is not a clinical diagnosis.
           Results are based on behavioral pattern indicators from your self-reported responses.
           If you are in crisis, call or text 988.
@@ -383,12 +644,11 @@ export default function AssessmentClient() {
           <h1 className="font-headline text-2xl font-extrabold tracking-tight text-white">
             Select Your Rivals
           </h1>
-          <p className="text-sm text-stone-400 font-body max-w-md mx-auto leading-relaxed">
+          <p className="text-sm text-white-variant font-body max-w-md mx-auto leading-relaxed">
             Based on your results, select the struggles that best describe what you&apos;re facing. You can choose as many as apply.
           </p>
         </div>
 
-        {/* Rival cards — multi-select */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {results.map(rival => {
             const isChosen = chosenRivals.has(rival.id);
@@ -398,52 +658,43 @@ export default function AssessmentClient() {
                 onClick={() => toggleRival(rival.id)}
                 className={`relative flex items-center gap-3 p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer ${
                   isChosen
-                    ? 'bg-primary/15 ring-2 ring-primary shadow-lg shadow-primary/10'
-                    : 'bg-white/[0.05] ring-1 ring-white/10 hover:ring-primary/30 hover:bg-white/[0.08]'
+                    ? 'bg-primary/10 ring-2 ring-primary shadow-lg shadow-primary/10'
+                    : 'bg-white/[0.05] ring-1 ring-white/10/20 hover:ring-primary/30'
                 }`}
               >
-                {/* Checkbox */}
                 <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
-                  isChosen ? 'bg-primary' : 'bg-white/10 ring-1 ring-white/20'
+                  isChosen ? 'bg-primary' : 'bg-white/10 ring-1 ring-white/10/30'
                 }`}>
-                  {isChosen && (
-                    <span className="material-symbols-outlined text-white text-sm">check</span>
-                  )}
+                  {isChosen && <span className="material-symbols-outlined text-white text-sm">check</span>}
                 </div>
-
-                {/* Icon */}
                 <div className={`w-10 h-10 rounded-xl ${rival.color} flex items-center justify-center shrink-0`}>
                   <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{rival.icon}</span>
                 </div>
-
-                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <h3 className="font-headline font-bold text-sm text-white">{rival.label}</h3>
-                  <p className="text-xs text-stone-400">{rival.pct}% match</p>
+                  <p className="text-xs text-white-variant">{rival.pct}% match</p>
                 </div>
               </button>
             );
           })}
         </div>
 
-        {/* Selected count */}
-        <p className="text-center text-sm text-stone-400 font-label">
+        <p className="text-center text-sm text-white-variant font-label">
           {chosenRivals.size} rival{chosenRivals.size !== 1 ? 's' : ''} selected
         </p>
 
-        {/* Actions */}
         <div className="flex flex-col items-center gap-3 pt-2">
           <button
             onClick={saveAndStart}
             disabled={saving || chosenRivals.size === 0}
-            className="group inline-flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/30 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
+            className="group inline-flex items-center gap-2 px-10 py-4 bg-primary text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Start Your Journey'}
             <span className="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
           </button>
           <button
             onClick={() => setStep(STEPS.length)}
-            className="inline-flex items-center gap-1.5 text-sm font-label font-semibold text-stone-400 hover:text-primary transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-sm font-label font-semibold text-white-variant hover:text-primary transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-base">arrow_back</span>
             Back to results
