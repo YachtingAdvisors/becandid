@@ -157,14 +157,85 @@ Generate the full article now.`;
       const { Resend } = await import('resend');
       const resend = new Resend(process.env.RESEND_API_KEY!);
       const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@updates.becandid.io';
+      const wordCount = content.split(/\s+/).length;
+
+      // Build backlink suggestions based on topic
+      const backlinkSuggestions = track === 'A'
+        ? [
+            `Submit to <strong>AlternativeTo.net</strong> — add Be Candid as an alternative to ${('competitor' in nextTopic) ? (nextTopic as any).competitor : 'competitors'} and link back to this article`,
+            `Post in relevant <strong>Reddit threads</strong> (r/NoFap, r/pornfree, r/digitalminimalism) where people ask about ${('competitor' in nextTopic) ? (nextTopic as any).competitor : 'accountability apps'} — link naturally`,
+            `Share on <strong>Product Hunt discussions</strong> and <strong>Hacker News</strong> if relevant`,
+            `Reach out to bloggers who review accountability software — offer this as a resource they can link to`,
+            `Add this URL to your <strong>Google Business Profile</strong> posts if applicable`,
+          ]
+        : [
+            `Pitch this to <strong>.edu counseling departments</strong> as a resource — earn authoritative backlinks`,
+            `Submit to <strong>psychology newsletters</strong> (e.g., Psychology Today contributor network)`,
+            `Share in <strong>therapist Facebook groups</strong> and <strong>counseling forums</strong>`,
+            `Reach out to Jay Stringer's team — if they link to this, it's a massive authority signal`,
+            `Submit to <strong>SAMHSA, NCBI, or .gov resource lists</strong> if the content qualifies`,
+          ];
+
+      const pillarNote = track === 'B'
+        ? `<div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:16px;margin:16px 0;">
+            <p style="margin:0 0 8px;font-weight:700;color:#92400e;">⚠️ PILLAR CONTENT — Human Review Required</p>
+            <p style="margin:0;font-size:13px;color:#78350f;">This is YMYL (Your Money or Your Life) content. Before publishing:</p>
+            <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:#78350f;">
+              <li>Verify all cited studies and statistics are accurate</li>
+              <li>Ensure claims are appropriately hedged (no medical advice)</li>
+              <li>Add your personal expertise or editorial voice</li>
+              <li>Consider adding a real "Reviewed by" credit for E-E-A-T</li>
+            </ul>
+            <p style="margin:8px 0 0;font-size:13px;color:#78350f;">Edit in Supabase → seo_content table → change status to "published" when ready.</p>
+          </div>`
+        : '';
+
+      const internalLinks = [
+        `<a href="${BASE_URL}/methodology">/methodology</a> — link from articles about "how it works"`,
+        `<a href="${BASE_URL}/assessment">/assessment</a> — link from articles mentioning self-discovery or rival identification`,
+        `<a href="${BASE_URL}/blog">/blog</a> — link roundup posts to other articles in the cluster`,
+        `<a href="${BASE_URL}/pricing">/pricing</a> — link from bottom-of-funnel comparison articles`,
+        `<a href="${BASE_URL}/org">/org</a> — link from articles about student access or nonprofit work`,
+      ];
+
       await resend.emails.send({
         from,
         to: 'shawn@becandid.io',
         subject: `[SEO] Track ${track}: ${post.title}`,
-        html: `<p><strong>Track ${track}</strong> article generated: <a href="${BASE_URL}/blog/${post.slug}">${post.title}</a></p>
-          <p>Status: ${track === 'B' ? 'DRAFT — needs human review' : 'Published & submitted to Google'}</p>
-          <p>Keywords: ${nextTopic.keywords.join(', ')}</p>
-          <p>Word count: ~${content.split(/\s+/).length}</p>`,
+        html: `
+          <div style="font-family:system-ui,sans-serif;max-width:600px;">
+            <h2 style="margin:0 0 4px;">📝 ${post.title}</h2>
+            <p style="margin:0 0 16px;color:#666;">Track ${track} · ${wordCount} words · ${nextTopic.keywords.join(', ')}</p>
+
+            <p><strong>Live URL:</strong> <a href="${BASE_URL}/blog/${post.slug}">${BASE_URL}/blog/${post.slug}</a></p>
+            <p><strong>Status:</strong> ${track === 'B' ? '🟡 DRAFT — needs your review' : '🟢 Published & submitted to Google Indexing API'}</p>
+
+            ${pillarNote}
+
+            <h3 style="margin:24px 0 8px;border-top:1px solid #e5e7eb;padding-top:16px;">🔗 Backlink Opportunities</h3>
+            <p style="font-size:13px;color:#666;">To boost this article's ranking, build backlinks from these sources:</p>
+            <ol style="font-size:13px;line-height:1.8;">
+              ${backlinkSuggestions.map(s => `<li>${s}</li>`).join('')}
+            </ol>
+
+            <h3 style="margin:24px 0 8px;border-top:1px solid #e5e7eb;padding-top:16px;">🏗️ Internal Linking Checklist</h3>
+            <p style="font-size:13px;color:#666;">Make sure these pages link TO this article and this article links BACK:</p>
+            <ul style="font-size:13px;line-height:1.8;">
+              ${internalLinks.map(l => `<li>${l}</li>`).join('')}
+            </ul>
+
+            <h3 style="margin:24px 0 8px;border-top:1px solid #e5e7eb;padding-top:16px;">📊 Next Steps</h3>
+            <ul style="font-size:13px;line-height:1.8;">
+              <li>Check the article reads naturally — AI content needs your voice</li>
+              <li>Add any personal anecdotes or unique insights</li>
+              <li>Share on social (LinkedIn, X) within 24 hours of publish</li>
+              <li>Monitor Google Search Console for impressions in 3-5 days</li>
+              ${track === 'A' ? '<li>Consider adding a YouTube video version for rich snippets</li>' : ''}
+            </ul>
+
+            <p style="margin:24px 0 0;font-size:11px;color:#999;">Remaining Track ${track} topics: ${topics.filter(t => !existingSlugs.has(t.slug) && t.slug !== post.slug).length} · Total generated: ${existingSlugs.size + 1}</p>
+          </div>`,
+      });
       });
     } catch {}
 
