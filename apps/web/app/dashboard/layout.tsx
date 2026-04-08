@@ -17,25 +17,30 @@ import IdleTimeout from '@/components/IdleTimeout';
 import RealtimeProvider from '@/components/dashboard/RealtimeProvider';
 import SWRProvider from '@/components/SWRProvider';
 import BuildWithUs from '@/components/dashboard/BuildWithUs';
+import QuickActionFab from '@/components/dashboard/QuickActionFab';
 import ToastProvider from '@/components/ToastProvider';
 
-// Nav items — some hidden in solo mode
+// Nav items — grouped into sections for cleaner sidebar
 const NAV_ITEMS = [
+  // Core — always visible
   { id: 'overview', href: '/dashboard', label: 'Dashboard', icon: 'dashboard', solo: true },
+  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: 'edit_note', solo: true },
   { id: 'focus', href: '/dashboard/focus', label: 'Focus Board', icon: 'center_focus_strong', solo: true },
   { id: 'checkins', href: '/dashboard/checkins', label: 'Check-ins', icon: 'check_circle', solo: true },
-  { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: 'edit_note', solo: true },
   { id: 'activity', href: '/dashboard/activity', label: 'Activity', icon: 'timeline', solo: true },
-  { id: 'chips', href: '/dashboard/chips', label: 'Focus Chips', icon: 'military_tech', solo: true },
-  { id: 'progress', href: '/dashboard/progress', label: 'Progress', icon: 'trending_up', solo: true },
-  { id: 'fasting', href: '/dashboard/fasting', label: 'Fasting', icon: 'self_improvement', solo: true },
-  { id: 'amends', href: '/dashboard/amends', label: 'Making Amends', icon: 'handshake', solo: true },
-  { id: 'inventory', href: '/dashboard/inventory', label: 'Daily Inventory', icon: 'self_improvement', solo: true },
-  { id: 'groups', href: '/dashboard/groups', label: 'Groups', icon: 'diversity_3', solo: true },
-  { id: 'community', href: '/dashboard/community', label: 'Community', icon: 'groups', solo: true },
-  { id: 'mentors', href: '/dashboard/mentors', label: 'Mentors', icon: 'supervised_user_circle', solo: true },
-  { id: 'conversations', href: '/dashboard/conversations', label: 'Partner Conversations', icon: 'forum', solo: false },
-  { id: 'downloads', href: '/dashboard/downloads', label: 'Downloads', icon: 'download', solo: true },
+  // Growth — collapsible
+  { id: 'progress', href: '/dashboard/progress', label: 'Progress', icon: 'trending_up', solo: true, group: 'growth' },
+  { id: 'chips', href: '/dashboard/chips', label: 'Focus Chips', icon: 'military_tech', solo: true, group: 'growth' },
+  { id: 'inventory', href: '/dashboard/inventory', label: 'Daily Inventory', icon: 'self_improvement', solo: true, group: 'growth' },
+  { id: 'fasting', href: '/dashboard/fasting', label: 'Fasting', icon: 'self_improvement', solo: true, group: 'growth' },
+  { id: 'amends', href: '/dashboard/amends', label: 'Making Amends', icon: 'handshake', solo: true, group: 'growth' },
+  // Community — collapsible
+  { id: 'conversations', href: '/dashboard/conversations', label: 'Conversations', icon: 'forum', solo: false, group: 'community' },
+  { id: 'groups', href: '/dashboard/groups', label: 'Groups', icon: 'diversity_3', solo: true, group: 'community' },
+  { id: 'community', href: '/dashboard/community', label: 'Community', icon: 'groups', solo: true, group: 'community' },
+  { id: 'mentors', href: '/dashboard/mentors', label: 'Mentors', icon: 'supervised_user_circle', solo: true, group: 'community' },
+  // Bottom
+  { id: 'downloads', href: '/dashboard/downloads', label: 'Downloads', icon: 'download', solo: true, group: 'other' },
   { id: 'settings', href: '/dashboard/settings', label: 'Settings', icon: 'settings', solo: true },
 ];
 
@@ -107,6 +112,7 @@ export default async function DashboardLayout({
         </SWRProvider>
         <RealtimeProvider />
         <BuildWithUs />
+        <QuickActionFab />
       </main>
     </div>
     </ToastProvider>

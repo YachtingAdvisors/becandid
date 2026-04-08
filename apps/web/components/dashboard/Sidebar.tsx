@@ -40,6 +40,86 @@ const MOBILE_TABS_ALL = [
   { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Journal', icon: 'edit_note', solo: true },
 ];
 
+const GROUP_LABELS: Record<string, { label: string; icon: string }> = {
+  growth: { label: 'Growth Tools', icon: 'trending_up' },
+  community: { label: 'Community', icon: 'groups' },
+  other: { label: 'More', icon: 'more_horiz' },
+};
+
+function NavGroupedItems({ navItems, isActive, onNavigate }: {
+  navItems: Array<{ id: string; href: string; label: string; icon: string; group?: string }>;
+  isActive: (href: string) => boolean;
+  onNavigate: () => void;
+}) {
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  // Split items into ungrouped (core) and grouped
+  const core = navItems.filter(item => !item.group);
+  const groups: Record<string, typeof navItems> = {};
+  for (const item of navItems) {
+    if (item.group) {
+      if (!groups[item.group]) groups[item.group] = [];
+      groups[item.group].push(item);
+    }
+  }
+
+  // Auto-expand a group if it contains the active page
+  const expandedWithActive = { ...expanded };
+  for (const [groupId, items] of Object.entries(groups)) {
+    if (items.some(item => isActive(item.href))) {
+      expandedWithActive[groupId] = true;
+    }
+  }
+
+  function renderItem(item: typeof navItems[0]) {
+    return (
+      <Link
+        key={item.id}
+        href={item.href}
+        onClick={onNavigate}
+        {...(item.id === 'stringer-journal' ? { 'data-tour': 'journal' } : {})}
+        {...(item.id === 'checkins' ? { 'data-tour': 'checkins' } : {})}
+        {...(item.id === 'invite-partner' || item.id === 'conversations' ? { 'data-tour': 'partner' } : {})}
+        className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+          isActive(item.href)
+            ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
+            : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
+        }`}
+      >
+        <span className="material-symbols-outlined text-lg w-5 text-center">{item.icon}</span>
+        <span className="font-body">{item.label}</span>
+      </Link>
+    );
+  }
+
+  return (
+    <>
+      {core.map(renderItem)}
+      {Object.entries(groups).map(([groupId, items]) => {
+        const meta = GROUP_LABELS[groupId] ?? { label: groupId, icon: 'folder' };
+        const isOpen = expandedWithActive[groupId] ?? false;
+        return (
+          <div key={groupId} className="mt-1">
+            <button
+              onClick={() => setExpanded(prev => ({ ...prev, [groupId]: !prev[groupId] }))}
+              className="flex items-center gap-3 px-4 py-2 w-full text-left rounded-2xl text-[11px] font-label font-semibold uppercase tracking-widest text-on-surface-variant/50 hover:text-on-surface-variant/80 transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-sm w-5 text-center">{meta.icon}</span>
+              <span className="flex-1">{meta.label}</span>
+              <span className={`material-symbols-outlined text-sm transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>expand_more</span>
+            </button>
+            {isOpen && (
+              <div className="ml-2">
+                {items.map(renderItem)}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
 export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnabled, hasGoals, navItems, soloMode }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -232,24 +312,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
 
       {/* Nav */}
       <nav className="px-3 pt-2 pb-4 overflow-y-auto">
-        {navItems.map((item) => (
-          <Link
-            key={item.id}
-            href={item.href}
-            onClick={() => setOpen(false)}
-            {...(item.id === 'stringer-journal' ? { 'data-tour': 'journal' } : {})}
-            {...(item.id === 'checkins' ? { 'data-tour': 'checkins' } : {})}
-            {...(item.id === 'invite-partner' || item.id === 'conversations' ? { 'data-tour': 'partner' } : {})}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-              isActive(item.href)
-                ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
-                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
-            }`}
-          >
-            <span className="material-symbols-outlined text-lg w-5 text-center">{item.icon}</span>
-            <span className="font-body">{item.label}</span>
-          </Link>
-        ))}
+        <NavGroupedItems navItems={navItems} isActive={isActive} onNavigate={() => setOpen(false)} />
 
         {/* Tools section */}
         <div className="mt-2 pt-2 border-t border-outline-variant/30">
