@@ -19,6 +19,7 @@ import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
 import FocusChip from '@/components/dashboard/FocusChip';
 import SelfHarmSafetyCard from '@/components/dashboard/SelfHarmSafetyCard';
 import DashboardCustomizer from '@/components/dashboard/DashboardCustomizer';
+import RivalAssessmentAccordion from '@/components/dashboard/RivalAssessmentAccordion';
 
 const WhatsNew = dynamic(
   () => import('@/components/dashboard/WhatsNew'),
@@ -298,6 +299,8 @@ export default async function DashboardPage() {
       )}
     </>
   );
+
+  widgets['assessment'] = <RivalAssessmentAccordion />;
 
   widgets['whats-new'] = (
     <>

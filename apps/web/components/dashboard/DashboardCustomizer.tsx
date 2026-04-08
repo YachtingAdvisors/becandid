@@ -11,6 +11,7 @@ export interface WidgetDef {
 
 export const WIDGET_REGISTRY: WidgetDef[] = [
   { id: 'hero', label: 'Dashboard Hero', icon: 'dashboard' },
+  { id: 'assessment', label: 'Rival Assessment', icon: 'psychology_alt' },
   { id: 'whats-new', label: "What's New", icon: 'new_releases' },
   { id: 'coach', label: 'Scheduled Coach', icon: 'psychology' },
   { id: 'commitment', label: 'Daily Commitment', icon: 'volunteer_activism' },

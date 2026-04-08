@@ -22,7 +22,6 @@ import ToastProvider from '@/components/ToastProvider';
 // Nav items — some hidden in solo mode
 const NAV_ITEMS = [
   { id: 'overview', href: '/dashboard', label: 'Dashboard', icon: 'dashboard', solo: true },
-  { id: 'assessment', href: '/dashboard/assessment', label: 'Rival Assessment', icon: 'psychology_alt', solo: true },
   { id: 'focus', href: '/dashboard/focus', label: 'Focus Board', icon: 'center_focus_strong', solo: true },
   { id: 'checkins', href: '/dashboard/checkins', label: 'Check-ins', icon: 'check_circle', solo: true },
   { id: 'stringer-journal', href: '/dashboard/stringer-journal', label: 'Candid Journal', icon: 'edit_note', solo: true },
