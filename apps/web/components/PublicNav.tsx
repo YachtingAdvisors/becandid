@@ -12,11 +12,8 @@ export default function PublicNav() {
     { href: '/', label: 'Sanctuary' },
     { href: '/methodology', label: 'Methodology' },
     { href: '/assessment', label: 'Assessment' },
-    { href: '/why-becandid', label: 'Why Be Candid' },
     { href: '/pricing', label: 'Pricing' },
-    { href: '/therapists', label: 'Therapists' },
     { href: '/blog', label: 'Blog' },
-    { href: 'https://becandid.org', label: '.org' },
     { href: '/download', label: 'Download' },
   ];
 

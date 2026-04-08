@@ -101,6 +101,7 @@ export default function StringerJournalPage() {
   const [expandedPrompts, setExpandedPrompts] = useState<Record<string, boolean>>({});
   const [mood, setMood] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [journalMode, setJournalMode] = useState<'quick' | 'deep'>('quick');
 
   // Crisis detection
   const crisisCheck = useMemo(() => checkForCrisisLanguage(freewrite), [freewrite]);
@@ -345,10 +346,41 @@ export default function StringerJournalPage() {
         </div>
       )}
 
+      {/* Mode toggle */}
+      {!isEdit && (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setJournalMode('quick')}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-label font-semibold cursor-pointer transition-all duration-200 ${
+              journalMode === 'quick'
+                ? 'bg-primary text-on-primary shadow-md shadow-primary/20'
+                : 'bg-surface-container-lowest text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30'
+            }`}
+          >
+            <span className="material-symbols-outlined text-sm">bolt</span>
+            Quick Write
+          </button>
+          <button
+            onClick={() => setJournalMode('deep')}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-label font-semibold cursor-pointer transition-all duration-200 ${
+              journalMode === 'deep'
+                ? 'bg-primary text-on-primary shadow-md shadow-primary/20'
+                : 'bg-surface-container-lowest text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30'
+            }`}
+          >
+            <span className="material-symbols-outlined text-sm">psychology</span>
+            Deep Dive
+          </button>
+          <span className="text-[10px] text-on-surface-variant/50 font-label ml-1">
+            {journalMode === 'quick' ? 'Just write freely' : 'Guided Stringer framework'}
+          </span>
+        </div>
+      )}
+
       {/* Freewrite */}
       <div>
         <div className="flex items-center gap-2 mb-2">
-          <label className="text-sm font-label font-medium text-on-surface">Open reflection</label>
+          <label className="text-sm font-label font-medium text-on-surface">{journalMode === 'quick' ? 'What\'s on your mind?' : 'Open reflection'}</label>
           <VoiceJournal
             fieldName="freewrite"
             onTranscript={(text) => setFreewrite(prev => prev ? prev + ' ' + text : text)}
@@ -362,10 +394,11 @@ export default function StringerJournalPage() {
         {crisisCheck.detected && <CrisisResourceBanner result={crisisCheck} />}
       </div>
 
-      {/* Guided prompts */}
+      {/* Guided prompts — only in deep mode */}
+      {journalMode === 'deep' && (
       <div>
         <p className="text-sm font-label font-medium text-on-surface mb-2">
-          Guided prompts <span className="text-on-surface-variant font-normal">(optional)</span>
+          Stringer Framework <span className="text-on-surface-variant font-normal">(trace what led here)</span>
         </p>
         <div className="space-y-2">
           {STRINGER_PROMPTS.map((prompt, i) => {
@@ -410,6 +443,7 @@ export default function StringerJournalPage() {
           })}
         </div>
       </div>
+      )}
 
       {/* Mood */}
       <div>

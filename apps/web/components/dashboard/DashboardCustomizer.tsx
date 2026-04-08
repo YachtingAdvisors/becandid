@@ -40,10 +40,12 @@ interface SavedLayout {
 }
 
 const DEFAULT_ORDER = WIDGET_REGISTRY.map(w => w.id);
+// Hide advanced widgets by default — reduce new-user overwhelm
+const DEFAULT_HIDDEN = ['referral', 'services', 'events', 'inventory', 'weekly-report', 'screen-content', 'spouse'];
 const STORAGE_KEY = 'becandid-dashboard-layout';
 
 function loadLayout(): SavedLayout {
-  if (typeof window === 'undefined') return { order: DEFAULT_ORDER, hidden: [] };
+  if (typeof window === 'undefined') return { order: DEFAULT_ORDER, hidden: DEFAULT_HIDDEN };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
@@ -56,7 +58,7 @@ function loadLayout(): SavedLayout {
       return { order: merged, hidden: parsed.hidden ?? [] };
     }
   } catch {}
-  return { order: DEFAULT_ORDER, hidden: [] };
+  return { order: DEFAULT_ORDER, hidden: DEFAULT_HIDDEN };
 }
 
 function persistLayout(layout: SavedLayout) {
