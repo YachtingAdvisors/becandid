@@ -44,8 +44,23 @@ const DEFAULT_ORDER = WIDGET_REGISTRY.map(w => w.id);
 const DEFAULT_HIDDEN = ['referral', 'services', 'events', 'inventory', 'weekly-report', 'screen-content', 'spouse'];
 const STORAGE_KEY = 'becandid-dashboard-layout';
 
-function loadLayout(): SavedLayout {
+function loadLayout(serverWidgets?: string[] | null): SavedLayout {
   if (typeof window === 'undefined') return { order: DEFAULT_ORDER, hidden: DEFAULT_HIDDEN };
+
+  // If server has a saved widget config, use it as source of truth
+  if (serverWidgets && serverWidgets.length > 0) {
+    const serverSet = new Set(serverWidgets);
+    // Widgets NOT in the server list are hidden
+    const hidden = DEFAULT_ORDER.filter(id => !serverSet.has(id));
+    // Order: server widgets first, then any new widgets not yet in server config
+    const order = [...serverWidgets];
+    for (const id of DEFAULT_ORDER) {
+      if (!serverSet.has(id)) order.push(id);
+    }
+    return { order, hidden };
+  }
+
+  // Fallback to localStorage for backward compat
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
@@ -64,27 +79,31 @@ function loadLayout(): SavedLayout {
 function persistLayout(layout: SavedLayout) {
   if (typeof window === 'undefined') return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(layout));
-  fetch('/api/dashboard/layout', {
-    method: 'POST',
+
+  // Sync to database: active widgets = ordered minus hidden
+  const activeWidgets = layout.order.filter(id => !layout.hidden.includes(id));
+  fetch('/api/widgets', {
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(layout),
+    body: JSON.stringify({ widgets: activeWidgets }),
   }).catch(() => {});
 }
 
 /* ─── Component ──────────────────────────────────────────── */
 interface Props {
   widgets: Record<string, ReactNode>;
+  serverWidgets?: string[] | null; // From dashboard_widgets DB column
 }
 
-export default function DashboardCustomizer({ widgets }: Props) {
+export default function DashboardCustomizer({ widgets, serverWidgets }: Props) {
   const [editing, setEditing] = useState(false);
   const [layout, setLayout] = useState<SavedLayout>({ order: DEFAULT_ORDER, hidden: [] });
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   useEffect(() => {
-    setLayout(loadLayout());
-  }, []);
+    setLayout(loadLayout(serverWidgets));
+  }, [serverWidgets]);
 
   const toggleWidget = useCallback((id: string) => {
     setLayout(prev => {

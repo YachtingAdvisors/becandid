@@ -59,6 +59,13 @@ const STEPS: TourStep[] = [
     icon: 'handshake',
   },
   {
+    id: 'customize',
+    title: 'Personalize Your Dashboard',
+    description: 'Add, remove, or reorder widgets to build the dashboard that works for you. Click Customize anytime to change your layout.',
+    targetSelector: '[data-tour="customize"]',
+    icon: 'dashboard_customize',
+  },
+  {
     id: 'complete',
     title: "You're ready!",
     description: "Remember: this isn't about perfection. It's about honesty.",

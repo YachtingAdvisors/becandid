@@ -20,6 +20,7 @@ import FocusChip from '@/components/dashboard/FocusChip';
 import SelfHarmSafetyCard from '@/components/dashboard/SelfHarmSafetyCard';
 import DashboardCustomizer from '@/components/dashboard/DashboardCustomizer';
 import RivalAssessmentAccordion from '@/components/dashboard/RivalAssessmentAccordion';
+import { getDefaultWidgets } from '@/lib/widgets/registry';
 import PrivacyBadge from '@/components/dashboard/PrivacyBadge';
 
 const WhatsNew = dynamic(
@@ -136,7 +137,7 @@ export default async function DashboardPage() {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes, todayEventsRes, weekEventsRes, streakRes, journalWeekRes, moodCheckInsRes, focusStreakRes, trustPointsRes] = await Promise.all([
-    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator, login_count').eq('id', user.id).single(),
+    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator, login_count, dashboard_widgets').eq('id', user.id).single(),
     db.from('events').select('id, category, severity, platform, app_name, timestamp').eq('user_id', user.id).order('timestamp', { ascending: false }).limit(5),
     db.from('alerts').select('id, sent_at, conversations(id, completed_at, outcome)').eq('user_id', user.id).order('sent_at', { ascending: false }).limit(5),
     db.from('partners').select('partner_name, status, relationship').eq('user_id', user.id).in('status', ['active', 'accepted']).maybeSingle(),
@@ -167,6 +168,10 @@ export default async function DashboardPage() {
   const profile = profileRes?.data ?? null;
   const events = eventsRes?.data ?? [];
   const alerts = alertsRes?.data ?? [];
+
+  // Compute active widget config from DB or defaults
+  const serverWidgets: string[] | null = profile?.dashboard_widgets ?? null;
+  const activeWidgets: string[] = serverWidgets ?? getDefaultWidgets(profile?.goals ?? [], profile?.foundational_motivator ?? 'general');
   const partner = partnerRes?.data ?? null;
 
   const pendingConversations = alerts.filter((a: any) => !a.conversations?.[0]?.completed_at).length;
@@ -653,7 +658,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-4xl mx-auto page-enter">
-      <DashboardCustomizer widgets={widgets} />
+      <DashboardCustomizer widgets={widgets} serverWidgets={serverWidgets} />
 
       {/* Pending conversations (always visible, not customizable) */}
       {pendingConversations > 0 && (

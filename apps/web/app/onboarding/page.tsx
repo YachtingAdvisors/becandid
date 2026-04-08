@@ -23,6 +23,7 @@ import {
   type FoundationalMotivator,
 } from '@be-candid/shared';
 import { GOAL_TIPS } from '@/lib/goalTips';
+import { getDefaultWidgets } from '@/lib/widgets/registry';
 
 type Step = 'goals' | 'goal-tips' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'rival-assessment' | 'done' | 'first-journal';
 
@@ -71,6 +72,13 @@ function OnboardingContent() {
   const setStep = (s: Step) => {
     // When transitioning to 'done', show the full phrase animation first
     if (s === 'done') {
+      // Fire-and-forget: save default dashboard widgets based on goals + motivator
+      fetch('/api/widgets', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ widgets: getDefaultWidgets(goals, motivators.join(',')) }),
+      }).catch(() => {});
+
       setShowFullPhrase(true);
       setTimeout(() => {
         setShowFullPhrase(false);
