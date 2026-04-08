@@ -117,7 +117,7 @@ export default function BuildWithUs() {
           {/* Actions */}
           <div className="flex items-center justify-between">
             <a
-              href="mailto:support@becandid.io?subject=Build%20With%20Us"
+              href="mailto:shawn@becandid.io?subject=Build%20With%20Us"
               className="text-xs text-on-surface-variant hover:text-primary font-label transition-colors"
             >
               Or email us directly

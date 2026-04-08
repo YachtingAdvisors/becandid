@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL ?? 'support@becandid.io',
-      to: 'support@becandid.io',
+      to: 'shawn@becandid.io',
       replyTo: profile?.email || user.email || undefined,
       subject: `[${type.toUpperCase()}] Issue report from ${profile?.name || 'a user'}`,
       html: `
