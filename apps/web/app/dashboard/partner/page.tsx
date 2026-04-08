@@ -435,10 +435,10 @@ export default function PartnerPage() {
           {partner.status === 'active' && (
             <GrowthJourney
               partnerName={partner.partner_name || 'Partner'}
-              streakDays={momentum?.streak ?? 0}
+              streakDays={relationshipData?.streak ?? 0}
               checkInRate={checkInRate}
               journalCount={0}
-              focusRate={momentum?.streak ? Math.min(momentum.streak * 5, 100) : 50}
+              focusRate={relationshipData?.streak ? Math.min(relationshipData.streak * 5, 100) : 50}
               daysSinceSignup={30}
             />
           )}
