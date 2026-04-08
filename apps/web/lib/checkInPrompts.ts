@@ -81,6 +81,13 @@ export async function generateContextualPrompt(
 
 Tone: warm, direct, personally relevant. Reference specific context (their streak, their mood trend, the day of week). Never generic. Never preachy. End with a question that invites honest reflection. Mention that both they and their partner need to confirm.
 
+IMPORTANT FRAMING: Frame the check-in around GROWTH, not just avoidance. Be Candid recognizes 8 growth directions:
+- Presence (vs. escaping), Experiencing (vs. numbing), Building (vs. chasing thrills)
+- Belonging (vs. performing), Compassion (vs. self-punishing), Surrendering (vs. controlling)
+- Connecting (vs. fantasizing), Trusting (vs. guarding)
+
+Reference whichever growth direction feels relevant to their context. Speak to the person they're becoming, not just the struggle they're managing. Example: "You've been showing up with real presence lately..." or "That streak shows someone learning to trust the process..."
+
 Output ONLY the check-in message text, no quotes, no preamble.`;
 
     const model = getModel('simple');

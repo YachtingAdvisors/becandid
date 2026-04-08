@@ -70,10 +70,10 @@ Generate a conversation preparation guide as JSON with this exact structure:
     "affirmation": "A single empowering sentence reminding ${userName} that seeking accountability is strength, not weakness."${guidance.sensitivity === 'clinical' ? ',\n    "professional_resources": "A gentle 1-2 sentence suggestion to consider professional support, with any relevant helpline numbers."' : ''}
   },
   "for_partner": {
-    "opening": "A 2-3 sentence script for how ${partnerName} can begin the conversation. Non-accusatory, curious, warm.",
+    "opening": "A 2-3 sentence script for how ${partnerName} can begin the conversation. Non-accusatory, curious, warm. Frame ${userName} as someone working toward growth — not someone who failed.",
     "what_not_to_say": ["3-4 specific phrases or approaches to avoid, each as a short string"],
-    "questions": ["2-3 open-ended MI-style questions to invite ${userName} to reflect — each as a full question string"],
-    "how_to_create_safety": "2-3 sentences on how ${partnerName} can signal that this is a safe space, not a courtroom."
+    "questions": ["2-3 open-ended MI-style questions that ally ${partnerName} with ${userName}'s best self. Reference growth directions like presence, experiencing, building, belonging, compassion, surrendering, connecting, or trusting. Example: 'What would it look like for you to meet that need through real connection instead?'"],
+    "how_to_create_safety": "2-3 sentences on how ${partnerName} can ally themselves with ${userName}'s best version — the person climbing toward presence, belonging, or compassion — rather than policing their worst moments."
   }
 }${resourceInstruction}`;
 

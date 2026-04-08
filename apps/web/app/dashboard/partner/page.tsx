@@ -6,6 +6,7 @@ import type { GoalCategory } from '@be-candid/shared';
 import { GOAL_LABELS, getCategoryEmoji } from '@be-candid/shared';
 import PartnerCompatibility from '@/components/dashboard/PartnerCompatibility';
 import TrustMeter from '@/components/dashboard/TrustMeter';
+import GrowthJourney from '@/components/dashboard/GrowthJourney';
 
 interface PartnerData {
   id: string;
@@ -52,34 +53,44 @@ const RELATIONSHIP_ICONS: Record<string, string> = {
 
 const CONVERSATION_PROMPTS = [
   {
-    text: 'How are you really doing today -- not the polished answer, but the honest one?',
-    theme: 'connection',
-    icon: 'chat_bubble',
+    text: 'I see you working toward presence and showing up even when it\'s hard. What does being present feel like for you today?',
+    theme: 'presence',
+    icon: 'self_improvement',
   },
   {
-    text: "What's been the hardest part of your week, and how did you handle it?",
-    theme: 'vulnerability',
-    icon: 'psychology',
+    text: 'I know you\'re building something meaningful. What\'s one thing you created or accomplished this week that you\'re proud of?',
+    theme: 'building',
+    icon: 'construction',
   },
   {
-    text: 'Is there anything you have been avoiding talking about?',
-    theme: 'honesty',
-    icon: 'visibility',
+    text: 'I want you to know you belong here — not because of what you do, but because of who you are. How can I make that feel more real?',
+    theme: 'belonging',
+    icon: 'favorite',
   },
   {
-    text: 'What is one win -- however small -- that you want to celebrate?',
-    theme: 'encouragement',
-    icon: 'celebration',
+    text: 'You\'ve been practicing compassion toward yourself. What\'s something kind you\'ve told yourself this week instead of the old script?',
+    theme: 'compassion',
+    icon: 'spa',
   },
   {
-    text: 'What does support look like for you right now?',
-    theme: 'needs',
-    icon: 'support',
+    text: 'I know trusting doesn\'t come easy. What would it look like for you to let go of one thing you\'re trying to control right now?',
+    theme: 'surrendering',
+    icon: 'water_drop',
   },
   {
-    text: 'What triggered the hardest moment this week, and what did you do next?',
-    theme: 'growth',
-    icon: 'trending_up',
+    text: 'You\'re choosing real connection over the easy substitutes. What\'s one real conversation or moment of connection you had this week?',
+    theme: 'connecting',
+    icon: 'handshake',
+  },
+  {
+    text: 'I notice you\'re learning to sit with difficult emotions instead of running. What have you experienced this week that surprised you?',
+    theme: 'experiencing',
+    icon: 'wb_sunny',
+  },
+  {
+    text: 'You\'re learning to trust the process. What\'s one area where you let go of needing to know the outcome?',
+    theme: 'trusting',
+    icon: 'shield_with_heart',
   },
 ];
 
@@ -418,6 +429,18 @@ export default function PartnerPage() {
           {/* ── Trust Meter ─────────────────────────────────── */}
           {partner.status === 'active' && (
             <TrustMeter checkInRate={checkInRate} totalCheckIns={totalCheckIns} />
+          )}
+
+          {/* ── Growth Journey Visualization ──────────────────── */}
+          {partner.status === 'active' && (
+            <GrowthJourney
+              partnerName={partner.partner_name || 'Partner'}
+              streakDays={momentum?.streak ?? 0}
+              checkInRate={checkInRate}
+              journalCount={0}
+              focusRate={momentum?.streak ? Math.min(momentum.streak * 5, 100) : 50}
+              daysSinceSignup={30}
+            />
           )}
 
           {/* Partner effectiveness scores */}

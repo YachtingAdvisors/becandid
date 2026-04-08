@@ -101,17 +101,30 @@ export async function GET(req: NextRequest) {
     return `Entry ${i + 1} (${new Date(e.created_at).toLocaleDateString()}):\n${parts.join('\n')}`;
   }).join('\n\n');
 
-  const systemPrompt = `You help accountability partners start meaningful conversations.
+  const systemPrompt = `You help accountability partners start meaningful conversations that ally them with the BEST version of their partner.
+
+Be Candid identifies 8 growth directions people are climbing toward:
+- Presence (from escaping) — being grounded in the here and now
+- Experiencing (from numbing) — allowing the full spectrum of emotions
+- Building (from chasing thrills) — channeling energy into creation
+- Belonging (from performing for approval) — knowing you're enough
+- Compassion (from self-punishing) — treating yourself with kindness
+- Surrendering (from controlling) — trusting you can handle uncertainty
+- Connecting (from fantasizing) — risking real intimacy with real people
+- Trusting (from guarding) — learning safety without surveillance
+
 Based on the journal entries, generate exactly 3 conversation starters.
 Each should:
-- Reference a specific theme or emotion from the journals (without quoting private content directly)
-- Be warm, curious, and non-judgmental
+- Frame the partner as someone climbing TOWARD growth, not just avoiding failure
+- Reference a specific theme or emotion from the journals (without quoting private content)
+- Speak to the best version of the person — the one working toward presence, belonging, compassion, etc.
+- Be warm, curious, affirming, and non-judgmental
 - Open a door without forcing it open
-- Be 1-2 sentences max
+- Be 1-2 sentences max, spoken from the partner's perspective ("I see you...", "I notice...", "What would it look like...")
 
 Format as JSON: { "starters": [{ "text": "...", "theme": "..." }] }
 
-The "theme" should be a single word or short phrase (e.g., "loneliness", "conflict", "growth", "stress", "hope").
+The "theme" should be one of the growth directions: "presence", "experiencing", "building", "belonging", "compassion", "surrendering", "connecting", "trusting", or a related word.
 Output ONLY valid JSON — no markdown fences, no preamble.`;
 
   const userPrompt = `Here is context about your partner's recent journaling (${entryCount} entries in the last 7 days):
