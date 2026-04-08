@@ -138,7 +138,7 @@ function OnboardingContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ solo_mode: true }),
       });
-      setStep('done');
+      setStep('rival-assessment');
     } catch (e) { setError('Failed to enable solo mode'); }
     setLoading(false);
   };
@@ -730,8 +730,8 @@ function OnboardingContent() {
 
           <div className="flex gap-3 mt-6">
             {invitedPartners.length > 0 ? (
-              <button onClick={() => setStep('done')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer">
-                Continue to Dashboard \u2192
+              <button onClick={() => setStep('rival-assessment')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer">
+                Continue \u2192
               </button>
             ) : (
               <button onClick={() => initialStep === 'partner' ? router.push('/dashboard') : setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer">
@@ -745,7 +745,7 @@ function OnboardingContent() {
               </button>
             )}
             {invitedPartners.length >= 2 && (
-              <button onClick={() => setStep('done')}
+              <button onClick={() => setStep('rival-assessment')}
                 className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer">
                 Continue →
               </button>
@@ -764,7 +764,68 @@ function OnboardingContent() {
         </div>
       )}
 
-      {/* ═══════ STEP 5: Done — transition to first journal ═══════ */}
+      {/* ═══════ STEP 5: Rival Assessment (Optional) ═══════ */}
+      {step === 'rival-assessment' && (
+        <div className="max-w-md w-full animate-fade-slide">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>psychology_alt</span>
+            </div>
+            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Discover Your Rivals</h1>
+            <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-4">Optional</p>
+            <p className="text-sm text-on-surface-variant leading-relaxed font-body max-w-sm mx-auto">
+              Not sure which rivals to focus on? Our Rival Assessment walks you through a series of reflective prompts to uncover the behavioral patterns that challenge you most — ranked by match strength.
+            </p>
+          </div>
+
+          <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6 space-y-4 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>checklist</span>
+              </div>
+              <div>
+                <h3 className="text-sm font-label font-bold text-on-surface mb-1">4 reflective categories</h3>
+                <p className="text-xs text-on-surface-variant font-body leading-relaxed">Emotions, behaviors, triggers, and inner dialogue — select the words that resonate.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>analytics</span>
+              </div>
+              <div>
+                <h3 className="text-sm font-label font-bold text-on-surface mb-1">Personalized rival profile</h3>
+                <p className="text-xs text-on-surface-variant font-body leading-relaxed">See which rivals are most likely to challenge you, ranked by how closely they match your responses.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>timer</span>
+              </div>
+              <div>
+                <h3 className="text-sm font-label font-bold text-on-surface mb-1">Takes about 3 minutes</h3>
+                <p className="text-xs text-on-surface-variant font-body leading-relaxed">Quick, private, and completely optional. You can always take it later from your dashboard.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 space-y-3">
+            <Link
+              href="/dashboard/assessment"
+              className="block w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 text-center"
+            >
+              Take Assessment
+            </Link>
+            <button
+              onClick={() => setStep('done')}
+              className="w-full py-3 text-sm text-on-surface-variant hover:text-on-surface text-center font-body cursor-pointer transition-colors duration-200"
+            >
+              Skip for Now
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════ STEP 6: Done — transition to first journal ═══════ */}
       {step === 'done' && (
         <div className="max-w-md w-full text-center animate-fade-slide">
           <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mx-auto mb-4">

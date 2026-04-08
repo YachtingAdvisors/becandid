@@ -13,6 +13,7 @@ import {
 } from '@/lib/checkInEngine';
 import { generateContextualPrompt } from '@/lib/checkInPrompts';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { pushNotifyUser } from '@/lib/pushNotify';
 
 // Vercel Crons send GET requests
 export async function GET(req: NextRequest) { return handleCron(req); }
@@ -112,6 +113,13 @@ async function handleCron(req: NextRequest) {
 
         const sends: Promise<any>[] = [
           resend.emails.send({ from: FROM, to: user.email, ...userEmail }),
+          // Web push notification to user
+          pushNotifyUser(db, user.id, {
+            type: 'check_in',
+            title: 'Check-in time',
+            body: `Hey ${user.name ?? 'there'}, time to check in. Both you and your partner need to respond.`,
+            data: { url: '/dashboard/checkins', tag: `checkin-${checkIn.id}` },
+          }),
         ];
 
         // Notify partner
@@ -123,6 +131,18 @@ async function handleCron(req: NextRequest) {
             dueAt: dueAt.toISOString(),
           });
           sends.push(resend.emails.send({ from: FROM, to: partner.partner_email, ...partnerEmail }));
+        }
+
+        // Web push notification to partner
+        if (partner?.partner_user_id) {
+          sends.push(
+            pushNotifyUser(db, partner.partner_user_id, {
+              type: 'check_in',
+              title: 'Check-in time',
+              body: `${user.name ?? 'Your partner'} has a check-in waiting for your response.`,
+              data: { url: '/partner/checkins', tag: `checkin-${checkIn.id}` },
+            }),
+          );
         }
 
         // SMS if phone numbers available

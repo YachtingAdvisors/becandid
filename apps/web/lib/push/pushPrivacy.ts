@@ -24,7 +24,7 @@ interface PushPayload {
   data?: Record<string, any>;
 }
 
-interface PrivacyOptions {
+export interface PrivacyOptions {
   type: 'alert_to_user' | 'alert_to_partner' | 'journal_reminder' |
         'relapse_journal' | 'check_in' | 'nudge' | 'encouragement' |
         'new_device' | 'general';
