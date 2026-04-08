@@ -100,17 +100,13 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </header>
 
-      {/* Hero image */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={`/api/og?${new URLSearchParams({ title: post.title, subtitle: post.tags[0] || 'Blog', description: post.description })}`}
-        alt={post.title}
-        width={1200}
-        height={630}
-        loading="eager"
-        className="w-full rounded-2xl mb-10 ring-1 ring-white/10"
-        style={{ aspectRatio: '1200/630' }}
-      />
+      {/* Hero banner */}
+      <div className="w-full rounded-2xl mb-10 ring-1 ring-white/10 overflow-hidden bg-gradient-to-br from-primary/20 via-slate-900 to-cyan-900/20 p-10 flex items-center justify-center" style={{ aspectRatio: '1200/630' }}>
+        <div className="text-center max-w-lg">
+          <span className="material-symbols-outlined text-5xl text-primary/40 mb-4 block">article</span>
+          <p className="font-headline text-lg font-bold text-white/60">{post.tags[0] || 'Blog'}</p>
+        </div>
+      </div>
 
       {/* Article content */}
       <article
@@ -118,8 +114,8 @@ export default async function BlogPostPage({ params }: Props) {
           prose-headings:font-headline prose-headings:tracking-tight prose-headings:text-slate-100
           prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4
           prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3
-          prose-p:font-body prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-4
-          prose-li:text-slate-300
+          prose-p:font-body prose-p:text-white prose-p:leading-relaxed prose-p:mb-4
+          prose-li:text-white
           prose-hr:border-stone-700/50
           prose-em:text-teal-400 prose-em:not-italic prose-em:font-medium
           prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline"
