@@ -248,7 +248,7 @@ function OnboardingContent() {
   const STEPS: Step[] = ['goals', 'goal-tips', 'stringer', 'motivator', 'preview', 'partner', 'rival-assessment', 'done', 'first-journal'];
   const progress = STEPS.indexOf(step) / (STEPS.length - 1);
 
-  const isDoneStep = step === 'done' || step === 'first-journal';
+  const isDoneStep = step === 'rival-assessment' || step === 'done' || step === 'first-journal';
 
   // Compute background — within the stringer step, progressively lighten
   const currentBg = step === 'stringer'
