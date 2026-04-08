@@ -629,10 +629,9 @@ export default function AssessmentClient() {
   }
 
   function goToPickRivals() {
+    // Pre-select only top 2 — momentum from 2 creates a snowball effect
     const preselected = new Set<RivalId>();
-    results.forEach((r, i) => {
-      if (r.pct >= 50 || i < 3) preselected.add(r.id);
-    });
+    results.slice(0, 2).forEach(r => preselected.add(r.id));
     setChosenRivals(preselected);
     setStep(STEPS.length + 1);
   }
@@ -787,55 +786,145 @@ export default function AssessmentClient() {
 
   /* ── Rival Picker Screen ──────────────────────────────── */
   if (isPickRivals) {
+    // Build full rival list: assessment matches first (with %), then all remaining
+    const resultIds = new Set(results.map(r => r.id));
+    const allRivalIds = Object.keys(RIVAL_META) as RivalId[];
+    const unmatched = allRivalIds.filter(id => !resultIds.has(id));
+
+    // Growth direction lookup for each rival
+    const RIVAL_GROWTH: Partial<Record<RivalId, { slide: string; climb: string; climbIcon: string }>> = {
+      pornography: { slide: 'Escaping', climb: 'Presence', climbIcon: 'self_improvement' },
+      sexting: { slide: 'Fantasizing', climb: 'Connecting', climbIcon: 'handshake' },
+      social_media: { slide: 'Performing', climb: 'Belonging', climbIcon: 'favorite' },
+      binge_watching: { slide: 'Escaping', climb: 'Presence', climbIcon: 'self_improvement' },
+      impulse_shopping: { slide: 'Numbing', climb: 'Experiencing', climbIcon: 'wb_sunny' },
+      doomscrolling: { slide: 'Guarding', climb: 'Trusting', climbIcon: 'shield_with_heart' },
+      alcohol_drugs: { slide: 'Numbing', climb: 'Experiencing', climbIcon: 'wb_sunny' },
+      vaping_tobacco: { slide: 'Numbing', climb: 'Experiencing', climbIcon: 'wb_sunny' },
+      gambling: { slide: 'Chasing', climb: 'Building', climbIcon: 'construction' },
+      sports_betting: { slide: 'Chasing', climb: 'Building', climbIcon: 'construction' },
+      day_trading: { slide: 'Chasing', climb: 'Building', climbIcon: 'construction' },
+      dating_apps: { slide: 'Performing', climb: 'Belonging', climbIcon: 'favorite' },
+      emotional_affairs: { slide: 'Fantasizing', climb: 'Connecting', climbIcon: 'handshake' },
+      gaming: { slide: 'Escaping', climb: 'Presence', climbIcon: 'self_improvement' },
+      rage_content: { slide: 'Guarding', climb: 'Trusting', climbIcon: 'shield_with_heart' },
+      gossip_drama: { slide: 'Performing', climb: 'Belonging', climbIcon: 'favorite' },
+      isolation: { slide: 'Escaping', climb: 'Presence', climbIcon: 'self_improvement' },
+      ai_relationships: { slide: 'Fantasizing', climb: 'Connecting', climbIcon: 'handshake' },
+      overworking: { slide: 'Controlling', climb: 'Surrendering', climbIcon: 'water_drop' },
+      sleep_avoidance: { slide: 'Escaping', climb: 'Presence', climbIcon: 'self_improvement' },
+      self_harm: { slide: 'Punishing', climb: 'Compassion', climbIcon: 'spa' },
+      procrastination: { slide: 'Escaping', climb: 'Presence', climbIcon: 'self_improvement' },
+      eating_disorder: { slide: 'Controlling', climb: 'Surrendering', climbIcon: 'water_drop' },
+      body_checking: { slide: 'Controlling', climb: 'Surrendering', climbIcon: 'water_drop' },
+    };
+
+    function renderRivalCard(id: RivalId, pct?: number) {
+      const meta = RIVAL_META[id];
+      const growth = RIVAL_GROWTH[id];
+      const isChosen = chosenRivals.has(id);
+      return (
+        <button
+          key={id}
+          onClick={() => toggleRival(id)}
+          className={`relative flex items-start gap-3 p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer ${
+            isChosen
+              ? 'bg-primary/10 ring-2 ring-primary shadow-lg shadow-primary/10'
+              : 'bg-white/[0.05] ring-1 ring-white/10/20 hover:ring-primary/30'
+          }`}
+        >
+          <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+            isChosen ? 'bg-primary' : 'bg-white/10 ring-1 ring-white/10/30'
+          }`}>
+            {isChosen && <span className="material-symbols-outlined text-white text-sm">check</span>}
+          </div>
+          <div className={`w-10 h-10 rounded-xl ${meta.color} flex items-center justify-center shrink-0`}>
+            <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{meta.icon}</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between">
+              <h3 className="font-headline font-bold text-sm text-white">{meta.label}</h3>
+              {pct !== undefined && (
+                <span className={`font-headline font-bold text-xs ${pct >= 70 ? 'text-red-500' : pct >= 45 ? 'text-amber-500' : 'text-white-variant'}`}>{pct}%</span>
+              )}
+            </div>
+            {growth && (
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-[10px] text-white-variant font-label">{growth.slide}</span>
+                <span className="material-symbols-outlined text-emerald-500 text-xs">arrow_forward</span>
+                <span className="material-symbols-outlined text-emerald-500 text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>{growth.climbIcon}</span>
+                <span className="text-[10px] text-emerald-600 font-label font-semibold">{growth.climb}</span>
+              </div>
+            )}
+          </div>
+        </button>
+      );
+    }
+
     return (
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="max-w-2xl mx-auto space-y-6">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
             <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>target</span>
           </div>
           <h1 className="font-headline text-2xl font-extrabold tracking-tight text-white">
-            Select Your Rivals
+            Choose Your Rivals &amp; Growth Path
           </h1>
           <p className="text-sm text-white-variant font-body max-w-md mx-auto leading-relaxed">
-            Based on your results, select the struggles that best describe what you&apos;re facing. You can choose as many as apply.
+            Select the struggles you want to focus on. Each rival has a growth direction you&apos;ll be climbing toward.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {results.map(rival => {
-            const isChosen = chosenRivals.has(rival.id);
-            return (
-              <button
-                key={rival.id}
-                onClick={() => toggleRival(rival.id)}
-                className={`relative flex items-center gap-3 p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer ${
-                  isChosen
-                    ? 'bg-primary/10 ring-2 ring-primary shadow-lg shadow-primary/10'
-                    : 'bg-white/[0.05] ring-1 ring-white/10/20 hover:ring-primary/30'
-                }`}
-              >
-                <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
-                  isChosen ? 'bg-primary' : 'bg-white/10 ring-1 ring-white/10/30'
-                }`}>
-                  {isChosen && <span className="material-symbols-outlined text-white text-sm">check</span>}
-                </div>
-                <div className={`w-10 h-10 rounded-xl ${rival.color} flex items-center justify-center shrink-0`}>
-                  <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{rival.icon}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-headline font-bold text-sm text-white">{rival.label}</h3>
-                  <p className="text-xs text-white-variant">{rival.pct}% match</p>
-                </div>
-              </button>
-            );
-          })}
+        {/* Recommendation banner */}
+        <div className="flex items-start gap-3 bg-emerald-500/5 border border-emerald-500/15 rounded-2xl p-4">
+          <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>tips_and_updates</span>
+          <div>
+            <p className="text-sm font-headline font-bold text-white mb-0.5">We recommend starting with 2</p>
+            <p className="text-xs text-white-variant font-body leading-relaxed">
+              Momentum from progressing in one area creates a snowball effect that naturally brings progress in other areas along with it. Focus beats breadth.
+            </p>
+          </div>
         </div>
 
-        <p className="text-center text-sm text-white-variant font-label">
-          {chosenRivals.size} rival{chosenRivals.size !== 1 ? 's' : ''} selected
-        </p>
+        {/* Count + warning */}
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-white-variant font-label">
+            <span className="font-bold text-white">{chosenRivals.size}</span> selected
+          </p>
+          {chosenRivals.size > 2 && (
+            <div className="flex items-center gap-1.5 text-amber-500">
+              <span className="material-symbols-outlined text-sm">warning</span>
+              <span className="text-xs font-label font-semibold">Consider narrowing your focus</span>
+            </div>
+          )}
+          {chosenRivals.size <= 2 && chosenRivals.size > 0 && (
+            <div className="flex items-center gap-1.5 text-emerald-500">
+              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+              <span className="text-xs font-label font-semibold">Great focus</span>
+            </div>
+          )}
+        </div>
 
-        <div className="flex flex-col items-center gap-3 pt-2">
+        {/* Assessment matches */}
+        {results.length > 0 && (
+          <div>
+            <p className="text-xs font-label font-semibold text-white-variant uppercase tracking-wider mb-2.5">From your assessment</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {results.map(r => renderRivalCard(r.id, r.pct))}
+            </div>
+          </div>
+        )}
+
+        {/* All other rivals */}
+        <div>
+          <p className="text-xs font-label font-semibold text-white-variant uppercase tracking-wider mb-2.5">All rivals</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {unmatched.map(id => renderRivalCard(id))}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col items-center gap-3 pt-4 sticky bottom-0 bg-gradient-to-t from-[#0c1214] via-[#0c1214] to-transparent pb-2">
           <button
             onClick={saveAndStart}
             disabled={saving || chosenRivals.size === 0}
