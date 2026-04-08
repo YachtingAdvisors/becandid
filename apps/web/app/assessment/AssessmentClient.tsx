@@ -166,77 +166,115 @@ type CopingTypeId = 'escapist' | 'numbing' | 'thrill_seeking' | 'approval_seekin
 
 interface CopingType {
   id: CopingTypeId;
-  label: string;
-  icon: string;
-  color: string;
-  description: string;
-  insight: string;
+  // "Sliding into" — the struggle
+  slideVerb: string;
+  slideIcon: string;
+  slideColor: string;
+  slideDesc: string;
+  // "Climbing into" — the growth
+  climbVerb: string;
+  climbIcon: string;
+  climbColor: string;
+  climbDesc: string;
+  climbPractice: string;
 }
 
 const COPING_TYPES: CopingType[] = [
   {
     id: 'escapist',
-    label: 'The Escapist',
-    icon: 'flight',
-    color: 'bg-indigo-500',
-    description: 'You cope by mentally checking out — through screens, stories, or alternate worlds. Reality feels heavy, so you seek exits.',
-    insight: 'Your need to escape often signals unprocessed stress or unmet needs. The Stringer journal can help you trace what you\'re running from.',
+    slideVerb: 'Escaping',
+    slideIcon: 'flight',
+    slideColor: 'from-indigo-600 to-indigo-800',
+    slideDesc: 'Mentally checking out through screens, stories, or alternate worlds. Reality feels heavy, so you seek exits.',
+    climbVerb: 'Presence',
+    climbIcon: 'self_improvement',
+    climbColor: 'from-emerald-500 to-teal-600',
+    climbDesc: 'Grounding yourself in the here and now. Engaging with reality — even when it\'s uncomfortable — because that\'s where growth lives.',
+    climbPractice: 'Try a 2-minute body scan before reaching for a screen. Name 5 things you can see, 4 you can touch, 3 you can hear.',
   },
   {
     id: 'numbing',
-    label: 'The Numbifier',
-    icon: 'blur_on',
-    color: 'bg-slate-500',
-    description: 'You cope by turning down the emotional volume — substances, scrolling, bingeing — anything to not feel the hard things.',
-    insight: 'Numbing protects you short-term but disconnects you from the emotions that drive growth. Start by naming what you\'re avoiding.',
+    slideVerb: 'Numbing',
+    slideIcon: 'blur_on',
+    slideColor: 'from-slate-500 to-slate-700',
+    slideDesc: 'Turning down the emotional volume — substances, scrolling, bingeing — anything to not feel the hard things.',
+    climbVerb: 'Experiencing',
+    climbIcon: 'wb_sunny',
+    climbColor: 'from-amber-500 to-yellow-600',
+    climbDesc: 'Allowing yourself to feel the full spectrum — joy, grief, boredom, anger — without running. Emotions are data, not danger.',
+    climbPractice: 'When the urge to numb hits, set a 90-second timer. Feel the wave. It always passes. Journal what surfaced.',
   },
   {
     id: 'thrill_seeking',
-    label: 'The Thrill Seeker',
-    icon: 'local_fire_department',
-    color: 'bg-orange-500',
-    description: 'You cope by chasing intensity — risk, excitement, novelty. Calm feels uncomfortable, so you seek the next dopamine hit.',
-    insight: 'The chase often masks a deeper need for meaning or connection. Channel that energy into goals that build rather than deplete.',
+    slideVerb: 'Chasing',
+    slideIcon: 'local_fire_department',
+    slideColor: 'from-orange-500 to-red-600',
+    slideDesc: 'Pursuing intensity — risk, excitement, novelty. Calm feels uncomfortable, so you chase the next dopamine hit.',
+    climbVerb: 'Building',
+    climbIcon: 'construction',
+    climbColor: 'from-cyan-500 to-blue-600',
+    climbDesc: 'Channeling that energy into creation rather than consumption. Building something meaningful satisfies the same drive — without the crash.',
+    climbPractice: 'Replace one thrill-seeking session with a creative challenge: write, build, cook, exercise. Notice how accomplishment feels different than adrenaline.',
   },
   {
     id: 'approval_seeking',
-    label: 'The Approval Seeker',
-    icon: 'thumb_up',
-    color: 'bg-pink-500',
-    description: 'You cope by seeking external validation — likes, attention, reassurance. Your worth feels contingent on others\' reactions.',
-    insight: 'The need for approval often traces back to early experiences of conditional love. Building internal validation is your growth edge.',
+    slideVerb: 'Performing',
+    slideIcon: 'thumb_up',
+    slideColor: 'from-pink-500 to-rose-600',
+    slideDesc: 'Seeking external validation — likes, attention, reassurance. Your worth feels contingent on others\' reactions.',
+    climbVerb: 'Belonging',
+    climbIcon: 'favorite',
+    climbColor: 'from-rose-400 to-pink-500',
+    climbDesc: 'Knowing you are enough without an audience. Real belonging doesn\'t require performance — it requires vulnerability.',
+    climbPractice: 'Share something imperfect with someone safe. Not for likes — for connection. Notice how authenticity feels compared to applause.',
   },
   {
     id: 'self_punishing',
-    label: 'The Self-Punisher',
-    icon: 'gavel',
-    color: 'bg-red-700',
-    description: 'You cope by turning pain inward — through harsh self-talk, overworking to exhaustion, or physically punishing yourself.',
-    insight: 'Self-punishment is often misdirected shame. You deserve compassion, not punishment. A partner or therapist can help rewrite this pattern.',
+    slideVerb: 'Punishing',
+    slideIcon: 'gavel',
+    slideColor: 'from-red-700 to-red-900',
+    slideDesc: 'Turning pain inward — harsh self-talk, overworking to exhaustion, physically punishing yourself. Shame runs the show.',
+    climbVerb: 'Compassion',
+    climbIcon: 'spa',
+    climbColor: 'from-green-500 to-emerald-600',
+    climbDesc: 'Treating yourself the way you\'d treat someone you love. Compassion isn\'t weakness — it\'s the foundation of lasting change.',
+    climbPractice: 'When you catch the inner critic, ask: "Would I say this to a friend?" Rewrite the thought as if speaking to someone you care about.',
   },
   {
     id: 'control_oriented',
-    label: 'The Controller',
-    icon: 'tune',
-    color: 'bg-amber-600',
-    description: 'You cope by tightening control — over your body, schedule, diet, or environment. If you can control it, it can\'t hurt you.',
-    insight: 'The need for control often signals fear of chaos from earlier in life. Practicing small acts of surrender builds genuine resilience.',
+    slideVerb: 'Controlling',
+    slideIcon: 'tune',
+    slideColor: 'from-amber-600 to-orange-700',
+    slideDesc: 'Tightening control over your body, schedule, diet, or environment. If you can control it, it can\'t hurt you.',
+    climbVerb: 'Surrendering',
+    climbIcon: 'water_drop',
+    climbColor: 'from-sky-400 to-blue-500',
+    climbDesc: 'Practicing the art of letting go. Surrendering isn\'t giving up — it\'s trusting that you can handle uncertainty.',
+    climbPractice: 'Choose one thing today to leave unfinished or imperfect on purpose. Sit with the discomfort. That\'s your growth edge.',
   },
   {
     id: 'fantasy_bonding',
-    label: 'The Fantasy Bonder',
-    icon: 'auto_awesome',
-    color: 'bg-purple-500',
-    description: 'You cope by building relationships with screens — AI companions, fictional characters, or parasocial figures — instead of real people.',
-    insight: 'Simulated intimacy feels safe because it can\'t reject you. But it also can\'t truly see you. Real connection requires vulnerability.',
+    slideVerb: 'Fantasizing',
+    slideIcon: 'auto_awesome',
+    slideColor: 'from-purple-600 to-violet-800',
+    slideDesc: 'Building relationships with screens — AI companions, fictional characters, parasocial figures — instead of real people.',
+    climbVerb: 'Connecting',
+    climbIcon: 'handshake',
+    climbColor: 'from-teal-500 to-emerald-500',
+    climbDesc: 'Risking real intimacy with real people. Simulated connection can\'t reject you, but it also can\'t truly see you.',
+    climbPractice: 'Replace one screen interaction with a real one. Text a friend. Call someone. Show up somewhere. Real connection is messy but alive.',
   },
   {
     id: 'hypervigilant',
-    label: 'The Hypervigilant',
-    icon: 'visibility',
-    color: 'bg-cyan-600',
-    description: 'You cope by staying constantly alert — scanning for threats, doom-reading, monitoring everything. Relaxing feels dangerous.',
-    insight: 'Hypervigilance is your nervous system stuck in protection mode. Grounding practices and safe relationships can help you regulate.',
+    slideVerb: 'Guarding',
+    slideIcon: 'visibility',
+    slideColor: 'from-cyan-600 to-teal-800',
+    slideDesc: 'Staying constantly alert — scanning for threats, doom-reading, monitoring everything. Relaxing feels dangerous.',
+    climbVerb: 'Trusting',
+    climbIcon: 'shield_with_heart',
+    climbColor: 'from-violet-500 to-purple-600',
+    climbDesc: 'Learning that safety can exist without surveillance. Trusting yourself, trusting others, trusting the process.',
+    climbPractice: 'Set a "news fast" for 24 hours. When the urge to check arises, take three deep breaths instead. You are safe right now.',
   },
 ];
 
@@ -370,6 +408,179 @@ function calculateResults(selected: Set<string>): { id: RivalId; label: string; 
   return results;
 }
 
+/* ─── Coping Transformation UI ────────────────────────────── */
+function CopingProfile({ copingResults }: { copingResults: { type: CopingType; pct: number }[] }) {
+  const [showGrowth, setShowGrowth] = useState(false);
+
+  if (copingResults.length === 0) return null;
+
+  return (
+    <div className="space-y-5">
+      {/* Header with toggle */}
+      <div className="text-center space-y-3 pt-4">
+        <h2 className="font-headline text-xl font-extrabold tracking-tight text-white">
+          {showGrowth ? 'Your Growth Path' : 'Your Coping Patterns'}
+        </h2>
+        <p className="text-sm text-white-variant font-body max-w-md mx-auto">
+          {showGrowth
+            ? 'Every struggle has a healthier counterpart. Here\'s what you\'re climbing toward.'
+            : 'When life gets hard, these are the patterns you tend to slide into.'}
+        </p>
+
+        {/* The toggle */}
+        <div className="flex items-center justify-center pt-2">
+          <button
+            onClick={() => setShowGrowth(!showGrowth)}
+            className="relative group flex items-center gap-0 rounded-full p-1 bg-white/10 ring-1 ring-white/10/20 cursor-pointer transition-all duration-300 hover:ring-primary/30"
+          >
+            <div
+              className={`absolute top-1 bottom-1 w-[calc(50%-2px)] rounded-full transition-all duration-500 ease-out ${
+                showGrowth
+                  ? 'left-[calc(50%+2px)] bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/30'
+                  : 'left-1 bg-gradient-to-r from-slate-500 to-slate-600 shadow-lg shadow-slate-500/20'
+              }`}
+            />
+            <span
+              className={`relative z-10 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-label font-bold transition-colors duration-300 ${
+                !showGrowth ? 'text-white' : 'text-white-variant'
+              }`}
+            >
+              <span className="material-symbols-outlined text-sm">trending_down</span>
+              Sliding Into
+            </span>
+            <span
+              className={`relative z-10 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-label font-bold transition-colors duration-300 ${
+                showGrowth ? 'text-white' : 'text-white-variant'
+              }`}
+            >
+              <span className="material-symbols-outlined text-sm">trending_up</span>
+              Climbing Into
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Cards */}
+      {copingResults.slice(0, 4).map((item, idx) => {
+        const t = item.type;
+        const gradient = showGrowth ? t.climbColor : t.slideColor;
+        const icon = showGrowth ? t.climbIcon : t.slideIcon;
+        const verb = showGrowth ? t.climbVerb : t.slideVerb;
+        const desc = showGrowth ? t.climbDesc : t.slideDesc;
+
+        return (
+          <div
+            key={t.id}
+            className={`relative overflow-hidden rounded-2xl ring-1 transition-all duration-500 ${
+              showGrowth
+                ? 'ring-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-teal-500/5'
+                : 'ring-white/10/10 bg-white/[0.05]'
+            } ${idx === 0 ? 'shadow-lg' : 'shadow-sm'}`}
+          >
+            {/* Gradient accent bar */}
+            <div className={`h-1 bg-gradient-to-r ${gradient} transition-all duration-500`} />
+
+            <div className="p-5 space-y-3">
+              {/* Header row */}
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-md transition-all duration-500`}>
+                  <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-label font-bold uppercase tracking-wider ${
+                      showGrowth ? 'text-emerald-600' : 'text-white-variant/60'
+                    } transition-colors duration-500`}>
+                      {showGrowth ? 'Climbing into' : 'Sliding into'}
+                    </span>
+                    {idx === 0 && (
+                      <span className={`text-[9px] font-label font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                        showGrowth ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                      } transition-all duration-500`}>
+                        {showGrowth ? 'Primary Growth' : 'Primary Pattern'}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-headline font-extrabold text-lg text-white mt-0.5 tracking-tight">
+                    {verb}
+                  </h3>
+                </div>
+                <span className={`font-headline font-bold text-base tabular-nums ${
+                  showGrowth ? 'text-emerald-600' : (item.pct >= 60 ? 'text-red-500' : 'text-white-variant')
+                } transition-colors duration-500`}>
+                  {item.pct}%
+                </span>
+              </div>
+
+              {/* Progress bar */}
+              <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                <div
+                  className={`h-full rounded-full bg-gradient-to-r ${gradient} transition-all duration-700 ease-out`}
+                  style={{ width: `${item.pct}%` }}
+                />
+              </div>
+
+              {/* Description */}
+              <p className="text-sm text-white-variant font-body leading-relaxed">{desc}</p>
+
+              {/* Growth practice (only in climb mode) */}
+              {showGrowth && (
+                <div className="flex items-start gap-2.5 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-3.5 transition-all duration-500">
+                  <span className="material-symbols-outlined text-emerald-500 text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>rocket_launch</span>
+                  <div>
+                    <p className="text-[10px] font-label font-bold text-emerald-600 uppercase tracking-wider mb-1">Try This</p>
+                    <p className="text-xs text-white font-body leading-relaxed">{t.climbPractice}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Remaining types — compact */}
+      {copingResults.length > 4 && (
+        <div className="grid grid-cols-2 gap-2.5">
+          {copingResults.slice(4).map(item => {
+            const t = item.type;
+            const gradient = showGrowth ? t.climbColor : t.slideColor;
+            const icon = showGrowth ? t.climbIcon : t.slideIcon;
+            const verb = showGrowth ? t.climbVerb : t.slideVerb;
+            return (
+              <div
+                key={t.id}
+                className={`rounded-xl p-3.5 flex items-center gap-3 transition-all duration-500 ${
+                  showGrowth
+                    ? 'bg-emerald-500/5 ring-1 ring-emerald-500/10'
+                    : 'bg-white/[0.05] ring-1 ring-white/10/10'
+                }`}
+              >
+                <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 transition-all duration-500`}>
+                  <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-headline font-bold text-xs text-white truncate">{verb}</p>
+                  <p className="text-[10px] text-white-variant">{item.pct}%</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Encouragement in growth mode */}
+      {showGrowth && (
+        <div className="text-center py-3 transition-all duration-500">
+          <p className="text-sm font-body text-emerald-600 italic">
+            &ldquo;The opposite of addiction is not sobriety. The opposite of addiction is connection.&rdquo;
+          </p>
+          <p className="text-xs font-label font-bold text-emerald-500/60 mt-1">&mdash; Johann Hari</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── Component ──────────────────────────────────────────── */
 export default function AssessmentClient() {
   const [step, setStep] = useState(0); // 0..3 = questions, 4 = results, 5 = pick rivals
@@ -435,10 +646,7 @@ export default function AssessmentClient() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goals: rivals }),
       });
-      if (res.ok) {
-        window.location.href = '/dashboard';
-        return;
-      }
+      if (res.ok) { window.location.href = '/dashboard'; return; }
     } catch {}
     setSaving(false);
     window.location.href = '/auth/signup';
@@ -529,64 +737,8 @@ export default function AssessmentClient() {
           </div>
         )}
 
-        {/* ── Personality / Coping Profile ─────────────────── */}
-        {copingResults.length > 0 && (
-          <div className="space-y-4">
-            <div className="text-center space-y-2 pt-4">
-              <h2 className="font-headline text-xl font-extrabold tracking-tight text-white">
-                Your Coping Profile
-              </h2>
-              <p className="text-sm text-white-variant font-body max-w-md mx-auto">
-                How you tend to cope when life gets difficult — your avoidance and self-protection patterns.
-              </p>
-            </div>
-
-            {/* Top 3 coping types as detailed cards */}
-            {copingResults.slice(0, 3).map((item, idx) => (
-              <div
-                key={item.type.id}
-                className={`bg-white/[0.05] rounded-2xl ring-1 ring-white/10/10 p-5 space-y-3 ${idx === 0 ? 'shadow-md ring-primary/20' : ''}`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-xl ${item.type.color} flex items-center justify-center shrink-0`}>
-                    <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>{item.type.icon}</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-headline font-bold text-base text-white">{item.type.label}</h3>
-                      <span className={`font-headline font-bold text-sm ${item.pct >= 60 ? 'text-primary' : 'text-white-variant'}`}>{item.pct}%</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-white/10 overflow-hidden mt-1">
-                      <div className={`h-full rounded-full ${item.type.color} transition-all duration-700 ease-out`} style={{ width: `${item.pct}%` }} />
-                    </div>
-                  </div>
-                </div>
-                <p className="text-sm text-white-variant font-body leading-relaxed">{item.type.description}</p>
-                <div className="flex items-start gap-2 bg-primary/5 rounded-xl p-3">
-                  <span className="material-symbols-outlined text-primary text-sm mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
-                  <p className="text-xs text-white font-body leading-relaxed">{item.type.insight}</p>
-                </div>
-              </div>
-            ))}
-
-            {/* Remaining types as compact list */}
-            {copingResults.length > 3 && (
-              <div className="grid grid-cols-2 gap-2">
-                {copingResults.slice(3).map(item => (
-                  <div key={item.type.id} className="bg-white/[0.05] rounded-xl ring-1 ring-white/10/10 p-3 flex items-center gap-2.5">
-                    <div className={`w-8 h-8 rounded-lg ${item.type.color} flex items-center justify-center shrink-0`}>
-                      <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{item.type.icon}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-label font-bold text-xs text-white truncate">{item.type.label}</p>
-                      <p className="text-[10px] text-white-variant">{item.pct}%</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        {/* ── Coping Transformation Profile ─────────────────── */}
+        <CopingProfile copingResults={copingResults} />
 
         {/* Legend */}
         <div className="flex items-center justify-center gap-6 text-xs text-white-variant font-label">
