@@ -97,6 +97,21 @@ export async function POST(req: NextRequest) {
 
     auditLog({ action: 'auth.signup', userId: user.id });
 
+    // Notify admin of new signup
+    try {
+      const { Resend } = await import('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY!);
+      const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@updates.becandid.io';
+      await resend.emails.send({
+        from,
+        to: 'slaser90@gmail.com',
+        subject: `New signup: ${sanitizeName(body.name)}`,
+        html: `<p><strong>${sanitizeName(body.name)}</strong> (${user.email}) just signed up for Be Candid.</p><p>Time: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })}</p>`,
+      });
+    } catch (emailErr) {
+      console.error('[auth/profile] Admin notification failed:', emailErr);
+    }
+
     // Process referral if a code was provided
     if (body.referral_code && typeof body.referral_code === 'string') {
       const { data: referrer } = await db
