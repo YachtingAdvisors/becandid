@@ -23,17 +23,21 @@ export default function BuildWithUs() {
     if (!type || !message.trim()) return;
     setSending(true);
     try {
-      await fetch('/api/support/report', {
+      const res = await fetch('/api/support/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, message: message.trim() }),
       });
-      toast('Thank you for building with us', 'success', 4000);
-      setOpen(false);
-      setType('');
-      setMessage('');
+      if (res.ok) {
+        toast('Thank you for building with us', 'success', 4000);
+        setOpen(false);
+        setType('');
+        setMessage('');
+      } else {
+        toast('Failed to send — try the email link below', 'error', 4000);
+      }
     } catch {
-      // silent fail — email fallback below
+      toast('Failed to send — try the email link below', 'error', 4000);
     }
     setSending(false);
   };
@@ -113,10 +117,10 @@ export default function BuildWithUs() {
           {/* Actions */}
           <div className="flex items-center justify-between">
             <a
-              href="mailto:shawn@becandid.io?subject=Build%20With%20Us"
+              href="mailto:support@becandid.io?subject=Build%20With%20Us"
               className="text-xs text-on-surface-variant hover:text-primary font-label transition-colors"
             >
-              Or email Shawn directly
+              Or email us directly
             </a>
             <button
               onClick={handleSubmit}

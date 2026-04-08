@@ -10,8 +10,8 @@ export interface WidgetDef {
 }
 
 export const WIDGET_REGISTRY: WidgetDef[] = [
+  { id: 'commitment', label: 'Morning Intention', icon: 'wb_twilight' },
   { id: 'hero', label: 'Dashboard Hero', icon: 'dashboard' },
-  { id: 'commitment', label: 'Daily Pledge', icon: 'wb_twilight' },
   { id: 'mood', label: 'Quick Mood', icon: 'mood' },
   { id: 'assessment', label: 'Rival Assessment', icon: 'psychology_alt' },
   { id: 'focus-board', label: 'Focus Board', icon: 'center_focus_strong' },
