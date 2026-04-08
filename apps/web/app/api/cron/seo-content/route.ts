@@ -53,15 +53,19 @@ async function handleCron(req: NextRequest) {
     const systemPrompt = track === 'A' ? TRACK_A_SYSTEM_PROMPT : TRACK_B_SYSTEM_PROMPT;
 
     // Check which slugs already exist
-    const { data: existing } = await db
+    const { data: existing, error: selectErr } = await db
       .from('seo_content')
       .select('slug');
+
+    if (selectErr) {
+      return NextResponse.json({ ok: false, error: `DB select error: ${selectErr.message}`, ...results });
+    }
 
     const existingSlugs = new Set((existing ?? []).map(e => e.slug));
     const nextTopic = topics.find(t => !existingSlugs.has(t.slug));
 
     if (!nextTopic) {
-      return NextResponse.json({ ok: true, message: `All Track ${track} topics already generated`, ...results });
+      return NextResponse.json({ ok: true, message: `All Track ${track} topics already generated (${existingSlugs.size} exist)`, ...results });
     }
 
     // Generate content via Claude
@@ -109,11 +113,11 @@ Generate the full article now.`;
     };
 
     // Store in database for tracking
-    await db.from('seo_content').upsert({
+    const { error: upsertErr } = await db.from('seo_content').upsert({
       slug: post.slug,
       track,
       title: post.title,
-      status: track === 'B' ? 'draft' : 'published', // Track B needs human review
+      status: track === 'B' ? 'draft' : 'published',
       generated_at: now.toISOString(),
       content: post.content,
       metadata: {
@@ -123,6 +127,10 @@ Generate the full article now.`;
         readTime: post.readTime,
       },
     }, { onConflict: 'slug' });
+
+    if (upsertErr) {
+      return NextResponse.json({ ok: false, error: `DB upsert error: ${upsertErr.message}`, slug: post.slug, ...results });
+    }
 
     // For Track A: auto-publish by writing the JSON file via API
     if (track === 'A') {
