@@ -7,12 +7,12 @@
     {
       "source": "/",
       "has": [{ "type": "host", "value": "becandid.org" }],
-      "destination": "/donate"
+      "destination": "/org"
     },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "www.becandid.org" }],
-      "destination": "/donate"
+      "destination": "/org"
     }
   ],
   "crons": [
