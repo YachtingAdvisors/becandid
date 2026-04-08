@@ -11,6 +11,7 @@ export default function PublicNav() {
   const links = [
     { href: '/', label: 'Sanctuary' },
     { href: '/methodology', label: 'Methodology' },
+    { href: '/assessment', label: 'Assessment' },
     { href: '/why-becandid', label: 'Why Be Candid' },
     { href: '/pricing', label: 'Pricing' },
     { href: '/therapists', label: 'Therapists' },
