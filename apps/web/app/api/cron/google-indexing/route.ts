@@ -94,23 +94,48 @@ async function submitUrl(url: string, token: string): Promise<{ url: string; ok:
   return { url, ok: res.ok, status: res.status };
 }
 
-// Fetch all URLs from sitemap
+// Generate URLs directly (avoids self-fetch issues on Vercel)
 async function getSitemapUrls(): Promise<string[]> {
+  const staticPages = [
+    '',
+    '/assessment',
+    '/pricing',
+    '/methodology',
+    '/therapists',
+    '/blog',
+    '/why-becandid',
+    '/org',
+    '/pricing/groups',
+    '/families',
+    '/download',
+    '/about',
+    '/donate',
+    '/legal/privacy',
+    '/legal/terms',
+    '/legal/therapist-dpa',
+  ];
+
+  const urls = staticPages.map(p => `${BASE_URL}${p}`);
+
+  // Also fetch blog post slugs from the sitemap dynamically
   try {
     const res = await fetch(`${BASE_URL}/sitemap.xml`, {
-      headers: { 'Accept': 'application/xml' },
+      headers: { 'Accept': 'application/xml', 'User-Agent': 'BeCandid-Indexer/1.0' },
     });
-    const xml = await res.text();
-    // Parse URLs from <loc> tags
-    const urls: string[] = [];
-    const matches = xml.matchAll(/<loc>(.*?)<\/loc>/g);
-    for (const match of matches) {
-      if (match[1]) urls.push(match[1]);
+    if (res.ok) {
+      const xml = await res.text();
+      const matches = xml.matchAll(/<loc>(.*?)<\/loc>/g);
+      const sitemapUrls = new Set(urls);
+      for (const match of matches) {
+        if (match[1]) sitemapUrls.add(match[1]);
+      }
+      return Array.from(sitemapUrls);
     }
-    return urls;
   } catch {
-    return [];
+    // Sitemap fetch failed — use static list only
   }
+
+  return urls;
 }
 
 export async function GET(req: NextRequest) { return handleCron(req); }
