@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import type { GoalCategory } from '@be-candid/shared';
 import { GOAL_LABELS, getCategoryEmoji } from '@be-candid/shared';
 import PartnerCompatibility from '@/components/dashboard/PartnerCompatibility';
+import TrustMeter from '@/components/dashboard/TrustMeter';
 
 interface PartnerData {
   id: string;
@@ -12,8 +13,19 @@ interface PartnerData {
   partner_email: string;
   partner_phone: string | null;
   status: 'pending' | 'active' | 'declined';
+  relationship?: string;
   invited_at: string;
   accepted_at: string | null;
+}
+
+interface RelationshipData {
+  level: number;
+  levelTitle: string;
+  levelEmoji: string;
+  totalXP: number;
+  streak: number;
+  streakMultiplier: number;
+  progressToNext: number;
 }
 
 const RELATIONSHIP_OPTIONS = [
@@ -27,10 +39,86 @@ const RELATIONSHIP_OPTIONS = [
   { key: 'other', label: 'Other' },
 ];
 
+const RELATIONSHIP_ICONS: Record<string, string> = {
+  friend: 'group',
+  spouse: 'favorite',
+  mentor: 'school',
+  family: 'family_restroom',
+  coach: 'fitness_center',
+  therapist: 'psychology',
+  spiritual_leader: 'church',
+  other: 'handshake',
+};
+
+const CONVERSATION_PROMPTS = [
+  {
+    text: 'How are you really doing today -- not the polished answer, but the honest one?',
+    theme: 'connection',
+    icon: 'chat_bubble',
+  },
+  {
+    text: "What's been the hardest part of your week, and how did you handle it?",
+    theme: 'vulnerability',
+    icon: 'psychology',
+  },
+  {
+    text: 'Is there anything you have been avoiding talking about?',
+    theme: 'honesty',
+    icon: 'visibility',
+  },
+  {
+    text: 'What is one win -- however small -- that you want to celebrate?',
+    theme: 'encouragement',
+    icon: 'celebration',
+  },
+  {
+    text: 'What does support look like for you right now?',
+    theme: 'needs',
+    icon: 'support',
+  },
+  {
+    text: 'What triggered the hardest moment this week, and what did you do next?',
+    theme: 'growth',
+    icon: 'trending_up',
+  },
+];
+
+function getRelationshipLabel(raw: string | undefined): string {
+  if (!raw) return 'Partner';
+  const first = raw.split(',')[0].trim().toLowerCase();
+  const match = RELATIONSHIP_OPTIONS.find(o => o.key === first);
+  return match ? match.label : raw.charAt(0).toUpperCase() + raw.slice(1);
+}
+
+function getRelationshipIcon(raw: string | undefined): string {
+  if (!raw) return 'handshake';
+  const first = raw.split(',')[0].trim().toLowerCase();
+  return RELATIONSHIP_ICONS[first] || 'handshake';
+}
+
+function getStatusConfig(status: string) {
+  switch (status) {
+    case 'active':
+      return { label: 'Connected', icon: 'check_circle', color: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'ring-emerald-200' };
+    case 'pending':
+      return { label: 'Pending', icon: 'schedule', color: 'text-amber-600', bg: 'bg-amber-50', ring: 'ring-amber-200' };
+    case 'declined':
+      return { label: 'Declined', icon: 'cancel', color: 'text-red-500', bg: 'bg-red-50', ring: 'ring-red-200' };
+    default:
+      return { label: status, icon: 'info', color: 'text-on-surface-variant', bg: 'bg-surface-container-low', ring: 'ring-outline-variant' };
+  }
+}
+
+function getRandomPrompts(count: number) {
+  const shuffled = [...CONVERSATION_PROMPTS].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
+
 export default function PartnerPage() {
   const [partner, setPartner] = useState<PartnerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [reinviting, setReinviting] = useState(false);
+  const [relationshipData, setRelationshipData] = useState<RelationshipData | null>(null);
 
   // Inline invite form state
   const [showForm, setShowForm] = useState(false);
@@ -67,15 +155,17 @@ export default function PartnerPage() {
     responseTime: number; checkInRate: number; avgRating: number;
     conversationCount: number;
   }>>([]);
+  const [conversationPrompts] = useState(() => getRandomPrompts(3));
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 
   // Fetch partner data
-  const fetchPartner = () => {
+  const fetchPartner = useCallback(() => {
     fetch('/api/partners')
       .then(r => r.json())
       .then(d => setPartner(d.partner ?? null))
       .catch(console.error)
       .finally(() => setLoading(false));
-  };
+  }, []);
 
   useEffect(() => {
     fetchPartner();
@@ -83,7 +173,11 @@ export default function PartnerPage() {
       .then(r => r.json())
       .then(d => setPartnerScores(d.scores ?? []))
       .catch(console.error);
-  }, []);
+    fetch('/api/relationship')
+      .then(r => { if (r.ok) return r.json(); throw new Error(); })
+      .then(d => setRelationshipData(d))
+      .catch(() => {});
+  }, [fetchPartner]);
 
   // Fetch user profile to get goals when form opens
   useEffect(() => {
@@ -173,6 +267,23 @@ export default function PartnerPage() {
     setSharedRivals([]);
   }
 
+  async function copyPrompt(text: string, idx: number) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+    setCopiedIdx(idx);
+    setTimeout(() => setCopiedIdx(null), 2500);
+  }
+
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto">
@@ -184,6 +295,16 @@ export default function PartnerPage() {
     );
   }
 
+  // Compute trust meter data from partner scores
+  const primaryScore = partnerScores.length > 0 ? partnerScores[0] : null;
+  const checkInRate = primaryScore?.checkInRate ?? 0;
+  const totalCheckIns = primaryScore?.conversationCount ?? 0;
+
+  // Compute days since accepted
+  const daysSinceAccepted = partner?.accepted_at
+    ? Math.floor((Date.now() - new Date(partner.accepted_at).getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
@@ -194,51 +315,191 @@ export default function PartnerPage() {
 
       {partner ? (
         <div className="space-y-4">
+
+          {/* ── Status Header ───────────────────────────────────── */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-container/30 to-surface-container-lowest p-6 ring-1 ring-outline-variant/10">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center text-primary font-headline font-bold text-2xl flex-shrink-0 ring-2 ring-primary/20">
+                {partner.partner_name.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="font-headline text-xl font-bold text-on-surface truncate">{partner.partner_name}</h2>
+                  {(() => {
+                    const cfg = getStatusConfig(partner.status);
+                    return (
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-label font-semibold ${cfg.bg} ${cfg.color} ring-1 ${cfg.ring}`}>
+                        <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{cfg.icon}</span>
+                        {cfg.label}
+                      </span>
+                    );
+                  })()}
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="material-symbols-outlined text-sm text-on-surface-variant/60">
+                    {getRelationshipIcon(partner.relationship)}
+                  </span>
+                  <span className="text-sm text-on-surface-variant font-label">
+                    {getRelationshipLabel(partner.relationship)}
+                  </span>
+                  {partner.accepted_at && (
+                    <>
+                      <span className="text-on-surface-variant/30">{'·'}</span>
+                      <span className="text-sm text-on-surface-variant font-label">
+                        {daysSinceAccepted} day{daysSinceAccepted !== 1 ? 's' : ''} connected
+                      </span>
+                    </>
+                  )}
+                </div>
+                <p className="text-xs text-on-surface-variant/60 font-body mt-0.5">{partner.partner_email}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Partner Streak & Momentum ────────────────────── */}
+          {partner.status === 'active' && relationshipData && (
+            <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="material-symbols-outlined text-lg text-on-surface-variant">local_fire_department</span>
+                <h3 className="font-headline text-base font-bold text-on-surface">Partnership Momentum</h3>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {/* Streak */}
+                <div className="flex flex-col items-center p-4 rounded-2xl bg-surface-container-low">
+                  <span className={`font-headline text-2xl font-extrabold leading-none ${
+                    relationshipData.streak >= 7 ? 'text-tertiary' : relationshipData.streak >= 3 ? 'text-primary' : 'text-on-surface'
+                  }`}>
+                    {relationshipData.streak}
+                  </span>
+                  <span className="text-[10px] text-on-surface-variant font-label uppercase tracking-wider mt-1">
+                    day streak
+                  </span>
+                  {relationshipData.streakMultiplier > 1 && (
+                    <span className="mt-1.5 text-[9px] px-2 py-0.5 rounded-full font-label bg-tertiary-container text-on-tertiary-container font-bold">
+                      {relationshipData.streakMultiplier}x bonus
+                    </span>
+                  )}
+                </div>
+
+                {/* Level */}
+                <div className="flex flex-col items-center p-4 rounded-2xl bg-surface-container-low">
+                  <span className="text-2xl leading-none">{relationshipData.levelEmoji}</span>
+                  <span className="text-[10px] text-on-surface-variant font-label uppercase tracking-wider mt-1">
+                    Level {relationshipData.level}
+                  </span>
+                  <span className="mt-1.5 text-[10px] font-label font-medium text-primary truncate max-w-full px-1">
+                    {relationshipData.levelTitle}
+                  </span>
+                </div>
+
+                {/* XP */}
+                <div className="flex flex-col items-center p-4 rounded-2xl bg-surface-container-low">
+                  <span className="font-headline text-2xl font-extrabold text-on-surface leading-none">
+                    {relationshipData.totalXP.toLocaleString()}
+                  </span>
+                  <span className="text-[10px] text-on-surface-variant font-label uppercase tracking-wider mt-1">
+                    total XP
+                  </span>
+                  {/* Progress to next level */}
+                  <div className="w-full mt-2">
+                    <div className="h-1.5 w-full rounded-full bg-outline-variant/15">
+                      <div
+                        className="h-1.5 rounded-full bg-primary transition-all duration-700"
+                        style={{ width: `${relationshipData.progressToNext}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Trust Meter ─────────────────────────────────── */}
+          {partner.status === 'active' && (
+            <TrustMeter checkInRate={checkInRate} totalCheckIns={totalCheckIns} />
+          )}
+
           {/* Partner effectiveness scores */}
           {partner.status === 'active' && partnerScores.length > 0 && (
             <PartnerCompatibility partners={partnerScores} />
           )}
 
-          <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-primary font-headline font-bold text-xl flex-shrink-0">
-                {partner.partner_name.charAt(0).toUpperCase()}
+          {/* ── Conversation Prompts ────────────────────────── */}
+          {partner.status === 'active' && (
+            <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-lg text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
+                  <h3 className="font-headline text-base font-bold text-on-surface">Conversation Starters</h3>
+                </div>
+                <Link
+                  href="/partner/conversations"
+                  className="text-xs font-label font-medium text-primary hover:underline"
+                >
+                  View all
+                </Link>
               </div>
-              <div className="flex-1">
-                <h3 className="font-headline text-lg font-bold text-on-surface">{partner.partner_name}</h3>
-                <p className="text-sm text-on-surface-variant font-body">{partner.partner_email}</p>
-                {partner.partner_phone && (
-                  <p className="text-xs text-on-surface-variant font-label">{partner.partner_phone}</p>
-                )}
-              </div>
-              <div className={`px-3 py-1 rounded-full text-xs font-label font-semibold ${
-                partner.status === 'active'
-                  ? 'bg-primary-container text-primary'
-                  : partner.status === 'pending'
-                    ? 'bg-tertiary-container text-on-tertiary-container'
-                    : 'bg-error/10 text-error'
-              }`}>
-                {partner.status}
-              </div>
-            </div>
+              <p className="text-xs text-on-surface-variant font-body mb-4 -mt-2">
+                Open a meaningful conversation with {partner.partner_name}
+              </p>
 
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="px-3 py-2 rounded-2xl bg-surface-container-low">
-                <div className="text-xs text-on-surface-variant font-label">Invited</div>
-                <div className="font-label font-medium text-on-surface">
-                  {new Date(partner.invited_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </div>
-              </div>
-              {partner.accepted_at && (
-                <div className="px-3 py-2 rounded-2xl bg-surface-container-low">
-                  <div className="text-xs text-on-surface-variant font-label">Accepted</div>
-                  <div className="font-label font-medium text-on-surface">
-                    {new Date(partner.accepted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              <div className="space-y-3">
+                {conversationPrompts.map((prompt, idx) => (
+                  <div
+                    key={idx}
+                    className="group flex items-start gap-3 p-4 rounded-2xl bg-gradient-to-br from-amber-50/40 to-primary/5 ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-md transition-all duration-200"
+                  >
+                    <span className="material-symbols-outlined text-base text-on-surface-variant/50 mt-0.5 shrink-0">{prompt.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-body text-on-surface leading-relaxed italic">
+                        &ldquo;{prompt.text}&rdquo;
+                      </p>
+                      <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-label font-medium uppercase tracking-wide bg-surface-container-low text-on-surface-variant">
+                        {prompt.theme}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => copyPrompt(prompt.text, idx)}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-label font-medium text-primary bg-primary/8 hover:bg-primary/15 active:scale-95 transition-all duration-200 cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    >
+                      <span className="material-symbols-outlined text-sm">
+                        {copiedIdx === idx ? 'check' : 'content_copy'}
+                      </span>
+                      {copiedIdx === idx ? 'Copied' : 'Copy'}
+                    </button>
                   </div>
-                </div>
-              )}
+                ))}
+              </div>
+
+              {/* Suggest a Conversation CTA */}
+              <div className="mt-4 pt-4 border-t border-outline-variant/15">
+                <Link
+                  href="/partner/conversations"
+                  className="flex items-center justify-center gap-2 w-full px-5 py-3 min-h-[44px] bg-primary text-on-primary text-sm font-label font-semibold rounded-2xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200"
+                >
+                  <span className="material-symbols-outlined text-base">forum</span>
+                  Suggest a Conversation
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* ── Quick Actions ────────────────────────────────── */}
+          {partner.status === 'active' && (
+            <div className="grid grid-cols-2 gap-3">
+              <Link href="/partner/focus"
+                className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200 text-center">
+                <div className="text-2xl mb-1">{'\uD83C\uDFAF'}</div>
+                <div className="text-sm font-label font-medium text-on-surface">Their Focus Board</div>
+              </Link>
+              <Link href="/partner/checkins"
+                className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200 text-center">
+                <div className="text-2xl mb-1">{'\uD83D\uDCCB'}</div>
+                <div className="text-sm font-label font-medium text-on-surface">Check-ins</div>
+              </Link>
+            </div>
+          )}
 
           {partner.status === 'pending' && (
             <div className="bg-tertiary-container/30 rounded-3xl border border-tertiary-container p-4">
@@ -258,21 +519,6 @@ export default function PartnerPage() {
               <p className="text-xs text-on-surface font-body leading-relaxed">
                 <span className="font-bold text-primary">Strengthen your circle.</span> As King Solomon wrote, &ldquo;A cord of three strands is not easily broken.&rdquo; <button onClick={() => setShowForm(true)} className="text-primary font-bold underline cursor-pointer">Invite another partner</button>. Upgrade to Pro for up to 5.
               </p>
-            </div>
-          )}
-
-          {partner.status === 'active' && (
-            <div className="grid grid-cols-2 gap-3">
-              <Link href="/partner/focus"
-                className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200 text-center">
-                <div className="text-2xl mb-1">{'\uD83C\uDFAF'}</div>
-                <div className="text-sm font-label font-medium text-on-surface">Their Focus Board</div>
-              </Link>
-              <Link href="/partner/checkins"
-                className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200 text-center">
-                <div className="text-2xl mb-1">{'\uD83D\uDCCB'}</div>
-                <div className="text-sm font-label font-medium text-on-surface">Check-ins</div>
-              </Link>
             </div>
           )}
         </div>
