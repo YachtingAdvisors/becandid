@@ -28,19 +28,26 @@ async function handleCron(req: NextRequest) {
   if (authError) return authError;
 
   const now = new Date();
-  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ...
-  const dayOfMonth = now.getDate();
+  const dayOfWeek = now.getUTCDay(); // 0=Sun, 1=Mon, ...
+  const dayOfMonth = now.getUTCDate();
   const results = { track: '', generated: false, slug: '', error: '' };
 
-  // Determine which track to run
-  const isTrackADay = [1, 3, 5].includes(dayOfWeek); // Mon, Wed, Fri
-  const isTrackBDay = [1, 15].includes(dayOfMonth);
+  // Allow manual override via query param: ?track=A or ?track=B
+  const url = new URL(req.url);
+  const forceTrack = url.searchParams.get('track')?.toUpperCase();
 
-  // Track B takes priority on overlap days (1st and 15th)
-  const track = isTrackBDay ? 'B' : isTrackADay ? 'A' : null;
+  let track: string | null;
+  if (forceTrack === 'A' || forceTrack === 'B') {
+    track = forceTrack;
+  } else {
+    // Auto-schedule: Track B on 1st/15th, Track A on MWF
+    const isTrackADay = [1, 3, 5].includes(dayOfWeek); // Mon, Wed, Fri
+    const isTrackBDay = [1, 15].includes(dayOfMonth);
+    track = isTrackBDay ? 'B' : isTrackADay ? 'A' : null;
+  }
 
   if (!track) {
-    return NextResponse.json({ ok: true, message: 'Not a generation day', ...results });
+    return NextResponse.json({ ok: true, message: 'Not a generation day. Use ?track=A or ?track=B to force.', ...results });
   }
 
   results.track = track;
