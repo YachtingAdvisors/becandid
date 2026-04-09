@@ -22,9 +22,7 @@
           "color": "#226779",
           "sounds": []
         }
-      ],
-      "./modules/usage-stats",
-      "./modules/vpn-dns-filter"
+      ]
     ],
     "ios": {
       "supportsTablet": false,
