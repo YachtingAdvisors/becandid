@@ -24,7 +24,11 @@ const PUBLIC_PATHS = [
   '/download',
   '/donate',
   '/pause',
-  '/account/',
+  '/account',
+  '/assessment',
+  '/org',
+  '/about',
+  '/offline',
 ];
 
 const CRON_PATHS = ['/api/cron'];
