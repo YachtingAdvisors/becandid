@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getAllBlogPosts, getSeoPublishedPosts } from '@/content/blog/loader';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
