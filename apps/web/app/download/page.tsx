@@ -7,7 +7,8 @@ import PublicNav from '@/components/PublicNav';
 const CHROME_STORE_URL = '#'; // TODO: replace with Chrome Web Store link after submission
 
 /* ── Windows download URL ────────────────────────────────────── */
-const WINDOWS_DOWNLOAD_URL = 'https://github.com/YachtingAdvisors/becandid/releases/latest'; // TODO: replace with direct .exe link once available
+const WINDOWS_DOWNLOAD_URL = 'https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0-win/Be.Candid.Setup.1.0.0.exe';
+const WINDOWS_X64_URL = 'https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0-win/Be.Candid.Setup.1.0.0-x64.exe';
 
 /* ── Reusable icon component ─────────────────────────────────── */
 function MaterialIcon({ name, className = '' }: { name: string; className?: string }) {
@@ -126,13 +127,18 @@ export default async function DownloadPage() {
                   {' '}macOS — Temporarily Unavailable
                 </div>
                 <a
-                  href={WINDOWS_DOWNLOAD_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={WINDOWS_X64_URL}
                   className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
                 >
                   <MaterialIcon name="download" className="text-lg" />
-                  Windows Beta — Download
+                  Windows (x64) — Download
+                </a>
+                <a
+                  href={WINDOWS_DOWNLOAD_URL}
+                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3 text-slate-400 hover:text-white rounded-full font-label font-semibold text-xs tracking-wide transition-all duration-200 cursor-pointer hover:bg-white/5"
+                >
+                  <MaterialIcon name="download" className="text-sm" />
+                  Windows (ARM64) — Download
                 </a>
               </div>
               <p className="text-amber-400/80 text-xs mt-4 text-center">
