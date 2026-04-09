@@ -24,8 +24,7 @@
         }
       ],
       "./modules/usage-stats",
-      "./modules/vpn-dns-filter",
-      "./plugins/usage-stats-plugin"
+      "./modules/vpn-dns-filter"
     ],
     "ios": {
       "supportsTablet": false,
