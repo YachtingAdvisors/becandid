@@ -175,16 +175,28 @@ function TransformationCard({
             setFlipped(!flipped);
             onActivate();
           }}
+          onMouseEnter={() => {
+            if (window.matchMedia('(hover: hover)').matches && !flipped) {
+              setFlipped(true);
+              onActivate();
+            }
+          }}
+          onMouseLeave={() => {
+            if (window.matchMedia('(hover: hover)').matches && flipped) {
+              setFlipped(false);
+            }
+          }}
           className="relative cursor-pointer"
           style={{
             transformStyle: 'preserve-3d',
-            transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
             transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            minHeight: '140px',
           }}
         >
           {/* Front — Shadow side */}
           <div
-            className="relative rounded-2xl p-5 md:p-6 border transition-all duration-500"
+            className="relative rounded-2xl p-5 md:p-6 border transition-all duration-500 h-full"
             style={{
               backfaceVisibility: 'hidden',
               background: 'linear-gradient(135deg, rgba(127,29,29,0.15) 0%, rgba(120,53,15,0.1) 50%, rgba(30,30,30,0.4) 100%)',
@@ -200,8 +212,10 @@ function TransformationCard({
                   {t.shadowDesc}
                 </p>
                 <p className="text-stone-600 text-xs mt-3 flex items-center gap-1.5">
-                  <Icon name="touch_app" className="text-xs" />
-                  Tap to reveal the growth path
+                  <Icon name="touch_app" className="text-xs md:hidden" />
+                  <span className="md:hidden">Tap to reveal the growth path</span>
+                  <Icon name="swipe" className="text-xs hidden md:inline" />
+                  <span className="hidden md:inline">Hover to reveal the growth path</span>
                 </p>
               </div>
             </div>
@@ -209,7 +223,7 @@ function TransformationCard({
 
           {/* Back — Growth side */}
           <div
-            className="absolute inset-0 rounded-2xl p-5 md:p-6 border"
+            className="absolute inset-0 rounded-2xl p-5 md:p-6 border overflow-hidden"
             style={{
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
@@ -225,7 +239,7 @@ function TransformationCard({
                 <p className="text-emerald-100 text-sm leading-relaxed font-body">
                   {t.growthDesc}
                 </p>
-                <div className="mt-3 pt-3 border-t border-emerald-500/10">
+                <div className="mt-2 pt-2 border-t border-emerald-500/10">
                   <p className="text-emerald-300/80 text-xs leading-relaxed flex items-start gap-1.5">
                     <Icon name="psychiatry" className="text-xs mt-0.5 flex-shrink-0" />
                     <span><strong className="text-emerald-300">Practice:</strong> {t.practice}</span>
