@@ -106,21 +106,30 @@ export default async function BlogPostPage({ params }: Props) {
       </header>
 
       {/* Hero banner */}
-      <div className="w-full rounded-2xl mb-10 ring-1 ring-white/10 overflow-hidden bg-gradient-to-br from-primary/20 via-slate-900 to-cyan-900/20 p-10 flex items-center justify-center" style={{ aspectRatio: '1200/630' }}>
-        <div className="text-center max-w-lg">
-          <span className="material-symbols-outlined text-5xl text-primary/40 mb-4 block">article</span>
-          <p className="font-headline text-lg font-bold text-white/60">{post.tags[0] || 'Blog'}</p>
+      <div className="w-full rounded-2xl mb-10 ring-1 ring-white/10 overflow-hidden relative" style={{ aspectRatio: '1200/630' }}>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-slate-900 to-cyan-900/30" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            {post.tags.slice(0, 3).map((tag: string) => (
+              <span key={tag} className="px-3 py-1 rounded-full bg-white/10 text-white/70 text-xs font-label font-bold uppercase tracking-wider">{tag}</span>
+            ))}
+          </div>
+          <h2 className="font-headline text-2xl md:text-3xl font-extrabold text-white leading-tight max-w-xl">{post.title}</h2>
+          <p className="font-body text-sm text-white/50 mt-3 max-w-md">{post.description}</p>
         </div>
       </div>
 
       {/* Article content */}
       <article
         className="prose prose-lg prose-invert max-w-none
-          prose-headings:font-headline prose-headings:tracking-tight prose-headings:text-slate-100
+          prose-headings:font-headline prose-headings:tracking-tight prose-headings:text-white
           prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4
           prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3
-          prose-p:font-body prose-p:text-white prose-p:leading-relaxed prose-p:mb-4
-          prose-li:text-white
+          prose-p:font-body prose-p:text-stone-200 prose-p:leading-relaxed prose-p:mb-4
+          prose-li:text-stone-200
+          prose-strong:text-white
+          prose-blockquote:text-stone-300 prose-blockquote:border-primary/40
+          prose-td:text-stone-200 prose-th:text-white
           prose-hr:border-stone-700/50
           prose-em:text-teal-400 prose-em:not-italic prose-em:font-medium
           prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline"
