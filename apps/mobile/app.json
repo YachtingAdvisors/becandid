@@ -42,7 +42,6 @@
         "backgroundColor": "#ffffff"
       },
       "package": "io.becandid.app",
-      "versionCode": 1,
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
         "SCHEDULE_EXACT_ALARM",
