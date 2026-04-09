@@ -243,7 +243,6 @@ Generate the full article now.`;
             <p style="margin:24px 0 0;font-size:11px;color:#999;">Remaining Track ${track} topics: ${topics.filter(t => !existingSlugs.has(t.slug) && t.slug !== post.slug).length} · Total generated: ${existingSlugs.size + 1}</p>
           </div>`,
       });
-      });
     } catch {}
 
     return NextResponse.json({ ok: true, ...results });
