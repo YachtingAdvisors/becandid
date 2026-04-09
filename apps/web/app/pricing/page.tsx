@@ -18,7 +18,7 @@ const TIERS = [
     name: 'Free',
     monthlyPrice: 0,
     annualPrice: 0,
-    logo: '/apple-touch-icon.png',
+    logo: '/logo.png',
     description: 'Begin aligning',
     cta: 'Get Started',
     ctaHref: '/auth/signup',
@@ -191,7 +191,7 @@ export default function PricingPage() {
                   {(tier as any).logo ? (
                     <div className="w-24 h-24 rounded-2xl overflow-hidden mx-auto shadow-lg">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={(tier as any).logo} alt={`${tier.name} logo`} className={`w-full h-full ${tier.id === 'free' ? 'object-contain p-4 bg-[#1a3a42] brightness-0 invert' : 'object-cover'}`} />
+                      <img src={(tier as any).logo} alt={`${tier.name} logo`} className={`w-full h-full ${tier.id === 'free' ? 'object-cover bg-[#226779] p-3 brightness-[10]' : 'object-cover'}`} />
                     </div>
                   ) : (
                     <span
