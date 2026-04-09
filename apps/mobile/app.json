@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "scheme": "becandid",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -50,8 +50,7 @@
         "VIBRATE",
         "INTERNET",
         "ACCESS_NETWORK_STATE",
-        "FOREGROUND_SERVICE",
-        "QUERY_ALL_PACKAGES"
+        "FOREGROUND_SERVICE"
       ]
     },
     "web": {
