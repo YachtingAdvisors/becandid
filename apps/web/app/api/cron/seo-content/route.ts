@@ -65,7 +65,7 @@ async function handleCron(req: NextRequest) {
       .select('slug');
 
     if (selectErr) {
-      return NextResponse.json({ ok: false, error: `DB select error: ${selectErr.message}`, ...results });
+      return NextResponse.json({ ...results, ok: false, error: `DB select error: ${selectErr.message}` });
     }
 
     const existingSlugs = new Set((existing ?? []).map(e => e.slug));
@@ -136,7 +136,7 @@ Generate the full article now.`;
     }, { onConflict: 'slug' });
 
     if (upsertErr) {
-      return NextResponse.json({ ok: false, error: `DB upsert error: ${upsertErr.message}`, slug: post.slug, ...results });
+      return NextResponse.json({ ...results, ok: false, error: `DB upsert error: ${upsertErr.message}`, slug: post.slug });
     }
 
     // For Track A: auto-publish by writing the JSON file via API
