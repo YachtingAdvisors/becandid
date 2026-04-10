@@ -157,16 +157,17 @@ interface ComparisonRow {
   covenantEyes: Support;
   bark: Support;
   qustodio: Support;
+  accountable2You: Support;
 }
 
 const COMPARISON_DATA: ComparisonRow[] = [
-  { feature: 'Partner-based (not surveillance)', description: 'Accountability through trust, not monitoring screenshots', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no' },
-  { feature: 'Journal / self-reflection', description: 'Private guided journaling to understand underlying patterns', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no' },
-  { feature: 'Conversation guides', description: 'Evidence-based prompts for difficult discussions', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no' },
-  { feature: 'Therapist portal', description: 'Read-only access for therapists with your consent', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no' },
-  { feature: 'Privacy-first (no screenshots)', description: 'Categories and timing only -- never URLs or content', beCandid: 'yes', covenantEyes: 'no', bark: 'partial', qustodio: 'no' },
-  { feature: 'Free tier', description: 'Core features available at no cost', beCandid: 'yes', covenantEyes: 'no', bark: 'partial', qustodio: 'partial' },
-  { feature: 'Dark mode', description: 'Full dark theme support', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no' },
+  { feature: 'Partner-based (not surveillance)', description: 'Accountability through trust, not monitoring screenshots', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no', accountable2You: 'no' },
+  { feature: 'Journal / self-reflection', description: 'Private guided journaling to understand underlying patterns', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no', accountable2You: 'no' },
+  { feature: 'Conversation guides', description: 'Evidence-based prompts for difficult discussions', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no', accountable2You: 'no' },
+  { feature: 'Therapist portal', description: 'Read-only access for therapists with your consent', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no', accountable2You: 'no' },
+  { feature: 'Privacy-first (no screenshots)', description: 'Categories and timing only -- never URLs or content', beCandid: 'yes', covenantEyes: 'no', bark: 'partial', qustodio: 'no', accountable2You: 'no' },
+  { feature: 'Free tier', description: 'Core features available at no cost', beCandid: 'yes', covenantEyes: 'no', bark: 'partial', qustodio: 'partial', accountable2You: 'no' },
+  { feature: 'Dark mode', description: 'Full dark theme support', beCandid: 'yes', covenantEyes: 'no', bark: 'no', qustodio: 'no', accountable2You: 'no' },
 ];
 
 function SupportIcon({ value }: { value: Support }) {
@@ -213,6 +214,7 @@ export function ComparisonTable() {
                   <th className="text-center font-label text-sm font-semibold text-stone-500 uppercase tracking-wider px-4 py-4">Covenant Eyes</th>
                   <th className="text-center font-label text-sm font-semibold text-stone-500 uppercase tracking-wider px-4 py-4">Bark</th>
                   <th className="text-center font-label text-sm font-semibold text-stone-500 uppercase tracking-wider px-4 py-4">Qustodio</th>
+                  <th className="text-center font-label text-sm font-semibold text-stone-500 uppercase tracking-wider px-4 py-4">Accountable2You</th>
                 </tr>
               </thead>
               <tbody>
@@ -223,6 +225,7 @@ export function ComparisonTable() {
                     <td className="px-4 py-4 text-center"><SupportIcon value={row.covenantEyes} /></td>
                     <td className="px-4 py-4 text-center"><SupportIcon value={row.bark} /></td>
                     <td className="px-4 py-4 text-center"><SupportIcon value={row.qustodio} /></td>
+                    <td className="px-4 py-4 text-center"><SupportIcon value={row.accountable2You} /></td>
                   </tr>
                 ))}
               </tbody>

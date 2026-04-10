@@ -87,6 +87,7 @@ interface ComparisonRow {
   covenantEyes: string;
   everAccountable: string;
   bark: string;
+  accountable2You: string;
 }
 
 const COMPARISON_ROWS: ComparisonRow[] = [
@@ -96,6 +97,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'Yes',
     everAccountable: 'Yes',
     bark: 'No',
+    accountable2You: 'No',
   },
   {
     feature: 'Battery impact',
@@ -103,6 +105,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'Heavy',
     everAccountable: 'Heavy',
     bark: 'Moderate',
+    accountable2You: 'Heavy',
   },
   {
     feature: 'Screenshots captured',
@@ -110,6 +113,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'Yes',
     everAccountable: 'Yes',
     bark: 'No',
+    accountable2You: 'Yes',
   },
   {
     feature: 'Browsing history logged',
@@ -117,6 +121,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'Yes',
     everAccountable: 'Yes',
     bark: 'No',
+    accountable2You: 'Yes',
   },
   {
     feature: 'Conversation guides',
@@ -124,6 +129,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'No',
     everAccountable: 'No',
     bark: 'No',
+    accountable2You: 'No',
   },
   {
     feature: 'Therapist portal',
@@ -131,6 +137,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'No',
     everAccountable: 'No',
     bark: 'No',
+    accountable2You: 'No',
   },
   {
     feature: '25 rival categories',
@@ -138,6 +145,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'No',
     everAccountable: 'No',
     bark: 'Partial',
+    accountable2You: 'No',
   },
   {
     feature: 'Dark mode',
@@ -145,6 +153,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'No',
     everAccountable: 'No',
     bark: 'Yes',
+    accountable2You: 'No',
   },
   {
     feature: 'Group accountability',
@@ -152,6 +161,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'No',
     everAccountable: 'No',
     bark: 'No',
+    accountable2You: 'No',
   },
   {
     feature: 'Journaling framework',
@@ -159,6 +169,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'No',
     everAccountable: 'No',
     bark: 'No',
+    accountable2You: 'No',
   },
   {
     feature: 'Free tier',
@@ -166,6 +177,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: 'No',
     everAccountable: 'No',
     bark: 'Yes',
+    accountable2You: 'No',
   },
   {
     feature: 'Price',
@@ -173,6 +185,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     covenantEyes: '$16.99/mo',
     everAccountable: '$6.99/mo',
     bark: '$14/mo',
+    accountable2You: '$7.99/mo',
   },
 ];
 
@@ -368,6 +381,9 @@ export default function WhyBeCandidPage() {
                     <th className="px-4 py-4 font-label font-semibold text-stone-400 uppercase tracking-wider text-xs">
                       Bark
                     </th>
+                    <th className="px-4 py-4 font-label font-semibold text-stone-400 uppercase tracking-wider text-xs">
+                      Accountable2You
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -390,6 +406,9 @@ export default function WhyBeCandidPage() {
                       </td>
                       <td className="px-4 py-3.5">
                         <CellValue value={row.bark} />
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <CellValue value={row.accountable2You} />
                       </td>
                     </tr>
                   ))}
