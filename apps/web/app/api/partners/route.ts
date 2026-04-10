@@ -117,10 +117,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Store primary relationship type on user (first selected value)
+    // Note: we no longer set partner_id on users — it's a legacy single-partner field.
+    // The partners table is the source of truth for all partnerships.
     const primaryRelationship = parsed.data.relationship_type.split(',')[0].trim();
     const { error: userUpdateError } = await db.from('users').update({
       relationship_type: primaryRelationship,
-      partner_id: partner.id,
     }).eq('id', user.id);
 
     if (userUpdateError) {

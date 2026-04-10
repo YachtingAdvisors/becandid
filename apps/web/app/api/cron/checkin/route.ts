@@ -117,7 +117,7 @@ async function handleCron(req: NextRequest) {
           pushNotifyUser(db, user.id, {
             type: 'check_in',
             title: 'Check-in time',
-            body: `Hey ${user.name ?? 'there'}, time to check in. Both you and your partner need to respond.`,
+            body: `Hey ${user.name ?? 'there'}, time to check in. Both you and your partners need to respond.`,
             data: { url: '/dashboard/checkins', tag: `checkin-${checkIn.id}` },
           }),
         ];
@@ -192,5 +192,5 @@ function generateCheckInPrompt(name: string, frequency: CheckInFrequency): strin
         : '';
 
   const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-  return `${greeting}${frequencyNote} How are you feeling about your focus goals? Both you and your partner will need to check in for this to count.`;
+  return `${greeting}${frequencyNote} How are you feeling about your focus goals? Both you and your partners will need to check in for this to count.`;
 }

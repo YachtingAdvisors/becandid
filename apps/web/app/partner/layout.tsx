@@ -13,11 +13,15 @@ export default async function PartnerLayout({
 
   const db = createServiceClient();
 
+  // If user is a partner for multiple people, pick the first active one.
+  // TODO: add a partnership switcher when multi-monitoring is fully supported.
   const { data: partnership } = await db
     .from('partners')
     .select('user_id')
     .eq('partner_user_id', user.id)
     .eq('status', 'active')
+    .order('accepted_at', { ascending: false })
+    .limit(1)
     .maybeSingle();
 
   let monitoredName = 'Partner';

@@ -30,12 +30,14 @@ interface FatigueAnalysis {
 export async function analyzePartnerFatigue(userId: string): Promise<FatigueAnalysis> {
   const db = createServiceClient();
 
-  // Get partner record
+  // Get partner record (use first accepted partner by priority; safe with 0 or many)
   const { data: partner } = await db.from('partners')
     .select('*')
     .eq('user_id', userId)
     .eq('status', 'accepted')
-    .single();
+    .order('priority', { ascending: true })
+    .limit(1)
+    .maybeSingle();
 
   if (!partner) {
     return { fatigued: false, signals: [], avgResponseHours: null, unresolvedAlerts: 0, alertsThisWeek: 0, lastEngagement: null, recommendation: 'none' };
@@ -155,7 +157,9 @@ export async function sendFatigueWarning(userId: string, analysis: FatigueAnalys
     .select('fatigue_warning_sent')
     .eq('user_id', userId)
     .eq('status', 'accepted')
-    .single();
+    .order('priority', { ascending: true })
+    .limit(1)
+    .maybeSingle();
 
   if (partner?.fatigue_warning_sent) return;
 
