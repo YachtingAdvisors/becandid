@@ -78,6 +78,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (insertError || !checkIn) {
+      console.error('check-in insert failed:', insertError);
       return NextResponse.json({ error: 'Failed to create check-in' }, { status: 500 });
     }
 

@@ -46,7 +46,7 @@ export default function BuildWithUs() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all font-label font-bold text-xs"
+        className="fixed bottom-20 lg:bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all font-label font-bold text-xs"
         aria-label="Build with us"
       >
         <span className="material-symbols-outlined text-lg">construction</span>
@@ -57,7 +57,7 @@ export default function BuildWithUs() {
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-50 w-80 bg-surface-container-lowest rounded-3xl border border-outline-variant shadow-2xl overflow-hidden"
+      className="fixed bottom-20 lg:bottom-6 right-6 z-50 w-80 bg-surface-container-lowest rounded-3xl border border-outline-variant shadow-2xl overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-labelledby="build-with-us-title"
