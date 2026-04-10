@@ -34,6 +34,7 @@ const NAV_ITEMS = [
   { id: 'inventory', href: '/dashboard/inventory', label: 'Daily Inventory', icon: 'self_improvement', solo: true, group: 'growth' },
   { id: 'fasting', href: '/dashboard/fasting', label: 'Fasting', icon: 'self_improvement', solo: true, group: 'growth' },
   { id: 'amends', href: '/dashboard/amends', label: 'Making Amends', icon: 'handshake', solo: true, group: 'growth' },
+  { id: 'learning', href: '/dashboard/learning', label: 'Learning', icon: 'school', solo: true, group: 'growth' },
   // Community — collapsible
   { id: 'conversations', href: '/dashboard/conversations', label: 'Conversations', icon: 'forum', solo: false, group: 'community' },
   { id: 'groups', href: '/dashboard/groups', label: 'Groups', icon: 'diversity_3', solo: true, group: 'community' },
