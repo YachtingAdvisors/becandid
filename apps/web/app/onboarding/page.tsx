@@ -68,7 +68,11 @@ function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialStep = searchParams.get('step');
-  const [step, setStepRaw] = useState<Step>(initialStep === 'partner' ? 'partner' : 'goals');
+  const [step, setStepRaw] = useState<Step>(
+    initialStep === 'partner' ? 'partner'
+    : initialStep === 'done' ? 'done'
+    : 'goals'
+  );
   const [showFullPhrase, setShowFullPhrase] = useState(false);
   const setStep = (s: Step) => {
     // When transitioning to 'done', show the full phrase animation first
@@ -821,7 +825,7 @@ function OnboardingContent() {
 
           <div className="mt-8 space-y-3">
             <Link
-              href="/dashboard/assessment"
+              href="/dashboard/assessment?return_to=onboarding"
               className="block w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 text-center"
             >
               Take Assessment

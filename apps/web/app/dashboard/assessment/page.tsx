@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import MaterialIcon from '@/components/ui/MaterialIcon';
 
 /* ─── Rival definitions ─────────────────────────────────── */
@@ -584,6 +585,8 @@ function CopingProfile({ copingResults }: { copingResults: { type: CopingType; p
 
 /* ─── Component ──────────────────────────────────────────── */
 export default function AssessmentPage() {
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get('return_to');
   const [step, setStep] = useState(0); // 0..3 = questions, 4 = results, 5 = pick rivals
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [chosenRivals, setChosenRivals] = useState<Set<RivalId>>(new Set());
@@ -648,7 +651,7 @@ export default function AssessmentPage() {
       });
     } catch {}
     setSaving(false);
-    window.location.href = '/dashboard';
+    window.location.href = returnTo === 'onboarding' ? '/onboarding?step=done' : '/dashboard';
   }
 
   const progress = ((step) / STEPS.length) * 100;
