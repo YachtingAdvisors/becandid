@@ -6,13 +6,27 @@ import PublicNav from '@/components/PublicNav';
 /* ── Chrome Web Store URL (update once published) ────────────── */
 const CHROME_STORE_URL = '#'; // TODO: replace with Chrome Web Store link after submission
 
-/* ── Windows download URL ────────────────────────────────────── */
-const WINDOWS_DOWNLOAD_URL = 'https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0-win/Be.Candid.Setup.1.0.0.exe';
-const WINDOWS_X64_URL = 'https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0-win/Be.Candid.Setup.1.0.0-x64.exe';
+/* ── Fallback download URLs (used if GitHub API is unavailable) ── */
+const FALLBACK_WINDOWS_X64 = 'https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0-win/Be.Candid.Setup.1.0.0-x64.exe';
+const FALLBACK_WINDOWS_ARM = 'https://github.com/YachtingAdvisors/becandid/releases/download/v1.0.0-win/Be.Candid.Setup.1.0.0.exe';
 
 /* ── Reusable icon component ─────────────────────────────────── */
 function MaterialIcon({ name, className = '' }: { name: string; className?: string }) {
   return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+async function fetchRelease() {
+  try {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
+    const res = await fetch(`${appUrl}/api/releases`, { next: { revalidate: 300 } });
+    if (res.ok) return await res.json();
+  } catch { /* fall through */ }
+  return null;
 }
 
 export default async function DownloadPage() {
@@ -20,6 +34,14 @@ export default async function DownloadPage() {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/auth/signin?redirect=/download');
+
+  const release = await fetchRelease();
+  const winX64Url = release?.assets?.windowsX64?.url ?? FALLBACK_WINDOWS_X64;
+  const winArmUrl = release?.assets?.windowsArm64?.url ?? FALLBACK_WINDOWS_ARM;
+  const macDmgUrl = release?.assets?.macDmg?.url ?? null;
+  const version = release?.version ?? null;
+  const winX64Size = release?.assets?.windowsX64?.size ? formatBytes(release.assets.windowsX64.size) : null;
+  const winArmSize = release?.assets?.windowsArm64?.size ? formatBytes(release.assets.windowsArm64.size) : null;
 
   return (
     <div className="min-h-screen bg-[#020617] text-white overflow-x-hidden">
@@ -122,26 +144,41 @@ export default async function DownloadPage() {
               </ul>
 
               <div className="space-y-3">
-                <div className="w-full px-6 py-3.5 bg-stone-700 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
-                  <MaterialIcon name="pause_circle" className="text-lg" />
-                  {' '}macOS — Temporarily Unavailable
-                </div>
+                {macDmgUrl ? (
+                  <a
+                    href={macDmgUrl}
+                    className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                  >
+                    <MaterialIcon name="download" className="text-lg" />
+                    macOS — Download
+                  </a>
+                ) : (
+                  <div className="w-full px-6 py-3.5 bg-stone-700 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
+                    <MaterialIcon name="pause_circle" className="text-lg" />
+                    {' '}macOS — Temporarily Unavailable
+                  </div>
+                )}
                 <a
-                  href={WINDOWS_X64_URL}
+                  href={winX64Url}
                   className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
                 >
                   <MaterialIcon name="download" className="text-lg" />
-                  Windows (x64) — Download
+                  Windows (x64){winX64Size ? ` — ${winX64Size}` : ' — Download'}
                 </a>
                 <a
-                  href={WINDOWS_DOWNLOAD_URL}
+                  href={winArmUrl}
                   className="inline-flex items-center gap-2 w-full justify-center px-6 py-3 text-slate-400 hover:text-white rounded-full font-label font-semibold text-xs tracking-wide transition-all duration-200 cursor-pointer hover:bg-white/5"
                 >
                   <MaterialIcon name="download" className="text-sm" />
-                  Windows (ARM64) — Download
+                  Windows (ARM64){winArmSize ? ` — ${winArmSize}` : ' — Download'}
                 </a>
               </div>
-              <p className="text-amber-400/80 text-xs mt-4 text-center">
+              {version && (
+                <p className="text-stone-500 text-xs mt-3 text-center">
+                  Version {version}
+                </p>
+              )}
+              <p className="text-amber-400/80 text-xs mt-2 text-center">
                 macOS is pending Apple notarization. Windows builds are not yet code-signed. You may see a SmartScreen warning — click &quot;More info&quot; &rarr; &quot;Run anyway&quot;.
               </p>
             </div>
