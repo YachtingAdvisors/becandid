@@ -171,7 +171,7 @@ export default function LandingPage() {
               {/* Micro-trust */}
               <div className="flex items-center gap-3 pt-2 text-stone-500">
                 <MaterialIcon name="verified_user" className="text-base text-primary/60" filled />
-                <span className="font-body text-sm">Free 21-day trial &middot; No credit card required</span>
+                <span className="font-body text-sm">Free 21-day trial (just long enough to break a habit) &middot; No credit card required</span>
               </div>
             </div>
 
