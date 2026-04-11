@@ -3,8 +3,9 @@ import Image from 'next/image';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
 import { HeroPlayer } from './HeroPlayerClient';
-import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion, FAQ_ITEMS } from '@/components/LandingSections';
+import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion } from '@/components/LandingSections';
 import { softwareAppSchema, organizationSchema, faqSchema } from '@/lib/structuredData';
+import { FAQ_ITEMS } from '@/lib/faqData';
 import AnimateOnScroll from '@/components/ui/AnimateOnScroll';
 
 /* ─── Feature data ───────────────────────────────────────────── */
