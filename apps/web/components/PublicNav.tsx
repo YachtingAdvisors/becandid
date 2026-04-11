@@ -48,6 +48,7 @@ export default function PublicNav() {
     { href: '/methodology', label: 'Methodology' },
     { href: '/assessment', label: 'Assessment' },
     { href: '/pricing', label: 'Pricing' },
+    { href: '/org', label: 'Organization' },
     { href: '/blog', label: 'Blog' },
     { href: '/download', label: 'Download' },
   ];

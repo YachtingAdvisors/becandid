@@ -35,9 +35,29 @@ const nextConfig = {
   // Typed routes (moved from experimental in Next.js 16)
   typedRoutes: false,
 
-  // Redirect root to dashboard if authenticated (handled by middleware)
+  // Redirects
   async redirects() {
-    return [];
+    return [
+      // becandid.org → becandid.io/org (vanity domain for the nonprofit page)
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'becandid.org' }],
+        destination: 'https://becandid.io/org',
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.becandid.org' }],
+        destination: 'https://becandid.io/org',
+        permanent: true,
+      },
+      // /organization → /org (canonical path)
+      {
+        source: '/organization',
+        destination: '/org',
+        permanent: true,
+      },
+    ];
   },
 };
 
