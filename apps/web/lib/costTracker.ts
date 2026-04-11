@@ -26,7 +26,7 @@ function calculateCost(model: string, inputTokens: number, outputTokens: number)
 }
 
 export function logApiCost(params: CostLogParams): void {
-  console.log(JSON.stringify({
+  console.info(JSON.stringify({
     type: 'api_cost',
     ...params,
     estimated_cost: calculateCost(params.model, params.inputTokens, params.outputTokens),

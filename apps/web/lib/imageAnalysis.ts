@@ -108,7 +108,7 @@ function logClassifierResult(
   result: ClassificationResult,
   userId: string
 ): void {
-  console.log(
+  console.info(
     JSON.stringify({
       type: 'screen_capture_classification',
       needs_vision: result.needsVisionAnalysis,

@@ -18,9 +18,9 @@ export default function SignupConsent({ checked, onChange }: SignupConsentProps)
       />
       <span className="text-xs text-stone-400 leading-relaxed font-body group-hover:text-stone-300 transition-colors duration-200">
         I agree to the{' '}
-        <Link href="/legal/terms" target="_blank" className="text-cyan-400 hover:underline font-medium transition-colors duration-200">Terms of Service</Link>
+        <Link href="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline font-medium transition-colors duration-200">Terms of Service</Link>
         {' '}and{' '}
-        <Link href="/legal/privacy" target="_blank" className="text-cyan-400 hover:underline font-medium transition-colors duration-200">Privacy Policy</Link>.
+        <Link href="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline font-medium transition-colors duration-200">Privacy Policy</Link>.
         I understand Be Candid monitors screen activity and shares category-level alerts
         with my accountability partner as described in the Privacy Policy.
       </span>

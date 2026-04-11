@@ -151,7 +151,7 @@ export function auditLog(entry: AuditEntry): void {
     ...(entry.ip ? { ip: entry.ip } : {}),
   };
 
-  console.log('[AUDIT]', JSON.stringify(log));
+  console.info('[AUDIT]', JSON.stringify(log));
 }
 
 /**
