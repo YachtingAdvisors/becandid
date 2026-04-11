@@ -113,8 +113,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Partner insert error:', JSON.stringify(error));
-      return NextResponse.json({ error: `Partner invite failed: ${error.message}` }, { status: 400 });
+      return safeError('POST /api/partners', error);
     }
 
     // Store primary relationship type on user (first selected value)

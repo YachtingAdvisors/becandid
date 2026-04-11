@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { encrypt, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
-import { sanitizeText } from '@/lib/security';
+import { sanitizeText, safeError } from '@/lib/security';
 
 // ── Encrypted fields ───────────────────────────────────────
 const ENCRYPTED_FIELDS = ['went_well', 'was_dishonest', 'owe_apology', 'grateful_for'] as const;
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('GET /api/inventory', error);
 
   const inventories = (data || []).map((row) => decryptInventory(row, user.id));
   return NextResponse.json({ inventories });
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('POST /api/inventory', error);
 
   return NextResponse.json({ inventory: decryptInventory(data, user.id) }, { status: 201 });
 }

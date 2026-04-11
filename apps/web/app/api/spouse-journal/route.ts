@@ -17,6 +17,7 @@ import { encrypt, decrypt, encryptJournalEntry, decryptJournalEntries } from '@/
 import { awardRelationshipXP } from '@/lib/relationshipEngine';
 import { checkContenderMilestones, analyzeTrustTrend } from '@/lib/spouseExperience';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { safeError } from '@/lib/security';
 
 const ENCRYPTED_FIELDS = ['freewrite', 'impact', 'needs', 'boundaries'] as const;
 
@@ -119,7 +120,7 @@ export async function POST(req: NextRequest) {
       visible_to_partner: visible_to_partner ?? false,
     }).select().single();
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return safeError('POST /api/spouse-journal', error);
 
     // Update trust trend
     await analyzeTrustTrend(user.id, partnerRecord.id);
@@ -155,7 +156,7 @@ export async function POST(req: NextRequest) {
   const { data: entry, error } = await db.from('spouse_journal')
     .insert(entryData).select().single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('POST /api/spouse-journal', error);
 
   // Award relationship XP (bonus — not required)
   await awardRelationshipXP(user.id, 'partner', 'sent_encouragement', {
@@ -198,7 +199,7 @@ export async function PATCH(req: NextRequest) {
       .eq('spouse_user_id', user.id)
       .select().single();
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return safeError('PATCH /api/spouse-journal', error);
 
     // Milestone check for first share
     const { data: partnerRecord } = await db.from('partners')
@@ -224,7 +225,7 @@ export async function PATCH(req: NextRequest) {
   const { data, error } = await db.from('spouse_journal')
     .update(updates).eq('id', id).eq('spouse_user_id', user.id).select().single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('PATCH /api/spouse-journal', error);
   return NextResponse.json({ entry: decryptSpouseEntry(data, user.id) });
 }
 
@@ -243,6 +244,6 @@ export async function DELETE(req: NextRequest) {
   const { error } = await db.from('spouse_journal').delete()
     .eq('id', id).eq('spouse_user_id', user.id);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('DELETE /api/spouse-journal', error);
   return NextResponse.json({ deleted: true });
 }

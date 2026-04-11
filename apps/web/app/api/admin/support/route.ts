@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
 import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
+import { safeError } from '@/lib/security';
 
 async function requireAdmin() {
   const supabase = await createServerSupabaseClient();
@@ -204,7 +205,7 @@ export async function POST(req: NextRequest) {
         .eq('id', user_id);
 
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return safeError('POST /api/admin/support', error);
       }
 
       await db.from('audit_log').insert({
@@ -229,7 +230,7 @@ export async function POST(req: NextRequest) {
         .eq('id', user_id);
 
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return safeError('POST /api/admin/support', error);
       }
 
       await db.from('audit_log').insert({
@@ -248,7 +249,7 @@ export async function POST(req: NextRequest) {
       });
 
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return safeError('POST /api/admin/support', error);
       }
 
       await db.from('audit_log').insert({

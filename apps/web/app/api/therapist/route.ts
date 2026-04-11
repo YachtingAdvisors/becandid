@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     can_see_patterns: can_see_patterns ?? false,
   }, { onConflict: 'id' }).select().single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('POST /api/therapist', error);
 
   // Get user's name for the email
   const { data: profile } = await db.from('users').select('name').eq('id', user.id).single();
@@ -264,7 +264,7 @@ export async function PATCH(req: NextRequest) {
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('PATCH /api/therapist', error);
 
   try {
     await db.from('audit_log').insert({

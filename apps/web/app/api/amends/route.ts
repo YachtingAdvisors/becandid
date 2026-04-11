@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { encrypt, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
-import { sanitizeText } from '@/lib/security';
+import { sanitizeText, safeError } from '@/lib/security';
 
 // ── Encrypted fields ───────────────────────────────────────
 const ENCRYPTED_FIELDS = ['person_name', 'relationship', 'what_happened', 'what_to_say', 'notes'] as const;
@@ -50,7 +50,7 @@ export async function GET(_req: NextRequest) {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('GET /api/amends', error);
 
   const amends = (data || []).map((row) => decryptAmend(row, user.id));
   return NextResponse.json({ amends });
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
   const encrypted = encryptAmend(raw, user.id);
   const db = createServiceClient();
   const { data, error } = await db.from('amends').insert(encrypted).select().single();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('POST /api/amends', error);
 
   return NextResponse.json({ amend: decryptAmend(data, user.id) }, { status: 201 });
 }
@@ -145,7 +145,7 @@ export async function PATCH(req: NextRequest) {
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('PATCH /api/amends', error);
   return NextResponse.json({ amend: decryptAmend(data, user.id) });
 }
 
@@ -164,7 +164,7 @@ export async function DELETE(req: NextRequest) {
 
   const db = createServiceClient();
   const { error } = await db.from('amends').delete().eq('id', id).eq('user_id', user.id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('DELETE /api/amends', error);
 
   return NextResponse.json({ deleted: true });
 }

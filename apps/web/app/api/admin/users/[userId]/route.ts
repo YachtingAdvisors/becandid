@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
 import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
+import { safeError } from '@/lib/security';
 
 export async function GET(
   req: NextRequest,
@@ -160,7 +161,7 @@ export async function PATCH(
   const { error } = await db.from('users').update(update).eq('id', userId);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return safeError('PATCH /api/admin/users/[userId]', error);
   }
 
   // Log admin action

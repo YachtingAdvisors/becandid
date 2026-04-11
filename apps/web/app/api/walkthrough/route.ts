@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { safeError } from '@/lib/security';
 
 /**
  * PATCH /api/walkthrough
@@ -31,7 +32,7 @@ export async function PATCH(req: NextRequest) {
         .eq('id', user.id);
 
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return safeError('PATCH /api/walkthrough', error);
       }
     }
 

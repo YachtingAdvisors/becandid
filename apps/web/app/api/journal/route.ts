@@ -303,7 +303,7 @@ export async function POST(req: NextRequest) {
   const encryptedEntry = encryptJournalEntry(rawEntry, user.id);
   const { data: entry, error } = await db.from('stringer_journal').insert(encryptedEntry).select().single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('POST /api/journal', error);
 
   // Award trust points
   await db.rpc('award_trust_points', {

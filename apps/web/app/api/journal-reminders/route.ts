@@ -8,6 +8,8 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { safeError } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const VALID_FREQUENCIES = ['daily', 'every_2_days', 'every_3_days', 'weekly'];
 
@@ -41,6 +43,9 @@ export async function PUT(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
+
   const body = await req.json();
   const {
     reminder_enabled, frequency, preferred_hour,
@@ -70,6 +75,6 @@ export async function PUT(req: NextRequest) {
     updated_at: new Date().toISOString(),
   }, { onConflict: 'user_id' }).select().single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return safeError('PUT /api/journal-reminders', error);
   return NextResponse.json({ preferences: data });
 }

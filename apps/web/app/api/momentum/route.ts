@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { safeError } from '@/lib/security';
 import { calculateMomentumScore } from '@/lib/momentumScore';
 
 export async function GET() {
@@ -25,9 +26,6 @@ export async function GET() {
     const result = await calculateMomentumScore(db, user.id);
     return NextResponse.json(result);
   } catch (err: unknown) {
-    const message =
-      err instanceof Error ? err.message : 'Failed to calculate momentum score';
-    console.error('[momentum] Error:', message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    return safeError('GET /api/momentum', err);
   }
 }
