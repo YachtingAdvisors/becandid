@@ -634,7 +634,8 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
 }
 
 /* ─── Dashboard Theme (scoped to backend/dashboard pages only) ── */
-.dashboard-theme {
+/* Only override in light mode — dark mode uses the same palette as the frontend */
+.dashboard-theme:not(.dark *) {
   --color-primary: #276772;
   --color-primary-dim: #175b66;
   --color-primary-container: #afedf9;
@@ -665,4 +666,32 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
 
   --color-outline: #737c7d;
   --color-outline-variant: #abb4b4;
+}
+
+/* Dashboard dark mode — use the frontend's dark sanctuary palette */
+:is(.dark) .dashboard-theme {
+  --color-background: var(--_dk-background);
+  --color-surface: var(--_dk-surface);
+  --color-surface-container: var(--_dk-surface-container);
+  --color-surface-container-low: var(--_dk-surface-container-low);
+  --color-surface-container-lowest: var(--_dk-surface-container-lowest);
+  --color-surface-container-high: var(--_dk-surface-container-high);
+  --color-surface-container-highest: var(--_dk-surface-container-highest);
+  --color-on-surface: var(--_dk-on-surface);
+  --color-on-surface-variant: var(--_dk-on-surface-variant);
+  --color-primary: var(--_dk-primary);
+  --color-primary-dim: var(--_dk-primary-dim);
+  --color-primary-container: var(--_dk-primary-container);
+  --color-on-primary: var(--_dk-on-primary);
+  --color-on-primary-container: var(--_dk-on-primary-container);
+  --color-secondary: var(--_dk-secondary);
+  --color-secondary-container: var(--_dk-secondary-container);
+  --color-on-secondary-container: var(--_dk-on-secondary-container);
+  --color-tertiary: var(--_dk-tertiary);
+  --color-tertiary-container: var(--_dk-tertiary-container);
+  --color-on-tertiary-container: var(--_dk-on-tertiary-container);
+  --color-outline: var(--_dk-outline);
+  --color-outline-variant: var(--_dk-outline-variant);
+  --color-error: var(--_dk-error);
+  --color-error-container: var(--_dk-error-container);
 }
