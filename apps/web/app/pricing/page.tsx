@@ -256,11 +256,7 @@ export default function PricingPage() {
                   </p>
                   <div className="mt-4">
                     {price === 0 ? (
-                      <p
-                        className={`text-4xl font-headline font-extrabold tracking-tight ${
-                          tier.highlight ? 'text-on-primary' : 'text-slate-100'
-                        }`}
-                      >
+                      <p className="text-4xl font-headline font-extrabold tracking-tight text-emerald-400">
                         Free
                       </p>
                     ) : (
