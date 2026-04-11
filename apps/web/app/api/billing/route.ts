@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { createCheckoutSession, createPortalSession } from '@/lib/stripe/server';
 import { STRIPE_CONFIG, getPlanLimits } from '@/lib/stripe/config';
+import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io';
 
@@ -22,6 +23,9 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(accountLimiter, user.id);
+  if (blocked) return blocked;
 
   const body = await req.json();
   let { price_id } = body;
@@ -116,6 +120,9 @@ export async function PATCH(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(accountLimiter, user.id);
+  if (blocked) return blocked;
 
   try {
     const session = await createPortalSession(

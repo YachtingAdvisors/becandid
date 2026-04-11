@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { safeError, escapeHtml } from '@/lib/security';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { z } from 'zod';
 import { Resend } from 'resend';
 import twilio from 'twilio';
@@ -57,6 +58,9 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
+
     const body = await req.json();
     const parsed = addSchema.safeParse(body);
     if (!parsed.success) {
@@ -94,6 +98,9 @@ export async function DELETE(req: NextRequest) {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const { searchParams } = new URL(req.url);
     const parsed = deleteSchema.safeParse({ id: searchParams.get('id') });

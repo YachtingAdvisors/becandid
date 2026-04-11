@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const CHALLENGES = [
   // Journal
@@ -128,6 +129,9 @@ export async function PATCH() {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(actionLimiter, user.id);
+  if (blocked) return blocked;
 
   const db = createServiceClient();
   const today = new Date().toISOString().split('T')[0];

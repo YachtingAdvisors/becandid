@@ -10,6 +10,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase';
 import { stripe, getOrCreateCustomer } from '@/lib/stripe/server';
+import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io';
 const MIN_AMOUNT_CENTS = 100; // $1 minimum
@@ -18,6 +19,9 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const blocked = checkUserRate(accountLimiter, user.id);
+  if (blocked) return blocked;
 
   const { amount } = await req.json();
 

@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
+import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
 import { emailWrapper } from '@/lib/email/template';
 import { Resend } from 'resend';
 
@@ -40,6 +41,9 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (!isAdmin(user.email || ''))
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const blocked = checkUserRate(accountLimiter, user.id);
+  if (blocked) return blocked;
 
   let body: { subject?: string; body?: string; audience?: string };
   try {

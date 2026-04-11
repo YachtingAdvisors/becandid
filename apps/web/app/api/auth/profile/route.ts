@@ -8,6 +8,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { UpdateProfileSchema } from '@be-candid/shared';
 import { safeError, sanitizeName, sanitizePhone, auditLog } from '@/lib/security';
 import { generateReferralCode, applyReferralReward } from '@/lib/referral';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function GET(req: NextRequest) {
   try {
@@ -30,6 +31,9 @@ export async function PATCH(req: NextRequest) {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('PATCH /api/auth/profile', 'Unauthorized', 401);
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const body = await req.json().catch(() => null);
     if (!body) return safeError('PATCH /api/auth/profile', 'Invalid JSON', 400);
@@ -114,6 +118,9 @@ export async function POST(req: NextRequest) {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/auth/profile', 'Unauthorized', 401);
+
+    const blocked = checkUserRate(actionLimiter, user.id);
+    if (blocked) return blocked;
 
     const body = await req.json().catch(() => null);
     if (!body?.name) return safeError('POST /api/auth/profile', 'Name required', 400);

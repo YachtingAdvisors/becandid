@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 //      only trusted because the invite token itself is the secret.
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '@/lib/supabase';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -39,6 +40,9 @@ export async function POST(req: NextRequest) {
   if (!acceptingUserId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const blocked = checkUserRate(actionLimiter, acceptingUserId);
+  if (blocked) return blocked;
 
   // --- Validate invite token ---
   const { data: partner } = await db
