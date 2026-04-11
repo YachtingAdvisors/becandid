@@ -53,7 +53,8 @@ export async function GET(req: NextRequest) {
 
   // Search filter
   if (search) {
-    query = query.or(`email.ilike.%${search}%,name.ilike.%${search}%`);
+    const safeSearch = search.replace(/[,().]/g, '');
+    query = query.or(`email.ilike.%${safeSearch}%,name.ilike.%${safeSearch}%`);
   }
 
   // Plan filter (subscription_plan holds free/pro/therapy)
