@@ -90,6 +90,20 @@ function timingSafeEqual(a: string, b: string): boolean {
   return result === 0;
 }
 
+// ─── Chrome Extension Origin Check ──────────────────────────
+// TODO: Set ALLOWED_EXTENSION_ID to the published extension's ID to
+// restrict CORS to only the official Be Candid extension.
+function isAllowedExtensionOrigin(origin: string): boolean {
+  if (!origin.startsWith('chrome-extension://')) return false;
+  const allowedId = process.env.ALLOWED_EXTENSION_ID;
+  if (allowedId) {
+    return origin === `chrome-extension://${allowedId}`;
+  }
+  // No explicit ID configured — block in production, allow in dev
+  if (process.env.NODE_ENV === 'production') return false;
+  return true;
+}
+
 // ─── Middleware ───────────────────────────────────────────────
 
 export async function middleware(request: NextRequest) {
@@ -100,7 +114,7 @@ export async function middleware(request: NextRequest) {
     // ── 0. CORS preflight for Chrome extension ─────────────
     if (request.method === 'OPTIONS' && pathname.startsWith('/api/')) {
       const res = new NextResponse(null, { status: 204 });
-      if (origin.startsWith('chrome-extension://')) {
+      if (isAllowedExtensionOrigin(origin)) {
         res.headers.set('Access-Control-Allow-Origin', origin);
         res.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
         res.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
@@ -183,7 +197,7 @@ export async function middleware(request: NextRequest) {
       // Let the route handler validate the Bearer token via authFromRequest
       const bearerResponse = NextResponse.next({ request });
       applyHeaders(bearerResponse);
-      if (origin.startsWith('chrome-extension://')) {
+      if (isAllowedExtensionOrigin(origin)) {
         bearerResponse.headers.set('Access-Control-Allow-Origin', origin);
         bearerResponse.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
       }
@@ -228,7 +242,7 @@ export async function middleware(request: NextRequest) {
 
     // ── 6. Apply security headers and CORS ────────────────
     applyHeaders(response);
-    if (origin.startsWith('chrome-extension://') && pathname.startsWith('/api/')) {
+    if (isAllowedExtensionOrigin(origin) && pathname.startsWith('/api/')) {
       response.headers.set('Access-Control-Allow-Origin', origin);
       response.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
     }

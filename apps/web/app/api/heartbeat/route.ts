@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isNonScanUser } from '@/lib/isolationMode';
+import { safeError } from '@/lib/security';
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -32,20 +33,20 @@ export async function POST(req: NextRequest) {
     .from('users')
     .update({ last_heartbeat: now })
     .eq('id', user.id)
-    .select('id, email');
+    .select('id');
 
   if (error) {
     console.error('[heartbeat POST] Update failed for user', user.id, ':', error.message);
-    return NextResponse.json({ ok: false, error: error.message, user_id: user.id });
+    return safeError('heartbeat POST', error);
   }
 
   const rowsUpdated = data?.length ?? 0;
   if (rowsUpdated === 0) {
     console.error('[heartbeat POST] No rows updated. User ID:', user.id, 'Email:', user.email);
-    return NextResponse.json({ ok: false, error: 'User not found in public.users', user_id: user.id, email: user.email });
+    return NextResponse.json({ ok: false, error: 'Update failed' }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, user_id: user.id, email: user.email, rows_updated: rowsUpdated, isolation_only: isolationOnly });
+  return NextResponse.json({ ok: true, rows_updated: rowsUpdated, isolation_only: isolationOnly });
 }
 
 export async function GET(req: NextRequest) {
@@ -82,7 +83,6 @@ export async function GET(req: NextRequest) {
       app_running: false,
       monitoring_enabled: true,
       last_heartbeat: null,
-      debug: error.message,
     });
   }
 
