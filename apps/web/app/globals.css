@@ -45,80 +45,122 @@
   /* Error */
   --color-error: #a83836;
   --color-error-container: #fa746f;
+
+  /* Dark page backgrounds (constant — not theme-switched) */
+  --color-dark-sanctuary: #0c1214;
+  --color-dark-auth: #0f1419;
+
+  /* ── MD3 Dark Palette (single source of truth) ─────────── */
+  /* Private constants — consumed below by .dark and @media.  */
+  --_dk-primary: #7ccfe0;
+  --_dk-primary-dim: #5ab8ca;
+  --_dk-primary-container: #004d5e;
+  --_dk-on-primary: #003544;
+  --_dk-on-primary-container: #a4e4f8;
+
+  --_dk-secondary: #b0cad4;
+  --_dk-secondary-container: #2e4a54;
+  --_dk-on-secondary-container: #c9e8f3;
+
+  --_dk-tertiary: #fdbe66;
+  --_dk-tertiary-container: #5d3b00;
+  --_dk-on-tertiary-container: #ffddb3;
+
+  --_dk-background: #111416;
+  --_dk-surface: #111416;
+  --_dk-surface-container: #1d2023;
+  --_dk-surface-container-low: #1a1c1f;
+  --_dk-surface-container-lowest: #0c0e10;
+  --_dk-surface-container-high: #272a2d;
+  --_dk-surface-container-highest: #323538;
+
+  --_dk-on-surface: #e2e3e3;
+  --_dk-on-surface-variant: #c8c9c9;
+
+  --_dk-outline: #898a8a;
+  --_dk-outline-variant: #434445;
+
+  --_dk-error: #ffb4ab;
+  --_dk-error-container: #93000a;
 }
 
-/* ─── MD3 Color Tokens (dark) ─────────────────────────────── */
+/* ─── MD3 Color Tokens (dark) — class toggle ─────────────── */
 .dark {
-  --color-primary: #7ccfe0;
-  --color-primary-dim: #5ab8ca;
-  --color-primary-container: #004d5e;
-  --color-on-primary: #003544;
-  --color-on-primary-container: #a4e4f8;
+  --color-primary: var(--_dk-primary);
+  --color-primary-dim: var(--_dk-primary-dim);
+  --color-primary-container: var(--_dk-primary-container);
+  --color-on-primary: var(--_dk-on-primary);
+  --color-on-primary-container: var(--_dk-on-primary-container);
 
-  --color-secondary: #b0cad4;
-  --color-secondary-container: #2e4a54;
-  --color-on-secondary-container: #c9e8f3;
+  --color-secondary: var(--_dk-secondary);
+  --color-secondary-container: var(--_dk-secondary-container);
+  --color-on-secondary-container: var(--_dk-on-secondary-container);
 
-  --color-tertiary: #fdbe66;
-  --color-tertiary-container: #5d3b00;
-  --color-on-tertiary-container: #ffddb3;
+  --color-tertiary: var(--_dk-tertiary);
+  --color-tertiary-container: var(--_dk-tertiary-container);
+  --color-on-tertiary-container: var(--_dk-on-tertiary-container);
 
-  --color-background: #111416;
-  --color-surface: #111416;
-  --color-surface-container: #1d2023;
-  --color-surface-container-low: #1a1c1f;
-  --color-surface-container-lowest: #0c0e10;
-  --color-surface-container-high: #272a2d;
-  --color-surface-container-highest: #323538;
+  --color-background: var(--_dk-background);
+  --color-surface: var(--_dk-surface);
+  --color-surface-container: var(--_dk-surface-container);
+  --color-surface-container-low: var(--_dk-surface-container-low);
+  --color-surface-container-lowest: var(--_dk-surface-container-lowest);
+  --color-surface-container-high: var(--_dk-surface-container-high);
+  --color-surface-container-highest: var(--_dk-surface-container-highest);
 
-  --color-on-surface: #e2e3e3;
-  --color-on-surface-variant: #c8c9c9;
+  --color-on-surface: var(--_dk-on-surface);
+  --color-on-surface-variant: var(--_dk-on-surface-variant);
 
-  --color-outline: #898a8a;
-  --color-outline-variant: #434445;
+  --color-outline: var(--_dk-outline);
+  --color-outline-variant: var(--_dk-outline-variant);
 
-  --color-error: #ffb4ab;
-  --color-error-container: #93000a;
+  --color-error: var(--_dk-error);
+  --color-error-container: var(--_dk-error-container);
 }
 
+/* ─── MD3 Color Tokens (dark) — OS preference fallback ───── */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --color-primary: #7ccfe0;
-    --color-primary-dim: #5ab8ca;
-    --color-primary-container: #004d5e;
-    --color-on-primary: #003544;
-    --color-on-primary-container: #a4e4f8;
+    --color-primary: var(--_dk-primary);
+    --color-primary-dim: var(--_dk-primary-dim);
+    --color-primary-container: var(--_dk-primary-container);
+    --color-on-primary: var(--_dk-on-primary);
+    --color-on-primary-container: var(--_dk-on-primary-container);
 
-    --color-secondary: #b0cad4;
-    --color-secondary-container: #2e4a54;
-    --color-on-secondary-container: #c9e8f3;
+    --color-secondary: var(--_dk-secondary);
+    --color-secondary-container: var(--_dk-secondary-container);
+    --color-on-secondary-container: var(--_dk-on-secondary-container);
 
-    --color-tertiary: #fdbe66;
-    --color-tertiary-container: #5d3b00;
-    --color-on-tertiary-container: #ffddb3;
+    --color-tertiary: var(--_dk-tertiary);
+    --color-tertiary-container: var(--_dk-tertiary-container);
+    --color-on-tertiary-container: var(--_dk-on-tertiary-container);
 
-    --color-background: #111416;
-    --color-surface: #111416;
-    --color-surface-container: #1d2023;
-    --color-surface-container-low: #1a1c1f;
-    --color-surface-container-lowest: #0c0e10;
-    --color-surface-container-high: #272a2d;
-    --color-surface-container-highest: #323538;
+    --color-background: var(--_dk-background);
+    --color-surface: var(--_dk-surface);
+    --color-surface-container: var(--_dk-surface-container);
+    --color-surface-container-low: var(--_dk-surface-container-low);
+    --color-surface-container-lowest: var(--_dk-surface-container-lowest);
+    --color-surface-container-high: var(--_dk-surface-container-high);
+    --color-surface-container-highest: var(--_dk-surface-container-highest);
 
-    --color-on-surface: #e2e3e3;
-    --color-on-surface-variant: #c8c9c9;
+    --color-on-surface: var(--_dk-on-surface);
+    --color-on-surface-variant: var(--_dk-on-surface-variant);
 
-    --color-outline: #898a8a;
-    --color-outline-variant: #434445;
+    --color-outline: var(--_dk-outline);
+    --color-outline-variant: var(--_dk-outline-variant);
 
-    --color-error: #ffb4ab;
-    --color-error-container: #93000a;
+    --color-error: var(--_dk-error);
+    --color-error-container: var(--_dk-error-container);
   }
 }
 
 /* ─── Material Symbols ──────────────────────────────────── */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-filled {
+  font-variation-settings: 'FILL' 1;
 }
 
 /* ─── Base Styles ────────────────────────────────────────── */
@@ -198,6 +240,67 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ─── Pricing: animated border gradient ──────────────────── */
+@keyframes border-rotate {
+  0%   { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.pricing-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.pricing-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--border-angle),
+    var(--color-primary) 0%,
+    #06b6d4 25%,
+    var(--color-primary) 50%,
+    #06b6d4 75%,
+    var(--color-primary) 100%
+  );
+  z-index: -1;
+  animation: border-rotate 4s linear infinite;
+}
+
+.pricing-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  z-index: -1;
+}
+
+/* ─── Pricing: stagger (extended for 13 items) ───────────── */
+.pricing-stagger > * {
+  animation: fade-up 0.35s ease-out both;
+}
+.pricing-stagger > *:nth-child(1)  { animation-delay: 50ms; }
+.pricing-stagger > *:nth-child(2)  { animation-delay: 100ms; }
+.pricing-stagger > *:nth-child(3)  { animation-delay: 150ms; }
+.pricing-stagger > *:nth-child(4)  { animation-delay: 200ms; }
+.pricing-stagger > *:nth-child(5)  { animation-delay: 250ms; }
+.pricing-stagger > *:nth-child(6)  { animation-delay: 300ms; }
+.pricing-stagger > *:nth-child(7)  { animation-delay: 350ms; }
+.pricing-stagger > *:nth-child(8)  { animation-delay: 400ms; }
+.pricing-stagger > *:nth-child(9)  { animation-delay: 450ms; }
+.pricing-stagger > *:nth-child(10) { animation-delay: 500ms; }
+.pricing-stagger > *:nth-child(11) { animation-delay: 550ms; }
+.pricing-stagger > *:nth-child(12) { animation-delay: 600ms; }
+.pricing-stagger > *:nth-child(13) { animation-delay: 650ms; }
+
 /* ─── Focus ring ─────────────────────────────────────────── */
 input:focus, select:focus, textarea:focus, button:focus-visible {
   @apply outline-none ring-2 ring-primary ring-offset-1;
@@ -221,9 +324,8 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   text-shadow: 0 0 30px rgba(123, 211, 237, 0.4);
 }
 
-.bg-dark-sanctuary {
-  background-color: #0c1214;
-}
+/* Standalone dark page backgrounds — used by auth, pricing, etc. */
+/* Consumed via Tailwind tokens: bg-dark-sanctuary, bg-dark-auth   */
 
 .text-outline {
   -webkit-text-stroke: 1px rgba(123, 211, 237, 0.2);
@@ -406,10 +508,16 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   }
 
   /* Stagger children visible immediately */
-  .stagger > * {
+  .stagger > *,
+  .pricing-stagger > * {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* Pricing glow off */
+  .pricing-glow::before {
+    animation: none !important;
   }
 
   /* Page entrance visible immediately */
@@ -437,4 +545,90 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
     animation: none !important;
     opacity: 1 !important;
   }
+
+  /* Premium landing animations off */
+  .animate-fade-in-up,
+  .animate-fade-in-down,
+  .animate-fade-in-scale,
+  .animate-float,
+  .animate-float-delayed,
+  .animate-float-slow,
+  .animate-glow-pulse {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ─── Premium Animations ────────────────────────────────── */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-scale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out both;
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.6s ease-out both;
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.7s ease-out both;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out 2s infinite;
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out 1s infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Staggered delay utilities */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+
+/* Premium glass hover effect */
+.glass-card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }

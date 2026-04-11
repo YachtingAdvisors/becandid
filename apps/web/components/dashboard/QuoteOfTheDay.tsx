@@ -98,10 +98,16 @@ export default function QuoteOfTheDay({
   }, []);
 
   return (
-    <div className="bg-surface-container-lowest rounded-3xl p-6 border-l-4 border-primary-container relative">
+    <div className="relative bg-surface-container-lowest rounded-3xl p-6 overflow-hidden ring-1 ring-outline-variant/10">
+      {/* Gradient border accent — left edge */}
+      <div className="absolute left-0 top-4 bottom-4 w-1 rounded-full bg-gradient-to-b from-primary via-primary-container to-primary/40" />
+
+      {/* Subtle decorative gradient in background */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/[0.04] to-transparent rounded-bl-full pointer-events-none" />
+
       {/* Header with filter toggle */}
-      <div className="flex items-center justify-between mb-3">
-        <p className="font-label text-[10px] text-on-surface-variant/60 uppercase tracking-widest font-medium">
+      <div className="relative flex items-center justify-between mb-4 ml-2">
+        <p className="font-label text-[11px] text-on-surface-variant/50 uppercase tracking-[0.2em] font-medium">
           {filterFavorites ? 'Favorite Quotes' : 'Quote of the Day'}
         </p>
         {favorites.length > 0 && (
@@ -110,9 +116,9 @@ export default function QuoteOfTheDay({
               setFilterFavorites(!filterFavorites);
               setFavIndex(0);
             }}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-label font-medium transition-all cursor-pointer ${
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-label font-medium transition-all duration-300 cursor-pointer ${
               filterFavorites
-                ? 'bg-primary text-on-primary'
+                ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
                 : 'bg-surface-container-low text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30'
             }`}
           >
@@ -128,7 +134,7 @@ export default function QuoteOfTheDay({
       </div>
 
       {/* Quote content */}
-      <div className="flex gap-4">
+      <div className="relative flex gap-4 ml-2">
         {/* Optional author photo */}
         {displayQuote.image && (
           <div className="shrink-0">
@@ -136,16 +142,16 @@ export default function QuoteOfTheDay({
             <img
               src={displayQuote.image}
               alt={displayQuote.author}
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container"
+              className="w-11 h-11 rounded-full object-cover ring-2 ring-primary-container shadow-sm"
             />
           </div>
         )}
 
         <div className="flex-1 min-w-0">
-          <p className="font-body text-sm text-on-surface italic leading-relaxed">
+          <p className="font-body text-base sm:text-lg text-on-surface italic leading-relaxed tracking-[-0.01em]">
             &ldquo;{displayQuote.text}&rdquo;
           </p>
-          <p className="font-label text-xs text-on-surface-variant mt-2">
+          <p className="font-label text-xs text-on-surface-variant/70 mt-3 font-semibold tracking-wide">
             &mdash; {displayQuote.author}
           </p>
         </div>
@@ -154,12 +160,12 @@ export default function QuoteOfTheDay({
         <button
           onClick={toggleFavorite}
           disabled={toggling}
-          className="shrink-0 self-start p-1.5 rounded-full hover:bg-primary/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="shrink-0 self-start p-1.5 rounded-full hover:bg-primary/10 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30"
           aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
         >
           <span
-            className={`material-symbols-outlined text-xl transition-colors ${
-              isFavorited ? 'text-primary' : 'text-on-surface-variant/50'
+            className={`material-symbols-outlined text-xl transition-all duration-300 ${
+              isFavorited ? 'text-primary scale-110' : 'text-on-surface-variant/40 hover:text-primary/60'
             }`}
             style={{ fontVariationSettings: isFavorited ? "'FILL' 1" : "'FILL' 0" }}
           >
@@ -170,19 +176,19 @@ export default function QuoteOfTheDay({
 
       {/* Favorites navigation (when filtering by favorites) */}
       {filterFavorites && favorites.length > 1 && (
-        <div className="flex items-center justify-center gap-3 mt-3 pt-3 border-t border-outline-variant/10">
+        <div className="relative flex items-center justify-center gap-3 mt-4 pt-4 border-t border-outline-variant/10 ml-2">
           <button
             onClick={() => setFavIndex((favIndex - 1 + favorites.length) % favorites.length)}
-            className="p-1.5 rounded-full hover:bg-surface-container-low transition-colors cursor-pointer"
+            className="p-1.5 rounded-full hover:bg-surface-container-low transition-all duration-200 cursor-pointer active:scale-95"
           >
             <span className="material-symbols-outlined text-on-surface-variant text-base">chevron_left</span>
           </button>
-          <span className="text-[11px] font-label text-on-surface-variant">
+          <span className="text-[11px] font-label text-on-surface-variant tabular-nums">
             {(favIndex % favorites.length) + 1} of {favorites.length}
           </span>
           <button
             onClick={() => setFavIndex((favIndex + 1) % favorites.length)}
-            className="p-1.5 rounded-full hover:bg-surface-container-low transition-colors cursor-pointer"
+            className="p-1.5 rounded-full hover:bg-surface-container-low transition-all duration-200 cursor-pointer active:scale-95"
           >
             <span className="material-symbols-outlined text-on-surface-variant text-base">chevron_right</span>
           </button>
@@ -191,10 +197,10 @@ export default function QuoteOfTheDay({
 
       {/* View all favorites link (when NOT filtering) */}
       {!filterFavorites && favorites.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-outline-variant/10">
+        <div className="relative mt-4 pt-4 border-t border-outline-variant/10 ml-2">
           <button
             onClick={() => setShowFavorites(!showFavorites)}
-            className="text-xs text-primary font-label font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-primary/30 rounded"
+            className="text-xs text-primary font-label font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-primary/30 rounded transition-colors duration-200"
           >
             {showFavorites ? 'Hide favorites' : `View all favorites (${favorites.length})`}
           </button>
@@ -203,26 +209,26 @@ export default function QuoteOfTheDay({
 
       {/* Favorites dropdown */}
       {!filterFavorites && showFavorites && favorites.length > 0 && (
-        <div className="mt-3 space-y-3 max-h-64 overflow-y-auto">
+        <div className="relative mt-3 space-y-2.5 max-h-64 overflow-y-auto ml-2">
           {favorites.map(fav => (
             <div
               key={fav.id}
-              className="flex items-start gap-2 p-3 bg-surface-container-low rounded-xl"
+              className="flex items-start gap-2 p-3 bg-surface-container-low rounded-xl ring-1 ring-outline-variant/5 hover:ring-outline-variant/15 transition-all duration-200"
             >
               <div className="flex-1 min-w-0">
                 <p className="font-body text-xs text-on-surface italic leading-relaxed line-clamp-3">
                   &ldquo;{fav.quote_text}&rdquo;
                 </p>
-                <p className="font-label text-[10px] text-on-surface-variant mt-1">
+                <p className="font-label text-[10px] text-on-surface-variant/70 mt-1 font-semibold">
                   &mdash; {fav.quote_author}
                 </p>
               </div>
               <button
                 onClick={() => removeFavorite(fav.quote_text)}
-                className="shrink-0 p-1 rounded-full hover:bg-error/10 transition-colors focus:outline-none"
+                className="shrink-0 p-1 rounded-full hover:bg-error/10 transition-all duration-200 focus:outline-none active:scale-95"
                 aria-label="Remove favorite"
               >
-                <span className="material-symbols-outlined text-sm text-on-surface-variant/50 hover:text-error">
+                <span className="material-symbols-outlined text-sm text-on-surface-variant/40 hover:text-error transition-colors duration-200">
                   close
                 </span>
               </button>

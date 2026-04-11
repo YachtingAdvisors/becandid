@@ -90,6 +90,10 @@ const config: Config = {
         'surface-border': 'var(--color-outline-variant)',
         'surface-muted': 'var(--color-surface-container-low)',
         'surface-soft': 'var(--color-surface-container)',
+
+        // ── Dark page backgrounds (constant) ────────────────
+        'dark-sanctuary': 'var(--color-dark-sanctuary)',
+        'dark-auth': 'var(--color-dark-auth)',
       },
       borderRadius: {
         DEFAULT: '0.25rem',

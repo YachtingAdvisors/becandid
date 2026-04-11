@@ -930,7 +930,7 @@ export default function AssessmentClient() {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col items-center gap-3 pt-4 sticky bottom-0 bg-gradient-to-t from-[#0c1214] via-[#0c1214] to-transparent pb-2">
+        <div className="flex flex-col items-center gap-3 pt-4 sticky bottom-0 bg-gradient-to-t from-dark-sanctuary via-dark-sanctuary to-transparent pb-2">
           <button
             onClick={saveAndStart}
             disabled={saving || chosenRivals.size === 0}

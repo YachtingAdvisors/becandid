@@ -5,6 +5,7 @@ import JsonLd from '@/components/JsonLd';
 import { HeroPlayer } from './HeroPlayerClient';
 import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion, FAQ_ITEMS } from '@/components/LandingSections';
 import { softwareAppSchema, organizationSchema, faqSchema } from '@/lib/structuredData';
+import AnimateOnScroll from '@/components/ui/AnimateOnScroll';
 
 /* ─── Feature data ───────────────────────────────────────────── */
 const FEATURES = [
@@ -121,9 +122,9 @@ export default function LandingPage() {
         <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 min-h-[90vh] flex flex-col justify-center">
           {/* Decorative blur orbs — full viewport width */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-20 -right-20 w-[800px] h-[800px] rounded-full blur-[200px]" style={{ background: 'rgba(0, 102, 122, 0.15)' }} />
-            <div className="absolute -bottom-20 -left-20 w-[600px] h-[600px] rounded-full blur-[160px]" style={{ background: 'rgba(123, 211, 237, 0.08)' }} />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full blur-[240px]" style={{ background: 'rgba(0, 102, 122, 0.06)' }} />
+            <div className="absolute top-20 -right-20 w-[800px] h-[800px] rounded-full blur-[200px] animate-glow-pulse" style={{ background: 'rgba(0, 102, 122, 0.15)' }} />
+            <div className="absolute -bottom-20 -left-20 w-[600px] h-[600px] rounded-full blur-[160px] animate-glow-pulse delay-500" style={{ background: 'rgba(123, 211, 237, 0.08)' }} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full blur-[240px] animate-glow-pulse delay-300" style={{ background: 'rgba(0, 102, 122, 0.06)' }} />
           </div>
 
           <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 w-full relative z-10">
@@ -208,7 +209,7 @@ export default function LandingPage() {
               </div>
 
               {/* Floating badge: 256-bit Encrypted — top-right */}
-              <div className="absolute -top-5 -right-5 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+              <div className="absolute -top-5 -right-5 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10 animate-float">
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
                   <MaterialIcon name="lock" className="text-emerald-400 text-base" filled />
                 </div>
@@ -219,7 +220,7 @@ export default function LandingPage() {
               </div>
 
               {/* Floating badge: Stringer Framework — bottom-left */}
-              <div className="absolute -bottom-3 -left-6 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+              <div className="absolute -bottom-3 -left-6 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10 animate-float-delayed">
                 <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
                   <MaterialIcon name="psychology" className="text-amber-400 text-base" filled />
                 </div>
@@ -230,7 +231,7 @@ export default function LandingPage() {
               </div>
 
               {/* Floating badge: HIPAA Ready — top-left */}
-              <div className="absolute top-12 -left-10 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+              <div className="absolute top-12 -left-10 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10 animate-float-slow">
                 <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
                   <MaterialIcon name="health_and_safety" className="text-cyan-400 text-base" filled />
                 </div>
@@ -241,7 +242,7 @@ export default function LandingPage() {
               </div>
 
               {/* Floating badge: AI Pattern Detection — bottom-right */}
-              <div className="absolute -bottom-5 right-8 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
+              <div className="absolute -bottom-5 right-8 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10 animate-float-delayed">
                 <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
                   <MaterialIcon name="neurology" className="text-purple-400 text-base" filled />
                 </div>
@@ -261,7 +262,7 @@ export default function LandingPage() {
         {/* ── Precision Tools ─────────────────────────────── */}
         <section id="features" className="py-24 lg:py-32 px-6">
           <div className="max-w-screen-xl mx-auto">
-            <div className="text-center max-w-2xl mx-auto mb-16">
+            <AnimateOnScroll className="text-center max-w-2xl mx-auto mb-16" animation="fade-in-up">
               <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">Features</span>
               <h2 className="font-headline font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-white mt-4 tracking-tight">
                 Precision Tools
@@ -270,36 +271,42 @@ export default function LandingPage() {
               <p className="text-stone-400 mt-6 text-lg leading-relaxed">
                 Awareness, journaling, conversation guides, and alignment tracking &mdash; all in one place.
               </p>
-            </div>
+            </AnimateOnScroll>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {FEATURES.map((f, i) => (
-                <div
+                <AnimateOnScroll
                   key={f.title}
-                  className="group relative glass-card rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 cursor-pointer"
+                  animation="fade-in-scale"
+                  delay={i * 100}
+                  threshold={0.1}
                 >
-                  {/* Image */}
-                  <div className="aspect-[16/10] overflow-hidden relative">
-                    <Image
-                      src={f.image}
-                      alt={f.alt}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-5">
-                    <div className="flex items-center gap-3 mb-2.5">
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${ICON_COLORS[i] || 'bg-primary/20 text-primary'}`}>
-                        <MaterialIcon name={f.icon} className="text-lg" />
-                      </div>
-                      <h3 className="font-headline font-bold text-base text-white leading-snug">{f.title}</h3>
+                  <div
+                    className="group relative glass-card glass-card-hover rounded-2xl overflow-hidden hover:translate-y-[-8px] transition-all duration-300 cursor-pointer h-full"
+                  >
+                    {/* Image */}
+                    <div className="aspect-[16/10] overflow-hidden relative">
+                      <Image
+                        src={f.image}
+                        alt={f.alt}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
                     </div>
-                    <p className="font-body text-stone-400 leading-relaxed text-sm">{f.desc}</p>
+
+                    {/* Content */}
+                    <div className="p-5">
+                      <div className="flex items-center gap-3 mb-2.5">
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${ICON_COLORS[i] || 'bg-primary/20 text-primary'}`}>
+                          <MaterialIcon name={f.icon} className="text-lg" />
+                        </div>
+                        <h3 className="font-headline font-bold text-base text-white leading-snug">{f.title}</h3>
+                      </div>
+                      <p className="font-body text-stone-400 leading-relaxed text-sm">{f.desc}</p>
+                    </div>
                   </div>
-                </div>
+                </AnimateOnScroll>
               ))}
             </div>
           </div>
@@ -308,12 +315,12 @@ export default function LandingPage() {
         {/* ── The Journey to Integrity ─────────────────────── */}
         <section id="journey" className="py-24 lg:py-32 px-6 border-t border-white/5">
           <div className="max-w-screen-xl mx-auto">
-            <div className="text-center mb-20">
+            <AnimateOnScroll className="text-center mb-20" animation="fade-in-up">
               <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">The Process</span>
               <h2 className="font-headline text-3xl sm:text-4xl lg:text-[2.75rem] font-bold mt-4 tracking-tight text-white">
                 The Journey to Integrity
               </h2>
-            </div>
+            </AnimateOnScroll>
 
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               {/* Steps */}
@@ -334,16 +341,18 @@ export default function LandingPage() {
                     title: 'The Ascent',
                     desc: 'Track progress in character points and trust. Watch your integrity score rise as you build lasting, meaningful change.',
                   },
-                ].map((step) => (
-                  <div key={step.num} className="flex gap-6 items-start">
-                    <span className="text-outline font-headline text-6xl font-black leading-none shrink-0 select-none">
-                      {step.num}
-                    </span>
-                    <div className="space-y-2 pt-1">
-                      <h3 className="font-headline text-xl font-bold text-white">{step.title}</h3>
-                      <p className="font-body text-stone-400 leading-relaxed">{step.desc}</p>
+                ].map((step, i) => (
+                  <AnimateOnScroll key={step.num} animation="fade-in-up" delay={i * 200}>
+                    <div className="flex gap-6 items-start">
+                      <span className="text-outline font-headline text-6xl font-black leading-none shrink-0 select-none">
+                        {step.num}
+                      </span>
+                      <div className="space-y-2 pt-1">
+                        <h3 className="font-headline text-xl font-bold text-white">{step.title}</h3>
+                        <p className="font-body text-stone-400 leading-relaxed">{step.desc}</p>
+                      </div>
                     </div>
-                  </div>
+                  </AnimateOnScroll>
                 ))}
               </div>
 
@@ -359,7 +368,7 @@ export default function LandingPage() {
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                   {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c1214] via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark-sanctuary via-transparent to-transparent" />
                 </div>
 
                 {/* Floating glass quote card */}
@@ -379,25 +388,30 @@ export default function LandingPage() {
           <div className="max-w-screen-xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
             {/* Stats */}
             <div className="space-y-10">
-              <div>
-                <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">Proven Results</span>
-                <h2 className="font-headline text-3xl sm:text-4xl font-bold mt-4 tracking-tight text-white">
-                  Trusted by thousands
-                </h2>
-              </div>
+              <AnimateOnScroll animation="fade-in-up">
+                <div>
+                  <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">Proven Results</span>
+                  <h2 className="font-headline text-3xl sm:text-4xl font-bold mt-4 tracking-tight text-white">
+                    Trusted by thousands
+                  </h2>
+                </div>
+              </AnimateOnScroll>
               <div className="grid grid-cols-2 gap-8">
-                {TRUST_STATS.map((s) => (
-                  <div key={s.label}>
-                    <p className="font-headline text-4xl lg:text-5xl font-black text-white text-glow">{s.value}</p>
-                    <p className="font-label text-xs text-stone-500 uppercase tracking-widest mt-2">{s.label}</p>
-                  </div>
+                {TRUST_STATS.map((s, i) => (
+                  <AnimateOnScroll key={s.label} animation="fade-in-scale" delay={i * 150}>
+                    <div>
+                      <p className="font-headline text-4xl lg:text-5xl font-black text-white text-glow">{s.value}</p>
+                      <p className="font-label text-xs text-stone-500 uppercase tracking-widest mt-2">{s.label}</p>
+                    </div>
+                  </AnimateOnScroll>
                 ))}
               </div>
               <p className="font-label text-sm text-stone-500 uppercase tracking-widest mt-6">Methodology trusted by thousands</p>
             </div>
 
             {/* Download card */}
-            <div className="glass-card rounded-3xl p-8 lg:p-10">
+            <AnimateOnScroll animation="fade-in-scale" delay={200}>
+            <div className="glass-card glass-card-hover rounded-3xl p-8 lg:p-10">
               <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">Install Anywhere</span>
               <h3 className="font-headline text-2xl font-bold text-white mt-3 mb-2">Growth on the go</h3>
               <p className="font-body text-stone-400 leading-relaxed mb-8">
@@ -433,13 +447,14 @@ export default function LandingPage() {
                 Installs as a Progressive Web App &mdash; no app store needed.
               </p>
             </div>
+            </AnimateOnScroll>
           </div>
         </section>
 
         {/* ── Testimonial ─────────────────────────────────── */}
         <section className="py-20 px-6 border-t border-white/5">
-          <div className="max-w-3xl mx-auto">
-            <div className="glass-card rounded-3xl p-10 lg:p-14 relative overflow-hidden">
+          <AnimateOnScroll className="max-w-3xl mx-auto" animation="fade-in-up">
+            <div className="glass-card glass-card-hover rounded-3xl p-10 lg:p-14 relative overflow-hidden">
               {/* Gradient line at top */}
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
 
@@ -459,7 +474,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </AnimateOnScroll>
         </section>
 
         {/* ── Testimonial Carousel ─────────────────────────── */}
@@ -474,17 +489,19 @@ export default function LandingPage() {
         {/* ── Join the Community ─────────────────────────── */}
         <section className="py-24 lg:py-32 px-6 border-t border-white/5">
           <div className="max-w-screen-lg mx-auto text-center">
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 glass-card rounded-full mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#5865F2] animate-pulse" />
-              <span className="font-label text-xs font-semibold uppercase tracking-widest text-[#5865F2]">Community</span>
-            </div>
+            <AnimateOnScroll animation="fade-in-down">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 glass-card rounded-full mb-6">
+                <span className="w-2 h-2 rounded-full bg-[#5865F2] animate-pulse" />
+                <span className="font-label text-xs font-semibold uppercase tracking-widest text-[#5865F2]">Community</span>
+              </div>
 
-            <h2 className="font-headline text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6">
-              Join the Community
-            </h2>
-            <p className="font-body text-lg text-stone-400 leading-relaxed max-w-2xl mx-auto mb-10">
-              Be Candid is built in the open. Join our Discord to share feedback, request features, and connect with others on the same journey.
-            </p>
+              <h2 className="font-headline text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6">
+                Join the Community
+              </h2>
+              <p className="font-body text-lg text-stone-400 leading-relaxed max-w-2xl mx-auto mb-10">
+                Be Candid is built in the open. Join our Discord to share feedback, request features, and connect with others on the same journey.
+              </p>
+            </AnimateOnScroll>
 
             <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
               <a
@@ -507,25 +524,31 @@ export default function LandingPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <div className="glass-card rounded-2xl px-6 py-5">
-                <p className="font-headline text-2xl font-extrabold text-[#5865F2]">140+</p>
-                <p className="font-body text-xs text-stone-400 mt-1">Features built by community feedback</p>
-              </div>
-              <div className="glass-card rounded-2xl px-6 py-5">
-                <p className="font-headline text-2xl font-extrabold text-emerald-400">Free</p>
-                <p className="font-body text-xs text-stone-400 mt-1">During beta &mdash; all features unlocked</p>
-              </div>
-              <div className="glass-card rounded-2xl px-6 py-5">
-                <p className="font-headline text-2xl font-extrabold text-cyan-400">Open</p>
-                <p className="font-body text-xs text-stone-400 mt-1">Built in public with your input</p>
-              </div>
+              <AnimateOnScroll animation="fade-in-scale" delay={0}>
+                <div className="glass-card glass-card-hover rounded-2xl px-6 py-5">
+                  <p className="font-headline text-2xl font-extrabold text-[#5865F2]">140+</p>
+                  <p className="font-body text-xs text-stone-400 mt-1">Features built by community feedback</p>
+                </div>
+              </AnimateOnScroll>
+              <AnimateOnScroll animation="fade-in-scale" delay={150}>
+                <div className="glass-card glass-card-hover rounded-2xl px-6 py-5">
+                  <p className="font-headline text-2xl font-extrabold text-emerald-400">Free</p>
+                  <p className="font-body text-xs text-stone-400 mt-1">During beta &mdash; all features unlocked</p>
+                </div>
+              </AnimateOnScroll>
+              <AnimateOnScroll animation="fade-in-scale" delay={300}>
+                <div className="glass-card glass-card-hover rounded-2xl px-6 py-5">
+                  <p className="font-headline text-2xl font-extrabold text-cyan-400">Open</p>
+                  <p className="font-body text-xs text-stone-400 mt-1">Built in public with your input</p>
+                </div>
+              </AnimateOnScroll>
             </div>
           </div>
         </section>
 
         {/* ── Final CTA ───────────────────────────────────── */}
         <section id="cta" className="py-24 lg:py-32 px-6">
-          <div className="max-w-screen-lg mx-auto relative">
+          <AnimateOnScroll className="max-w-screen-lg mx-auto relative" animation="fade-in-scale">
             <div className="bg-gradient-to-br from-primary via-primary to-primary-container rounded-[2rem] lg:rounded-[2.5rem] px-8 py-16 sm:p-16 lg:p-20 text-center relative overflow-hidden">
               {/* Decorative skewed overlay */}
               <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -554,7 +577,7 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </AnimateOnScroll>
         </section>
 
         {/* ── Footer ──────────────────────────────────────── */}

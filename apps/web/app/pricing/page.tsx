@@ -106,11 +106,18 @@ const TIERS: Tier[] = [
   },
 ];
 
+const TRUST_BADGES = [
+  { icon: 'lock', label: '256-bit encryption' },
+  { icon: 'verified_user', label: 'HIPAA compliant' },
+  { icon: 'event_available', label: 'Cancel anytime' },
+  { icon: 'credit_card_off', label: 'No credit card required' },
+];
+
 export default function PricingPage() {
   const [billing, setBilling] = useState<'monthly' | 'annual'>('annual');
 
   return (
-    <div className="min-h-screen bg-[#0c1214]">
+    <div className="min-h-screen bg-dark-sanctuary">
       {/* JSON-LD Product structured data for each tier */}
       {TIERS.map((tier) => (
         <JsonLd
@@ -145,20 +152,30 @@ export default function PricingPage() {
           <p className="font-label text-xs uppercase tracking-widest text-cyan-400 mb-4">
             Pricing
           </p>
-          <h1 className="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-slate-100 mb-4">
+          <h1 className="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-slate-100 mb-2">
             Invest in your integrity
           </h1>
+          {/* Gradient underline */}
+          <div className="mx-auto mt-2 mb-4 h-1 w-24 rounded-full bg-gradient-to-r from-primary via-cyan-500 to-primary" />
           <p className="text-base text-slate-400 max-w-lg mx-auto font-body leading-relaxed">
             Start free. Upgrade when you&apos;re ready. Cancel anytime.
           </p>
 
-          {/* Billing toggle */}
-          <div className="inline-flex items-center gap-1 mt-8 bg-stone-800 rounded-full p-1.5">
+          {/* Billing toggle — pill-style with sliding indicator */}
+          <div className="relative inline-flex items-center mt-8 bg-stone-800/80 rounded-full p-1.5">
+            {/* Sliding indicator */}
+            <div
+              className="absolute top-1.5 bottom-1.5 rounded-full bg-gradient-to-r from-primary/80 to-cyan-600/80 shadow-lg shadow-primary/20 transition-all duration-500 ease-out"
+              style={{
+                left: billing === 'monthly' ? '6px' : 'calc(50% + 2px)',
+                width: 'calc(50% - 8px)',
+              }}
+            />
             <button
               onClick={() => setBilling('monthly')}
-              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
+              className={`relative z-10 px-6 py-2.5 rounded-full text-sm font-label font-semibold transition-colors duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
                 billing === 'monthly'
-                  ? 'bg-stone-700 text-slate-100 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.3)]'
+                  ? 'text-white'
                   : 'text-stone-400 hover:text-slate-200'
               }`}
             >
@@ -166,9 +183,9 @@ export default function PricingPage() {
             </button>
             <button
               onClick={() => setBilling('annual')}
-              className={`px-5 py-2.5 rounded-full text-sm font-label font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
+              className={`relative z-10 px-6 py-2.5 rounded-full text-sm font-label font-semibold transition-colors duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
                 billing === 'annual'
-                  ? 'bg-stone-700 text-slate-100 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.3)]'
+                  ? 'text-white'
                   : 'text-stone-400 hover:text-slate-200'
               }`}
             >
@@ -190,10 +207,10 @@ export default function PricingPage() {
             return (
               <div
                 key={tier.id}
-                className={`rounded-[2rem] p-7 relative transition-all duration-300 cursor-pointer ${
+                className={`rounded-[2rem] p-7 relative cursor-pointer transition-all duration-500 hover:scale-[1.02] ${
                   tier.highlight
-                    ? 'bg-gradient-to-b from-primary to-primary-container text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 ring-2 ring-primary'
-                    : 'bg-white/[0.03] backdrop-blur-md border border-white/5 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.3)] hover:border-white/10 hover:shadow-lg'
+                    ? 'pricing-glow bg-gradient-to-b from-primary to-primary-container text-on-primary shadow-lg shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30'
+                    : 'bg-white/[0.03] backdrop-blur-md border border-white/5 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.3)] hover:border-white/10 hover:shadow-2xl hover:shadow-cyan-500/10'
                 }`}
               >
                 {/* FREE DURING BETA badge */}
@@ -223,6 +240,11 @@ export default function PricingPage() {
                   >
                     {tier.name}
                   </h3>
+                  {tier.badge && (
+                    <span className="inline-block mt-1.5 px-3 py-0.5 rounded-full bg-cyan-400/15 text-cyan-300 text-[10px] font-bold font-label uppercase tracking-wider border border-cyan-400/25">
+                      {tier.badge}
+                    </span>
+                  )}
                   <p
                     className={`text-xs font-body mt-1 ${
                       tier.highlight
@@ -271,23 +293,33 @@ export default function PricingPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2.5 mb-8">
+                {/* Feature list with stagger animation */}
+                <div className="pricing-stagger space-y-2.5 mb-8">
                   {tier.features.map((f, i) => (
                     <div key={i} className="flex items-start gap-2.5">
-                      <span
-                        className={`material-symbols-outlined text-[16px] mt-0.5 ${
-                          tier.highlight
-                            ? 'text-on-primary'
-                            : 'text-cyan-400'
-                        }`}
-                      >
-                        check
-                      </span>
+                      {f.included ? (
+                        <span
+                          className={`material-symbols-outlined text-[16px] mt-0.5 flex-shrink-0 ${
+                            tier.highlight
+                              ? 'text-on-primary'
+                              : 'text-teal-400'
+                          }`}
+                          style={{ fontVariationSettings: "'FILL' 1" }}
+                        >
+                          check_circle
+                        </span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[16px] mt-0.5 flex-shrink-0 text-stone-600">
+                          close
+                        </span>
+                      )}
                       <span
                         className={`text-xs font-body leading-relaxed ${
-                          tier.highlight
-                            ? 'text-on-primary'
-                            : 'text-slate-300'
+                          f.included
+                            ? tier.highlight
+                              ? 'text-on-primary'
+                              : 'text-slate-300'
+                            : 'text-stone-500'
                         }`}
                       >
                         {f.text}
@@ -296,12 +328,13 @@ export default function PricingPage() {
                   ))}
                 </div>
 
+                {/* CTA button with gradient + glow */}
                 <Link
                   href={tier.ctaHref}
-                  className={`block w-full py-3.5 text-sm font-headline font-bold rounded-full text-center transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
+                  className={`block w-full py-3.5 text-sm font-headline font-bold rounded-full text-center transition-all duration-300 cursor-pointer active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
                     tier.highlight
-                      ? 'bg-on-primary text-primary shadow-lg hover:shadow-xl hover:brightness-110'
-                      : 'bg-gradient-to-r from-cyan-500/20 to-teal-400/20 text-cyan-300 border border-cyan-400/20 shadow-md hover:shadow-lg hover:border-cyan-400/40 hover:brightness-110'
+                      ? 'bg-gradient-to-r from-white to-slate-100 text-primary shadow-lg hover:shadow-xl hover:shadow-white/20 hover:brightness-110'
+                      : 'bg-gradient-to-r from-primary to-cyan-600 text-white shadow-md hover:shadow-lg hover:shadow-primary/30 hover:brightness-110'
                   }`}
                 >
                   {tier.cta}
@@ -309,6 +342,28 @@ export default function PricingPage() {
               </div>
             );
           })}
+        </div>
+
+        {/* Trust badges */}
+        <div className="max-w-5xl mx-auto mt-12">
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+            {TRUST_BADGES.map((badge) => (
+              <div
+                key={badge.label}
+                className="flex items-center gap-2 text-stone-400"
+              >
+                <span
+                  className="material-symbols-outlined text-[20px] text-cyan-500/70"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  {badge.icon}
+                </span>
+                <span className="text-xs font-label font-medium tracking-wide">
+                  {badge.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Group pricing CTA */}

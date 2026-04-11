@@ -123,7 +123,7 @@ export default function GroupPricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0c1214]">
+    <div className="min-h-screen bg-dark-sanctuary">
       <PublicNav />
 
       <div className="max-w-4xl mx-auto px-6 py-24">
