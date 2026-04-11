@@ -13,31 +13,31 @@ type RivalId =
   | 'isolation' | 'ai_relationships' | 'overworking' | 'sleep_avoidance'
   | 'self_harm' | 'procrastination' | 'eating_disorder' | 'body_checking';
 
-const RIVAL_META: Record<RivalId, { label: string; icon: string; color: string }> = {
-  pornography:      { label: 'Pornography', icon: 'visibility_off', color: 'bg-red-500' },
-  sexting:          { label: 'Sexting', icon: 'chat_bubble', color: 'bg-pink-500' },
-  social_media:     { label: 'Social Media', icon: 'phone_iphone', color: 'bg-blue-500' },
-  binge_watching:   { label: 'Binge Watching', icon: 'tv', color: 'bg-purple-500' },
-  impulse_shopping: { label: 'Impulse Shopping', icon: 'shopping_cart', color: 'bg-amber-500' },
-  doomscrolling:    { label: 'Doomscrolling', icon: 'trending_down', color: 'bg-orange-500' },
-  alcohol_drugs:    { label: 'Alcohol & Drugs', icon: 'local_bar', color: 'bg-rose-600' },
-  vaping_tobacco:   { label: 'Vaping & Tobacco', icon: 'smoking_rooms', color: 'bg-gray-500' },
-  gambling:         { label: 'Gambling', icon: 'casino', color: 'bg-green-600' },
-  sports_betting:   { label: 'Sports Betting', icon: 'sports_soccer', color: 'bg-green-500' },
-  day_trading:      { label: 'Day Trading', icon: 'candlestick_chart', color: 'bg-emerald-500' },
-  dating_apps:      { label: 'Dating Apps', icon: 'favorite', color: 'bg-pink-400' },
-  emotional_affairs:{ label: 'Emotional Affairs', icon: 'heart_broken', color: 'bg-rose-400' },
-  gaming:           { label: 'Excessive Gaming', icon: 'sports_esports', color: 'bg-indigo-500' },
-  rage_content:     { label: 'Rage & Outrage Content', icon: 'whatshot', color: 'bg-red-600' },
-  gossip_drama:     { label: 'Gossip & Drama', icon: 'record_voice_over', color: 'bg-fuchsia-500' },
-  isolation:        { label: 'Isolation & Withdrawal', icon: 'person_off', color: 'bg-slate-500' },
-  ai_relationships: { label: 'AI Relationships', icon: 'smart_toy', color: 'bg-cyan-500' },
-  overworking:      { label: 'Overworking', icon: 'work', color: 'bg-yellow-600' },
-  sleep_avoidance:  { label: 'Sleep Avoidance', icon: 'bedtime_off', color: 'bg-indigo-400' },
-  self_harm:        { label: 'Self-Harm Risk', icon: 'emergency', color: 'bg-red-700' },
-  procrastination:  { label: 'Procrastination', icon: 'hourglass_empty', color: 'bg-amber-400' },
-  eating_disorder:  { label: 'Eating Disorder', icon: 'restaurant', color: 'bg-lime-600' },
-  body_checking:    { label: 'Body Checking', icon: 'person_search', color: 'bg-teal-500' },
+const RIVAL_META: Record<RivalId, { label: string; icon: string; color: string; desc: string }> = {
+  pornography:      { label: 'Pornography', icon: 'visibility_off', color: 'bg-red-500', desc: 'Compulsive use of sexual imagery as a substitute for intimacy, connection, or emotional regulation.' },
+  sexting:          { label: 'Sexting', icon: 'chat_bubble', color: 'bg-pink-500', desc: 'Seeking validation or excitement through sexual messaging, often driven by loneliness or boredom.' },
+  social_media:     { label: 'Social Media', icon: 'phone_iphone', color: 'bg-blue-500', desc: 'Reflexive scrolling for dopamine hits, comparison loops, or avoiding present-moment discomfort.' },
+  binge_watching:   { label: 'Binge Watching', icon: 'tv', color: 'bg-purple-500', desc: 'Using passive consumption to numb, escape, or avoid responsibilities and difficult emotions.' },
+  impulse_shopping: { label: 'Impulse Shopping', icon: 'shopping_cart', color: 'bg-amber-500', desc: 'Purchasing for the rush rather than the need — often masking anxiety, inadequacy, or emptiness.' },
+  doomscrolling:    { label: 'Doomscrolling', icon: 'trending_down', color: 'bg-orange-500', desc: 'Compulsively consuming negative news, feeding anxiety while creating an illusion of control.' },
+  alcohol_drugs:    { label: 'Alcohol & Drugs', icon: 'local_bar', color: 'bg-rose-600', desc: 'Using substances to regulate emotions, escape pain, or cope with stress and social pressure.' },
+  vaping_tobacco:   { label: 'Vaping & Tobacco', icon: 'smoking_rooms', color: 'bg-gray-500', desc: 'Habitual nicotine use as a stress response, often tied to anxiety, boredom, or social cues.' },
+  gambling:         { label: 'Gambling', icon: 'casino', color: 'bg-green-600', desc: 'Chasing the high of risk and reward, often driven by financial stress or a need for excitement.' },
+  sports_betting:   { label: 'Sports Betting', icon: 'sports_soccer', color: 'bg-green-500', desc: 'Turning sport fandom into compulsive wagering, fueled by the illusion of skill and control.' },
+  day_trading:      { label: 'Day Trading', icon: 'candlestick_chart', color: 'bg-emerald-500', desc: 'Obsessive market watching disguised as productivity, driven by greed, FOMO, or proving worth.' },
+  dating_apps:      { label: 'Dating Apps', icon: 'favorite', color: 'bg-pink-400', desc: 'Endless swiping for validation or novelty, substituting real vulnerability with curated personas.' },
+  emotional_affairs:{ label: 'Emotional Affairs', icon: 'heart_broken', color: 'bg-rose-400', desc: 'Seeking emotional intimacy outside your relationship to fill unmet needs without the risk of honesty.' },
+  gaming:           { label: 'Excessive Gaming', icon: 'sports_esports', color: 'bg-indigo-500', desc: 'Using gaming worlds to escape real-world stress, loneliness, or a lack of purpose and achievement.' },
+  rage_content:     { label: 'Rage & Outrage Content', icon: 'whatshot', color: 'bg-red-600', desc: 'Consuming content that triggers anger or moral outrage — it feels righteous but fuels dysregulation.' },
+  gossip_drama:     { label: 'Gossip & Drama', icon: 'record_voice_over', color: 'bg-fuchsia-500', desc: 'Engaging in others\' conflicts for a sense of belonging, superiority, or distraction from your own life.' },
+  isolation:        { label: 'Isolation & Withdrawal', icon: 'person_off', color: 'bg-slate-500', desc: 'Pulling away from people and responsibilities as a protective response to shame, overwhelm, or fear.' },
+  ai_relationships: { label: 'AI Relationships', icon: 'smart_toy', color: 'bg-cyan-500', desc: 'Forming emotional bonds with AI chatbots as a safe substitute for the vulnerability real relationships require.' },
+  overworking:      { label: 'Overworking', icon: 'work', color: 'bg-yellow-600', desc: 'Using productivity as armor — staying busy to avoid the stillness where difficult feelings surface.' },
+  sleep_avoidance:  { label: 'Sleep Avoidance', icon: 'bedtime_off', color: 'bg-indigo-400', desc: 'Delaying sleep to reclaim personal time, often because the day felt unfulfilling or overly controlled.' },
+  self_harm:        { label: 'Self-Harm Risk', icon: 'emergency', color: 'bg-red-700', desc: 'Physical self-harm as a way to externalize inner pain, regain a sense of control, or feel something.' },
+  procrastination:  { label: 'Procrastination', icon: 'hourglass_empty', color: 'bg-amber-400', desc: 'Avoiding tasks not out of laziness but fear — of failure, judgment, or not being good enough.' },
+  eating_disorder:  { label: 'Eating Disorder', icon: 'restaurant', color: 'bg-lime-600', desc: 'Using food restriction or overconsumption to manage anxiety, control, body image, or emotional pain.' },
+  body_checking:    { label: 'Body Checking', icon: 'person_search', color: 'bg-teal-500', desc: 'Compulsive self-monitoring of appearance, weight, or physique driven by shame or inadequacy.' },
 };
 
 /* ─── Word-to-rival weighted mapping ────────────────────── */
@@ -409,6 +409,84 @@ function calculateResults(selected: Set<string>): { id: RivalId; label: string; 
   return results;
 }
 
+/* ─── Rival Results List (top 7 + expandable) ────────────── */
+function RivalResultsList({ results }: { results: { id: RivalId; label: string; icon: string; color: string; pct: number }[] }) {
+  const [showAll, setShowAll] = useState(false);
+  const [expandedId, setExpandedId] = useState<RivalId | null>(null);
+  const visible = showAll ? results : results.slice(0, 7);
+  const hiddenCount = results.length - 7;
+
+  return (
+    <div className="space-y-3">
+      {visible.map((rival, idx) => {
+        const meta = RIVAL_META[rival.id];
+        const isExpanded = expandedId === rival.id;
+        return (
+          <div
+            key={rival.id}
+            onClick={() => setExpandedId(isExpanded ? null : rival.id)}
+            className={`bg-white/[0.05] rounded-2xl ring-1 ring-white/10 p-4 transition-all duration-200 cursor-pointer hover:bg-white/[0.08] ${idx < 3 ? 'shadow-md' : ''}`}
+          >
+            <div className="flex items-center gap-4">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 font-headline font-black text-sm ${
+                idx === 0 ? 'bg-red-100 text-red-700' :
+                idx === 1 ? 'bg-orange-100 text-orange-700' :
+                idx === 2 ? 'bg-amber-100 text-amber-700' :
+                'bg-white/10 text-slate-400'
+              }`}>
+                {idx + 1}
+              </div>
+              <div className={`w-10 h-10 rounded-xl ${rival.color} flex items-center justify-center shrink-0`}>
+                <MaterialIcon name={rival.icon} filled className="text-white text-lg" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="font-headline font-bold text-sm text-white">{rival.label}</h3>
+                  <span className={`font-headline font-bold text-sm ${
+                    rival.pct >= 70 ? 'text-red-400' : rival.pct >= 45 ? 'text-amber-400' : 'text-slate-400'
+                  }`}>
+                    {rival.pct}%
+                  </span>
+                </div>
+                <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-700 ease-out ${
+                      rival.pct >= 70 ? 'bg-red-500' : rival.pct >= 45 ? 'bg-amber-500' : 'bg-primary/60'
+                    }`}
+                    style={{ width: `${rival.pct}%` }}
+                  />
+                </div>
+              </div>
+              <MaterialIcon name={isExpanded ? 'expand_less' : 'expand_more'} className="text-slate-500 text-lg shrink-0" />
+            </div>
+            {isExpanded && meta?.desc && (
+              <p className="mt-3 text-xs text-slate-400 leading-relaxed font-body pl-[4.5rem]">
+                {meta.desc}
+              </p>
+            )}
+          </div>
+        );
+      })}
+      {hiddenCount > 0 && !showAll && (
+        <button
+          onClick={() => setShowAll(true)}
+          className="w-full py-3 text-sm font-label font-medium text-slate-400 hover:text-white rounded-2xl bg-white/[0.03] ring-1 ring-white/10 hover:bg-white/[0.06] transition-all cursor-pointer"
+        >
+          Show {hiddenCount} more rival{hiddenCount > 1 ? 's' : ''}
+        </button>
+      )}
+      {showAll && hiddenCount > 0 && (
+        <button
+          onClick={() => setShowAll(false)}
+          className="w-full py-2 text-xs font-label text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+        >
+          Show less
+        </button>
+      )}
+    </div>
+  );
+}
+
 /* ─── Coping Transformation UI ────────────────────────────── */
 function CopingProfile({ copingResults }: { copingResults: { type: CopingType; pct: number }[] }) {
   const [showGrowth, setShowGrowth] = useState(false);
@@ -683,58 +761,7 @@ export default function AssessmentClient() {
             <p className="text-sm text-white-variant">You didn&apos;t select enough indicators. Go back and answer honestly — this is just for you.</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {results.map((rival, idx) => (
-              <div
-                key={rival.id}
-                className={`bg-white/[0.05] rounded-2xl ring-1 ring-white/10/10 p-4 transition-all duration-200 ${
-                  idx < 3 ? 'shadow-md' : ''
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  {/* Rank */}
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 font-headline font-black text-sm ${
-                    idx === 0 ? 'bg-red-100 text-red-700' :
-                    idx === 1 ? 'bg-orange-100 text-orange-700' :
-                    idx === 2 ? 'bg-amber-100 text-amber-700' :
-                    'bg-white/10 text-white-variant'
-                  }`}>
-                    {idx + 1}
-                  </div>
-
-                  {/* Icon */}
-                  <div className={`w-10 h-10 rounded-xl ${rival.color} flex items-center justify-center shrink-0`}>
-                    <MaterialIcon name={rival.icon} filled className="text-white text-lg" />
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-headline font-bold text-sm text-white">{rival.label}</h3>
-                      <span className={`font-headline font-bold text-sm ${
-                        rival.pct >= 70 ? 'text-red-600' :
-                        rival.pct >= 45 ? 'text-amber-600' :
-                        'text-white-variant'
-                      }`}>
-                        {rival.pct}%
-                      </span>
-                    </div>
-                    {/* Bar */}
-                    <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-700 ease-out ${
-                          rival.pct >= 70 ? 'bg-red-500' :
-                          rival.pct >= 45 ? 'bg-amber-500' :
-                          'bg-primary/60'
-                        }`}
-                        style={{ width: `${rival.pct}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <RivalResultsList results={results} />
         )}
 
         {/* ── Coping Transformation Profile ─────────────────── */}
