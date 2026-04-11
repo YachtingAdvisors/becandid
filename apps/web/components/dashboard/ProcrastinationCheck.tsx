@@ -11,6 +11,7 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 interface ProcrastinationDay {
   date: string;
@@ -79,12 +80,7 @@ export default function ProcrastinationCheck() {
       {/* Header */}
       <div className="flex items-center gap-2.5 mb-4">
         <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center">
-          <span
-            className="material-symbols-outlined text-tertiary text-lg"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            psychology
-          </span>
+          <MaterialIcon name="psychology" filled className="text-tertiary text-lg" />
         </div>
         <div>
           <h3 className="font-headline font-bold text-sm text-on-surface">
@@ -121,12 +117,7 @@ export default function ProcrastinationCheck() {
             disabled={submitting || !taskText.trim()}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-label font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/50 hover:bg-emerald-100 transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-default"
           >
-            <span
-              className="material-symbols-outlined text-base"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              play_arrow
-            </span>
+            <MaterialIcon name="play_arrow" filled className="text-base" />
             I started it
           </button>
           <button
@@ -145,12 +136,7 @@ export default function ProcrastinationCheck() {
       {/* Today completed state */}
       {todayStarted && (
         <div className="px-4 py-3 rounded-xl bg-emerald-50 ring-1 ring-emerald-200/30 flex items-start gap-3 mb-5">
-          <span
-            className="material-symbols-outlined text-emerald-600 text-lg mt-0.5 shrink-0"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            check_circle
-          </span>
+          <MaterialIcon name="check_circle" filled className="text-emerald-600 text-lg mt-0.5 shrink-0" />
           <p className="text-xs text-emerald-900 font-body leading-relaxed">
             You faced the hard thing today. That took courage.
           </p>
@@ -160,12 +146,7 @@ export default function ProcrastinationCheck() {
       {/* Coach link (shown after "I'm avoiding it") */}
       {showCoachLink && !todayStarted && (
         <div className="px-4 py-3 rounded-xl bg-tertiary-container/20 ring-1 ring-tertiary-container/30 flex items-start gap-3 mb-5">
-          <span
-            className="material-symbols-outlined text-tertiary text-lg mt-0.5 shrink-0"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            sentiment_calm
-          </span>
+          <MaterialIcon name="sentiment_calm" filled className="text-tertiary text-lg mt-0.5 shrink-0" />
           <div className="flex-1">
             <p className="text-xs text-on-surface font-body leading-relaxed mb-2">
               That&rsquo;s honest. Let&rsquo;s figure out what&rsquo;s underneath the avoidance.
@@ -220,12 +201,7 @@ export default function ProcrastinationCheck() {
       {/* Encouraging summary */}
       {streakDays >= 3 && (
         <div className="px-4 py-3 rounded-xl bg-emerald-50 ring-1 ring-emerald-200/30 flex items-start gap-3">
-          <span
-            className="material-symbols-outlined text-emerald-600 text-lg mt-0.5 shrink-0"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            thumb_up
-          </span>
+          <MaterialIcon name="thumb_up" filled className="text-emerald-600 text-lg mt-0.5 shrink-0" />
           <p className="text-xs text-emerald-900 font-body leading-relaxed">
             You&rsquo;ve faced the hard thing {streakDays} out of 7 days this week. That&rsquo;s momentum.
           </p>

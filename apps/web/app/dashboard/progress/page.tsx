@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { GOAL_LABELS, getCategoryEmoji, type GoalCategory } from '@be-candid/shared';
 import { ALL_BADGES, TIER_STYLES } from '@/lib/badges';
 import ShareButton from '@/components/ShareButton';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 /* ── Types ───────────────────────────────────────────────── */
 
@@ -154,7 +155,7 @@ export default function ProgressPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>trending_up</span>
+        <MaterialIcon name="trending_up" filled className="text-primary text-3xl" />
         <div>
           <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Progress</h1>
           <p className="text-sm text-on-surface-variant font-body">Your streaks, badges, and accountability journey.</p>
@@ -208,7 +209,7 @@ export default function ProgressPage() {
                     : 'bg-surface-container text-on-surface-variant border-outline-variant'
                 }`}>
                   {data.streak.streakDays >= m
-                    ? <span className="material-symbols-outlined text-sm align-middle" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+                    ? <MaterialIcon name="military_tech" filled className="text-sm align-middle" />
                     : <span className="material-symbols-outlined text-sm align-middle">radio_button_unchecked</span>
                   } {m}d
                 </div>
@@ -360,7 +361,7 @@ export default function ProgressPage() {
                 { value: timelineStats.trustPoints.toLocaleString(), label: 'Trust Points', icon: 'stars' },
               ].map(stat => (
                 <div key={stat.label} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center">
-                  <span className="material-symbols-outlined text-primary text-lg mb-1" style={{ fontVariationSettings: "'FILL' 1" }}>{stat.icon}</span>
+                  <MaterialIcon name={stat.icon} filled className="text-primary text-lg mb-1" />
                   <div className="text-xl font-headline font-bold text-on-surface">{stat.value}</div>
                   <div className="text-[10px] text-on-surface-variant font-label mt-0.5">{stat.label}</div>
                 </div>

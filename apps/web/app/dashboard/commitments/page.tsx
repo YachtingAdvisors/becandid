@@ -10,6 +10,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import DailyCommitment from '@/components/dashboard/DailyCommitment';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 interface Commitment {
   id: string;
@@ -67,9 +68,7 @@ export default function CommitmentsPage() {
       {/* Header */}
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-1.5">
-          <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>
-            wb_twilight
-          </span>
+          <MaterialIcon name="wb_twilight" filled className="text-sm" />
           <span className="font-label text-xs font-semibold uppercase tracking-wider">Daily Commitment</span>
         </div>
         <h1 className="font-headline text-2xl font-bold text-on-surface">
@@ -89,14 +88,14 @@ export default function CommitmentsPage() {
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
             <div className="flex items-center justify-center gap-1 mb-1">
-              <span className="material-symbols-outlined text-amber-500 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+              <MaterialIcon name="local_fire_department" filled className="text-amber-500 text-lg" />
             </div>
             <div className="font-headline text-2xl font-bold text-on-surface">{streak}</div>
             <div className="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">Streak</div>
           </div>
           <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
             <div className="flex items-center justify-center gap-1 mb-1">
-              <span className="material-symbols-outlined text-emerald-500 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+              <MaterialIcon name="check_circle" filled className="text-emerald-500 text-lg" />
             </div>
             <div className="font-headline text-2xl font-bold text-on-surface">
               {totalWithReflection > 0 ? metCount : 0}
@@ -106,7 +105,7 @@ export default function CommitmentsPage() {
           </div>
           <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-4 text-center">
             <div className="flex items-center justify-center gap-1 mb-1">
-              <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>calendar_month</span>
+              <MaterialIcon name="calendar_month" filled className="text-primary text-lg" />
             </div>
             <div className="font-headline text-2xl font-bold text-on-surface">{history.length}</div>
             <div className="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">This Week</div>
@@ -141,9 +140,7 @@ export default function CommitmentsPage() {
                             ? 'bg-emerald-50 text-emerald-700'
                             : 'bg-red-50 text-red-600'
                         }`}>
-                          <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>
-                            {c.intention_met ? 'check_circle' : 'cancel'}
-                          </span>
+                          <MaterialIcon name={c.intention_met ? 'check_circle' : 'cancel'} filled className="text-xs" />
                           {c.intention_met ? 'Met' : 'Missed'}
                         </span>
                       )}

@@ -13,6 +13,7 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 // ── Types & Constants ──────────────────────────────────────
 
@@ -206,7 +207,7 @@ export default function ValuesPage() {
       {/* Header */}
       <div className="text-center space-y-3">
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-1.5">
-          <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>diamond</span>
+          <MaterialIcon name="diamond" filled className="text-sm" />
           <span className="font-label text-xs font-semibold uppercase tracking-wider">Values Clarification</span>
         </div>
         <h1 className="font-headline text-2xl font-bold text-on-surface">
@@ -276,13 +277,10 @@ export default function ValuesPage() {
                 >
                   {isSelected && (
                     <div className="absolute top-2 right-2">
-                      <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                      <MaterialIcon name="check_circle" filled className="text-primary text-sm" />
                     </div>
                   )}
-                  <span className={`material-symbols-outlined text-2xl ${isSelected ? 'text-primary' : 'text-on-surface-variant'}`}
-                    style={{ fontVariationSettings: "'FILL' 1" }}>
-                    {v.icon}
-                  </span>
+                  <MaterialIcon name={v.icon} filled className={`text-2xl ${isSelected ? 'text-primary' : 'text-on-surface-variant'}`} />
                   <span className={`font-label text-xs font-semibold ${isSelected ? 'text-primary' : 'text-on-surface'}`}>
                     {v.name}
                   </span>
@@ -332,9 +330,7 @@ export default function ValuesPage() {
                   </div>
 
                   {/* Icon + name */}
-                  <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    {option?.icon}
-                  </span>
+                  <MaterialIcon name={option?.icon ?? ''} filled className="text-primary text-lg" />
                   <span className="font-label text-sm font-semibold text-on-surface flex-1">{name}</span>
 
                   {/* Arrow buttons */}
@@ -415,9 +411,7 @@ export default function ValuesPage() {
                     }`}>
                       {index + 1}
                     </div>
-                    <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      {option?.icon}
-                    </span>
+                    <MaterialIcon name={option?.icon ?? ''} filled className="text-primary" />
                     <span className="font-label text-sm font-semibold text-on-surface">{name}</span>
                   </div>
 
@@ -472,9 +466,7 @@ export default function ValuesPage() {
         <div className="space-y-8">
           <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-8 text-center space-y-4">
             <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl text-emerald-600" style={{ fontVariationSettings: "'FILL' 1" }}>
-                diamond
-              </span>
+              <MaterialIcon name="diamond" filled className="text-3xl text-emerald-600" />
             </div>
             <h2 className="font-headline text-xl font-bold text-on-surface">
               Your values are set.
@@ -500,9 +492,7 @@ export default function ValuesPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
-                        {option?.icon}
-                      </span>
+                      <MaterialIcon name={option?.icon ?? ''} filled className="text-primary text-lg" />
                       <span className="font-label text-sm font-semibold text-on-surface">{name}</span>
                     </div>
                     {conflicts[name] && (

@@ -21,6 +21,7 @@ import DashboardCustomizer from '@/components/dashboard/DashboardCustomizer';
 import RivalAssessmentAccordion from '@/components/dashboard/RivalAssessmentAccordion';
 import { getDefaultWidgets } from '@/lib/widgets/registry';
 import PrivacyBadge from '@/components/dashboard/PrivacyBadge';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 import {
   WhatsNew, ScheduledCoach, DailyChallenge, DailyCommitment,
   SpouseImpactAwareness, ScreenTimeCard, ContentFilterStatus,
@@ -274,7 +275,7 @@ export default async function DashboardPage() {
       <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+            <MaterialIcon name="military_tech" filled className="text-primary text-lg" />
             <h3 className="font-headline font-bold text-sm text-on-surface">Recent Chips</h3>
           </div>
           <Link href="/dashboard/chips" className="text-xs font-label font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-0.5">
@@ -305,7 +306,7 @@ export default async function DashboardPage() {
           <div className="flex justify-between items-start mb-3">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-surface-container-lowest rounded-xl shadow-sm">
-                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+                <MaterialIcon name="warning" filled className="text-primary" />
               </div>
               <div>
                 <h3 className="font-headline font-bold text-lg text-on-surface">Crisis Detection</h3>
@@ -372,7 +373,7 @@ export default async function DashboardPage() {
         <Link href="/dashboard/settings" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>shield</span>
+              <MaterialIcon name="shield" filled className="text-primary" />
             </div>
             <span className="bg-primary/10 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Admin</span>
           </div>
@@ -394,7 +395,7 @@ export default async function DashboardPage() {
         <Link href="/dashboard/screen-time" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>timer</span>
+              <MaterialIcon name="timer" filled className="text-primary" />
             </div>
             <span className="bg-tertiary-container text-on-tertiary-container text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Monitor</span>
           </div>
@@ -419,7 +420,7 @@ export default async function DashboardPage() {
         <Link href="/dashboard/stringer-journal" className="group bg-surface-container-low rounded-2xl cursor-pointer ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-300 p-4 flex flex-col">
           <div className="flex justify-between items-start mb-3">
             <div className="p-2 bg-surface-container-lowest rounded-lg shadow-sm">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
+              <MaterialIcon name="edit_note" filled className="text-primary" />
             </div>
             <span className="bg-primary/10 text-primary text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">Reflect</span>
           </div>
@@ -443,9 +444,7 @@ export default async function DashboardPage() {
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${
               partner ? 'bg-emerald-50 ring-1 ring-emerald-200/50' : 'bg-surface-container'
             }`}>
-              <span className={`material-symbols-outlined text-2xl ${partner ? 'text-emerald-600' : 'text-on-surface-variant/40'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                {partner ? 'handshake' : 'person_add'}
-              </span>
+              <MaterialIcon name={partner ? 'handshake' : 'person_add'} filled className={`text-2xl ${partner ? 'text-emerald-600' : 'text-on-surface-variant/40'}`} />
             </div>
             <div className="flex-1">
               <h3 className="font-headline font-bold text-base text-on-surface">
@@ -507,7 +506,7 @@ export default async function DashboardPage() {
       className="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-lg transition-all duration-300"
     >
       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-        <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>summarize</span>
+        <MaterialIcon name="summarize" filled className="text-primary text-lg" />
       </div>
       <div className="flex-1">
         <h4 className="font-headline font-bold text-sm text-on-surface">Weekly Accountability Report</h4>
@@ -537,7 +536,7 @@ export default async function DashboardPage() {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={svc.img} alt={svc.title} className="w-full h-full object-cover" />
               ) : (
-                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>{svc.icon}</span>
+                <MaterialIcon name={svc.icon ?? ''} filled className="text-primary" />
               )}
             </div>
             <div className="flex-1">

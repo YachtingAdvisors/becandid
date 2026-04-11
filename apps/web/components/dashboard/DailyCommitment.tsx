@@ -15,6 +15,7 @@
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import { useToast } from '@/components/ToastProvider';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 interface Commitment {
   id: string;
@@ -138,9 +139,7 @@ export default function DailyCommitment() {
           {/* Header */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-              <span className="material-symbols-outlined text-amber-700" style={{ fontVariationSettings: "'FILL' 1" }}>
-                wb_twilight
-              </span>
+              <MaterialIcon name="wb_twilight" filled className="text-amber-700" />
             </div>
             <div>
               <h3 className="font-headline text-base font-bold text-on-surface">
@@ -152,7 +151,7 @@ export default function DailyCommitment() {
             </div>
             {streak > 0 && (
               <div className="ml-auto inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 rounded-full px-3 py-1">
-                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+                <MaterialIcon name="local_fire_department" filled className="text-sm" />
                 <span className="font-label text-xs font-bold">{streak}-day streak</span>
               </div>
             )}
@@ -226,10 +225,7 @@ export default function DailyCommitment() {
           <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
             isEvening ? 'bg-indigo-100' : 'bg-sky-100'
           }`}>
-            <span className={`material-symbols-outlined ${isEvening ? 'text-indigo-700' : 'text-sky-700'}`}
-              style={{ fontVariationSettings: "'FILL' 1" }}>
-              {isEvening ? 'nights_stay' : 'light_mode'}
-            </span>
+            <MaterialIcon name={isEvening ? 'nights_stay' : 'light_mode'} filled className={isEvening ? 'text-indigo-700' : 'text-sky-700'} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-label text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">
@@ -241,7 +237,7 @@ export default function DailyCommitment() {
           </div>
           {streak > 0 && (
             <div className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 rounded-full px-2.5 py-1 shrink-0">
-              <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+              <MaterialIcon name="local_fire_department" filled className="text-xs" />
               <span className="font-label text-[10px] font-bold">{streak}</span>
             </div>
           )}
@@ -250,11 +246,9 @@ export default function DailyCommitment() {
         {/* Already reflected */}
         {hasReflection && (
           <div className="bg-white/60 rounded-xl p-3 flex items-center gap-3">
-            <span className={`material-symbols-outlined text-lg ${
+            <MaterialIcon name={todayCommitment?.intention_met ? 'check_circle' : 'pending'} filled className={`text-lg ${
               todayCommitment?.intention_met ? 'text-emerald-600' : 'text-amber-600'
-            }`} style={{ fontVariationSettings: "'FILL' 1" }}>
-              {todayCommitment?.intention_met ? 'check_circle' : 'pending'}
-            </span>
+            }`} />
             <div className="flex-1 min-w-0">
               <p className="font-label text-xs font-semibold text-on-surface">
                 {todayCommitment?.intention_met ? 'Intention met' : 'Still working on it'}
@@ -302,7 +296,7 @@ export default function DailyCommitment() {
                       : 'border-outline-variant/30 bg-white hover:border-outline-variant/50'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{opt.icon}</span>
+                  <MaterialIcon name={opt.icon} filled className="text-sm" />
                   {opt.label}
                 </button>
               ))}

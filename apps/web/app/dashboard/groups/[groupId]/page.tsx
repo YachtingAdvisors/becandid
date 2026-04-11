@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -250,12 +251,7 @@ export default function GroupDetailPage() {
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-primary-container/50 flex items-center justify-center flex-shrink-0">
-              <span
-                className="material-symbols-outlined text-primary text-2xl"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                group
-              </span>
+              <MaterialIcon name="group" filled className="text-primary text-2xl" />
             </div>
             <div>
               <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">
@@ -296,12 +292,7 @@ export default function GroupDetailPage() {
         {/* ── Anonymized Focus Board ────────────────────────── */}
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5">
           <div className="flex items-center gap-2 mb-4">
-            <span
-              className="material-symbols-outlined text-primary text-lg"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              grid_view
-            </span>
+            <MaterialIcon name="grid_view" filled className="text-primary text-lg" />
             <h2 className="font-headline text-sm font-bold text-on-surface">Focus Board</h2>
             <span className="text-[10px] text-on-surface-variant font-label ml-auto">Last 7 days</span>
           </div>
@@ -367,12 +358,7 @@ export default function GroupDetailPage() {
           className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5"
         >
           <div className="flex items-center gap-2 mb-4">
-            <span
-              className="material-symbols-outlined text-primary text-lg"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              add_reaction
-            </span>
+            <MaterialIcon name="add_reaction" filled className="text-primary text-lg" />
             <h2 className="font-headline text-sm font-bold text-on-surface">Check In</h2>
           </div>
 
@@ -444,12 +430,7 @@ export default function GroupDetailPage() {
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <span
-                className="material-symbols-outlined text-primary text-lg"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                forum
-              </span>
+              <MaterialIcon name="forum" filled className="text-primary text-lg" />
               <h2 className="font-headline text-sm font-bold text-on-surface">Recent Check-ins</h2>
             </div>
             <button
@@ -464,12 +445,7 @@ export default function GroupDetailPage() {
 
           {checkins.length === 0 ? (
             <div className="text-center py-8">
-              <span
-                className="material-symbols-outlined text-3xl text-on-surface-variant/30 mb-2 block"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                chat_bubble
-              </span>
+              <MaterialIcon name="chat_bubble" filled className="text-3xl text-on-surface-variant/30 mb-2 block" />
               <p className="text-sm text-on-surface-variant font-body">
                 No check-ins yet. Be the first to share how you are doing!
               </p>
@@ -513,12 +489,7 @@ export default function GroupDetailPage() {
         {/* ── Members List ──────────────────────────────────── */}
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5">
           <div className="flex items-center gap-2 mb-3">
-            <span
-              className="material-symbols-outlined text-primary text-lg"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              people
-            </span>
+            <MaterialIcon name="people" filled className="text-primary text-lg" />
             <h2 className="font-headline text-sm font-bold text-on-surface">Members</h2>
             <span className="text-[10px] text-on-surface-variant font-label ml-auto">
               {members.length}/{group.max_members}

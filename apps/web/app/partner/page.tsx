@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import ConversationStarters from '@/components/dashboard/ConversationStarters';
 import PartnerOnboardingBanner from '@/components/partner/OnboardingBanner';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 interface PartnerOverview {
   monitoredUserId: string;
@@ -240,21 +241,21 @@ export default function PartnerIndexPage() {
       {/* ── Your Impact ──────────────────────────────── */}
       <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <div className="flex items-center gap-2 mb-3">
-          <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>volunteer_activism</span>
+          <MaterialIcon name="volunteer_activism" filled className="text-primary text-lg" />
           <span className="font-headline text-sm font-bold text-on-surface">Your Impact</span>
         </div>
         <div className="space-y-2.5">
           <div className="flex items-start gap-2.5 text-sm font-body text-on-surface">
-            <span className="material-symbols-outlined text-emerald-500 text-base mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>trending_up</span>
+            <MaterialIcon name="trending_up" filled className="text-emerald-500 text-base mt-0.5" />
             <span>{data.monitoredUserName}&apos;s streak grew from {data.streakWhenJoined} to {data.streak.streakDays} since you joined</span>
           </div>
           <div className="flex items-start gap-2.5 text-sm font-body text-on-surface">
-            <span className="material-symbols-outlined text-primary text-base mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>forum</span>
+            <MaterialIcon name="forum" filled className="text-primary text-base mt-0.5" />
             <span>You&apos;ve completed {data.totalConversations} conversation{data.totalConversations !== 1 ? 's' : ''} together</span>
           </div>
           {data.avgConversationRating > 0 && (
             <div className="flex items-start gap-2.5 text-sm font-body text-on-surface">
-              <span className="material-symbols-outlined text-amber-500 text-base mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              <MaterialIcon name="star" filled className="text-amber-500 text-base mt-0.5" />
               <span>Average conversation rating: {data.avgConversationRating}/5</span>
             </div>
           )}
@@ -316,7 +317,7 @@ export default function PartnerIndexPage() {
       {/* ── Send Encouragement ───────────────────────── */}
       <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <div className="flex items-center gap-2 mb-3">
-          <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
+          <MaterialIcon name="send" filled className="text-primary text-lg" />
           <span className="font-headline text-sm font-bold text-on-surface">Send Encouragement</span>
         </div>
         <p className="text-xs text-on-surface-variant font-body mb-4">Tap a message to send it to {data.monitoredUserName} right now.</p>
@@ -337,7 +338,7 @@ export default function PartnerIndexPage() {
               }`}
               style={{ scrollSnapAlign: 'start' }}
             >
-              <span className="material-symbols-outlined text-primary text-xl mb-2 block" style={{ fontVariationSettings: "'FILL' 1" }}>{tmpl.emoji}</span>
+              <MaterialIcon name={tmpl.emoji} filled className="text-primary text-xl mb-2 block" />
               <p className="text-sm font-body text-on-surface leading-relaxed">&ldquo;{tmpl.text}&rdquo;</p>
               {sendingIdx === idx && (
                 <span className="text-[10px] font-label text-primary mt-2 block">Sending...</span>
@@ -350,9 +351,7 @@ export default function PartnerIndexPage() {
       {/* Toast notification */}
       {toast && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 bg-inverse-surface text-inverse-on-surface rounded-full shadow-xl font-label text-sm font-medium animate-fade-up flex items-center gap-2">
-          <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>
-            {toast.includes('Failed') ? 'error' : 'check_circle'}
-          </span>
+          <MaterialIcon name={toast.includes('Failed') ? 'error' : 'check_circle'} filled className="text-base" />
           {toast}
         </div>
       )}

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 /* ─── Rival definitions ─────────────────────────────────── */
 type RivalId =
@@ -484,7 +485,7 @@ function CopingProfile({ copingResults }: { copingResults: { type: CopingType; p
               {/* Header row */}
               <div className="flex items-center gap-3">
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-md transition-all duration-500`}>
-                  <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+                  <MaterialIcon name={icon} filled className="text-white text-xl" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
@@ -526,7 +527,7 @@ function CopingProfile({ copingResults }: { copingResults: { type: CopingType; p
               {/* Growth practice (only in climb mode) */}
               {showGrowth && (
                 <div className="flex items-start gap-2.5 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-3.5 transition-all duration-500">
-                  <span className="material-symbols-outlined text-emerald-500 text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>rocket_launch</span>
+                  <MaterialIcon name="rocket_launch" filled className="text-emerald-500 text-base mt-0.5 shrink-0" />
                   <div>
                     <p className="text-[10px] font-label font-bold text-emerald-600 uppercase tracking-wider mb-1">Try This</p>
                     <p className="text-xs text-white font-body leading-relaxed">{t.climbPractice}</p>
@@ -556,7 +557,7 @@ function CopingProfile({ copingResults }: { copingResults: { type: CopingType; p
                 }`}
               >
                 <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 transition-all duration-500`}>
-                  <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+                  <MaterialIcon name={icon} filled className="text-white text-sm" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-headline font-bold text-xs text-white truncate">{verb}</p>
@@ -661,7 +662,7 @@ export default function AssessmentClient() {
         {/* Header */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
-            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>analytics</span>
+            <MaterialIcon name="analytics" filled className="text-primary text-3xl" />
           </div>
           <h1 className="font-headline text-2xl font-extrabold tracking-tight text-white">
             Your Rival Profile
@@ -703,7 +704,7 @@ export default function AssessmentClient() {
 
                   {/* Icon */}
                   <div className={`w-10 h-10 rounded-xl ${rival.color} flex items-center justify-center shrink-0`}>
-                    <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{rival.icon}</span>
+                    <MaterialIcon name={rival.icon} filled className="text-white text-lg" />
                   </div>
 
                   {/* Info */}
@@ -839,7 +840,7 @@ export default function AssessmentClient() {
             {isChosen && <span className="material-symbols-outlined text-white text-sm">check</span>}
           </div>
           <div className={`w-10 h-10 rounded-xl ${meta.color} flex items-center justify-center shrink-0`}>
-            <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{meta.icon}</span>
+            <MaterialIcon name={meta.icon} filled className="text-white text-lg" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
@@ -852,7 +853,7 @@ export default function AssessmentClient() {
               <div className="flex items-center gap-1 mt-1">
                 <span className="text-[10px] text-white-variant font-label">{growth.slide}</span>
                 <span className="material-symbols-outlined text-emerald-500 text-xs">arrow_forward</span>
-                <span className="material-symbols-outlined text-emerald-500 text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>{growth.climbIcon}</span>
+                <MaterialIcon name={growth.climbIcon} filled className="text-emerald-500 text-xs" />
                 <span className="text-[10px] text-emerald-600 font-label font-semibold">{growth.climb}</span>
               </div>
             )}
@@ -865,7 +866,7 @@ export default function AssessmentClient() {
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-2">
-            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>target</span>
+            <MaterialIcon name="target" filled className="text-primary text-3xl" />
           </div>
           <h1 className="font-headline text-2xl font-extrabold tracking-tight text-white">
             Choose Your Rivals &amp; Growth Path
@@ -877,7 +878,7 @@ export default function AssessmentClient() {
 
         {/* Recommendation banner */}
         <div className="flex items-start gap-3 bg-emerald-500/5 border border-emerald-500/15 rounded-2xl p-4">
-          <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>tips_and_updates</span>
+          <MaterialIcon name="tips_and_updates" filled className="text-emerald-500 text-lg mt-0.5 shrink-0" />
           <div>
             <p className="text-sm font-headline font-bold text-white mb-0.5">We recommend starting with 2</p>
             <p className="text-xs text-white-variant font-body leading-relaxed">
@@ -905,7 +906,7 @@ export default function AssessmentClient() {
           )}
           {chosenRivals.size <= 2 && chosenRivals.size > 0 && (
             <div className="flex items-center gap-1.5 text-emerald-500">
-              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+              <MaterialIcon name="check_circle" filled className="text-sm" />
               <span className="text-xs font-label font-semibold">Great focus</span>
             </div>
           )}
@@ -971,7 +972,7 @@ export default function AssessmentClient() {
       {/* Step header */}
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-primary text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{currentStep.icon}</span>
+          <MaterialIcon name={currentStep.icon} filled className="text-primary text-2xl" />
         </div>
         <div>
           <h1 className="font-headline text-xl font-extrabold tracking-tight text-white">{currentStep.title}</h1>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import PublicNav from '@/components/PublicNav';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 export const metadata: Metadata = {
   title: 'For Therapists — Inpatient-Level Insights, Outpatient Setting',
@@ -75,7 +76,7 @@ export default function TherapistsPage() {
       {/* Hero */}
       <section className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 text-primary text-sm font-label font-bold mb-6">
-          <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>local_hospital</span>
+          <MaterialIcon name="local_hospital" filled className="text-base" />
           For Licensed Therapists & Counselors
         </div>
 
@@ -158,7 +159,7 @@ export default function TherapistsPage() {
           {FEATURES.map((f) => (
             <div key={f.title} className="rounded-2xl p-6 hover:shadow-lg transition-all duration-300" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
               <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-primary text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{f.icon}</span>
+                <MaterialIcon name={f.icon} filled className="text-primary text-2xl" />
               </div>
               <h3 className="font-headline text-base font-bold text-slate-100 mb-2">{f.title}</h3>
               <p className="font-body text-sm text-slate-400 leading-relaxed">{f.description}</p>
@@ -193,7 +194,7 @@ export default function TherapistsPage() {
       <section className="max-w-4xl mx-auto px-6 py-16">
         <div className="rounded-3xl p-8 md:p-12 text-center" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
           <div className="w-16 h-16 rounded-2xl bg-teal-500/10 flex items-center justify-center mx-auto mb-6">
-            <span className="material-symbols-outlined text-emerald-400 text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
+            <MaterialIcon name="verified_user" filled className="text-emerald-400 text-3xl" />
           </div>
           <h2 className="font-headline text-2xl font-bold text-slate-100 mb-4">Client-Controlled Consent</h2>
           <p className="font-body text-slate-400 max-w-xl mx-auto leading-relaxed mb-8">
@@ -202,7 +203,7 @@ export default function TherapistsPage() {
           <div className="flex flex-wrap justify-center gap-3">
             {['Journal Entries', 'Mood Data', 'Focus Streaks', 'Conversation Outcomes', 'Pattern Detection'].map((item) => (
               <div key={item} className="flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 ring-1 ring-teal-500/20">
-                <span className="material-symbols-outlined text-emerald-400 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                <MaterialIcon name="check_circle" filled className="text-emerald-400 text-sm" />
                 <span className="text-sm font-label font-medium text-slate-300">{item}</span>
               </div>
             ))}
@@ -234,7 +235,7 @@ export default function TherapistsPage() {
       <section className="max-w-4xl mx-auto px-6 py-12 pb-20">
         <div className="rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-6" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
           <div className="w-14 h-14 rounded-2xl bg-teal-500/10 flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-primary text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>card_giftcard</span>
+            <MaterialIcon name="card_giftcard" filled className="text-primary text-2xl" />
           </div>
           <div className="flex-1 text-center sm:text-left">
             <h3 className="font-headline text-base font-bold text-slate-100 mb-1">Refer clients to Be Candid</h3>

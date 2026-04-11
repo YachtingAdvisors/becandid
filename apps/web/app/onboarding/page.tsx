@@ -24,6 +24,7 @@ import {
 } from '@be-candid/shared';
 import { GOAL_TIPS } from '@/lib/goalTips';
 import { getDefaultWidgets } from '@/lib/widgets/registry';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 type Step = 'goals' | 'goal-tips' | 'stringer' | 'motivator' | 'preview' | 'partner' | 'rival-assessment' | 'done' | 'first-journal';
 
@@ -382,7 +383,7 @@ function OnboardingContent() {
         <div className="max-w-lg w-full animate-fade-slide">
           <div className="text-center mb-8">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
+              <MaterialIcon name="lightbulb" filled className="text-primary text-xl" />
             </div>
             <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">Tips for your journey</h1>
             <p className="text-sm text-slate-400 font-body leading-relaxed">
@@ -400,9 +401,7 @@ function OnboardingContent() {
                   className="rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/5 ring-1 ring-primary/10 overflow-hidden"
                 >
                   <div className="px-5 py-3 border-b border-white/5 flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      {tips[0].icon}
-                    </span>
+                    <MaterialIcon name={tips[0].icon} filled className="text-primary text-lg" />
                     <span className="text-sm font-label font-bold text-slate-100">
                       {GOAL_LABELS[category]}
                     </span>
@@ -470,9 +469,7 @@ function OnboardingContent() {
               </div>
               {/* Floating icon */}
               <div className="absolute -bottom-4 -right-4 w-16 h-16 lg:w-20 lg:h-20 bg-secondary-container rounded-full flex items-center justify-center shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
-                <span className="material-symbols-outlined text-on-secondary-container text-2xl lg:text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                  {STRINGER_PILLARS[stringerStep].icon}
-                </span>
+                <MaterialIcon name={STRINGER_PILLARS[stringerStep].icon} filled className="text-on-secondary-container text-2xl lg:text-3xl" />
               </div>
             </div>
 
@@ -581,7 +578,7 @@ function OnboardingContent() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-label font-semibold text-slate-100">{MOTIVATOR_LABELS[key]}</span>
                     {isSelected && (
-                      <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                      <MaterialIcon name="check_circle" filled className="text-primary text-lg" />
                     )}
                   </div>
                   <p className="text-xs text-slate-400 font-body mt-1 leading-relaxed">{MOTIVATOR_DESCRIPTIONS[key]}</p>
@@ -655,7 +652,7 @@ function OnboardingContent() {
             <div className="space-y-2 mb-4">
               {invitedPartners.map((p, i) => (
                 <div key={i} className="flex items-center gap-3 px-4 py-3 bg-emerald-500/10 rounded-2xl ring-1 ring-emerald-500/20">
-                  <span className="material-symbols-outlined text-emerald-400 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                  <MaterialIcon name="check_circle" filled className="text-emerald-400 text-lg" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-label font-bold text-slate-100 truncate">{p.name}</p>
                     <p className="text-[10px] text-slate-400 truncate">{p.email}</p>
@@ -777,7 +774,7 @@ function OnboardingContent() {
         <div className="max-w-md w-full animate-fade-slide">
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>psychology_alt</span>
+              <MaterialIcon name="psychology_alt" filled className="text-primary text-3xl" />
             </div>
             <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Discover Your Rivals</h1>
             <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-4">Optional</p>
@@ -789,7 +786,7 @@ function OnboardingContent() {
           <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6 space-y-4 shadow-sm">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>checklist</span>
+                <MaterialIcon name="checklist" filled className="text-primary text-lg" />
               </div>
               <div>
                 <h3 className="text-sm font-label font-bold text-on-surface mb-1">4 reflective categories</h3>
@@ -798,7 +795,7 @@ function OnboardingContent() {
             </div>
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>analytics</span>
+                <MaterialIcon name="analytics" filled className="text-primary text-lg" />
               </div>
               <div>
                 <h3 className="text-sm font-label font-bold text-on-surface mb-1">Personalized rival profile</h3>
@@ -807,7 +804,7 @@ function OnboardingContent() {
             </div>
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>timer</span>
+                <MaterialIcon name="timer" filled className="text-primary text-lg" />
               </div>
               <div>
                 <h3 className="text-sm font-label font-bold text-on-surface mb-1">Takes about 3 minutes</h3>
@@ -837,7 +834,7 @@ function OnboardingContent() {
       {step === 'done' && (
         <div className="max-w-md w-full text-center animate-fade-slide">
           <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+            <MaterialIcon name="check_circle" filled className="text-primary text-3xl" />
           </div>
           <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">You&apos;re all set</h1>
           <p className="text-sm text-on-surface-variant leading-relaxed mb-8 font-body">
@@ -864,7 +861,7 @@ function OnboardingContent() {
         <div className="max-w-md w-full animate-fade-slide">
           <div className="text-center mb-6">
             <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center mx-auto mb-3">
-              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>edit_note</span>
+              <MaterialIcon name="edit_note" filled className="text-primary text-xl" />
             </div>
             <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Your first journal entry</h1>
             <p className="text-sm text-on-surface-variant leading-relaxed font-body">

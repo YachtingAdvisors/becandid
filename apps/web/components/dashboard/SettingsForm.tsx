@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 import {
   GOAL_LABELS, getCategoryEmoji,
   STREAK_MODE_LABELS, STREAK_MODE_SHORT,
@@ -218,7 +219,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
 
             {/* Partner notification reminder */}
             <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-orange-50 ring-1 ring-orange-200/50">
-              <span className="material-symbols-outlined text-orange-600 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+              <MaterialIcon name="warning" filled className="text-orange-600 text-lg mt-0.5 shrink-0" />
               <div>
                 <p className="text-xs text-orange-800 font-label font-bold">Your partner will be notified immediately</p>
                 <p className="text-[10px] text-orange-700 font-body mt-0.5">
@@ -267,7 +268,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
       {/* ── Rivals (Goals) ──────────────────────────────────── */}
       <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-4">
         <h2 className="font-headline text-lg font-semibold text-on-surface flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>swords</span>
+          <MaterialIcon name="swords" filled className="text-primary" />
           Your Rivals
         </h2>
 
@@ -296,7 +297,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
       {/* ── Fasting ───────────────────────────────────────── */}
       <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-3">
         <h2 className="font-headline text-lg font-semibold text-on-surface flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>self_improvement</span>
+          <MaterialIcon name="self_improvement" filled className="text-primary" />
           Fasting
         </h2>
         <p className="text-xs text-on-surface-variant">
@@ -316,7 +317,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
         <section className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5 space-y-3 border-l-4 border-primary">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary-container rounded-xl">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>group_add</span>
+              <MaterialIcon name="group_add" filled className="text-primary" />
             </div>
             <div>
               <h2 className="font-headline text-lg font-semibold text-on-surface">Invite an Accountability Partner</h2>
@@ -367,7 +368,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
         {/* No partner warning */}
         {!hasPartner && (
           <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-orange-50 ring-1 ring-orange-200/50">
-            <span className="material-symbols-outlined text-orange-600 text-lg mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+            <MaterialIcon name="warning" filled className="text-orange-600 text-lg mt-0.5" />
             <p className="text-xs text-orange-800 leading-relaxed">
               <strong>No partner identified.</strong> Without an accountability partner, all flags will count against your streak since there&apos;s no third party to verify false flags. <a href="/dashboard/partner" className="underline font-semibold hover:text-orange-900">Invite a partner</a> to unlock false flag verification.
             </p>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import MaterialIcon from '@/components/ui/MaterialIcon';
 
 type Mood = 'great' | 'good' | 'okay' | 'struggling' | 'crisis';
 type CheckinState =
@@ -126,12 +127,7 @@ export default function QuickMoodCheckin() {
     return (
       <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <div className="text-center py-2">
-          <span
-            className="material-symbols-outlined text-primary text-3xl mb-2"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            favorite
-          </span>
+          <MaterialIcon name="favorite" filled className="text-primary text-3xl mb-2" />
           <p className="font-body text-sm text-on-surface mb-1">
             {partnerName ? `${partnerName} has been notified.` : 'Your partner has been notified.'}
           </p>
@@ -205,12 +201,7 @@ export default function QuickMoodCheckin() {
     return (
       <div className={`bg-surface-container-lowest rounded-2xl ring-1 ${ringColor} p-5`}>
         <div className="text-center mb-4">
-          <span
-            className={`material-symbols-outlined ${accentColor} text-3xl mb-2`}
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            favorite
-          </span>
+          <MaterialIcon name="favorite" filled className={`${accentColor} text-3xl mb-2`} />
           <p className="font-body text-sm text-on-surface mb-1">
             It takes courage to name how you are feeling.
           </p>
@@ -300,7 +291,7 @@ export default function QuickMoodCheckin() {
       return (
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
           <div className="flex items-center justify-center gap-2 py-4">
-            <span className="material-symbols-outlined text-green-600 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+            <MaterialIcon name="check_circle" filled className="text-green-600 text-2xl" />
             <span className="font-body text-sm text-on-surface">Thanks for checking in!</span>
           </div>
         </div>
@@ -312,7 +303,7 @@ export default function QuickMoodCheckin() {
       return (
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
           <div className="text-center py-2">
-            <span className="material-symbols-outlined text-amber-500 text-3xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+            <MaterialIcon name="favorite" filled className="text-amber-500 text-3xl mb-2" />
             <p className="font-body text-sm text-on-surface mb-1">Remember, you are not alone in this.</p>
             <p className="font-label text-xs text-on-surface-variant">Your courage to be honest matters.</p>
           </div>
@@ -331,7 +322,7 @@ export default function QuickMoodCheckin() {
       return (
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-error/20 p-5">
           <div className="text-center mb-4">
-            <span className="material-symbols-outlined text-error text-3xl mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>emergency</span>
+            <MaterialIcon name="emergency" filled className="text-error text-3xl mb-2" />
             <p className="font-headline text-sm font-bold text-on-surface mb-1">You deserve support right now.</p>
             <p className="font-label text-xs text-on-surface-variant">Please reach out -- these services are free and confidential:</p>
           </div>
@@ -394,9 +385,7 @@ export default function QuickMoodCheckin() {
                   : 'bg-surface-container-low'
               }`}
             >
-              <span className={`material-symbols-outlined text-2xl ${mood.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                {mood.icon}
-              </span>
+              <MaterialIcon name={mood.icon} filled className={`text-2xl ${mood.color}`} />
               <span className="font-label text-[10px] uppercase tracking-wider text-on-surface-variant">
                 {mood.label}
               </span>
