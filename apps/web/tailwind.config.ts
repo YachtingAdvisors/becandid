@@ -45,6 +45,8 @@ const config: Config = {
         background: 'var(--color-background)',
         surface: {
           DEFAULT: 'var(--color-surface)',
+          dim: 'var(--color-surface-dim)',
+          tint: 'var(--color-surface-tint)',
           container: {
             DEFAULT: 'var(--color-surface-container)',
             low: 'var(--color-surface-container-low)',
@@ -53,6 +55,7 @@ const config: Config = {
             highest: 'var(--color-surface-container-highest)',
           },
         },
+        'inverse-surface': 'var(--color-inverse-surface)',
         'on-surface': {
           DEFAULT: 'var(--color-on-surface)',
           variant: 'var(--color-on-surface-variant)',

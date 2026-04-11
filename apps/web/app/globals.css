@@ -632,3 +632,37 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
+
+/* ─── Dashboard Theme (scoped to backend/dashboard pages only) ── */
+.dashboard-theme {
+  --color-primary: #276772;
+  --color-primary-dim: #175b66;
+  --color-primary-container: #afedf9;
+  --color-on-primary: #edfcff;
+  --color-on-primary-container: #145a65;
+
+  --color-secondary: #43655f;
+  --color-secondary-container: #c4eae2;
+  --color-on-secondary-container: #355852;
+
+  --color-tertiary: #456749;
+  --color-tertiary-container: #d7fed6;
+  --color-on-tertiary-container: #426345;
+
+  --color-background: #f7fafa;
+  --color-surface: #f7fafa;
+  --color-surface-dim: #d3dcdc;
+  --color-surface-container: #e9efef;
+  --color-surface-container-low: #eff5f5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-high: #e2e9ea;
+  --color-surface-container-highest: #dbe4e5;
+  --color-surface-tint: #276772;
+  --color-inverse-surface: #0b0f0f;
+
+  --color-on-surface: #2b3435;
+  --color-on-surface-variant: #586161;
+
+  --color-outline: #737c7d;
+  --color-outline-variant: #abb4b4;
+}

@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "scheme": "becandid",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -15,7 +15,14 @@
     },
     "plugins": [
       "expo-router",
-      "expo-build-properties",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "newArchEnabled": true
+          }
+        }
+      ],
       [
         "expo-notifications",
         {
