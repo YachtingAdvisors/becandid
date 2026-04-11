@@ -190,7 +190,7 @@ export default function MethodologyPage() {
                   <h4 className="text-white font-semibold text-sm mb-1">Solo mode built in</h4>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     Not ready for a partner? Solo mode gives you self-reflection guides instead.
-                    Same Stringer framework, same AI &mdash; just between you and your shadow.
+                    Same Stringer framework, same insights &mdash; just between you and your shadow.
                   </p>
                 </div>
               </div>

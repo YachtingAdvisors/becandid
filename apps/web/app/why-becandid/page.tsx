@@ -183,32 +183,6 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   },
 ];
 
-/* ── Placeholder testimonials ─────────────────────────────────── */
-
-const TESTIMONIALS = [
-  {
-    quote:
-      'I tried Covenant Eyes for two years. The VPN killed my battery and my wife saw every URL I visited. Be Candid gives her the insight she needs without the surveillance.',
-    author: 'Marcus T.',
-    role: 'Pro user, 8-month streak',
-    placeholder: true,
-  },
-  {
-    quote:
-      'As a therapist, I finally have a tool I can recommend without ethical concerns. My clients stay accountable without feeling watched.',
-    author: 'Dr. Sarah K.',
-    role: 'Licensed therapist, 12 clients on Be Candid',
-    placeholder: true,
-  },
-  {
-    quote:
-      'The conversation guides changed everything. We went from fighting about screen time to actually talking about what was going on underneath.',
-    author: 'Jamie & Alex R.',
-    role: 'Couple, 5-month streak',
-    placeholder: true,
-  },
-];
-
 /* ── Helper: render check/cross for table cells ───────────────── */
 
 function CellValue({ value }: { value: string }) {
@@ -260,7 +234,7 @@ export default function WhyBeCandidPage() {
     <>
       <PublicNav />
 
-      <main className="min-h-screen bg-stone-950 text-stone-100 pt-24">
+      <main className="min-h-screen bg-dark-sanctuary text-stone-100 pt-24">
         {/* ─── Hero ────────────────────────────────────────── */}
         <section className="relative overflow-hidden">
           {/* Subtle gradient orb */}

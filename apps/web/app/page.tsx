@@ -14,7 +14,7 @@ const FEATURES = [
     title: 'Conversation Guides & Ice Breakers',
     desc: 'Evidence-based prompts designed by neurologists and therapists for difficult but necessary digital discussions.',
     image: '/images/features/conversation-guides.webp',
-    alt: 'Glowing geometric nodes connected by light strands representing AI dialogue',
+    alt: 'Glowing geometric nodes connected by light strands representing guided conversation',
   },
   {
     icon: 'menu_book',
@@ -241,13 +241,13 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Floating badge: AI Pattern Detection — bottom-right */}
-              <div className="absolute -bottom-5 right-8 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10 animate-float-delayed">
+              {/* Floating badge: Pattern Detection — bottom-right */}
+              <div className="absolute -bottom-5 right-8 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
                 <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
                   <MaterialIcon name="neurology" className="text-purple-400 text-base" filled />
                 </div>
                 <div>
-                  <p className="font-label text-xs font-semibold text-white">AI Pattern Detection</p>
+                  <p className="font-label text-xs font-semibold text-white">Pattern Detection</p>
                   <p className="font-label text-[10px] text-stone-500">Behavioral insight engine</p>
                 </div>
               </div>
