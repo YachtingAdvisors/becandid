@@ -229,6 +229,63 @@ export default async function DownloadPage() {
           </div>
         </section>
 
+        {/* ── Verify Your Download ─────────────────────────── */}
+        <section className="px-6 lg:px-12 pb-24 max-w-screen-xl mx-auto">
+          <div
+            className="rounded-2xl p-8 lg:p-10"
+            style={{
+              background: 'rgba(15, 23, 42, 0.6)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+            }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center">
+                <MaterialIcon name="verified_user" className="text-teal-400 text-xl" />
+              </div>
+              <h2 className="text-2xl font-bold text-white">Verify Your Download</h2>
+            </div>
+            <p className="text-slate-400 text-sm leading-relaxed mb-6">
+              After downloading, verify the file integrity using SHA-256 checksums.
+              {release?.assets?.windowsX64?.sha256Url || release?.assets?.windowsArm64?.sha256Url || release?.assets?.macDmg?.sha256Url
+                ? ' Checksum files are available alongside each download above.'
+                : ''}
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Windows */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <MaterialIcon name="desktop_windows" className="text-teal-400 text-base" />
+                  <span className="text-sm font-semibold text-white">Windows (PowerShell)</span>
+                </div>
+                <div className="rounded-lg bg-[#0b1120] border border-white/5 p-4 overflow-x-auto">
+                  <code className="text-xs text-teal-300 whitespace-pre font-mono">
+                    Get-FileHash .\Be.Candid.Setup.*.exe -Algorithm SHA256
+                  </code>
+                </div>
+              </div>
+
+              {/* macOS */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <MaterialIcon name="laptop_mac" className="text-teal-400 text-base" />
+                  <span className="text-sm font-semibold text-white">macOS (Terminal)</span>
+                </div>
+                <div className="rounded-lg bg-[#0b1120] border border-white/5 p-4 overflow-x-auto">
+                  <code className="text-xs text-teal-300 whitespace-pre font-mono">
+                    shasum -a 256 Be.Candid*.dmg
+                  </code>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-stone-500 text-xs mt-4">
+              Compare the output hash with the <code className="text-teal-400/70">.sha256</code> file provided with each release.
+            </p>
+          </div>
+        </section>
+
         {/* ── PWA Instructions ─────────────────────────────── */}
         <section className="px-6 lg:px-12 pb-24 max-w-screen-xl mx-auto">
           <div className="text-center mb-12">
