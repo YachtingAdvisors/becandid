@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import PublicNav from '@/components/PublicNav';
 
 export const metadata: Metadata = {
   title: 'Be Candid Foundation — Free Digital Wellness for Every Student',
@@ -98,28 +99,7 @@ const WHAT_STUDENTS_GET = [
 export default function OrgPage() {
   return (
     <div className="min-h-screen bg-dark-sanctuary text-white overflow-x-hidden">
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-stone-950/80 backdrop-blur-xl border-b border-white/5">
-        <div className="flex justify-between items-center px-6 md:px-8 py-4 max-w-7xl mx-auto">
-          <Link href="/org" className="flex items-center gap-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Be Candid" className="h-9 w-auto brightness-[10]" />
-            <span className="font-label text-xs font-bold text-emerald-400 uppercase tracking-widest">.org</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#mission" className="text-sm font-label text-stone-400 hover:text-white transition-colors">Mission</a>
-            <a href="#how-it-works" className="text-sm font-label text-stone-400 hover:text-white transition-colors">How It Works</a>
-            <a href="#sponsors" className="text-sm font-label text-stone-400 hover:text-white transition-colors">Sponsor</a>
-            <a href="#schools" className="text-sm font-label text-stone-400 hover:text-white transition-colors">Schools</a>
-            <a
-              href="mailto:shawn@becandid.io?subject=Sponsorship%20Inquiry%20—%20Be%20Candid%20Foundation"
-              className="px-5 py-2 bg-emerald-500 text-white rounded-full font-label font-bold text-sm hover:bg-emerald-400 transition-colors"
-            >
-              Become a Sponsor
-            </a>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
       <main>
         {/* ── Hero ──────────────────────────────────────────── */}
