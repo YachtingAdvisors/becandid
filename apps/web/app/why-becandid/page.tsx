@@ -435,13 +435,17 @@ export default function WhyBeCandidPage() {
               <div className="space-y-5 text-stone-400 font-body leading-relaxed">
                 <p>
                   Covenant Eyes captures screenshots of your screen every few
-                  seconds. Your partner sees your actual browsing. That is
-                  surveillance.
+                  seconds and logs every URL. Your partner sees your actual
+                  browsing in full detail. That is surveillance.
                 </p>
                 <p>
-                  Be Candid shows your partner that a flag was triggered --
-                  the <span className="text-stone-200 font-semibold">category and timing</span>.
-                  Never the content. Never the URL. Never a screenshot.
+                  Be Candid takes a different approach. We use{' '}
+                  <span className="text-stone-200 font-semibold">small periodic screenshots</span>{' '}
+                  that are encrypted and shared only with your accountability
+                  partner -- plus DNS-based domain awareness for flagging. Your
+                  partner sees the{' '}
+                  <span className="text-stone-200 font-semibold">category, timing, and context</span>{' '}
+                  without raw URLs or a constant stream of screen captures.
                 </p>
                 <p className="text-stone-300 font-medium italic border-l-2 border-primary/40 pl-4">
                   Because accountability is about honesty, not surveillance.
@@ -483,6 +487,10 @@ export default function WhyBeCandidPage() {
                   <p className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-base text-primary/60">schedule</span>
                     Flagged at 11:32 PM
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-base text-primary/60">photo_camera</span>
+                    Small encrypted screenshot (partner only)
                   </p>
                   <p className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-base text-primary/60">chat</span>
@@ -596,7 +604,7 @@ export default function WhyBeCandidPage() {
               Try Be Candid Free
             </h2>
             <p className="text-stone-400 text-lg font-body mb-10 max-w-xl mx-auto leading-relaxed">
-              No credit card. No VPN. No screenshots. Just accountability.
+              No credit card. No VPN. No surveillance. Just accountability.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
