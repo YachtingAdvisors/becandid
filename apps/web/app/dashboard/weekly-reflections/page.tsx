@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '@/lib/supabase';
 import { decrypt } from '@/lib/encryption';
 import Link from 'next/link';

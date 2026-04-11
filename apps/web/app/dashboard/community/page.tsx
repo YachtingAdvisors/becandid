@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // ============================================================
 // app/dashboard/community/page.tsx — Anonymous Community Feed
 // Server component: fetches initial posts, renders client component

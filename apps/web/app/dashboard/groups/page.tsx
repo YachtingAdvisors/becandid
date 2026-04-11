@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // ============================================================
 // app/dashboard/groups/page.tsx — Accountability Groups
 // Server component: lists groups, create/join modals

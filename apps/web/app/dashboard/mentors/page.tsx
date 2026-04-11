@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // ============================================================
 // app/dashboard/mentors/page.tsx — Sponsor/Mentorship Matching
 // Server component: fetches user streak, mentor profile, connections

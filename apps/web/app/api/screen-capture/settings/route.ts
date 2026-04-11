@@ -14,7 +14,7 @@ import { createServiceClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { escapeHtml } from '@/lib/security';
 
-const ADMIN_EMAILS = ['slaser90@gmail.com', 'shawn@yachtingadvisors.com'];
+const ADMIN_EMAILS = ['slaser90@gmail.com', 'shawn@becandid.io'];
 
 export async function GET(req: NextRequest) {
   const user = await getUserFromRequest(req);

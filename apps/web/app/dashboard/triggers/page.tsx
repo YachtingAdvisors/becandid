@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import TriggerMap from '@/components/dashboard/TriggerMap';
