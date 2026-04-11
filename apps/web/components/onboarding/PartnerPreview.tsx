@@ -21,9 +21,11 @@ const PARTNER_NEVER_SEES = [
 export default function PartnerPreview({
   onContinue,
   onSolo,
+  onBack,
 }: {
   onContinue: () => void;
   onSolo: () => void;
+  onBack?: () => void;
 }) {
   const [tab, setTab] = useState<'sees' | 'never'>('sees');
 
@@ -77,13 +79,13 @@ export default function PartnerPreview({
       {tab === 'never' && (
         <div className="space-y-2">
           {PARTNER_NEVER_SEES.map((item, i) => (
-            <div key={i} className="flex items-center gap-3 p-3.5 rounded-2xl bg-primary-container/30 border border-primary/10">
-              <span className="material-symbols-outlined text-lg">{item.icon}</span>
-              <p className="text-sm font-medium text-on-surface font-label">{item.text}</p>
+            <div key={i} className="flex items-center gap-3 py-3 px-4">
+              <span className="material-symbols-outlined text-lg text-slate-400">{item.icon}</span>
+              <p className="text-sm text-slate-200 font-body">{item.text}</p>
             </div>
           ))}
-          <div className="mt-3 p-3 rounded-2xl bg-secondary-container/50 border border-secondary/10">
-            <p className="text-xs text-on-secondary-container italic leading-relaxed font-body">
+          <div className="mt-3 p-3 rounded-2xl bg-white/[0.04]">
+            <p className="text-xs text-slate-300 italic leading-relaxed font-body">
               Your journal is your space for honest self-understanding. The person you are online is the person you are, and this space helps you explore that with integrity. It&apos;s never shared.
             </p>
           </div>
@@ -112,13 +114,19 @@ export default function PartnerPreview({
       {/* Actions */}
       <div className="mt-6 space-y-2">
         <button onClick={onContinue}
-          className="w-full py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 transition-opacity">
+          className="w-full py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary hover:opacity-90 transition-opacity cursor-pointer">
           Got it — invite a partner
         </button>
         <button onClick={onSolo}
-          className="w-full py-3 text-sm font-headline font-bold rounded-full border border-white/20 text-slate-300 hover:bg-white/5 transition-colors">
+          className="w-full py-3 text-sm font-headline font-bold rounded-full border border-white/20 text-slate-300 hover:bg-white/5 transition-colors cursor-pointer">
           I&apos;ll start in solo mode for now
         </button>
+        {onBack && (
+          <button onClick={onBack}
+            className="w-full py-2 text-sm font-label font-medium text-slate-500 hover:text-slate-300 transition-colors cursor-pointer">
+            &larr; Back
+          </button>
+        )}
       </div>
 
       <p className="text-center text-[11px] text-slate-400/60 mt-3 font-body">

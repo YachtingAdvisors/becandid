@@ -511,16 +511,19 @@ function OnboardingContent() {
                 >
                   {stringerStep === STRINGER_PILLARS.length - 1 ? 'Got it \u2014 continue' : 'Next'}
                 </button>
-                {stringerStep > 0 && (
-                  <button
-                    onClick={() => setStringerStep(stringerStep - 1)}
-                    className="text-slate-400 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
-                  >
-                    Back
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (stringerStep > 0) setStringerStep(stringerStep - 1);
+                    else setStep(goals.length > 0 ? 'goal-tips' : 'goals');
+                  }}
+                  className="text-slate-400 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
+                >
+                  Back
+                </button>
                 {stringerStep === 0 && (
                   <button
+                    type="button"
                     onClick={() => setStep('motivator')}
                     className="text-slate-400 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
                   >
@@ -611,6 +614,7 @@ function OnboardingContent() {
           <PartnerPreview
             onContinue={() => setStep('partner')}
             onSolo={enableSolo}
+            onBack={() => setStep('motivator')}
           />
         </div>
       )}
