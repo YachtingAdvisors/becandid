@@ -32,7 +32,7 @@ const TIERS: Tier[] = [
     name: 'Free',
     monthlyPrice: 0,
     annualPrice: 0,
-    logo: '/pro-logo.png',
+    logo: '/free-logo.png',
     description: 'Begin aligning',
     cta: 'Get Started',
     ctaHref: '/auth/signup',
