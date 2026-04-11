@@ -68,7 +68,11 @@ function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialStep = searchParams.get('step');
-  const [step, setStepRaw] = useState<Step>(initialStep === 'partner' ? 'partner' : 'goals');
+  const [step, setStepRaw] = useState<Step>(
+    initialStep === 'partner' ? 'partner'
+    : initialStep === 'done' ? 'done'
+    : 'goals'
+  );
   const [showFullPhrase, setShowFullPhrase] = useState(false);
   const setStep = (s: Step) => {
     // When transitioning to 'done', show the full phrase animation first
@@ -266,7 +270,7 @@ function OnboardingContent() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-12 overflow-x-hidden w-full max-w-full transition-colors duration-1000"
+      className="min-h-screen flex flex-col items-center px-4 py-12 overflow-x-hidden w-full max-w-full transition-colors duration-1000"
       style={{ backgroundColor: currentBg }}
     >
       {/* Full phrase reveal — "Come out of darkness and into the light" */}
@@ -380,7 +384,7 @@ function OnboardingContent() {
 
       {/* ═══════ STEP 1b: Goal-Specific Tips ═══════ */}
       {step === 'goal-tips' && (
-        <div className="max-w-lg w-full animate-fade-slide">
+        <div className="max-w-lg w-full my-auto animate-fade-slide">
           <div className="text-center mb-8">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
               <MaterialIcon name="lightbulb" filled className="text-primary text-xl" />
@@ -429,12 +433,14 @@ function OnboardingContent() {
 
           <div className="flex gap-3 mt-8">
             <button
+              type="button"
               onClick={() => setStep('goals')}
               className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
               &larr; Back
             </button>
             <button
+              type="button"
               onClick={() => setStep('stringer')}
               className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
@@ -509,16 +515,19 @@ function OnboardingContent() {
                 >
                   {stringerStep === STRINGER_PILLARS.length - 1 ? 'Got it \u2014 continue' : 'Next'}
                 </button>
-                {stringerStep > 0 && (
-                  <button
-                    onClick={() => setStringerStep(stringerStep - 1)}
-                    className="text-slate-400 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
-                  >
-                    Back
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (stringerStep > 0) setStringerStep(stringerStep - 1);
+                    else setStep(goals.length > 0 ? 'goal-tips' : 'goals');
+                  }}
+                  className="text-slate-400 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
+                >
+                  Back
+                </button>
                 {stringerStep === 0 && (
                   <button
+                    type="button"
                     onClick={() => setStep('motivator')}
                     className="text-slate-400 font-label font-bold text-sm uppercase tracking-widest hover:text-primary transition-all duration-200 px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-full"
                   >
@@ -609,6 +618,7 @@ function OnboardingContent() {
           <PartnerPreview
             onContinue={() => setStep('partner')}
             onSolo={enableSolo}
+            onBack={() => setStep('motivator')}
           />
         </div>
       )}
@@ -815,7 +825,7 @@ function OnboardingContent() {
 
           <div className="mt-8 space-y-3">
             <Link
-              href="/dashboard/assessment"
+              href="/dashboard/assessment?return_to=onboarding"
               className="block w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 text-center"
             >
               Take Assessment

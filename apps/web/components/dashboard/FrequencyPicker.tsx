@@ -35,7 +35,7 @@ export default function FrequencyPicker({ value, onChange, disabled }: Frequency
         Check-in Frequency
       </label>
       <p className="text-xs text-on-surface-variant mb-3">
-        Both you and your partner must confirm each check-in for it to count.
+        Both you and your partners must confirm each check-in for it to count.
       </p>
       <div className="space-y-2">
         {FREQUENCIES.map((freq) => (

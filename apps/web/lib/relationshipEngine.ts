@@ -145,14 +145,14 @@ export async function awardRelationshipXP(
 } | null> {
   const db = createServiceClient();
 
-  // Find the active partner relationship
+  // Find the active partner relationship (safe with 0 or many partners)
   const { data: partner } = await db.from('partners')
     .select('id, relationship_xp, relationship_level, xp_streak_days, user_id, partner_user_id')
     .or(`user_id.eq.${userId},partner_user_id.eq.${userId}`)
     .eq('status', 'accepted')
     .order('priority', { ascending: true })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if (!partner) return null;
 
@@ -296,7 +296,7 @@ export async function getRelationshipStatus(userId: string) {
     .eq('status', 'accepted')
     .order('priority', { ascending: true })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if (!partner) return null;
 

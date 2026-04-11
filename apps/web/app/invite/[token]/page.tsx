@@ -186,7 +186,7 @@ export default function InvitePage() {
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                <p className="text-sm font-body text-on-surface-variant">You&apos;ll receive alerts with AI conversation guides &mdash; no judgment, just support</p>
+                <p className="text-sm font-body text-on-surface-variant">You&apos;ll receive alerts with data-driven conversation guides &mdash; no judgment, just support</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>

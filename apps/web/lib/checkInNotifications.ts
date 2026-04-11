@@ -42,7 +42,7 @@ export function buildUserCheckInEmail(params: {
 
     <div style="background:#f8f7ff;border-radius:12px;padding:16px;margin-bottom:20px;">
       <p style="margin:0;color:#4f46e5;font-size:13px;font-weight:600;">
-        ⏰ Both you and your partner must confirm by ${dueDate}
+        ⏰ Both you and your partners must confirm by ${dueDate}
       </p>
     </div>
 
@@ -148,7 +148,7 @@ export function buildConfirmationFollowUpEmail(params: {
 // ─── SMS Templates ────────────────────────────────────────────
 
 export function buildUserCheckInSMS(userName: string, prompt: string): string {
-  return `${prompt} Both you and your partner need to confirm. Open Be Candid to check in.`;
+  return `${prompt} Both you and your partners need to confirm. Open Be Candid to check in.`;
 }
 
 export function buildPartnerCheckInSMS(partnerName: string, monitoredName: string): string {

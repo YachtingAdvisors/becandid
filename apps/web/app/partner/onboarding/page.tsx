@@ -13,7 +13,7 @@ const PARTNER_SEES = [
   { icon: 'flag', text: 'Flags by category and severity', detail: 'You see that something happened and how serious it was — not what they were looking at.' },
   { icon: 'schedule', text: 'When flags occurred', detail: 'Date and time only. No URLs, no screenshots, no browsing history.' },
   { icon: 'trending_up', text: 'Their focus streak', detail: 'How many consecutive days they have stayed focused. Streaks reset on a flag but rebuild immediately.' },
-  { icon: 'forum', text: 'AI conversation guides', detail: 'Personalized guides for how to have a meaningful, non-judgmental conversation with them.' },
+  { icon: 'forum', text: 'Conversation guides', detail: 'Personalized guides for how to have a meaningful, non-judgmental conversation with them.' },
   { icon: 'edit_note', text: 'Journal activity (not content)', detail: 'You see "3 entries this week" — never what they wrote. Their reflections stay private.' },
 ];
 

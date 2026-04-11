@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
-import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
+import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const PRO_PRICE = 9.99;
 const THERAPY_PRICE = 19.99;
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   if (!isAdmin(user.email || ''))
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, user.id);
   if (blocked) return blocked;
 
   const db = createServiceClient();

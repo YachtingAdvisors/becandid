@@ -125,6 +125,6 @@ function fallbackPrompt(name: string, frequency: string): string {
     `${name} — pausing to check in. What's the honest answer to "how am I doing"?`,
     `Check-in time, ${name}. No performance required — just honesty. How are things?`,
   ];
-  const note = frequency !== 'daily' ? ' Both you and your partner need to confirm this one.' : '';
+  const note = frequency !== 'daily' ? ' Both you and your partners need to confirm this one.' : '';
   return greetings[Math.floor(Math.random() * greetings.length)] + note;
 }

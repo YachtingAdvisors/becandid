@@ -91,7 +91,7 @@ export default function CheckInsPage() {
           <div>
             <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Check-ins</h1>
             <p className="text-sm text-on-surface-variant font-body">
-              Both you and your partner confirm each check-in for it to count.
+              Both you and your partners confirm each check-in for it to count.
             </p>
           </div>
         </div>

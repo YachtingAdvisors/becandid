@@ -408,7 +408,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm font-medium text-on-surface">Check-ins</div>
-            <div className="text-xs text-on-surface-variant">Both you and your partner confirm each check-in</div>
+            <div className="text-xs text-on-surface-variant">Both you and your partners confirm each check-in</div>
           </div>
           <button
             onClick={() => setCheckInEnabled(!checkInEnabled)}
@@ -452,7 +452,7 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
 
             <div className="pl-4">
               <div className="px-3 py-2.5 rounded-xl bg-primary-container/30 border border-primary/20 text-xs text-primary leading-relaxed">
-                <strong>How it works:</strong> A check-in is sent at your chosen time and frequency. Both you and your partner must confirm for it to count as completed. You each share how you're feeling, and both earn +5 trust points when complete.
+                <strong>How it works:</strong> A check-in is sent at your chosen time and frequency. Both you and your partners must confirm for it to count as completed. You each share how you're feeling, and both earn +5 trust points when complete.
               </div>
             </div>
           </div>

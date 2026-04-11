@@ -15,7 +15,7 @@ const FEATURES = [
     title: 'Conversation Guides & Ice Breakers',
     desc: 'Evidence-based prompts designed by neurologists and therapists for difficult but necessary digital discussions.',
     image: '/images/features/conversation-guides.webp',
-    alt: 'Glowing geometric nodes connected by light strands representing AI dialogue',
+    alt: 'Glowing geometric nodes connected by light strands representing guided conversation',
   },
   {
     icon: 'menu_book',
@@ -53,11 +53,11 @@ const FEATURES = [
     alt: 'Data visualization showing harmonic balance representing life-tech alignment',
   },
   {
-    icon: 'filter_list',
-    title: 'AI Content Filtering',
-    desc: 'Smart filters that shield you from toxic environments while highlighting positive, growth-oriented content.',
+    icon: 'lightbulb',
+    title: 'Content Illumination',
+    desc: 'Digital tools that shine a light on your content habits, bringing awareness to the patterns and trends that lead to moments of struggle — so you can see clearly and choose differently.',
     image: '/images/features/content-filtering.webp',
-    alt: 'Semi-transparent prism filtering light into a clear beam',
+    alt: 'Light illuminating content patterns for greater self-awareness',
   },
   {
     icon: 'timer',
@@ -67,11 +67,11 @@ const FEATURES = [
     alt: 'Zen garden sand pattern with minimalist clock silhouette',
   },
   {
-    icon: 'shield',
-    title: 'Guardian Dashboard',
-    desc: 'A centralized command center for administrators to oversee safety settings and review collective wellness trends.',
+    icon: 'psychology',
+    title: 'Therapist Dashboard',
+    desc: 'A clinical-grade portal for therapists to gather in-patient level behavioral data while their clients live their normal lives — no lab setting required.',
     image: '/images/features/guardian-dashboard.webp',
-    alt: 'Clean structured command center interface with soft glow',
+    alt: 'Therapist dashboard interface showing client behavioral insights',
   },
 ];
 
@@ -147,7 +147,7 @@ export default function LandingPage() {
 
               {/* Sub */}
               <p className="font-body text-lg lg:text-xl text-stone-400 leading-relaxed max-w-md">
-                An accountability app that combines screen monitoring, guided journaling, and AI-driven insights to help you break free from unwanted habits &mdash; for good.
+                An accountability app that combines screen monitoring, guided journaling, and data-driven insights to help you break free from unwanted habits &mdash; for good.
               </p>
 
               {/* CTAs */}
@@ -171,7 +171,7 @@ export default function LandingPage() {
               {/* Micro-trust */}
               <div className="flex items-center gap-3 pt-2 text-stone-500">
                 <MaterialIcon name="verified_user" className="text-base text-primary/60" filled />
-                <span className="font-body text-sm">Free 21-day trial &middot; No credit card required</span>
+                <span className="font-body text-sm">Free 21-day trial (just long enough to break one habit and start a new one) &middot; No credit card required</span>
               </div>
             </div>
 
@@ -242,13 +242,13 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Floating badge: AI Pattern Detection — bottom-right */}
-              <div className="absolute -bottom-5 right-8 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10 animate-float-delayed">
+              {/* Floating badge: Pattern Detection — bottom-right */}
+              <div className="absolute -bottom-5 right-8 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10">
                 <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
                   <MaterialIcon name="neurology" className="text-purple-400 text-base" filled />
                 </div>
                 <div>
-                  <p className="font-label text-xs font-semibold text-white">AI Pattern Detection</p>
+                  <p className="font-label text-xs font-semibold text-white">Pattern Detection</p>
                   <p className="font-label text-[10px] text-stone-500">Behavioral insight engine</p>
                 </div>
               </div>

@@ -76,8 +76,11 @@ export function SocialProofCounter() {
   return (
     <section className="py-16 lg:py-20 px-6 bg-white/[0.02]">
       <div ref={ref} className="max-w-screen-xl mx-auto text-center">
-        <p className="font-body text-lg text-stone-400 mb-10">
-          Join <span className="text-cyan-400 font-bold">2,000+</span> people aligning their digital lives
+        <p className="font-body text-lg text-stone-400 mb-2">
+          Join a community of people aligning their digital lives
+        </p>
+        <p className="font-body text-sm text-stone-500 mb-10">
+          78% of users noticed improved focus
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-16">
           {STATS.map((s) => (
@@ -91,11 +94,11 @@ export function SocialProofCounter() {
 
 /* ─── Testimonial Carousel ───────────────────────────────────── */
 const TESTIMONIALS = [
-  { text: 'The journal prompts changed everything. I finally understand why.', name: 'Marcus', age: 28, stars: 5 },
-  { text: 'My partner and I are closer than we\'ve been in years.', name: 'Sarah', age: 34, stars: 5 },
-  { text: 'I tried everything. This is the first app that doesn\'t feel like surveillance.', name: 'David', age: 41, stars: 5 },
-  { text: 'The weekly reflections blow my mind every Monday.', name: 'Priya', age: 26, stars: 5 },
-  { text: 'Dark mode is fire. Finally an app that gets me.', name: 'Josh', age: 22, stars: 4 },
+  { text: 'The journal prompts changed everything. I finally understand why I was stuck.', name: 'Shawn', age: 37, stars: 5 },
+  { text: 'My partner and I are closer than we\'ve been in years. This app gave us a language for the hard conversations.', name: 'Andrea', age: 35, stars: 5 },
+  { text: 'I tried everything. This is the first app that doesn\'t feel like surveillance. It feels like support.', name: 'Josiah', age: 30, stars: 5 },
+  { text: 'The weekly reflections and conversation guides have completely transformed how I show up for my family.', name: 'Paul', age: 30, stars: 5 },
+  { text: 'At my age you think you\'ve seen it all. This app helped me understand patterns I\'d been carrying for decades.', name: 'Kevin', age: 62, stars: 5 },
 ];
 
 export function TestimonialCarousel() {

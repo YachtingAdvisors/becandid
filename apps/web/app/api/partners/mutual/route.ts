@@ -18,20 +18,29 @@ export async function POST(req: NextRequest) {
 
     const db = createServiceClient();
 
+    // Accept optional partner_id to target a specific partnership
+    const body = await req.json().catch(() => ({}));
+    const targetPartnerId = body?.partner_id;
+
     // Find active partnership (user could be either side)
-    const { data: asUser } = await db
+    let userQuery = db
       .from('partners')
       .select('id, mutual')
       .eq('user_id', user.id)
-      .eq('status', 'active')
-      .maybeSingle();
-
-    const { data: asPartner } = await db
+      .eq('status', 'active');
+    let partnerQuery = db
       .from('partners')
       .select('id, mutual')
       .eq('partner_user_id', user.id)
-      .eq('status', 'active')
-      .maybeSingle();
+      .eq('status', 'active');
+
+    if (targetPartnerId) {
+      userQuery = userQuery.eq('id', targetPartnerId);
+      partnerQuery = partnerQuery.eq('id', targetPartnerId);
+    }
+
+    const { data: asUser } = await userQuery.maybeSingle();
+    const { data: asPartner } = await partnerQuery.maybeSingle();
 
     const partnership = asUser ?? asPartner;
     if (!partnership) {

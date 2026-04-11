@@ -5,11 +5,11 @@ import PublicNav from '@/components/PublicNav';
 export const metadata: Metadata = {
   title: 'Why Be Candid — Accountability Without Surveillance',
   description:
-    'Compare Be Candid to Covenant Eyes, Ever Accountable, and Bark. No VPN, no screenshots, no browsing logs. 25 rival categories, therapist portal, conversation guides.',
+    'Compare Be Candid to Covenant Eyes, Ever Accountable, and Bark. No VPN, no browsing logs. Lightweight DNS detection plus small encrypted screenshots shared only with your partner. 25 rival categories, therapist portal, conversation guides.',
   openGraph: {
     title: 'Why Be Candid — Accountability Without Surveillance',
     description:
-      'No VPN. No screenshots. No browsing history. Just accountability that respects your dignity, your battery, and your privacy.',
+      'No VPN. No browsing history. Lightweight detection with small, encrypted screenshots shared only with your partner. Accountability that respects your dignity, your battery, and your privacy.',
     images: [{ url: '/api/og', width: 1200, height: 630 }],
   },
 };
@@ -105,10 +105,17 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     bark: 'Moderate',
   },
   {
-    feature: 'Screenshots captured',
+    feature: 'Constant screenshots',
     beCandid: 'No',
     covenantEyes: 'Yes',
     everAccountable: 'Yes',
+    bark: 'No',
+  },
+  {
+    feature: 'Periodic encrypted screenshots',
+    beCandid: 'Yes',
+    covenantEyes: 'No',
+    everAccountable: 'No',
     bark: 'No',
   },
   {
@@ -176,32 +183,6 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   },
 ];
 
-/* ── Placeholder testimonials ─────────────────────────────────── */
-
-const TESTIMONIALS = [
-  {
-    quote:
-      'I tried Covenant Eyes for two years. The VPN killed my battery and my wife saw every URL I visited. Be Candid gives her the insight she needs without the surveillance.',
-    author: 'Marcus T.',
-    role: 'Pro user, 8-month streak',
-    placeholder: true,
-  },
-  {
-    quote:
-      'As a therapist, I finally have a tool I can recommend without ethical concerns. My clients stay accountable without feeling watched.',
-    author: 'Dr. Sarah K.',
-    role: 'Licensed therapist, 12 clients on Be Candid',
-    placeholder: true,
-  },
-  {
-    quote:
-      'The conversation guides changed everything. We went from fighting about screen time to actually talking about what was going on underneath.',
-    author: 'Jamie & Alex R.',
-    role: 'Couple, 5-month streak',
-    placeholder: true,
-  },
-];
-
 /* ── Helper: render check/cross for table cells ───────────────── */
 
 function CellValue({ value }: { value: string }) {
@@ -253,7 +234,7 @@ export default function WhyBeCandidPage() {
     <>
       <PublicNav />
 
-      <main className="min-h-screen bg-stone-950 text-stone-100 pt-24">
+      <main className="min-h-screen bg-dark-sanctuary text-stone-100 pt-24">
         {/* ─── Hero ────────────────────────────────────────── */}
         <section className="relative overflow-hidden">
           {/* Subtle gradient orb */}
@@ -324,14 +305,28 @@ export default function WhyBeCandidPage() {
               </span>
               <div>
                 <h3 className="font-headline text-xl font-bold mb-2 text-stone-100">
-                  Be Candid uses smart detection instead
+                  Be Candid&apos;s Lightweight Approach
                 </h3>
-                <p className="text-stone-400 font-body leading-relaxed">
-                  We monitor which apps and domains you access without
-                  touching your actual traffic. Same insight. Zero
-                  impact. Your partner sees the category and timing of a
-                  flag -- never the content, never the URL.
+                <p className="text-stone-400 font-body leading-relaxed mb-4">
+                  Instead of routing all traffic through a VPN tunnel, Be Candid
+                  uses DNS queries for domain awareness plus small periodic
+                  screenshots for accountability. No full VPN. No speed hit. No
+                  battery drain.
                 </p>
+                <ul className="space-y-2 text-stone-400 font-body text-sm leading-relaxed">
+                  <li className="flex items-start gap-2">
+                    <span className="material-symbols-outlined text-primary text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    DNS-level monitoring detects which domains and apps you access -- without touching your actual traffic
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="material-symbols-outlined text-primary text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    Periodic screenshots are small, encrypted, and only shared with your accountability partner -- never stored on our servers long-term
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="material-symbols-outlined text-primary text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    Your partner sees the category and timing of a flag -- never the full URL, never raw browsing history
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -414,13 +409,17 @@ export default function WhyBeCandidPage() {
               <div className="space-y-5 text-stone-400 font-body leading-relaxed">
                 <p>
                   Covenant Eyes captures screenshots of your screen every few
-                  seconds. Your partner sees your actual browsing. That is
-                  surveillance.
+                  seconds and logs every URL. Your partner sees your actual
+                  browsing in full detail. That is surveillance.
                 </p>
                 <p>
-                  Be Candid shows your partner that a flag was triggered --
-                  the <span className="text-stone-200 font-semibold">category and timing</span>.
-                  Never the content. Never the URL. Never a screenshot.
+                  Be Candid takes a different approach. We use{' '}
+                  <span className="text-stone-200 font-semibold">small periodic screenshots</span>{' '}
+                  that are encrypted and shared only with your accountability
+                  partner -- plus DNS-based domain awareness for flagging. Your
+                  partner sees the{' '}
+                  <span className="text-stone-200 font-semibold">category, timing, and context</span>{' '}
+                  without raw URLs or a constant stream of screen captures.
                 </p>
                 <p className="text-stone-300 font-medium italic border-l-2 border-primary/40 pl-4">
                   Because accountability is about honesty, not surveillance.
@@ -462,6 +461,10 @@ export default function WhyBeCandidPage() {
                   <p className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-base text-primary/60">schedule</span>
                     Flagged at 11:32 PM
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-base text-primary/60">photo_camera</span>
+                    Small encrypted screenshot (partner only)
                   </p>
                   <p className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-base text-primary/60">chat</span>
@@ -509,58 +512,7 @@ export default function WhyBeCandidPage() {
           </div>
         </section>
 
-        {/* ─── Section 5: Community Voices ────────────────── */}
-        <section className="max-w-5xl mx-auto px-6 py-20 md:py-28">
-          <div className="text-center mb-14">
-            <h2 className="font-headline text-3xl sm:text-4xl font-bold mb-4">
-              What Our Community Says
-            </h2>
-            <p className="text-stone-500 text-sm font-label uppercase tracking-wider">
-              Placeholder testimonials -- real stories coming soon
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t) => (
-              <div
-                key={t.author}
-                className="relative rounded-2xl border border-white/5 bg-stone-900/60 p-7 flex flex-col"
-              >
-                {t.placeholder && (
-                  <span className="absolute top-3 right-3 text-[10px] font-label uppercase tracking-wider text-stone-600 bg-stone-800 px-2 py-0.5 rounded-full">
-                    Placeholder
-                  </span>
-                )}
-                <span className="material-symbols-outlined text-primary/30 text-3xl mb-4">
-                  format_quote
-                </span>
-                <p className="text-stone-300 font-body text-sm leading-relaxed flex-1 mb-6 italic">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <div>
-                  <p className="font-headline font-bold text-stone-200 text-sm">
-                    {t.author}
-                  </p>
-                  <p className="text-stone-500 text-xs font-body mt-0.5">
-                    {t.role}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link
-              href="/donate"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary-container transition-colors font-label text-sm font-semibold"
-            >
-              <span className="material-symbols-outlined text-lg">volunteer_activism</span>
-              Build With Us
-            </Link>
-          </div>
-        </section>
-
-        {/* ─── Section 6: CTA ─────────────────────────────── */}
+        {/* ─── Section 5: CTA ─────────────────────────────── */}
         <section className="relative overflow-hidden">
           <div
             className="pointer-events-none absolute inset-0 opacity-10"
@@ -575,7 +527,7 @@ export default function WhyBeCandidPage() {
               Try Be Candid Free
             </h2>
             <p className="text-stone-400 text-lg font-body mb-10 max-w-xl mx-auto leading-relaxed">
-              No credit card. No VPN. No screenshots. Just accountability.
+              No credit card. No VPN. No surveillance. Just accountability.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -594,7 +546,7 @@ export default function WhyBeCandidPage() {
             </div>
 
             <p className="mt-8 text-stone-600 text-xs font-body">
-              Free tier includes 1 partner, 3 AI conversation guides/month, and
+              Free tier includes 1 partner, 3 conversation guides/month, and
               core tracking across 16 categories.
             </p>
           </div>

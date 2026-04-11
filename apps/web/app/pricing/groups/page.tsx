@@ -8,7 +8,7 @@ const BENEFITS = [
   {
     icon: 'bolt',
     title: 'Pro features for every member',
-    text: 'Unlimited AI guides, pattern detection, vulnerability windows, and weekly reflections.',
+    text: 'Unlimited conversation guides, pattern detection, vulnerability windows, and weekly reflections.',
   },
   {
     icon: 'savings',
@@ -66,7 +66,7 @@ const FAQ = [
   },
   {
     q: 'What features are included?',
-    a: 'Every member gets full Pro access: unlimited AI conversation guides, pattern detection, vulnerability windows, weekly AI reflections, up to 5 accountability partners, scheduled journal reminders, and 365-day data retention.',
+    a: 'Every member gets full Pro access: unlimited conversation guides, pattern detection, vulnerability windows, weekly reflections, up to 5 accountability partners, scheduled journal reminders, and 365-day data retention.',
   },
   {
     q: 'Is there a minimum group size?',

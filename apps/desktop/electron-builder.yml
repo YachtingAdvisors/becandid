@@ -46,12 +46,17 @@ win:
 nsis:
   oneClick: true
   perMachine: false
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: always
 
 # ── Auto-Update ──────────────────────────────────────────────
 publish:
   provider: github
   owner: YachtingAdvisors
   repo: becandid
+  releaseType: release
+
+differentialDownload: true
 
 # ── DMG ──────────────────────────────────────────────────────
 dmg:

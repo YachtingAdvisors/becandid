@@ -25,9 +25,7 @@ function Icon({ name, className = '' }: { name: string; className?: string }) {
 /* ─── Page ─────────────────────────────────────────────────────── */
 export default function MethodologyPage() {
   return (
-    <>
-    <div className="bg-[#020617] fixed inset-0 -z-10" aria-hidden="true" />
-    <div className="bg-[#020617] min-h-screen text-slate-100 overflow-x-hidden">
+    <div className="bg-dark-sanctuary min-h-screen text-slate-100 overflow-x-hidden">
 
       <PublicNav />
 
@@ -35,13 +33,13 @@ export default function MethodologyPage() {
       <section className="relative min-h-[819px] flex items-center justify-center text-center">
         {/* Background image */}
         <img
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5Ys--kStjkPby9Zzm20_PmXM5uVfGTfSuggs9r3WJvReEscj7W60sLEU-bUDtF0AeqbE_btr3fg9RPmicpxh6qiQDyEz9kbkYiONgY96ZqIF0rZzvv8n6COzpeCPg7_kjrqpK7j3jkkolkA5PkecMAoDZ2zWxG-K47MB8kCTYKEVOWCWAZ27E-IKn6Qa76TU-IwTauc8Vmc8t8kt1CVrPbj6lj7BcLktihlUai5twB3UU1E20Azu2iAHz59zoPDPhHCQV_js88LSX"
+          src="/images/features/alignment-tracking.webp"
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
           aria-hidden="true"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/20 via-[#020617]/60 to-[#020617]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0c1214]/20 via-[#0c1214]/60 to-[#0c1214]" />
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 pt-32">
           {/* Badge */}
@@ -111,7 +109,7 @@ export default function MethodologyPage() {
                     <Icon name="auto_awesome" className="text-teal-400 text-base" />
                   </div>
                   <div className="flex-1">
-                    <span className="text-slate-300 text-sm font-medium">AI conversation guide generated</span>
+                    <span className="text-slate-300 text-sm font-medium">Conversation guide generated</span>
                     <p className="text-stone-500 text-xs">Motivational Interviewing framework</p>
                   </div>
                   <Icon name="arrow_downward" className="text-stone-600 text-sm" />
@@ -153,7 +151,7 @@ export default function MethodologyPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">No shame, by design</h2>
             <p className="text-slate-400 text-lg leading-relaxed mb-8">
               Be Candid treats every flag as data to understand, not behavior to punish. Your partner
-              becomes a helper, not a monitor. The AI guides both of you through honest conversation
+              becomes a helper, not a monitor. Be Candid guides both of you through honest conversation
               using Motivational Interviewing &mdash; no moralizing, no judgment.
             </p>
 
@@ -163,7 +161,7 @@ export default function MethodologyPage() {
                   <Icon name="check" className="text-teal-400 text-sm" />
                 </div>
                 <div>
-                  <h4 className="text-white font-semibold text-sm mb-1">Category-sensitive AI</h4>
+                  <h4 className="text-white font-semibold text-sm mb-1">Category-sensitive</h4>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     Eating disorders get clinical framing. Substances get recovery-informed language.
                     Sexual content with a spouse gets betrayal-trauma awareness. One size never fits all.
@@ -192,7 +190,7 @@ export default function MethodologyPage() {
                   <h4 className="text-white font-semibold text-sm mb-1">Solo mode built in</h4>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     Not ready for a partner? Solo mode gives you self-reflection guides instead.
-                    Same Stringer framework, same AI &mdash; just between you and your shadow.
+                    Same Stringer framework, same insights &mdash; just between you and your shadow.
                   </p>
                 </div>
               </div>

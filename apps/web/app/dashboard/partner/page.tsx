@@ -126,9 +126,10 @@ function getRandomPrompts(count: number) {
 }
 
 export default function PartnerPage() {
-  const [partner, setPartner] = useState<PartnerData | null>(null);
+  const [partners, setPartners] = useState<PartnerData[]>([]);
+  const [maxPartners, setMaxPartners] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [reinviting, setReinviting] = useState(false);
+  const [reinvitingId, setReinvitingId] = useState<string | null>(null);
   const [relationshipData, setRelationshipData] = useState<RelationshipData | null>(null);
 
   // Inline invite form state
@@ -170,16 +171,19 @@ export default function PartnerPage() {
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 
   // Fetch partner data
-  const fetchPartner = useCallback(() => {
+  const fetchPartners = useCallback(() => {
     fetch('/api/partners')
       .then(r => r.json())
-      .then(d => setPartner(d.partner ?? null))
+      .then(d => {
+        setPartners(d.partners ?? []);
+        setMaxPartners(d.maxPartners ?? 1);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    fetchPartner();
+    fetchPartners();
     fetch('/api/partners/scores')
       .then(r => r.json())
       .then(d => setPartnerScores(d.scores ?? []))
@@ -188,7 +192,7 @@ export default function PartnerPage() {
       .then(r => { if (r.ok) return r.json(); throw new Error(); })
       .then(d => setRelationshipData(d))
       .catch(() => {});
-  }, [fetchPartner]);
+  }, [fetchPartners]);
 
   // Fetch user profile to get goals when form opens
   useEffect(() => {
@@ -203,11 +207,14 @@ export default function PartnerPage() {
       .catch(console.error);
   }, [showForm]);
 
-  async function handleReinvite() {
-    if (!partner) return;
-    setReinviting(true);
-    await fetch('/api/partners/reinvite', { method: 'POST' });
-    setReinviting(false);
+  async function handleReinvite(partnerId: string) {
+    setReinvitingId(partnerId);
+    await fetch('/api/partners/reinvite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ partner_id: partnerId }),
+    });
+    setReinvitingId(null);
   }
 
   async function handleInvite() {
@@ -253,7 +260,7 @@ export default function PartnerPage() {
         setCustomRelationship('');
         setSharedRivals([]);
         setLoading(true);
-        fetchPartner();
+        fetchPartners();
       }
     } catch {
       setError('Failed to send invite');
@@ -306,69 +313,284 @@ export default function PartnerPage() {
     );
   }
 
+  // Derived state
+  const activePartner = partners.find(p => p.status === 'active') ?? null;
+  const canAddMore = partners.length < maxPartners;
+
   // Compute trust meter data from partner scores
   const primaryScore = partnerScores.length > 0 ? partnerScores[0] : null;
   const checkInRate = primaryScore?.checkInRate ?? 0;
   const totalCheckIns = primaryScore?.conversationCount ?? 0;
 
-  // Compute days since accepted
-  const daysSinceAccepted = partner?.accepted_at
-    ? Math.floor((Date.now() - new Date(partner.accepted_at).getTime()) / (1000 * 60 * 60 * 24))
-    : 0;
-
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <p className="text-xs font-label font-medium text-on-surface-variant uppercase tracking-widest">Accountability</p>
-        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1">Your Partner</h1>
-        <p className="text-sm text-on-surface-variant font-body">Manage your accountability partnership.</p>
+        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface mb-1">Your Partners</h1>
+        <p className="text-sm text-on-surface-variant font-body">Manage your accountability partnerships.</p>
       </div>
 
-      {partner ? (
-        <div className="space-y-4">
-
-          {/* ── Status Header ───────────────────────────────────── */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-container/30 to-surface-container-lowest p-6 ring-1 ring-outline-variant/10">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center text-primary font-headline font-bold text-2xl flex-shrink-0 ring-2 ring-primary/20">
-                {partner.partner_name.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="font-headline text-xl font-bold text-on-surface truncate">{partner.partner_name}</h2>
-                  {(() => {
-                    const cfg = getStatusConfig(partner.status);
-                    return (
+      {/* ── Partner Cards ──────────────────────────────────────── */}
+      {partners.length > 0 && (
+        <div className="space-y-3">
+          {partners.map((p) => {
+            const cfg = getStatusConfig(p.status);
+            const days = p.accepted_at
+              ? Math.floor((Date.now() - new Date(p.accepted_at).getTime()) / (1000 * 60 * 60 * 24))
+              : 0;
+            return (
+              <div key={p.id} className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-container/30 to-surface-container-lowest p-5 ring-1 ring-outline-variant/10">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-primary font-headline font-bold text-xl flex-shrink-0 ring-2 ring-primary/20">
+                    {p.partner_name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h2 className="font-headline text-lg font-bold text-on-surface truncate">{p.partner_name}</h2>
                       <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-label font-semibold ${cfg.bg} ${cfg.color} ring-1 ${cfg.ring}`}>
                         <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{cfg.icon}</span>
                         {cfg.label}
                       </span>
-                    );
-                  })()}
-                </div>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="material-symbols-outlined text-sm text-on-surface-variant/60">
-                    {getRelationshipIcon(partner.relationship)}
-                  </span>
-                  <span className="text-sm text-on-surface-variant font-label">
-                    {getRelationshipLabel(partner.relationship)}
-                  </span>
-                  {partner.accepted_at && (
-                    <>
-                      <span className="text-on-surface-variant/30">{'·'}</span>
-                      <span className="text-sm text-on-surface-variant font-label">
-                        {daysSinceAccepted} day{daysSinceAccepted !== 1 ? 's' : ''} connected
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="material-symbols-outlined text-sm text-on-surface-variant/60">
+                        {getRelationshipIcon(p.relationship)}
                       </span>
-                    </>
-                  )}
+                      <span className="text-sm text-on-surface-variant font-label">
+                        {getRelationshipLabel(p.relationship)}
+                      </span>
+                      {p.accepted_at && (
+                        <>
+                          <span className="text-on-surface-variant/30">{'·'}</span>
+                          <span className="text-sm text-on-surface-variant font-label">
+                            {days} day{days !== 1 ? 's' : ''} connected
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <p className="text-xs text-on-surface-variant/60 font-body mt-0.5">{p.partner_email}</p>
+                  </div>
                 </div>
-                <p className="text-xs text-on-surface-variant/60 font-body mt-0.5">{partner.partner_email}</p>
+
+                {/* Pending: inline resend */}
+                {p.status === 'pending' && (
+                  <div className="mt-3 pt-3 border-t border-outline-variant/15 flex items-center justify-between">
+                    <p className="text-xs text-on-surface-variant font-body">
+                      {p.partner_name} hasn&apos;t accepted yet.
+                    </p>
+                    <button
+                      onClick={() => handleReinvite(p.id)}
+                      disabled={reinvitingId === p.id}
+                      className="px-4 py-2 min-h-[36px] bg-tertiary text-on-primary text-xs font-label font-medium rounded-xl cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    >
+                      {reinvitingId === p.id ? 'Sending\u2026' : 'Resend Invite'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Add Partner Button ─────────────────────────────────── */}
+      {canAddMore && !showForm && (
+        partners.length === 0 ? (
+          <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-8 text-center">
+            <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">handshake</span>
+            <h3 className="font-headline text-xl font-bold text-on-surface mb-2">Accountability changes everything</h3>
+            <p className="text-sm text-on-surface-variant font-body mb-3 max-w-md mx-auto leading-relaxed">
+              Invite someone you trust &mdash; a friend, spouse, mentor, or coach.
+              They&apos;ll see your focus status, never your browsing.
+            </p>
+            <div className="flex items-center justify-center gap-3 mb-3 px-4 py-3 rounded-2xl bg-primary-container/20">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Simeon_Solomon_-_King_Solomon.jpg/200px-Simeon_Solomon_-_King_Solomon.jpg" alt="King Solomon" className="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20 shrink-0" />
+              <p className="text-xs text-on-surface font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-on-surface-variant">&mdash; King Solomon</span></p>
+            </div>
+            <p className="text-[10px] text-primary font-label font-medium mb-6">
+              Add 1 partner free. Upgrade to Pro for up to 5.
+            </p>
+            <button
+              onClick={() => setShowForm(true)}
+              className="inline-flex px-6 py-3 min-h-[44px] bg-primary text-on-primary text-sm font-label font-semibold rounded-2xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200">
+              Invite a Partner
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-full flex items-center justify-center gap-2 p-4 rounded-3xl ring-1 ring-dashed ring-outline-variant/30 bg-surface-container-lowest hover:ring-primary/30 hover:bg-primary-container/10 transition-all duration-200 cursor-pointer group"
+          >
+            <span className="material-symbols-outlined text-lg text-on-surface-variant/50 group-hover:text-primary transition-colors duration-200">person_add</span>
+            <span className="text-sm font-label font-medium text-on-surface-variant/70 group-hover:text-primary transition-colors duration-200">
+              Add Another Partner
+            </span>
+            <span className="text-[10px] font-label text-on-surface-variant/40 ml-1">
+              ({partners.length}/{maxPartners})
+            </span>
+          </button>
+        )
+      )}
+
+      {/* ── Invite Form ────────────────────────────────────────── */}
+      {showForm && (
+        <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6 space-y-6">
+          {/* Section 1: Partner Details */}
+          <div>
+            <h3 className="font-headline text-lg font-bold text-on-surface mb-1">Partner details</h3>
+            <p className="text-sm text-on-surface-variant font-body mb-4">
+              A friend, spouse, mentor, or coach who&apos;ll walk with you.
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their name</label>
+                <input
+                  type="text"
+                  value={partnerName}
+                  onChange={(e) => setPartnerName(e.target.value)}
+                  placeholder="First name"
+                  className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their email</label>
+                <input
+                  type="email"
+                  value={partnerEmail}
+                  onChange={(e) => setPartnerEmail(e.target.value)}
+                  placeholder="partner@email.com"
+                  className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">
+                  Their phone <span className="text-on-surface-variant font-normal">(optional — for SMS alerts)</span>
+                </label>
+                <input
+                  type="tel"
+                  value={partnerPhone}
+                  onChange={handlePhoneChange}
+                  placeholder="+1 (555) 123-4567"
+                  className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Relationship <span className="text-on-surface-variant font-normal">(select all that apply)</span></label>
+                <div className="flex flex-wrap gap-2">
+                  {RELATIONSHIP_OPTIONS.map(({ key, label }) => (
+                    <button
+                      key={key}
+                      onClick={() => setRelationships(prev =>
+                        prev.includes(key) ? prev.filter(r => r !== key) : [...prev, key]
+                      )}
+                      className={`px-4 py-2 rounded-full text-sm font-label font-medium border transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                        relationships.includes(key)
+                          ? 'border-primary bg-primary-container text-primary'
+                          : 'border-outline-variant text-on-surface-variant hover:border-primary/30'
+                      }`}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {relationships.includes('other') && (
+                  <input
+                    type="text"
+                    value={customRelationship}
+                    onChange={(e) => setCustomRelationship(e.target.value)}
+                    placeholder="Describe your relationship"
+                    maxLength={50}
+                    className="mt-2 w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
+                  />
+                )}
               </div>
             </div>
           </div>
 
+          {/* Divider */}
+          <div className="h-px bg-outline-variant/20" />
+
+          {/* Section 2: Rival Sharing */}
+          <div>
+            <h3 className="font-headline text-lg font-bold text-on-surface mb-1">What would you like your partner to see?</h3>
+            <p className="text-sm text-on-surface-variant font-body mb-4">
+              Choose which rivals your partner will have visibility into. You can change this later.
+            </p>
+
+            {userGoals.length === 0 ? (
+              <div className="px-4 py-3 rounded-2xl bg-surface-container-low text-center">
+                <p className="text-sm text-on-surface-variant font-body">
+                  No rivals configured yet. Your partner will see all future rivals by default.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {userGoals.map((goal) => {
+                  const isSelected = sharedRivals.includes(goal);
+                  return (
+                    <button
+                      key={goal}
+                      onClick={() => toggleRival(goal)}
+                      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-label font-medium border-2 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                        isSelected
+                          ? 'border-primary bg-primary-container/40 text-primary'
+                          : 'border-outline-variant/50 bg-surface-container-low text-on-surface-variant hover:border-primary/30'
+                      }`}>
+                      <span className="text-base">{getCategoryEmoji(goal)}</span>
+                      <span>{GOAL_LABELS[goal]}</span>
+                      {isSelected && (
+                        <svg className="w-4 h-4 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {userGoals.length > 0 && (
+              <div className="flex gap-3 mt-3">
+                <button
+                  onClick={() => setSharedRivals([...userGoals])}
+                  className="text-xs font-label font-medium text-primary hover:underline cursor-pointer">
+                  Select all
+                </button>
+                <button
+                  onClick={() => setSharedRivals([])}
+                  className="text-xs font-label font-medium text-on-surface-variant hover:underline cursor-pointer">
+                  Deselect all
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Error */}
+          {error && <p className="text-sm text-error font-body">{error}</p>}
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <button
+              onClick={handleCancel}
+              className="px-5 py-3 min-h-[44px] text-sm font-label font-semibold rounded-2xl ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
+              Cancel
+            </button>
+            <button
+              onClick={handleInvite}
+              disabled={!partnerName.trim() || !partnerEmail.trim() || submitting}
+              className="flex-1 px-6 py-3 min-h-[44px] bg-primary text-on-primary text-sm font-label font-semibold rounded-2xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-200">
+              {submitting ? 'Sending invite\u2026' : 'Send Invite'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Active Partner Detail Sections ──────────────────────── */}
+      {activePartner && (
+        <>
           {/* ── Partner Streak & Momentum ────────────────────── */}
-          {partner.status === 'active' && relationshipData && (
+          {relationshipData && (
             <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6">
               <div className="flex items-center gap-2 mb-4">
                 <span className="material-symbols-outlined text-lg text-on-surface-variant">local_fire_department</span>
@@ -427,301 +649,95 @@ export default function PartnerPage() {
           )}
 
           {/* ── Trust Meter ─────────────────────────────────── */}
-          {partner.status === 'active' && (
-            <TrustMeter checkInRate={checkInRate} totalCheckIns={totalCheckIns} />
-          )}
+          <TrustMeter checkInRate={checkInRate} totalCheckIns={totalCheckIns} />
 
           {/* ── Growth Journey Visualization ──────────────────── */}
-          {partner.status === 'active' && (
-            <GrowthJourney
-              partnerName={partner.partner_name || 'Partner'}
-              streakDays={relationshipData?.streak ?? 0}
-              checkInRate={checkInRate}
-              journalCount={0}
-              focusRate={relationshipData?.streak ? Math.min(relationshipData.streak * 5, 100) : 50}
-              daysSinceSignup={30}
-            />
-          )}
+          <GrowthJourney
+            partnerName={activePartner.partner_name || 'Partner'}
+            streakDays={relationshipData?.streak ?? 0}
+            checkInRate={checkInRate}
+            journalCount={0}
+            focusRate={relationshipData?.streak ? Math.min(relationshipData.streak * 5, 100) : 50}
+            daysSinceSignup={30}
+          />
 
           {/* Partner effectiveness scores */}
-          {partner.status === 'active' && partnerScores.length > 0 && (
+          {partnerScores.length > 0 && (
             <PartnerCompatibility partners={partnerScores} />
           )}
 
           {/* ── Conversation Prompts ────────────────────────── */}
-          {partner.status === 'active' && (
-            <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-lg text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
-                  <h3 className="font-headline text-base font-bold text-on-surface">Conversation Starters</h3>
-                </div>
-                <Link
-                  href="/partner/conversations"
-                  className="text-xs font-label font-medium text-primary hover:underline"
-                >
-                  View all
-                </Link>
+          <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-lg text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
+                <h3 className="font-headline text-base font-bold text-on-surface">Conversation Starters</h3>
               </div>
-              <p className="text-xs text-on-surface-variant font-body mb-4 -mt-2">
-                Open a meaningful conversation with {partner.partner_name}
-              </p>
-
-              <div className="space-y-3">
-                {conversationPrompts.map((prompt, idx) => (
-                  <div
-                    key={idx}
-                    className="group flex items-start gap-3 p-4 rounded-2xl bg-gradient-to-br from-amber-50/40 to-primary/5 ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-md transition-all duration-200"
-                  >
-                    <span className="material-symbols-outlined text-base text-on-surface-variant/50 mt-0.5 shrink-0">{prompt.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-body text-on-surface leading-relaxed italic">
-                        &ldquo;{prompt.text}&rdquo;
-                      </p>
-                      <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-label font-medium uppercase tracking-wide bg-surface-container-low text-on-surface-variant">
-                        {prompt.theme}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => copyPrompt(prompt.text, idx)}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-label font-medium text-primary bg-primary/8 hover:bg-primary/15 active:scale-95 transition-all duration-200 cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    >
-                      <span className="material-symbols-outlined text-sm">
-                        {copiedIdx === idx ? 'check' : 'content_copy'}
-                      </span>
-                      {copiedIdx === idx ? 'Copied' : 'Copy'}
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              {/* Suggest a Conversation CTA */}
-              <div className="mt-4 pt-4 border-t border-outline-variant/15">
-                <Link
-                  href="/partner/conversations"
-                  className="flex items-center justify-center gap-2 w-full px-5 py-3 min-h-[44px] bg-primary text-on-primary text-sm font-label font-semibold rounded-2xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200"
-                >
-                  <span className="material-symbols-outlined text-base">forum</span>
-                  Suggest a Conversation
-                </Link>
-              </div>
+              <Link
+                href="/partner/conversations"
+                className="text-xs font-label font-medium text-primary hover:underline"
+              >
+                View all
+              </Link>
             </div>
-          )}
+            <p className="text-xs text-on-surface-variant font-body mb-4 -mt-2">
+              Open a meaningful conversation with {activePartner.partner_name}
+            </p>
+
+            <div className="space-y-3">
+              {conversationPrompts.map((prompt, idx) => (
+                <div
+                  key={idx}
+                  className="group flex items-start gap-3 p-4 rounded-2xl bg-gradient-to-br from-amber-50/40 to-primary/5 ring-1 ring-outline-variant/10 hover:ring-primary/20 hover:shadow-md transition-all duration-200"
+                >
+                  <span className="material-symbols-outlined text-base text-on-surface-variant/50 mt-0.5 shrink-0">{prompt.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-body text-on-surface leading-relaxed italic">
+                      &ldquo;{prompt.text}&rdquo;
+                    </p>
+                    <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-label font-medium uppercase tracking-wide bg-surface-container-low text-on-surface-variant">
+                      {prompt.theme}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => copyPrompt(prompt.text, idx)}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-label font-medium text-primary bg-primary/8 hover:bg-primary/15 active:scale-95 transition-all duration-200 cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      {copiedIdx === idx ? 'check' : 'content_copy'}
+                    </span>
+                    {copiedIdx === idx ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Suggest a Conversation CTA */}
+            <div className="mt-4 pt-4 border-t border-outline-variant/15">
+              <Link
+                href="/partner/conversations"
+                className="flex items-center justify-center gap-2 w-full px-5 py-3 min-h-[44px] bg-primary text-on-primary text-sm font-label font-semibold rounded-2xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200"
+              >
+                <span className="material-symbols-outlined text-base">forum</span>
+                Suggest a Conversation
+              </Link>
+            </div>
+          </div>
 
           {/* ── Quick Actions ────────────────────────────────── */}
-          {partner.status === 'active' && (
-            <div className="grid grid-cols-2 gap-3">
-              <Link href="/partner/focus"
-                className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200 text-center">
-                <div className="text-2xl mb-1">{'\uD83C\uDFAF'}</div>
-                <div className="text-sm font-label font-medium text-on-surface">Their Focus Board</div>
-              </Link>
-              <Link href="/partner/checkins"
-                className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200 text-center">
-                <div className="text-2xl mb-1">{'\uD83D\uDCCB'}</div>
-                <div className="text-sm font-label font-medium text-on-surface">Check-ins</div>
-              </Link>
-            </div>
-          )}
-
-          {partner.status === 'pending' && (
-            <div className="bg-tertiary-container/30 rounded-3xl border border-tertiary-container p-4">
-              <p className="text-sm text-on-tertiary-container font-body mb-3">
-                {partner.partner_name} hasn&apos;t accepted your invitation yet. You can resend it.
-              </p>
-              <button onClick={handleReinvite} disabled={reinviting}
-                className="px-4 py-2 min-h-[44px] bg-tertiary text-on-primary text-sm font-label font-medium rounded-2xl cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200">
-                {reinviting ? 'Sending\u2026' : 'Resend Invite'}
-              </button>
-            </div>
-          )}
-
-          {/* Encourage adding a second partner */}
-          {partner.status === 'active' && (
-            <div className="px-4 py-3 rounded-2xl bg-primary-container/20 ring-1 ring-primary/10 mb-3">
-              <p className="text-xs text-on-surface font-body leading-relaxed">
-                <span className="font-bold text-primary">Strengthen your circle.</span> As King Solomon wrote, &ldquo;A cord of three strands is not easily broken.&rdquo; <button onClick={() => setShowForm(true)} className="text-primary font-bold underline cursor-pointer">Invite another partner</button>. Upgrade to Pro for up to 5.
-              </p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {/* No partner — show CTA or inline form */}
-          {!showForm ? (
-            <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-8 text-center">
-              <span className="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-3 block">handshake</span>
-              <h3 className="font-headline text-xl font-bold text-on-surface mb-2">Accountability changes everything</h3>
-              <p className="text-sm text-on-surface-variant font-body mb-3 max-w-md mx-auto leading-relaxed">
-                Invite someone you trust &mdash; a friend, spouse, mentor, or coach.
-                They&apos;ll see your focus status, never your browsing.
-              </p>
-              <div className="flex items-center justify-center gap-3 mb-3 px-4 py-3 rounded-2xl bg-primary-container/20">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Simeon_Solomon_-_King_Solomon.jpg/200px-Simeon_Solomon_-_King_Solomon.jpg" alt="King Solomon" className="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20 shrink-0" />
-                <p className="text-xs text-on-surface font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-on-surface-variant">&mdash; King Solomon</span></p>
-              </div>
-              <p className="text-[10px] text-primary font-label font-medium mb-6">
-                Add 1 partner free. Upgrade to Pro for up to 5.
-              </p>
-              <button
-                onClick={() => setShowForm(true)}
-                className="inline-flex px-6 py-3 min-h-[44px] bg-primary text-on-primary text-sm font-label font-semibold rounded-2xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-200">
-                Invite a Partner
-              </button>
-            </div>
-          ) : (
-            <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6 space-y-6">
-              {/* Section 1: Partner Details */}
-              <div>
-                <h3 className="font-headline text-lg font-bold text-on-surface mb-1">Partner details</h3>
-                <p className="text-sm text-on-surface-variant font-body mb-4">
-                  A friend, spouse, mentor, or coach who&apos;ll walk with you.
-                </p>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their name</label>
-                    <input
-                      type="text"
-                      value={partnerName}
-                      onChange={(e) => setPartnerName(e.target.value)}
-                      placeholder="First name"
-                      className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Their email</label>
-                    <input
-                      type="email"
-                      value={partnerEmail}
-                      onChange={(e) => setPartnerEmail(e.target.value)}
-                      placeholder="partner@email.com"
-                      className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">
-                      Their phone <span className="text-on-surface-variant font-normal">(optional — for SMS alerts)</span>
-                    </label>
-                    <input
-                      type="tel"
-                      value={partnerPhone}
-                      onChange={handlePhoneChange}
-                      placeholder="+1 (555) 123-4567"
-                      className="w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Relationship <span className="text-on-surface-variant font-normal">(select all that apply)</span></label>
-                    <div className="flex flex-wrap gap-2">
-                      {RELATIONSHIP_OPTIONS.map(({ key, label }) => (
-                        <button
-                          key={key}
-                          onClick={() => setRelationships(prev =>
-                            prev.includes(key) ? prev.filter(r => r !== key) : [...prev, key]
-                          )}
-                          className={`px-4 py-2 rounded-full text-sm font-label font-medium border transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                            relationships.includes(key)
-                              ? 'border-primary bg-primary-container text-primary'
-                              : 'border-outline-variant text-on-surface-variant hover:border-primary/30'
-                          }`}>
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                    {relationships.includes('other') && (
-                      <input
-                        type="text"
-                        value={customRelationship}
-                        onChange={(e) => setCustomRelationship(e.target.value)}
-                        placeholder="Describe your relationship"
-                        maxLength={50}
-                        className="mt-2 w-full px-4 py-3 rounded-2xl ring-1 ring-outline-variant text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div className="h-px bg-outline-variant/20" />
-
-              {/* Section 2: Rival Sharing */}
-              <div>
-                <h3 className="font-headline text-lg font-bold text-on-surface mb-1">What would you like your partner to see?</h3>
-                <p className="text-sm text-on-surface-variant font-body mb-4">
-                  Choose which rivals your partner will have visibility into. You can change this later.
-                </p>
-
-                {userGoals.length === 0 ? (
-                  <div className="px-4 py-3 rounded-2xl bg-surface-container-low text-center">
-                    <p className="text-sm text-on-surface-variant font-body">
-                      No rivals configured yet. Your partner will see all future rivals by default.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {userGoals.map((goal) => {
-                      const isSelected = sharedRivals.includes(goal);
-                      return (
-                        <button
-                          key={goal}
-                          onClick={() => toggleRival(goal)}
-                          className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-label font-medium border-2 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                            isSelected
-                              ? 'border-primary bg-primary-container/40 text-primary'
-                              : 'border-outline-variant/50 bg-surface-container-low text-on-surface-variant hover:border-primary/30'
-                          }`}>
-                          <span className="text-base">{getCategoryEmoji(goal)}</span>
-                          <span>{GOAL_LABELS[goal]}</span>
-                          {isSelected && (
-                            <svg className="w-4 h-4 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {userGoals.length > 0 && (
-                  <div className="flex gap-3 mt-3">
-                    <button
-                      onClick={() => setSharedRivals([...userGoals])}
-                      className="text-xs font-label font-medium text-primary hover:underline cursor-pointer">
-                      Select all
-                    </button>
-                    <button
-                      onClick={() => setSharedRivals([])}
-                      className="text-xs font-label font-medium text-on-surface-variant hover:underline cursor-pointer">
-                      Deselect all
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Error */}
-              {error && <p className="text-sm text-error font-body">{error}</p>}
-
-              {/* Actions */}
-              <div className="flex gap-3">
-                <button
-                  onClick={handleCancel}
-                  className="px-5 py-3 min-h-[44px] text-sm font-label font-semibold rounded-2xl ring-1 ring-outline-variant text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30">
-                  Cancel
-                </button>
-                <button
-                  onClick={handleInvite}
-                  disabled={!partnerName.trim() || !partnerEmail.trim() || submitting}
-                  className="flex-1 px-6 py-3 min-h-[44px] bg-primary text-on-primary text-sm font-label font-semibold rounded-2xl cursor-pointer hover:opacity-90 shadow-lg shadow-primary/20 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-200">
-                  {submitting ? 'Sending invite\u2026' : 'Send Invite'}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Link href="/partner/focus"
+              className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200 text-center">
+              <div className="text-2xl mb-1">{'\uD83C\uDFAF'}</div>
+              <div className="text-sm font-label font-medium text-on-surface">Their Focus Board</div>
+            </Link>
+            <Link href="/partner/checkins"
+              className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-4 hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] cursor-pointer transition-all duration-200 text-center">
+              <div className="text-2xl mb-1">{'\uD83D\uDCCB'}</div>
+              <div className="text-sm font-label font-medium text-on-surface">Check-ins</div>
+            </Link>
+          </div>
+        </>
       )}
     </div>
   );

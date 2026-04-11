@@ -17,12 +17,21 @@ export async function POST(req: NextRequest) {
 
     const db = createServiceClient();
 
-    const { data: partner } = await db
+    // Accept optional partner_id to reinvite a specific partner
+    const body = await req.json().catch(() => ({}));
+    const partnerId = body?.partner_id;
+
+    let query = db
       .from('partners')
-      .select('id, partner_email')
+      .select('id, partner_email, partner_name')
       .eq('user_id', user.id)
-      .eq('status', 'pending')
-      .maybeSingle();
+      .eq('status', 'pending');
+
+    if (partnerId) {
+      query = query.eq('id', partnerId);
+    }
+
+    const { data: partner } = await query.maybeSingle();
 
     if (!partner) {
       return NextResponse.json({ error: 'No pending invite found' }, { status: 404 });
