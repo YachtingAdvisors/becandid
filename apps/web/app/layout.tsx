@@ -53,6 +53,9 @@ export const metadata: Metadata = {
     images: ['/api/og'],
   },
   manifest: '/manifest.json',
+  alternates: {
+    canonical: '/',
+  },
   robots: {
     index: true,
     follow: true,

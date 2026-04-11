@@ -46,7 +46,7 @@ export default async function BlogIndexPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`/api/og?${new URLSearchParams({ title: post.title, subtitle: post.tags[0] || 'Blog', description: post.description })}`}
-                alt=""
+                alt={`Thumbnail for ${post.title}`}
                 width={240}
                 height={126}
                 loading="lazy"
