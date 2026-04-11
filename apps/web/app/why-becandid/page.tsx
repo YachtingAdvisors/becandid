@@ -512,58 +512,7 @@ export default function WhyBeCandidPage() {
           </div>
         </section>
 
-        {/* ─── Section 5: Community Voices ────────────────── */}
-        <section className="max-w-5xl mx-auto px-6 py-20 md:py-28">
-          <div className="text-center mb-14">
-            <h2 className="font-headline text-3xl sm:text-4xl font-bold mb-4">
-              What Our Community Says
-            </h2>
-            <p className="text-stone-500 text-sm font-label uppercase tracking-wider">
-              Placeholder testimonials -- real stories coming soon
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t) => (
-              <div
-                key={t.author}
-                className="relative rounded-2xl border border-white/5 bg-stone-900/60 p-7 flex flex-col"
-              >
-                {t.placeholder && (
-                  <span className="absolute top-3 right-3 text-[10px] font-label uppercase tracking-wider text-stone-600 bg-stone-800 px-2 py-0.5 rounded-full">
-                    Placeholder
-                  </span>
-                )}
-                <span className="material-symbols-outlined text-primary/30 text-3xl mb-4">
-                  format_quote
-                </span>
-                <p className="text-stone-300 font-body text-sm leading-relaxed flex-1 mb-6 italic">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <div>
-                  <p className="font-headline font-bold text-stone-200 text-sm">
-                    {t.author}
-                  </p>
-                  <p className="text-stone-500 text-xs font-body mt-0.5">
-                    {t.role}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link
-              href="/donate"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary-container transition-colors font-label text-sm font-semibold"
-            >
-              <span className="material-symbols-outlined text-lg">volunteer_activism</span>
-              Build With Us
-            </Link>
-          </div>
-        </section>
-
-        {/* ─── Section 6: CTA ─────────────────────────────── */}
+        {/* ─── Section 5: CTA ─────────────────────────────── */}
         <section className="relative overflow-hidden">
           <div
             className="pointer-events-none absolute inset-0 opacity-10"
