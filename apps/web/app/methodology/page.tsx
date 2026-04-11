@@ -25,7 +25,7 @@ function Icon({ name, className = '' }: { name: string; className?: string }) {
 /* ─── Page ─────────────────────────────────────────────────────── */
 export default function MethodologyPage() {
   return (
-    <div className="bg-[#020617] min-h-screen text-slate-100 overflow-x-hidden">
+    <div className="bg-dark-sanctuary min-h-screen text-slate-100 overflow-x-hidden">
 
       <PublicNav />
 
@@ -39,7 +39,7 @@ export default function MethodologyPage() {
           aria-hidden="true"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/20 via-[#020617]/60 to-[#020617]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0c1214]/20 via-[#0c1214]/60 to-[#0c1214]" />
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 pt-32">
           {/* Badge */}

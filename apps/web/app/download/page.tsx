@@ -44,7 +44,7 @@ export default async function DownloadPage() {
   const winArmSize = release?.assets?.windowsArm64?.size ? formatBytes(release.assets.windowsArm64.size) : null;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-dark-sanctuary text-white overflow-x-hidden">
       <PublicNav />
 
       <main>
