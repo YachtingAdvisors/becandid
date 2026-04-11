@@ -9,6 +9,7 @@ export default function PublicNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [orgOpen, setOrgOpen] = useState(false);
 
   /* ── Scroll-aware backdrop ───────────────────────────────── */
   useEffect(() => {
@@ -48,7 +49,12 @@ export default function PublicNav() {
     { href: '/methodology', label: 'Methodology' },
     { href: '/assessment', label: 'Assessment' },
     { href: '/pricing', label: 'Pricing' },
-    { href: '/org', label: 'Organization' },
+    { href: '/org', label: 'Organization', children: [
+      { href: '/org#mission', label: 'Mission' },
+      { href: '/org#how-it-works', label: 'How It Works' },
+      { href: '/org#sponsors', label: 'Sponsor' },
+      { href: '/org#schools', label: 'Schools' },
+    ]},
     { href: '/blog', label: 'Blog' },
     { href: '/download', label: 'Download' },
   ];
@@ -86,35 +92,82 @@ export default function PublicNav() {
 
           {/* ── Desktop links ─────────────────────────────────── */}
           <div className="hidden md:flex items-center space-x-8">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative text-sm font-body transition-colors duration-200 py-1 ${
-                  isActive(link.href)
-                    ? 'text-cyan-400 font-bold'
-                    : 'text-stone-400 hover:text-stone-200'
-                }`}
-              >
-                {link.label}
+            {links.map((link) =>
+              link.children ? (
+                <div
+                  key={link.href}
+                  className="relative"
+                  onMouseEnter={() => setOrgOpen(true)}
+                  onMouseLeave={() => setOrgOpen(false)}
+                >
+                  <Link
+                    href={link.href}
+                    className={`relative text-sm font-body transition-colors duration-200 py-1 inline-flex items-center gap-1 ${
+                      isActive(link.href)
+                        ? 'text-cyan-400 font-bold'
+                        : 'text-stone-400 hover:text-stone-200'
+                    }`}
+                  >
+                    {link.label}
+                    <span className={`material-symbols-outlined text-xs transition-transform duration-200 ${orgOpen ? 'rotate-180' : ''}`}>expand_more</span>
 
-                {/* Active indicator dot + underline */}
-                <span
-                  className={`absolute -bottom-1 left-1/2 -translate-x-1/2 transition-all duration-300 ${
+                    <span
+                      className={`absolute -bottom-1 left-1/2 -translate-x-1/2 transition-all duration-300 ${
+                        isActive(link.href)
+                          ? 'w-full h-[2px] bg-gradient-to-r from-cyan-400/0 via-cyan-400 to-cyan-400/0 opacity-100'
+                          : 'w-0 h-[2px] bg-cyan-400 opacity-0'
+                      }`}
+                    />
+                  </Link>
+
+                  {/* Dropdown */}
+                  <div
+                    className={`absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200 ${
+                      orgOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'
+                    }`}
+                  >
+                    <div className="bg-stone-950/95 backdrop-blur-xl border border-white/[0.08] rounded-xl shadow-2xl shadow-black/40 py-2 min-w-[180px]">
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className="block px-4 py-2.5 text-sm font-body text-stone-400 hover:text-white hover:bg-white/[0.05] transition-colors duration-150"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative text-sm font-body transition-colors duration-200 py-1 ${
                     isActive(link.href)
-                      ? 'w-full h-[2px] bg-gradient-to-r from-cyan-400/0 via-cyan-400 to-cyan-400/0 opacity-100'
-                      : 'w-0 h-[2px] bg-cyan-400 opacity-0'
+                      ? 'text-cyan-400 font-bold'
+                      : 'text-stone-400 hover:text-stone-200'
                   }`}
-                />
-                <span
-                  className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 transition-all duration-300 ${
-                    isActive(link.href)
-                      ? 'w-1 h-1 rounded-full bg-cyan-400 opacity-100 shadow-[0_0_6px_rgba(34,211,238,0.6)]'
-                      : 'w-0 h-0 rounded-full bg-cyan-400 opacity-0'
-                  }`}
-                />
-              </Link>
-            ))}
+                >
+                  {link.label}
+
+                  <span
+                    className={`absolute -bottom-1 left-1/2 -translate-x-1/2 transition-all duration-300 ${
+                      isActive(link.href)
+                        ? 'w-full h-[2px] bg-gradient-to-r from-cyan-400/0 via-cyan-400 to-cyan-400/0 opacity-100'
+                        : 'w-0 h-[2px] bg-cyan-400 opacity-0'
+                    }`}
+                  />
+                  <span
+                    className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 transition-all duration-300 ${
+                      isActive(link.href)
+                        ? 'w-1 h-1 rounded-full bg-cyan-400 opacity-100 shadow-[0_0_6px_rgba(34,211,238,0.6)]'
+                        : 'w-0 h-0 rounded-full bg-cyan-400 opacity-0'
+                    }`}
+                  />
+                </Link>
+              )
+            )}
           </div>
 
           {/* ── Right side actions ────────────────────────────── */}
@@ -189,26 +242,46 @@ export default function PublicNav() {
         {/* Links */}
         <nav className="px-6 py-6 space-y-1 overflow-y-auto max-h-[calc(100dvh-80px)]">
           {links.map((link, i) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className={`flex items-center gap-3 py-3.5 px-3 rounded-xl text-base font-body transition-all duration-300 ${
-                isActive(link.href)
-                  ? 'text-cyan-400 font-bold bg-white/[0.04]'
-                  : 'text-stone-400 hover:text-stone-200 hover:bg-white/[0.03]'
-              }`}
-              style={{
-                transitionDelay: menuOpen ? `${i * 50}ms` : '0ms',
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
-              }}
-            >
-              {isActive(link.href) && (
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.6)]" />
+            <div key={link.href}>
+              <Link
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`flex items-center gap-3 py-3.5 px-3 rounded-xl text-base font-body transition-all duration-300 ${
+                  isActive(link.href)
+                    ? 'text-cyan-400 font-bold bg-white/[0.04]'
+                    : 'text-stone-400 hover:text-stone-200 hover:bg-white/[0.03]'
+                }`}
+                style={{
+                  transitionDelay: menuOpen ? `${i * 50}ms` : '0ms',
+                  opacity: menuOpen ? 1 : 0,
+                  transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
+                }}
+              >
+                {isActive(link.href) && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.6)]" />
+                )}
+                {link.label}
+              </Link>
+              {link.children && (
+                <div className="ml-6 space-y-0.5">
+                  {link.children.map((child, j) => (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block py-2 px-3 text-sm font-body text-stone-500 hover:text-stone-300 transition-colors duration-200"
+                      style={{
+                        transitionDelay: menuOpen ? `${(i + j + 1) * 50}ms` : '0ms',
+                        opacity: menuOpen ? 1 : 0,
+                        transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
+                      }}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
               )}
-              {link.label}
-            </Link>
+            </div>
           ))}
 
           <div className="border-t border-white/[0.06] my-4" />
