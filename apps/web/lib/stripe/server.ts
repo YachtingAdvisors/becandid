@@ -80,7 +80,7 @@ export async function createCheckoutSession(
     cancel_url: cancelUrl,
     allow_promotion_codes: true,
     billing_address_collection: 'auto',
-    // 14-day trial for first-time subscribers only
+    // 21-day trial for first-time subscribers only
     subscription_data: (!hasUsedTrial && !isUpgrade) ? {
       trial_period_days: STRIPE_CONFIG.trialDays,
       metadata: { supabase_user_id: userId },

@@ -171,11 +171,6 @@ export default async function DashboardPage() {
   const loginCount = profile?.login_count ?? 0;
   const showWalkthrough = !profile?.walkthrough_dismissed_at && loginCount <= 2;
 
-  // Increment login count (fire-and-forget, non-blocking)
-  db.from('users')
-    .update({ login_count: loginCount + 1 })
-    .eq('id', user.id)
-    .then(() => {});
   const completedSteps = {
     checkin_configured: (profile?.check_in_hour !== 21 || profile?.check_in_frequency !== 'daily'),
     focus_started: (focusCountRes?.count ?? 0) > 0,

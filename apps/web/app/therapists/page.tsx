@@ -91,7 +91,7 @@ export default function TherapistsPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
           <Link href="/auth/signup?plan=therapy" className="px-8 py-4 rounded-full bg-primary text-on-primary text-lg font-headline font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all flex items-center gap-2">
-            Start 14-Day Free Trial
+            Start 21-Day Free Trial
             <span className="material-symbols-outlined">arrow_forward</span>
           </Link>
           <Link href="#features" className="px-6 py-4 rounded-full text-slate-400 font-label font-medium hover:text-primary transition-colors flex items-center gap-2">
@@ -213,7 +213,7 @@ export default function TherapistsPage() {
       {/* Pricing CTA */}
       <section className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-gradient-to-br from-primary to-primary-container rounded-3xl p-8 md:p-12 text-center text-white">
-          <h2 className="font-headline text-3xl font-bold mb-4">Start your 14-day free trial</h2>
+          <h2 className="font-headline text-3xl font-bold mb-4">Start your 21-day free trial</h2>
           <p className="font-body text-white/80 max-w-lg mx-auto mb-2">
             Everything in Pro, plus therapist portal access with granular consent controls.
           </p>

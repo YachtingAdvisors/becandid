@@ -3,18 +3,8 @@ import Image from 'next/image';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
 import { HeroPlayer } from './HeroPlayerClient';
-import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion } from '@/components/LandingSections';
+import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion, FAQ_ITEMS } from '@/components/LandingSections';
 import { softwareAppSchema, organizationSchema, faqSchema } from '@/lib/structuredData';
-
-/* ─── FAQ items (duplicated from LandingSections for structured data) */
-const FAQ_ITEMS_FOR_SCHEMA = [
-  { q: 'Can my partner see what websites I visit?', a: 'No. They see categories and timing, never URLs or content. Your specific browsing activity stays private.' },
-  { q: 'Is this like Covenant Eyes?', a: "We're accountability, not surveillance. No screenshots, no browsing logs. Be Candid is built on trust and self-reflection, not monitoring." },
-  { q: 'What is the Stringer framework?', a: 'Based on Jay Stringer\'s research, we help you understand why -- not just track what. The framework identifies emotional and relational patterns that drive unwanted behaviors.' },
-  { q: 'Is my journal private?', a: 'Encrypted end-to-end. Not even we can read it. Your reflections are yours alone unless you choose to share insights with a therapist.' },
-  { q: 'How much does it cost?', a: 'Free tier includes 1 partner and core features. Pro is $9.99/mo and unlocks unlimited partners, advanced analytics, and therapist portal access.' },
-  { q: 'Is there a therapist portal?', a: 'Yes. Therapists get read-only access to consented data. You control exactly what is shared and can revoke access at any time.' },
-];
 
 /* ─── Feature data ───────────────────────────────────────────── */
 const FEATURES = [
@@ -122,7 +112,7 @@ export default function LandingPage() {
       {/* JSON-LD Structured Data */}
       <JsonLd data={softwareAppSchema()} />
       <JsonLd data={organizationSchema()} />
-      <JsonLd data={faqSchema(FAQ_ITEMS_FOR_SCHEMA)} />
+      <JsonLd data={faqSchema(FAQ_ITEMS)} />
 
       <PublicNav />
 
@@ -179,7 +169,7 @@ export default function LandingPage() {
               {/* Micro-trust */}
               <div className="flex items-center gap-3 pt-2 text-stone-500">
                 <MaterialIcon name="verified_user" className="text-base text-primary/60" filled />
-                <span className="font-body text-sm">Free 14-day trial &middot; No credit card required</span>
+                <span className="font-body text-sm">Free 21-day trial &middot; No credit card required</span>
               </div>
             </div>
 
@@ -548,7 +538,7 @@ export default function LandingPage() {
                   Become who you<br className="hidden sm:block" /> want to be.
                 </h2>
                 <p className="font-body text-lg text-white/70 max-w-lg mx-auto leading-relaxed">
-                  Join thousands building a life of integrity and transparency. Start your 14-day free trial today.
+                  Join thousands building a life of integrity and transparency. Start your 21-day free trial today.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-4">
                   <Link

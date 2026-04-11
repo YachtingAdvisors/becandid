@@ -134,7 +134,7 @@ export default function TermsOfService() {
 
           <h3>4.3 Free Trial</h3>
           <p>
-            New users may receive a 14-day free trial of the Pro plan. You will not be charged during the
+            New users may receive a 21-day free trial of the Pro plan. You will not be charged during the
             trial period. At the end of the trial, your subscription will automatically convert to a paid
             subscription unless you cancel or downgrade before the trial expires.
           </p>

@@ -248,7 +248,7 @@ export function ComparisonTable() {
 }
 
 /* ─── FAQ Accordion ──────────────────────────────────────────── */
-const FAQ_ITEMS = [
+export const FAQ_ITEMS = [
   {
     q: 'Can my partner see what websites I visit?',
     a: 'No. They see categories and timing, never URLs or content. Your specific browsing activity stays private.',
