@@ -385,6 +385,5 @@ export default function MethodologyPage() {
         </div>
       </footer>
     </div>
-    </>
   );
 }
