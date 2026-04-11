@@ -3,16 +3,16 @@
 // ============================================================
 // IdleTimeout — Session idle timeout with warning modal
 //
-// Tracks user activity and signs out after 32 minutes of
-// inactivity (30 min idle + 2 min warning grace period).
+// Tracks user activity and signs out after 4 hours and 2 minutes
+// of inactivity (4 hour idle + 2 min warning grace period).
 // ============================================================
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
-const IDLE_MS = 30 * 60 * 1000;       // 30 minutes
+const IDLE_MS = 4 * 60 * 60 * 1000;   // 4 hours
 const WARNING_MS = 2 * 60 * 1000;     // 2 minutes grace
-const DEBOUNCE_MS = 30 * 1000;        // Check activity every 30s
+const DEBOUNCE_MS = 60 * 1000;        // Check activity every 60s
 
 const ACTIVITY_EVENTS = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'] as const;
 

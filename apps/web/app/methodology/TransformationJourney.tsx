@@ -175,17 +175,6 @@ function TransformationCard({
             setFlipped(!flipped);
             onActivate();
           }}
-          onMouseEnter={() => {
-            if (window.matchMedia('(hover: hover)').matches && !flipped) {
-              setFlipped(true);
-              onActivate();
-            }
-          }}
-          onMouseLeave={() => {
-            if (window.matchMedia('(hover: hover)').matches && flipped) {
-              setFlipped(false);
-            }
-          }}
           className="relative cursor-pointer"
           style={{
             transformStyle: 'preserve-3d',
@@ -212,10 +201,8 @@ function TransformationCard({
                   {t.shadowDesc}
                 </p>
                 <p className="text-stone-600 text-xs mt-3 flex items-center gap-1.5">
-                  <Icon name="touch_app" className="text-xs md:hidden" />
-                  <span className="md:hidden">Tap to reveal the growth path</span>
-                  <Icon name="swipe" className="text-xs hidden md:inline" />
-                  <span className="hidden md:inline">Hover to reveal the growth path</span>
+                  <Icon name="touch_app" className="text-xs" />
+                  <span>Tap to reveal the growth path</span>
                 </p>
               </div>
             </div>

@@ -70,6 +70,9 @@ export const actionLimiter = createLimiter({ windowMs: 3_600_000, max: 30 });
 // Per-user: account export/delete (3/hour)
 export const accountLimiter = createLimiter({ windowMs: 3_600_000, max: 3 });
 
+// Per-user: admin panel browsing (60/hour — admins switch tabs frequently)
+export const adminLimiter = createLimiter({ windowMs: 3_600_000, max: 60 });
+
 // Per-IP: global (used in middleware — 120/min)
 export const ipRateLimit = createLimiter({ windowMs: 60_000, max: 120 });
 

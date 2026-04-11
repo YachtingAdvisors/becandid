@@ -146,7 +146,7 @@ export default function LandingPage() {
 
               {/* Sub */}
               <p className="font-body text-lg lg:text-xl text-stone-400 leading-relaxed max-w-md">
-                An accountability app that combines screen monitoring, guided journaling, and AI-driven insights to help you break free from unwanted habits &mdash; for good.
+                An accountability app that combines screen monitoring, guided journaling, and data-driven insights to help you break free from unwanted habits &mdash; for good.
               </p>
 
               {/* CTAs */}

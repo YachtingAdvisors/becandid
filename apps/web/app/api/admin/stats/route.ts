@@ -4,13 +4,13 @@ export const dynamic = 'force-dynamic';
 //
 // GET → Platform-wide metrics for the admin dashboard.
 // Auth: must be authenticated AND an admin (ADMIN_EMAILS).
-// Rate limited via accountLimiter.
+// Rate limited via adminLimiter.
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
-import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
+import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, user.id);
   if (blocked) return blocked;
 
   const db = createServiceClient();

@@ -184,6 +184,7 @@ export async function middleware(request: NextRequest) {
               httpOnly: true,
               secure: true,
               sameSite: 'lax' as const,
+              maxAge: 60 * 60 * 24 * 30, // 30 days — persist across browser restarts
             });
           });
         },

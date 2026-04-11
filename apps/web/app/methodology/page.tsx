@@ -109,7 +109,7 @@ export default function MethodologyPage() {
                     <Icon name="auto_awesome" className="text-teal-400 text-base" />
                   </div>
                   <div className="flex-1">
-                    <span className="text-slate-300 text-sm font-medium">AI conversation guide generated</span>
+                    <span className="text-slate-300 text-sm font-medium">Conversation guide generated</span>
                     <p className="text-stone-500 text-xs">Motivational Interviewing framework</p>
                   </div>
                   <Icon name="arrow_downward" className="text-stone-600 text-sm" />
@@ -151,7 +151,7 @@ export default function MethodologyPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">No shame, by design</h2>
             <p className="text-slate-400 text-lg leading-relaxed mb-8">
               Be Candid treats every flag as data to understand, not behavior to punish. Your partner
-              becomes a helper, not a monitor. The AI guides both of you through honest conversation
+              becomes a helper, not a monitor. Be Candid guides both of you through honest conversation
               using Motivational Interviewing &mdash; no moralizing, no judgment.
             </p>
 
@@ -161,7 +161,7 @@ export default function MethodologyPage() {
                   <Icon name="check" className="text-teal-400 text-sm" />
                 </div>
                 <div>
-                  <h4 className="text-white font-semibold text-sm mb-1">Category-sensitive AI</h4>
+                  <h4 className="text-white font-semibold text-sm mb-1">Category-sensitive</h4>
                   <p className="text-slate-400 text-sm leading-relaxed">
                     Eating disorders get clinical framing. Substances get recovery-informed language.
                     Sexual content with a spouse gets betrayal-trauma awareness. One size never fits all.

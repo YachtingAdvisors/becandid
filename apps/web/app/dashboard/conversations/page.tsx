@@ -83,7 +83,7 @@ export default function ConversationsPage() {
         <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>forum</span>
         <div>
           <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">Partner Conversations</h1>
-          <p className="text-sm text-on-surface-variant font-body">Your accountability partner, AI guides, and conversation history.</p>
+          <p className="text-sm text-on-surface-variant font-body">Your accountability partner, conversation guides, and conversation history.</p>
         </div>
       </div>
 
@@ -181,7 +181,7 @@ export default function ConversationsPage() {
 
               {alert.ai_guide_user && (
                 <div className="mb-3 px-3 py-2 rounded-2xl bg-primary-container/30 border border-primary-container text-xs text-primary font-body">
-                  AI conversation guide available &mdash; <Link href={`/conversation/${alert.id}`} className="font-label font-semibold underline cursor-pointer hover:text-primary/80 transition-colors duration-200">view full guide</Link>
+                  Conversation guide available &mdash; <Link href={`/conversation/${alert.id}`} className="font-label font-semibold underline cursor-pointer hover:text-primary/80 transition-colors duration-200">view full guide</Link>
                 </div>
               )}
 

@@ -9,8 +9,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
-import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
-import { safeError } from '@/lib/security';
+import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -21,7 +20,7 @@ export async function GET(req: NextRequest) {
   if (!isAdmin(user.email || ''))
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, user.id);
   if (blocked) return blocked;
 
   const url = req.nextUrl;
@@ -54,8 +53,7 @@ export async function GET(req: NextRequest) {
 
   // Search filter
   if (search) {
-    const safeSearch = search.replace(/[,().]/g, '');
-    query = query.or(`email.ilike.%${safeSearch}%,name.ilike.%${safeSearch}%`);
+    query = query.or(`email.ilike.%${search}%,name.ilike.%${search}%`);
   }
 
   // Plan filter (subscription_plan holds free/pro/therapy)
@@ -74,7 +72,7 @@ export async function GET(req: NextRequest) {
   const { data: users, count, error } = await query;
 
   if (error) {
-    return safeError('GET /api/admin/users', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   return NextResponse.json({

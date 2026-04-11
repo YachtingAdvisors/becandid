@@ -10,8 +10,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
-import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
-import { safeError } from '@/lib/security';
+import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 // Simple keyword flag list for content that may need review.
 const FLAGGED_KEYWORDS = [
@@ -48,7 +47,7 @@ async function verifyAdmin(req: NextRequest) {
   if (!isAdmin(user.email || ''))
     return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) };
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, user.id);
   if (blocked) return { error: blocked };
 
   return { user };
@@ -74,7 +73,7 @@ export async function GET(req: NextRequest) {
     .range(offset, offset + limit - 1);
 
   if (error) {
-    return safeError('GET /api/admin/moderation', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   const enriched = (posts || []).map((p) => ({
@@ -129,7 +128,7 @@ export async function PATCH(req: NextRequest) {
       .delete()
       .in('id', post_ids);
 
-    if (error) return safeError('PATCH /api/admin/moderation', error);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
     return NextResponse.json({ deleted: post_ids.length });
   }
@@ -143,7 +142,7 @@ export async function PATCH(req: NextRequest) {
       .update({ content: '[HIDDEN BY ADMIN]' })
       .in('id', post_ids);
 
-    if (error) return safeError('PATCH /api/admin/moderation', error);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ hidden: post_ids.length });
   }
 

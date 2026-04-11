@@ -10,8 +10,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isAdmin } from '@/lib/isAdmin';
-import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
-import { safeError } from '@/lib/security';
+import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 async function requireAdmin() {
   const supabase = await createServerSupabaseClient();
@@ -29,7 +28,7 @@ export async function GET(req: NextRequest) {
   if (auth.error)
     return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  const blocked = checkUserRate(accountLimiter, auth.user!.id);
+  const blocked = checkUserRate(adminLimiter, auth.user!.id);
   if (blocked) return blocked;
 
   const email = req.nextUrl.searchParams.get('email')?.trim().toLowerCase();
@@ -158,7 +157,7 @@ export async function POST(req: NextRequest) {
   if (auth.error)
     return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  const blocked = checkUserRate(accountLimiter, auth.user!.id);
+  const blocked = checkUserRate(adminLimiter, auth.user!.id);
   if (blocked) return blocked;
 
   const body = await req.json();
@@ -205,7 +204,7 @@ export async function POST(req: NextRequest) {
         .eq('id', user_id);
 
       if (error) {
-        return safeError('POST /api/admin/support', error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
       }
 
       await db.from('audit_log').insert({
@@ -230,7 +229,7 @@ export async function POST(req: NextRequest) {
         .eq('id', user_id);
 
       if (error) {
-        return safeError('POST /api/admin/support', error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
       }
 
       await db.from('audit_log').insert({
@@ -249,7 +248,7 @@ export async function POST(req: NextRequest) {
       });
 
       if (error) {
-        return safeError('POST /api/admin/support', error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
       }
 
       await db.from('audit_log').insert({

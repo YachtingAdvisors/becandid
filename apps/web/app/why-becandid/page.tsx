@@ -5,11 +5,11 @@ import PublicNav from '@/components/PublicNav';
 export const metadata: Metadata = {
   title: 'Why Be Candid — Accountability Without Surveillance',
   description:
-    'Compare Be Candid to Covenant Eyes, Ever Accountable, and Bark. No VPN, no screenshots, no browsing logs. 25 rival categories, therapist portal, conversation guides.',
+    'Compare Be Candid to Covenant Eyes, Ever Accountable, and Bark. No VPN, no browsing logs. Lightweight DNS detection plus small encrypted screenshots shared only with your partner. 25 rival categories, therapist portal, conversation guides.',
   openGraph: {
     title: 'Why Be Candid — Accountability Without Surveillance',
     description:
-      'No VPN. No screenshots. No browsing history. Just accountability that respects your dignity, your battery, and your privacy.',
+      'No VPN. No browsing history. Lightweight detection with small, encrypted screenshots shared only with your partner. Accountability that respects your dignity, your battery, and your privacy.',
     images: [{ url: '/api/og', width: 1200, height: 630 }],
   },
 };
@@ -105,10 +105,17 @@ const COMPARISON_ROWS: ComparisonRow[] = [
     bark: 'Moderate',
   },
   {
-    feature: 'Screenshots captured',
+    feature: 'Constant screenshots',
     beCandid: 'No',
     covenantEyes: 'Yes',
     everAccountable: 'Yes',
+    bark: 'No',
+  },
+  {
+    feature: 'Periodic encrypted screenshots',
+    beCandid: 'Yes',
+    covenantEyes: 'No',
+    everAccountable: 'No',
     bark: 'No',
   },
   {
@@ -324,14 +331,28 @@ export default function WhyBeCandidPage() {
               </span>
               <div>
                 <h3 className="font-headline text-xl font-bold mb-2 text-stone-100">
-                  Be Candid uses smart detection instead
+                  Be Candid&apos;s Lightweight Approach
                 </h3>
-                <p className="text-stone-400 font-body leading-relaxed">
-                  We monitor which apps and domains you access without
-                  touching your actual traffic. Same insight. Zero
-                  impact. Your partner sees the category and timing of a
-                  flag -- never the content, never the URL.
+                <p className="text-stone-400 font-body leading-relaxed mb-4">
+                  Instead of routing all traffic through a VPN tunnel, Be Candid
+                  uses DNS queries for domain awareness plus small periodic
+                  screenshots for accountability. No full VPN. No speed hit. No
+                  battery drain.
                 </p>
+                <ul className="space-y-2 text-stone-400 font-body text-sm leading-relaxed">
+                  <li className="flex items-start gap-2">
+                    <span className="material-symbols-outlined text-primary text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    DNS-level monitoring detects which domains and apps you access -- without touching your actual traffic
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="material-symbols-outlined text-primary text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    Periodic screenshots are small, encrypted, and only shared with your accountability partner -- never stored on our servers long-term
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="material-symbols-outlined text-primary text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    Your partner sees the category and timing of a flag -- never the full URL, never raw browsing history
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -594,7 +615,7 @@ export default function WhyBeCandidPage() {
             </div>
 
             <p className="mt-8 text-stone-600 text-xs font-body">
-              Free tier includes 1 partner, 3 AI conversation guides/month, and
+              Free tier includes 1 partner, 3 conversation guides/month, and
               core tracking across 16 categories.
             </p>
           </div>
