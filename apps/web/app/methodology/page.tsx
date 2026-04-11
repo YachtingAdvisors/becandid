@@ -25,6 +25,8 @@ function Icon({ name, className = '' }: { name: string; className?: string }) {
 /* ─── Page ─────────────────────────────────────────────────────── */
 export default function MethodologyPage() {
   return (
+    <>
+    <div className="bg-[#020617] fixed inset-0 -z-10" aria-hidden="true" />
     <div className="bg-[#020617] min-h-screen text-slate-100 overflow-x-hidden">
 
       <PublicNav />
@@ -385,5 +387,6 @@ export default function MethodologyPage() {
         </div>
       </footer>
     </div>
+    </>
   );
 }
