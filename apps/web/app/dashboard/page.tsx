@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 import { GOAL_LABELS, getCategoryEmoji, timeAgo } from '@be-candid/shared';
 import type { GoalCategory, Severity } from '@be-candid/shared';
 import { Suspense } from 'react';
-import dynamic from 'next/dynamic';
 import FocusBoardMini from '@/components/dashboard/FocusBoardMini';
 import CheckInMini from '@/components/dashboard/CheckInMini';
 import NudgeBanner from '@/components/dashboard/NudgeBanner';
@@ -22,87 +21,14 @@ import DashboardCustomizer from '@/components/dashboard/DashboardCustomizer';
 import RivalAssessmentAccordion from '@/components/dashboard/RivalAssessmentAccordion';
 import { getDefaultWidgets } from '@/lib/widgets/registry';
 import PrivacyBadge from '@/components/dashboard/PrivacyBadge';
-
-const WhatsNew = dynamic(
-  () => import('@/components/dashboard/WhatsNew'),
-  { ssr: false },
-);
-const ScheduledCoach = dynamic(
-  () => import('@/components/dashboard/ScheduledCoach'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-3xl" /> },
-);
-
-const DailyChallenge = dynamic(
-  () => import('@/components/dashboard/DailyChallenge'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-2xl" /> },
-);
-
-const DailyCommitment = dynamic(
-  () => import('@/components/dashboard/DailyCommitment'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-36 rounded-3xl" /> },
-);
-
-/* Dynamically imported heavy client components for code-splitting */
-const SpouseImpactAwareness = dynamic(
-  () => import('@/components/dashboard/SpouseImpactAwareness'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-32 rounded-2xl" /> },
-);
-const ScreenTimeCard = dynamic(
-  () => import('@/components/dashboard/ScreenTimeCard'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-28 rounded-2xl" /> },
-);
-const ContentFilterStatus = dynamic(
-  () => import('@/components/dashboard/ContentFilterStatus'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-28 rounded-2xl" /> },
-);
-const WalkthroughWrapper = dynamic(
-  () => import('@/components/dashboard/WalkthroughWrapper'),
-  { ssr: false },
-);
-const QuickMoodCheckin = dynamic(
-  () => import('@/components/dashboard/QuickMoodCheckin'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-24 rounded-2xl" /> },
-);
-const GrowthJournalWidget = dynamic(
-  () => import('@/components/dashboard/GrowthJournalWidget'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-32 rounded-2xl" /> },
-);
-const ReferralCard = dynamic(
-  () => import('@/components/dashboard/ReferralCard'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-24 rounded-2xl" /> },
-);
-const DailyInventory = dynamic(
-  () => import('@/components/dashboard/DailyInventory'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
-);
-const IsolationCheck = dynamic(
-  () => import('@/components/dashboard/IsolationCheck'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
-);
-const DoomscrollCheck = dynamic(
-  () => import('@/components/dashboard/DoomscrollCheck'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
-);
-const ProcrastinationCheck = dynamic(
-  () => import('@/components/dashboard/ProcrastinationCheck'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
-);
-const WorkLifeCheck = dynamic(
-  () => import('@/components/dashboard/WorkLifeCheck'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
-);
-const SleepCheck = dynamic(
-  () => import('@/components/dashboard/SleepCheck'),
-  { ssr: false, loading: () => <div className="skeleton-shimmer h-48 rounded-2xl" /> },
-);
-const FirstVisitCoach = dynamic(
-  () => import('@/components/dashboard/FirstVisitCoach'),
-  { ssr: false },
-);
-const TherapistBadge = dynamic(
-  () => import('@/components/dashboard/TherapistBadge'),
-  { ssr: false },
-);
+import {
+  WhatsNew, ScheduledCoach, DailyChallenge, DailyCommitment,
+  SpouseImpactAwareness, ScreenTimeCard, ContentFilterStatus,
+  WalkthroughWrapper, QuickMoodCheckin, GrowthJournalWidget,
+  ReferralCard, DailyInventory, IsolationCheck, DoomscrollCheck,
+  ProcrastinationCheck, WorkLifeCheck, SleepCheck, FirstVisitCoach,
+  TherapistBadge,
+} from './DynamicWidgets';
 
 const SEVERITY_STYLES: Record<Severity, string> = {
   low: 'bg-tertiary-container text-on-tertiary-container',

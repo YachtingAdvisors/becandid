@@ -32,10 +32,8 @@ const nextConfig = {
   // Powered-by header removed for security
   poweredByHeader: false,
 
-  // Strict mode for imports
-  experimental: {
-    typedRoutes: false,
-  },
+  // Typed routes (moved from experimental in Next.js 16)
+  typedRoutes: false,
 
   // Redirect root to dashboard if authenticated (handled by middleware)
   async redirects() {

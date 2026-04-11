@@ -1,15 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
-
-const HeroPlayer = dynamic(() => import('@/components/remotion/HeroPlayer'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full aspect-[4/3] rounded-xl bg-gradient-to-br from-[#0e1a1d] to-[#0c1518] animate-pulse" />
-  ),
-});
+import { HeroPlayer } from './HeroPlayerClient';
 import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion } from '@/components/LandingSections';
 import { softwareAppSchema, organizationSchema, faqSchema } from '@/lib/structuredData';
 
