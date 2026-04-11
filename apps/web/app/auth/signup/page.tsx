@@ -94,7 +94,7 @@ function SignUpForm() {
 
             <form onSubmit={handleSignUp} className="space-y-6">
               {error && (
-                <div className="px-4 py-3 rounded-2xl bg-error/5 ring-1 ring-error/20 text-error text-sm font-body flex items-center gap-3">
+                <div id="signup-error" className="px-4 py-3 rounded-2xl bg-error/5 ring-1 ring-error/20 text-error text-sm font-body flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-error/10 flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-[18px]">error</span>
                   </div>
@@ -103,22 +103,28 @@ function SignUpForm() {
               )}
 
               <div className="flex flex-col gap-2">
-                <label className="font-label text-[10px] uppercase tracking-widest text-stone-400 ml-1">Your name</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)} required
+                <label htmlFor="full-name" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Your name</label>
+                <input id="full-name" type="text" value={name} onChange={e => setName(e.target.value)} required
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'signup-error' : undefined}
                   className="w-full bg-stone-800 border-none rounded-xl py-4 px-4 font-body text-slate-100 placeholder:text-stone-500 focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
                   placeholder="e.g. Alex" />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="font-label text-[10px] uppercase tracking-widest text-stone-400 ml-1">Email</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                <label htmlFor="email" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Email</label>
+                <input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'signup-error' : undefined}
                   className="w-full bg-stone-800 border-none rounded-xl py-4 px-4 font-body text-slate-100 placeholder:text-stone-500 focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
                   placeholder="you@example.com" />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="font-label text-[10px] uppercase tracking-widest text-stone-400 ml-1">Password</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
+                <label htmlFor="password" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Password</label>
+                <input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'signup-error' : undefined}
                   className="w-full bg-stone-800 border-none rounded-xl py-4 px-4 font-body text-slate-100 placeholder:text-stone-500 focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
                   placeholder="At least 8 characters" />
               </div>

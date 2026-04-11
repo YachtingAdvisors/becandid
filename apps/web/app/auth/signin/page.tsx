@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
 import MFAChallenge from '@/components/auth/MFAChallenge';
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') ?? '/dashboard';
@@ -141,7 +141,7 @@ export default function SignInPage() {
                   </div>
                 )}
                 {error && (
-                  <div className="px-4 py-3 rounded-2xl bg-red-900/20 ring-1 ring-red-500/20 text-red-400 text-sm font-body flex items-center gap-3">
+                  <div id="signin-error" className="px-4 py-3 rounded-2xl bg-red-900/20 ring-1 ring-red-500/20 text-red-400 text-sm font-body flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-red-900/30 flex items-center justify-center shrink-0">
                       <span className="material-symbols-outlined text-[18px]">error</span>
                     </div>
@@ -150,25 +150,31 @@ export default function SignInPage() {
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Email</label>
+                  <label htmlFor="email" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Email</label>
                   <input
+                    id="email"
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
                     placeholder="you@example.com"
+                    aria-invalid={!!error}
+                    aria-describedby={error ? 'signin-error' : undefined}
                     className="w-full bg-stone-800 border-none rounded-xl py-4 px-4 text-sm font-body text-slate-100 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Password</label>
+                  <label htmlFor="password" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Password</label>
                   <input
+                    id="password"
                     type="password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
                     placeholder="Enter your password"
+                    aria-invalid={!!error}
+                    aria-describedby={error ? 'signin-error' : undefined}
                     className="w-full bg-stone-800 border-none rounded-xl py-4 px-4 text-sm font-body text-slate-100 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
                   />
                 </div>
@@ -200,5 +206,13 @@ export default function SignInPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
   );
 }

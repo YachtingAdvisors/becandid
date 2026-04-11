@@ -161,7 +161,7 @@ export default function UpdatePasswordPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="px-4 py-3 rounded-2xl bg-error/5 ring-1 ring-error/20 text-error text-sm font-body flex items-center gap-3">
+              <div id="update-password-error" className="px-4 py-3 rounded-2xl bg-error/5 ring-1 ring-error/20 text-error text-sm font-body flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-error/10 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-[18px]">error</span>
                 </div>
@@ -170,8 +170,9 @@ export default function UpdatePasswordPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">New password</label>
+              <label htmlFor="password" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">New password</label>
               <input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -179,19 +180,24 @@ export default function UpdatePasswordPage() {
                 required
                 autoFocus
                 disabled={!ready}
+                aria-invalid={!!error}
+                aria-describedby={error ? 'update-password-error' : undefined}
                 className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all duration-200 disabled:opacity-50"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Confirm password</label>
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Confirm password</label>
               <input
+                id="confirm-password"
                 type="password"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="Type it again"
                 required
                 disabled={!ready}
+                aria-invalid={!!error}
+                aria-describedby={error ? 'update-password-error' : undefined}
                 className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all duration-200 disabled:opacity-50"
               />
             </div>

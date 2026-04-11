@@ -101,7 +101,7 @@ export default function MFAChallenge({ redirectTo = '/dashboard', onBack }: MFAC
 
       <form onSubmit={handleVerify} className="space-y-5">
         {error && (
-          <div className="px-4 py-3 rounded-2xl bg-red-900/20 ring-1 ring-red-500/20 text-red-400 text-sm font-body flex items-center gap-3">
+          <div id="mfa-error" className="px-4 py-3 rounded-2xl bg-red-900/20 ring-1 ring-red-500/20 text-red-400 text-sm font-body flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-red-900/30 flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-[18px]">error</span>
             </div>
@@ -110,10 +110,11 @@ export default function MFAChallenge({ redirectTo = '/dashboard', onBack }: MFAC
         )}
 
         <div>
-          <label className="block text-sm font-medium text-stone-400 mb-1.5 font-label">
+          <label htmlFor="mfa-code" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">
             Authentication Code
           </label>
           <input
+            id="mfa-code"
             ref={inputRef}
             type="text"
             inputMode="numeric"
@@ -128,6 +129,8 @@ export default function MFAChallenge({ redirectTo = '/dashboard', onBack }: MFAC
             placeholder="000000"
             autoFocus
             autoComplete="one-time-code"
+            aria-invalid={!!error}
+            aria-describedby={error ? 'mfa-error' : undefined}
             className="w-full bg-stone-800 border-none rounded-xl py-4 px-4 text-center text-2xl font-mono tracking-[0.5em] text-slate-100 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
           />
         </div>

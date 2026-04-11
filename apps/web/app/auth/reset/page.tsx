@@ -121,7 +121,7 @@ export default function ResetPasswordPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="px-4 py-3 rounded-2xl bg-error/5 ring-1 ring-error/20 text-error text-sm font-body flex items-center gap-3">
+              <div id="reset-error" className="px-4 py-3 rounded-2xl bg-error/5 ring-1 ring-error/20 text-error text-sm font-body flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-error/10 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-[18px]">error</span>
                 </div>
@@ -130,14 +130,17 @@ export default function ResetPasswordPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-on-surface mb-1.5 font-label">Email</label>
+              <label htmlFor="email" className="block text-sm font-medium text-stone-400 mb-1.5 font-label">Email</label>
               <input
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
                 autoFocus
+                aria-invalid={!!error}
+                aria-describedby={error ? 'reset-error' : undefined}
                 className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-sm font-body text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-surface-container-lowest transition-all duration-200"
               />
             </div>
