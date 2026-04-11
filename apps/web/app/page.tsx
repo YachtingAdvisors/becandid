@@ -66,11 +66,11 @@ const FEATURES = [
     alt: 'Zen garden sand pattern with minimalist clock silhouette',
   },
   {
-    icon: 'shield',
-    title: 'Guardian Dashboard',
-    desc: 'A centralized command center for administrators to oversee safety settings and review collective wellness trends.',
+    icon: 'psychology',
+    title: 'Therapist Dashboard',
+    desc: 'A clinical-grade portal for therapists to gather in-patient level behavioral data while their clients live their normal lives — no lab setting required.',
     image: '/images/features/guardian-dashboard.webp',
-    alt: 'Clean structured command center interface with soft glow',
+    alt: 'Therapist dashboard interface showing client behavioral insights',
   },
 ];
 
