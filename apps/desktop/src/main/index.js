@@ -29,7 +29,16 @@ let loginWindow = null;
 
 app.whenReady().then(async () => {
   // Check for updates and notify the user when one is available
-  autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.on('update-available', (info) => {
+    console.log('[updater] Update available:', info.version);
+  });
+  autoUpdater.on('update-not-available', () => {
+    console.log('[updater] No update available — running latest version');
+  });
+  autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+    console.error('[updater] Update check failed:', err.message);
+  });
 
   // Request screen recording permission immediately on macOS
   // This triggers the system permission prompt on first launch

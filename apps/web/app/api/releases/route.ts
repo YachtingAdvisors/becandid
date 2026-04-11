@@ -19,6 +19,7 @@ interface ReleaseAsset {
   name: string;
   url: string;
   size: number;
+  sha256Url: string | null;
 }
 
 interface ReleaseInfo {
@@ -114,14 +115,38 @@ function buildReleaseInfo(release: any): ReleaseInfo {
     macZip: null,
   };
 
+  // Collect .sha256 sidecar files separately
+  const sha256Files: { baseName: string; url: string }[] = [];
+
   for (const asset of release.assets ?? []) {
-    const key = classifyAsset(asset.name);
+    const name: string = asset.name;
+    if (name.toLowerCase().endsWith('.sha256')) {
+      // Strip the .sha256 suffix to get the base file name it corresponds to
+      sha256Files.push({
+        baseName: name.slice(0, -7), // remove '.sha256'
+        url: asset.browser_download_url,
+      });
+      continue;
+    }
+
+    const key = classifyAsset(name);
     if (key && !assets[key]) {
       assets[key] = {
         name: asset.name,
         url: asset.browser_download_url,
         size: asset.size,
+        sha256Url: null,
       };
+    }
+  }
+
+  // Second pass: match .sha256 files to their corresponding assets
+  for (const sha of sha256Files) {
+    for (const key of Object.keys(assets) as (keyof ReleaseInfo['assets'])[]) {
+      const a = assets[key];
+      if (a && a.name === sha.baseName) {
+        a.sha256Url = sha.url;
+      }
     }
   }
 
