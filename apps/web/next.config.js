@@ -38,19 +38,6 @@ const nextConfig = {
   // Redirects
   async redirects() {
     return [
-      // becandid.org → becandid.io/org (vanity domain for the nonprofit page)
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'becandid.org' }],
-        destination: 'https://becandid.io/org',
-        permanent: true,
-      },
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'www.becandid.org' }],
-        destination: 'https://becandid.io/org',
-        permanent: true,
-      },
       // /organization → /org (canonical path)
       {
         source: '/organization',
