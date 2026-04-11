@@ -174,8 +174,7 @@ export default function VoiceJournal({ onTranscript, fieldName }: VoiceJournalPr
     return (
       <button
         onClick={startListening}
-        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-label font-medium
-          bg-primary/10 text-primary hover:bg-primary/20 transition-all duration-200 cursor-pointer"
+        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-label font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-all duration-200 cursor-pointer"
         title={`Voice input for ${fieldName}`}
         type="button"
       >
@@ -246,8 +245,7 @@ export default function VoiceJournal({ onTranscript, fieldName }: VoiceJournalPr
           <button
             onClick={stopListening}
             type="button"
-            className="flex-1 px-3 py-2 text-xs font-label font-medium rounded-xl
-              bg-error/10 text-error hover:bg-error/20 transition-all cursor-pointer"
+            className="flex-1 px-3 py-2 text-xs font-label font-medium rounded-xl bg-error/10 text-error hover:bg-error/20 transition-all cursor-pointer"
           >
             Stop
           </button>
@@ -255,8 +253,7 @@ export default function VoiceJournal({ onTranscript, fieldName }: VoiceJournalPr
           <button
             onClick={startListening}
             type="button"
-            className="px-3 py-2 text-xs font-label font-medium rounded-xl
-              bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer"
+            className="px-3 py-2 text-xs font-label font-medium rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer"
           >
             Re-record
           </button>
@@ -265,8 +262,7 @@ export default function VoiceJournal({ onTranscript, fieldName }: VoiceJournalPr
           <button
             onClick={handleDone}
             type="button"
-            className="flex-1 px-3 py-2 text-xs font-label font-medium rounded-xl
-              bg-primary text-on-primary hover:opacity-90 transition-all cursor-pointer"
+            className="flex-1 px-3 py-2 text-xs font-label font-medium rounded-xl bg-primary text-on-primary hover:opacity-90 transition-all cursor-pointer"
           >
             Insert Text
           </button>
@@ -274,8 +270,7 @@ export default function VoiceJournal({ onTranscript, fieldName }: VoiceJournalPr
         <button
           onClick={handleDiscard}
           type="button"
-          className="px-3 py-2 text-xs font-label font-medium rounded-xl
-            text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer"
+          className="px-3 py-2 text-xs font-label font-medium rounded-xl text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer"
         >
           Cancel
         </button>
