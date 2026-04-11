@@ -163,11 +163,11 @@ export async function middleware(request: NextRequest) {
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      // Env vars missing — let the request through rather than crash
-      console.error('Middleware: Missing Supabase env vars');
-      const response = NextResponse.next();
-      applyHeaders(response);
-      return response;
+      if (process.env.NODE_ENV === 'production') {
+        console.error('Middleware: Missing required Supabase environment variables');
+        return new NextResponse('Internal Server Error', { status: 500 });
+      }
+      return NextResponse.next();
     }
 
     // ── 5. User auth via Supabase ───────────────────────────
@@ -252,6 +252,7 @@ export async function middleware(request: NextRequest) {
     // Never crash — let the request through if middleware fails
     console.error('Middleware error:', error);
     const response = NextResponse.next();
+    applyHeaders(response);
     return response;
   }
 }
