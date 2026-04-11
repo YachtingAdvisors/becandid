@@ -9,9 +9,10 @@ import { safeError, sanitizeText, isValidUUID, auditLog } from '@/lib/security';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/check-ins/confirm', 'Unauthorized', 401);
@@ -19,7 +20,7 @@ export async function POST(
     const blocked = checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
-    const checkInId = params.id;
+    const checkInId = id;
     if (!isValidUUID(checkInId)) {
       return safeError('POST /api/check-ins/confirm', 'Invalid ID', 400);
     }

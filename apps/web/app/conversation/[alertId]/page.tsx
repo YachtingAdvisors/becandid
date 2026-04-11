@@ -22,10 +22,11 @@ function getCategoryIcon(category?: string): string {
 }
 
 interface Props {
-  params: { alertId: string };
+  params: Promise<{ alertId: string }>;
 }
 
 export default async function ConversationPage({ params }: Props) {
+  const { alertId } = await params;
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
@@ -35,7 +36,7 @@ export default async function ConversationPage({ params }: Props) {
   const { data: alert } = await db
     .from('alerts')
     .select('*, events(id, category, severity, platform, timestamp)')
-    .eq('id', params.alertId)
+    .eq('id', alertId)
     .single();
 
   if (!alert) return notFound();
@@ -137,7 +138,7 @@ export default async function ConversationPage({ params }: Props) {
 
           {/* Regenerate button */}
           <div className="pt-2">
-            <RegenerateGuide alertId={params.alertId} />
+            <RegenerateGuide alertId={alertId} />
             <p className="text-xs text-on-surface-variant mt-2 font-body">
               Not quite right? Generate a fresh guide with updated context.
             </p>
