@@ -52,11 +52,11 @@ const FEATURES = [
     alt: 'Data visualization showing harmonic balance representing life-tech alignment',
   },
   {
-    icon: 'filter_list',
-    title: 'AI Content Filtering',
-    desc: 'Smart filters that shield you from toxic environments while highlighting positive, growth-oriented content.',
+    icon: 'lightbulb',
+    title: 'Content Illumination',
+    desc: 'Digital tools that shine a light on your content habits, bringing awareness to the patterns and trends that lead to moments of struggle — so you can see clearly and choose differently.',
     image: '/images/features/content-filtering.webp',
-    alt: 'Semi-transparent prism filtering light into a clear beam',
+    alt: 'Light illuminating content patterns for greater self-awareness',
   },
   {
     icon: 'timer',

@@ -523,7 +523,7 @@ export default async function DashboardPage() {
         {[
           { href: '/dashboard/conversations', img: IMAGES.conversation, title: 'Conversation Guides', desc: 'Empathetic prompts for difficult talks.' },
           { href: '/dashboard/stringer-journal', img: IMAGES.journal, title: 'Candid Journal', desc: 'Private space for reflective growth.' },
-          { href: '/dashboard/content-filter', img: IMAGES.contentFilter, title: 'AI Content Filtering', desc: 'Shielding from toxic environments.' },
+          { href: '/dashboard/content-filter', img: IMAGES.contentFilter, title: 'Content Illumination', desc: 'Awareness of the patterns that lead to struggle.' },
           { href: '/dashboard/streaks', img: IMAGES.alignment, title: 'Alignment Tracking', desc: 'Sync habits with core values.' },
           { href: '/dashboard/security', img: IMAGES.encryption, title: 'End-to-End Encryption', desc: 'Maximum privacy for interactions.' },
           { href: '/dashboard/values', icon: 'diamond', title: 'Values Clarification', desc: 'Align actions with core values.' },
