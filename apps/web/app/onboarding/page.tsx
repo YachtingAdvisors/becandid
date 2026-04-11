@@ -266,7 +266,7 @@ function OnboardingContent() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-12 overflow-x-hidden w-full max-w-full transition-colors duration-1000"
+      className="min-h-screen flex flex-col items-center px-4 py-12 overflow-x-hidden w-full max-w-full transition-colors duration-1000"
       style={{ backgroundColor: currentBg }}
     >
       {/* Full phrase reveal — "Come out of darkness and into the light" */}
@@ -380,7 +380,7 @@ function OnboardingContent() {
 
       {/* ═══════ STEP 1b: Goal-Specific Tips ═══════ */}
       {step === 'goal-tips' && (
-        <div className="max-w-lg w-full animate-fade-slide">
+        <div className="max-w-lg w-full my-auto animate-fade-slide">
           <div className="text-center mb-8">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
               <MaterialIcon name="lightbulb" filled className="text-primary text-xl" />
@@ -429,12 +429,14 @@ function OnboardingContent() {
 
           <div className="flex gap-3 mt-8">
             <button
+              type="button"
               onClick={() => setStep('goals')}
               className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
               &larr; Back
             </button>
             <button
+              type="button"
               onClick={() => setStep('stringer')}
               className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
