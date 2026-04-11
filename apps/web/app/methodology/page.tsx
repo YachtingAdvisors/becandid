@@ -33,7 +33,7 @@ export default function MethodologyPage() {
       <section className="relative min-h-[819px] flex items-center justify-center text-center">
         {/* Background image */}
         <img
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5Ys--kStjkPby9Zzm20_PmXM5uVfGTfSuggs9r3WJvReEscj7W60sLEU-bUDtF0AeqbE_btr3fg9RPmicpxh6qiQDyEz9kbkYiONgY96ZqIF0rZzvv8n6COzpeCPg7_kjrqpK7j3jkkolkA5PkecMAoDZ2zWxG-K47MB8kCTYKEVOWCWAZ27E-IKn6Qa76TU-IwTauc8Vmc8t8kt1CVrPbj6lj7BcLktihlUai5twB3UU1E20Azu2iAHz59zoPDPhHCQV_js88LSX"
+          src="/images/features/alignment-tracking.webp"
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
           aria-hidden="true"
