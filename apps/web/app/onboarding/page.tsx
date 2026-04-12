@@ -490,6 +490,20 @@ function OnboardingContent() {
               <div className="absolute -bottom-4 -right-4 w-16 h-16 lg:w-20 lg:h-20 bg-secondary-container rounded-full flex items-center justify-center shadow-[0_20px_40px_-20px_rgba(49,51,51,0.06)]">
                 <MaterialIcon name={STRINGER_PILLARS[stringerStep].icon} filled className="text-on-secondary-container text-2xl lg:text-3xl" />
               </div>
+              {/* Quote overlay on last pillar */}
+              {stringerStep === STRINGER_PILLARS.length - 1 && (
+                <div className="absolute -bottom-6 -left-2 -right-2 p-5 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl" style={{ animation: 'fadeUp 0.6s ease' }}>
+                  <div className="flex items-start gap-3">
+                    <div className="h-full w-0.5 bg-primary/40 shrink-0 self-stretch rounded-full" />
+                    <div>
+                      <p className="font-body text-sm italic text-slate-200 leading-relaxed">
+                        &ldquo;Freedom is found through kindness and curiosity.&rdquo;
+                      </p>
+                      <span className="font-label text-[10px] uppercase tracking-widest text-slate-400 mt-1.5 block">Be Candid</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Content side */}
@@ -545,21 +559,6 @@ function OnboardingContent() {
             </div>
           </div>
 
-          {/* Quote footer */}
-          {stringerStep === STRINGER_PILLARS.length - 1 && (
-            <div className="mt-24 w-full max-w-2xl self-end ml-auto">
-              <div className="p-8 bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-xl relative overflow-hidden">
-                <div className="absolute top-0 left-0 h-full w-1 bg-primary/30" />
-                <p className="font-body text-lg italic text-slate-300 leading-relaxed mb-4">
-                  &ldquo;Freedom is found through kindness and curiosity.&rdquo;
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="h-[1px] w-8 bg-white/10" />
-                  <span className="font-label text-xs uppercase tracking-widest text-slate-400">Be Candid</span>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       )}
 
