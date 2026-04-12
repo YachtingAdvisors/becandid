@@ -46,6 +46,18 @@ const GROUP_LABELS: Record<string, { label: string; icon: string }> = {
   other: { label: 'More', icon: 'more_horiz' },
 };
 
+/* ------------------------------------------------------------------ */
+/*  Nav link styles (new design)                                       */
+/* ------------------------------------------------------------------ */
+const navLinkBase =
+  'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium font-headline cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#276772]/30';
+
+const navLinkActive =
+  'text-[#276772] font-bold border-r-4 border-[#276772] bg-white/50';
+
+const navLinkInactive =
+  'text-[#2b3435] opacity-70 hover:bg-[#e2e9ea]';
+
 function NavGroupedItems({ navItems, isActive, onNavigate }: {
   navItems: Array<{ id: string; href: string; label: string; icon: string; group?: string }>;
   isActive: (href: string) => boolean;
@@ -72,6 +84,7 @@ function NavGroupedItems({ navItems, isActive, onNavigate }: {
   }
 
   function renderItem(item: typeof navItems[0]) {
+    const active = isActive(item.href);
     return (
       <Link
         key={item.id}
@@ -80,43 +93,39 @@ function NavGroupedItems({ navItems, isActive, onNavigate }: {
         {...(item.id === 'stringer-journal' ? { 'data-tour': 'journal' } : {})}
         {...(item.id === 'checkins' ? { 'data-tour': 'checkins' } : {})}
         {...(item.id === 'invite-partner' || item.id === 'conversations' ? { 'data-tour': 'partner' } : {})}
-        className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-          isActive(item.href)
-            ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
-            : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
-        }`}
+        className={`${navLinkBase} ${active ? navLinkActive : navLinkInactive}`}
       >
         <span className="material-symbols-outlined text-lg w-5 text-center">{item.icon}</span>
-        <span className="font-body">{item.label}</span>
+        <span className="font-headline">{item.label}</span>
       </Link>
     );
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-1">
       {core.map(renderItem)}
       {Object.entries(groups).map(([groupId, items]) => {
         const meta = GROUP_LABELS[groupId] ?? { label: groupId, icon: 'folder' };
         const isOpen = expandedWithActive[groupId] ?? false;
         return (
-          <div key={groupId} className="mt-1">
+          <div key={groupId} className="mt-2">
             <button
               onClick={() => setExpanded(prev => ({ ...prev, [groupId]: !prev[groupId] }))}
-              className="flex items-center gap-3 px-4 py-2 w-full text-left rounded-2xl text-[11px] font-label font-semibold uppercase tracking-widest text-on-surface-variant/50 hover:text-on-surface-variant/80 transition-colors cursor-pointer"
+              className="flex items-center gap-3 px-4 py-2 w-full text-left rounded-xl text-[11px] font-headline font-semibold uppercase tracking-widest text-[#2b3435]/50 hover:text-[#2b3435]/80 transition-colors cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm w-5 text-center">{meta.icon}</span>
               <span className="flex-1">{meta.label}</span>
               <span className={`material-symbols-outlined text-sm transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>expand_more</span>
             </button>
             {isOpen && (
-              <div className="ml-2">
+              <div className="ml-2 flex flex-col gap-1">
                 {items.map(renderItem)}
               </div>
             )}
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
 
@@ -192,74 +201,78 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
   };
 
   const sidebarContent = (
-    <>
-      {/* Logo */}
-      <div className="px-5 pt-6 pb-5">
+    <div className="flex flex-col h-full">
+      {/* ---- Logo area ---- */}
+      <div className="px-5 pt-6 pb-4">
         <div className="flex items-center gap-2.5">
-          <img src="/logo.png" alt="Be Candid" className="h-12 w-auto" />
+          <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
+          <span className="font-headline font-bold text-lg text-[#276772]">Be Candid</span>
         </div>
+        <p className="mt-1 pl-[3.25rem] text-[10px] uppercase tracking-widest text-[#2b3435]/40 font-headline font-medium">
+          Mental Sanctuary
+        </p>
       </div>
 
-      {/* Mode + monitoring badges */}
+      {/* ---- Mode + monitoring badges ---- */}
       <div className="px-4 space-y-2 pb-2">
         {/* Combined monitoring + connection status */}
         {!hasGoals ? (
           <Link href="/dashboard/settings" onClick={() => setOpen(false)}
-            className="block px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2 hover:bg-red-100/60 cursor-pointer transition-colors">
+            className="block px-3 py-2 rounded-xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2 hover:bg-red-100/60 cursor-pointer transition-colors">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">No Rivals Identified</span>
+            <span className="text-xs text-red-700 font-headline font-bold flex-1 text-left">No Rivals Identified</span>
             <span className="material-symbols-outlined text-red-400 text-sm">arrow_forward</span>
           </Link>
         ) : !monitoringEnabled ? (
           <Link href="/dashboard/settings" onClick={() => setOpen(false)}
-            className="block px-3 py-2 rounded-2xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2 hover:bg-red-100/60 cursor-pointer transition-colors">
+            className="block px-3 py-2 rounded-xl bg-red-50 ring-1 ring-red-200/50 flex items-center gap-2 hover:bg-red-100/60 cursor-pointer transition-colors">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            <span className="text-xs text-red-700 font-label font-bold flex-1 text-left">Monitoring Inactive</span>
+            <span className="text-xs text-red-700 font-headline font-bold flex-1 text-left">Monitoring Inactive</span>
             <span className="material-symbols-outlined text-red-400 text-sm">arrow_forward</span>
           </Link>
         ) : appRunning === true ? (
           <button
             onClick={checkConnection}
-            className="w-full px-3 py-2 rounded-2xl bg-emerald-500/10 flex items-center gap-2 cursor-pointer hover:bg-emerald-500/15 transition-colors"
+            className="w-full px-3 py-2 rounded-xl bg-emerald-500/10 flex items-center gap-2 cursor-pointer hover:bg-emerald-500/15 transition-colors"
           >
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs text-emerald-700 font-label font-bold flex-1 text-left">
+            <span className="text-xs text-emerald-700 font-headline font-bold flex-1 text-left">
               {checking ? 'Checking...' : 'Monitoring Active'}
             </span>
             <span className="material-symbols-outlined text-emerald-400 text-sm">refresh</span>
           </button>
         ) : appRunning === null ? (
-          <div className="px-3 py-2 rounded-2xl bg-surface-container flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30" />
-            <span className="text-xs text-on-surface-variant font-label font-medium">Checking connection...</span>
+          <div className="px-3 py-2 rounded-xl bg-[#e2e9ea] flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#2b3435]/30" />
+            <span className="text-xs text-[#2b3435]/60 font-headline font-medium">Checking connection...</span>
           </div>
         ) : isolationOnly ? (
-          <div className="px-3 py-2 rounded-2xl bg-violet-50 ring-1 ring-violet-200/50 flex items-center gap-2">
+          <div className="px-3 py-2 rounded-xl bg-violet-50 ring-1 ring-violet-200/50 flex items-center gap-2">
             <span className="material-symbols-outlined text-violet-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>door_open</span>
-            <span className="text-xs text-violet-700 font-label font-bold flex-1 text-left">Isolation Mode</span>
-            <span className="text-[9px] text-violet-500 font-label">No scan needed</span>
+            <span className="text-xs text-violet-700 font-headline font-bold flex-1 text-left">Isolation Mode</span>
+            <span className="text-[9px] text-violet-500 font-headline">No scan needed</span>
           </div>
         ) : (
           <div>
             <button
               onClick={() => setShowTroubleshoot(!showTroubleshoot)}
               aria-expanded={showTroubleshoot}
-              className="w-full px-3 py-2 rounded-2xl bg-amber-50 ring-1 ring-amber-200/50 flex items-center gap-2 cursor-pointer hover:bg-amber-100/50 transition-colors"
+              className="w-full px-3 py-2 rounded-xl bg-amber-50 ring-1 ring-amber-200/50 flex items-center gap-2 cursor-pointer hover:bg-amber-100/50 transition-colors"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-              <span className="text-xs text-amber-700 font-label font-medium flex-1 text-left">Desktop App Not Connected</span>
+              <span className="text-xs text-amber-700 font-headline font-medium flex-1 text-left">Desktop App Not Connected</span>
               <span className="material-symbols-outlined text-amber-400 text-sm">{showTroubleshoot ? 'expand_less' : 'help'}</span>
             </button>
             {showTroubleshoot && (
-              <div className="mt-2 px-3 py-3 rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/10 space-y-2.5">
+              <div className="mt-2 px-3 py-3 rounded-xl bg-white ring-1 ring-[#2b3435]/10 space-y-2.5">
                 <button
                   onClick={checkConnection}
-                  className="w-full flex items-center justify-center gap-2 py-2 text-[11px] font-label font-semibold text-primary bg-primary/[0.06] rounded-xl hover:bg-primary/[0.12] cursor-pointer transition-all"
+                  className="w-full flex items-center justify-center gap-2 py-2 text-[11px] font-headline font-semibold text-[#276772] bg-[#276772]/[0.06] rounded-xl hover:bg-[#276772]/[0.12] cursor-pointer transition-all"
                 >
                   <span className={`material-symbols-outlined text-sm ${checking ? 'animate-spin' : ''}`}>refresh</span>
                   {checking ? 'Checking...' : 'Check Connection'}
                 </button>
-                <p className="text-[10px] font-label font-bold uppercase tracking-wider text-on-surface-variant">Troubleshoot</p>
+                <p className="text-[10px] font-headline font-bold uppercase tracking-wider text-[#2b3435]/60">Troubleshoot</p>
                 <ol className="space-y-2">
                   {[
                     { icon: 'download', text: 'Download the desktop app', href: '/download' },
@@ -270,11 +283,11 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
                     <li key={i} className="flex items-start gap-2">
                       <span className="flex-shrink-0 w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[9px] font-bold mt-0.5">{i + 1}</span>
                       {step.href ? (
-                        <Link href={step.href} onClick={() => setOpen(false)} className="text-[11px] text-primary font-body hover:underline cursor-pointer">
+                        <Link href={step.href} onClick={() => setOpen(false)} className="text-[11px] text-[#276772] font-headline hover:underline cursor-pointer">
                           {step.text}
                         </Link>
                       ) : (
-                        <span className="text-[11px] text-on-surface-variant font-body">{step.text}</span>
+                        <span className="text-[11px] text-[#2b3435]/60 font-headline">{step.text}</span>
                       )}
                     </li>
                   ))}
@@ -282,7 +295,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
                 <Link
                   href="/download"
                   onClick={() => setOpen(false)}
-                  className="block w-full text-center py-2 text-[11px] font-label font-semibold text-white bg-red-500 rounded-xl hover:brightness-110 cursor-pointer transition-all"
+                  className="block w-full text-center py-2 text-[11px] font-headline font-semibold text-white bg-red-500 rounded-xl hover:brightness-110 cursor-pointer transition-all"
                 >
                   Download App
                 </Link>
@@ -292,106 +305,104 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
         )}
         {/* Account mismatch warning */}
         {mismatch && !appRunning && (
-          <div className="px-3 py-2.5 rounded-2xl bg-orange-50 ring-1 ring-orange-200/50 space-y-1">
+          <div className="px-3 py-2.5 rounded-xl bg-orange-50 ring-1 ring-orange-200/50 space-y-1">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-orange-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
-              <span className="text-[11px] text-orange-800 font-label font-bold">Account Mismatch</span>
+              <span className="text-[11px] text-orange-800 font-headline font-bold">Account Mismatch</span>
             </div>
-            <p className="text-[10px] text-orange-700 font-body leading-relaxed">
+            <p className="text-[10px] text-orange-700 font-headline leading-relaxed">
               Your desktop app may be signed into a different account. Sign into the same account on both to sync monitoring.
             </p>
           </div>
         )}
         {soloMode && (
-          <div className="px-3 py-2 rounded-2xl bg-tertiary-container/40 flex items-center gap-2">
-            <span className="material-symbols-outlined text-xs">explore</span>
-            <span className="text-xs text-on-tertiary-container font-label font-medium">Solo mode</span>
+          <div className="px-3 py-2 rounded-xl bg-[#276772]/10 flex items-center gap-2">
+            <span className="material-symbols-outlined text-xs text-[#276772]">explore</span>
+            <span className="text-xs text-[#276772] font-headline font-medium">Solo mode</span>
           </div>
         )}
       </div>
 
-      {/* Nav */}
-      <nav className="px-3 pt-2 pb-4 overflow-y-auto">
+      {/* ---- Nav ---- */}
+      <nav className="flex-1 px-3 pt-2 pb-4 overflow-y-auto">
         <NavGroupedItems navItems={navItems} isActive={isActive} onNavigate={() => setOpen(false)} />
 
         {/* Tools section */}
-        <div className="mt-2 pt-2 border-t border-outline-variant/30">
-          <span className="px-4 text-[10px] font-label font-semibold uppercase tracking-widest text-on-surface-variant/50 mb-1 block">Tools</span>
-          <Link
-            href="/dashboard/screen-time"
-            onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-              isActive('/dashboard/screen-time')
-                ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
-                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
-            }`}
-          >
-            <span className="material-symbols-outlined text-lg w-5 text-center">timer</span>
-            <span className="font-body">Screen Time</span>
-          </Link>
-          <Link
-            href="/dashboard/content-filter"
-            onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-              isActive('/dashboard/content-filter')
-                ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
-                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
-            }`}
-          >
-            <span className="material-symbols-outlined text-lg w-5 text-center">filter_alt</span>
-            <span className="font-body">Content Filter</span>
-          </Link>
+        <div className="mt-3 pt-3 border-t border-[#2b3435]/10">
+          <span className="px-4 text-[10px] font-headline font-semibold uppercase tracking-widest text-[#2b3435]/40 mb-1 block">Tools</span>
+          <div className="flex flex-col gap-1 mt-1">
+            <Link
+              href="/dashboard/screen-time"
+              onClick={() => setOpen(false)}
+              className={`${navLinkBase} ${
+                isActive('/dashboard/screen-time') ? navLinkActive : navLinkInactive
+              }`}
+            >
+              <span className="material-symbols-outlined text-lg w-5 text-center">timer</span>
+              <span className="font-headline">Screen Time</span>
+            </Link>
+            <Link
+              href="/dashboard/content-filter"
+              onClick={() => setOpen(false)}
+              className={`${navLinkBase} ${
+                isActive('/dashboard/content-filter') ? navLinkActive : navLinkInactive
+              }`}
+            >
+              <span className="material-symbols-outlined text-lg w-5 text-center">filter_alt</span>
+              <span className="font-headline">Content Filter</span>
+            </Link>
+          </div>
         </div>
 
         {/* Guardian section */}
-        <div className="mt-2 pt-2 border-t border-outline-variant/30">
-          <Link
-            href="/guardian"
-            onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium mb-1 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-              isActive('/guardian')
-                ? 'bg-secondary-container text-on-secondary-container border-l-2 border-primary'
-                : 'text-on-surface/50 hover:text-primary hover:bg-primary-container/20 hover:translate-x-0.5 transition-transform'
-            }`}
-          >
-            <span className="material-symbols-outlined text-lg w-5 text-center">supervisor_account</span>
-            <span className="font-body">Guardian</span>
-          </Link>
+        <div className="mt-3 pt-3 border-t border-[#2b3435]/10">
+          <div className="flex flex-col gap-1">
+            <Link
+              href="/guardian"
+              onClick={() => setOpen(false)}
+              className={`${navLinkBase} ${
+                isActive('/guardian') ? navLinkActive : navLinkInactive
+              }`}
+            >
+              <span className="material-symbols-outlined text-lg w-5 text-center">supervisor_account</span>
+              <span className="font-headline">Guardian</span>
+            </Link>
+          </div>
         </div>
       </nav>
 
-      {/* Upgrade CTA */}
+      {/* ---- Upgrade CTA ---- */}
       <div className="px-3 pb-2">
         <Link
           href="/pricing"
           onClick={() => setOpen(false)}
-          className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-tertiary bg-gradient-to-r from-primary/10 to-tertiary/10 ring-1 ring-primary/15 cursor-pointer hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-headline font-semibold text-[#276772] bg-gradient-to-r from-[#276772]/10 to-[#276772]/5 ring-1 ring-[#276772]/15 cursor-pointer hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#276772]/30"
         >
           <span className="material-symbols-outlined text-lg w-5 text-center">auto_awesome</span>
-          <span className="font-body font-semibold">Upgrade Plan</span>
+          <span>Upgrade Plan</span>
         </Link>
       </div>
 
-      {/* Discord link */}
+      {/* ---- Discord link ---- */}
       <div className="px-3 pb-2">
         <a
           href="https://discord.gg/sCkyPuqf6"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium text-[#5865F2] bg-[#5865F2]/10 ring-1 ring-[#5865F2]/20 cursor-pointer hover:bg-[#5865F2]/20 hover:ring-[#5865F2]/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5865F2]/30"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-headline font-semibold text-[#5865F2] bg-[#5865F2]/10 ring-1 ring-[#5865F2]/20 cursor-pointer hover:bg-[#5865F2]/20 hover:ring-[#5865F2]/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5865F2]/30"
         >
           <span className="material-symbols-outlined text-lg w-5 text-center">forum</span>
-          <span className="font-body font-semibold">Discord</span>
+          <span>Discord</span>
         </a>
       </div>
 
-      {/* Theme toggle */}
+      {/* ---- Theme toggle ---- */}
       <div className="px-4 py-2">
         <DarkModeToggle />
       </div>
 
-      {/* User profile + logout */}
-      <div className="px-3 py-3 border-t border-outline-variant relative">
+      {/* ---- User profile + logout ---- */}
+      <div className="px-3 py-3 border-t border-[#2b3435]/10 relative">
         <div className="flex items-center gap-1 mb-1 px-2">
           <div className="flex-1" />
           <NotificationCenter />
@@ -400,42 +411,42 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
           onClick={() => setShowProfileMenu(!showProfileMenu)}
           aria-expanded={showProfileMenu}
           aria-label="Profile menu"
-          className="w-full flex items-center gap-3 px-2 py-2 rounded-2xl hover:bg-surface-container cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-[#e2e9ea] cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#276772]/30"
         >
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={avatarUrl} alt={`${userName}'s avatar`} className="w-9 h-9 rounded-full object-cover shrink-0" />
           ) : (
-            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <span className="text-sm font-headline font-bold text-primary">{userName.charAt(0).toUpperCase()}</span>
+            <div className="w-9 h-9 rounded-full bg-[#276772]/10 flex items-center justify-center shrink-0">
+              <span className="text-sm font-headline font-bold text-[#276772]">{userName.charAt(0).toUpperCase()}</span>
             </div>
           )}
           <div className="min-w-0 flex-1 text-left">
-            <p className="text-sm font-headline font-bold text-on-surface truncate">{userName}</p>
-            <p className="text-[10px] text-on-surface-variant font-label truncate">{userEmail}</p>
+            <p className="text-sm font-headline font-bold text-[#2b3435] truncate">{userName}</p>
+            <p className="text-[10px] text-[#2b3435]/50 font-headline tracking-wide truncate">Pro Member</p>
           </div>
-          <span className="material-symbols-outlined text-on-surface-variant/40 text-base">
+          <span className="material-symbols-outlined text-[#2b3435]/40 text-base">
             {showProfileMenu ? 'expand_less' : 'expand_more'}
           </span>
         </button>
 
         {/* Profile dropdown menu */}
         {showProfileMenu && (
-          <div className="absolute bottom-full left-3 right-3 mb-1 bg-surface-container-lowest rounded-2xl shadow-lg ring-1 ring-outline-variant/20 overflow-hidden z-50">
+          <div className="absolute bottom-full left-3 right-3 mb-1 bg-white rounded-xl shadow-lg ring-1 ring-[#2b3435]/10 overflow-hidden z-50">
             <Link
               href="/dashboard/settings"
               onClick={() => { setShowProfileMenu(false); setOpen(false); }}
-              className="flex items-center gap-3 px-4 py-3 text-sm font-body text-on-surface hover:bg-surface-container cursor-pointer transition-colors"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-headline text-[#2b3435] hover:bg-[#e2e9ea] cursor-pointer transition-colors"
             >
-              <span className="material-symbols-outlined text-base text-on-surface-variant">settings</span>
+              <span className="material-symbols-outlined text-base text-[#2b3435]/60">settings</span>
               Settings
             </Link>
             <button
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploadingAvatar}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-body text-on-surface hover:bg-surface-container cursor-pointer transition-colors disabled:opacity-50"
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-headline text-[#2b3435] hover:bg-[#e2e9ea] cursor-pointer transition-colors disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-base text-on-surface-variant">photo_camera</span>
+              <span className="material-symbols-outlined text-base text-[#2b3435]/60">photo_camera</span>
               {uploadingAvatar ? 'Uploading...' : 'Change avatar'}
             </button>
             <input
@@ -445,7 +456,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
               onChange={handleAvatarUpload}
               className="hidden"
             />
-            <div className="border-t border-outline-variant/20" />
+            <div className="border-t border-[#2b3435]/10" />
             <button
               onClick={async () => {
                 setLoggingOut(true);
@@ -457,7 +468,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
                 }
               }}
               disabled={loggingOut}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-body text-error hover:bg-error/5 cursor-pointer transition-colors disabled:opacity-50"
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-headline text-red-600 hover:bg-red-50 cursor-pointer transition-colors disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-base">logout</span>
               {loggingOut ? 'Signing out...' : 'Sign out'}
@@ -466,37 +477,37 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
         )}
       </div>
 
-      {/* Clinical expertise note */}
+      {/* ---- Clinical expertise note ---- */}
       <div className="px-5 pb-4">
-        <p className="text-[10px] text-on-surface-variant/40 font-label leading-tight">Designed with clinical expertise</p>
+        <p className="text-[10px] text-[#2b3435]/30 font-headline leading-tight">Designed with clinical expertise</p>
       </div>
-    </>
+    </div>
   );
 
   return (
     <>
       {/* Mobile hamburger */}
       <button onClick={() => setOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-40 w-11 h-11 rounded-2xl bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant shadow-sm flex items-center justify-center cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30"
+        className="lg:hidden fixed top-4 left-4 z-40 w-11 h-11 rounded-xl bg-white/80 backdrop-blur-xl border border-[#2b3435]/10 shadow-sm flex items-center justify-center cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#276772]/30"
         aria-label="Open menu">
-        <svg className="w-5 h-5 text-on-surface" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5 text-[#2b3435]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
-      {/* Desktop sidebar — glass effect */}
-      <aside aria-label="Main navigation" className="hidden lg:flex w-60 shrink-0 bg-[#fbf9f8]/70 backdrop-blur-xl border-r border-outline-variant flex-col min-h-screen sticky top-0">
+      {/* Desktop sidebar */}
+      <aside aria-label="Main navigation" className="hidden lg:flex w-64 shrink-0 bg-[#f7fafa] border-r border-[#2b3435]/10 flex-col min-h-screen sticky top-0">
         {sidebarContent}
       </aside>
 
       {/* Mobile overlay */}
       {open && (
         <div className="lg:hidden fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#fbf9f8]/95 backdrop-blur-xl flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
+          <div className="absolute inset-0 bg-[#2b3435]/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#f7fafa] flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
             <button onClick={() => setOpen(false)}
               aria-label="Close menu"
-              className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30">
+              className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center text-[#2b3435]/60 hover:bg-[#e2e9ea] cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#276772]/30">
               <span className="material-symbols-outlined text-lg">close</span>
             </button>
             {sidebarContent}
@@ -505,7 +516,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       )}
 
       {/* Mobile bottom nav bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-t border-[#2b3435]/10">
         <nav aria-label="Mobile navigation" className="flex items-center justify-around px-2 py-1">
           {MOBILE_TABS_ALL.filter(tab => !soloMode || tab.solo).map((tab) => {
             const active = isActive(tab.href);
@@ -513,15 +524,15 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
               <Link
                 key={tab.id}
                 href={tab.href}
-                className={`relative flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-2xl min-w-[60px] cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+                className={`relative flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-xl min-w-[60px] cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#276772]/30 ${
                   active
-                    ? 'bg-secondary-container text-on-secondary-container'
-                    : 'text-on-surface-variant hover:text-primary'
+                    ? 'bg-[#276772]/10 text-[#276772]'
+                    : 'text-[#2b3435]/50 hover:text-[#276772]'
                 }`}
               >
-                {active && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-primary" />}
+                {active && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full bg-[#276772]" />}
                 <span className="material-symbols-outlined text-lg">{tab.icon}</span>
-                <span className="text-[10px] font-label font-medium">{tab.label}</span>
+                <span className="text-[10px] font-headline font-medium">{tab.label}</span>
               </Link>
             );
           })}
