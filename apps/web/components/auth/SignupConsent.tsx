@@ -21,8 +21,6 @@ export default function SignupConsent({ checked, onChange }: SignupConsentProps)
         <Link href="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline font-medium transition-colors duration-200">Terms of Service</Link>
         {' '}and{' '}
         <Link href="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline font-medium transition-colors duration-200">Privacy Policy</Link>.
-        I understand Be Candid monitors screen activity and shares category-level alerts
-        with my accountability partner as described in the Privacy Policy.
       </span>
     </label>
   );
