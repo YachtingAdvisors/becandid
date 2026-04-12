@@ -431,7 +431,7 @@ function OnboardingContent() {
             </p>
           )}
 
-          <div className="flex gap-3 mt-8">
+          <div className="flex gap-3 mt-8 relative z-10">
             <button
               type="button"
               onClick={() => setStep('goals')}
