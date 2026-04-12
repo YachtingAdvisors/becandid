@@ -913,7 +913,7 @@ export default function AssessmentPage() {
         <div className="flex items-start gap-3 bg-emerald-500/5 border border-emerald-500/15 rounded-2xl p-4">
           <MaterialIcon name="tips_and_updates" filled className="text-emerald-500 text-lg mt-0.5 shrink-0" />
           <div>
-            <p className="text-sm font-headline font-bold text-on-surface mb-0.5">We recommend starting with 2</p>
+            <p className="text-sm font-headline font-bold text-on-surface mb-0.5">We recommend focusing on a few</p>
             <p className="text-xs text-on-surface-variant font-body leading-relaxed">
               Momentum from progressing in one area creates a snowball effect that naturally brings progress in other areas along with it. Focus beats breadth.
             </p>
