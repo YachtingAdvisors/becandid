@@ -627,47 +627,47 @@ function OnboardingContent() {
       {step === 'partner' && (
         <div className="max-w-md w-full animate-fade-slide overflow-hidden">
           <div className="text-center mb-6">
-            <p className="text-xs text-cyan-400 font-label font-medium uppercase tracking-widest mb-2">Step 4 of 4</p>
-            <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">Invite your partners</h1>
-            <p className="text-sm text-slate-400 font-body">A friend, spouse, mentor, or coach who&apos;ll walk with you.</p>
-            <div className="relative mt-5 mb-2 px-5 py-5 rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(34,103,121,0.3) 100%)' }}>
+            <p className="text-xs text-white/80 font-label font-medium uppercase tracking-widest mb-2">Step 4 of 4</p>
+            <h1 className="text-2xl font-headline font-semibold text-white mb-2">Invite your partners</h1>
+            <p className="text-sm text-white/70 font-body">A friend, spouse, mentor, or coach who&apos;ll walk with you.</p>
+            <div className="relative mt-5 mb-2 px-5 py-5 rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.55) 0%, rgba(34,103,121,0.4) 100%)' }}>
               {/* Background painting */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Simeon_Solomon_-_King_Solomon_and_his_mother_%28Bathsheba%29.jpg/400px-Simeon_Solomon_-_King_Solomon_and_his_mother_%28Bathsheba%29.jpg"
                 alt=""
                 aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover opacity-20"
+                className="absolute inset-0 w-full h-full object-cover opacity-15"
               />
               <div className="relative z-10 flex items-center gap-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Simeon_Solomon_-_King_Solomon_and_his_mother_%28Bathsheba%29.jpg/200px-Simeon_Solomon_-_King_Solomon_and_his_mother_%28Bathsheba%29.jpg"
                   alt="King Solomon"
-                  className="w-16 h-16 rounded-2xl object-cover ring-2 ring-white/20 shadow-lg shrink-0"
+                  className="w-16 h-16 rounded-2xl object-cover ring-2 ring-white/30 shadow-lg shrink-0"
                 />
                 <div className="text-left">
                   <p className="text-sm text-white font-body italic leading-relaxed">
                     &ldquo;A cord of three strands is not easily broken.&rdquo;
                   </p>
-                  <p className="text-xs font-label font-bold text-cyan-300 mt-1">&mdash; King Solomon, Ecclesiastes 4:12</p>
+                  <p className="text-xs font-label font-bold text-white/80 mt-1">&mdash; King Solomon, Ecclesiastes 4:12</p>
                 </div>
               </div>
             </div>
-            <p className="text-[10px] text-cyan-400 font-label font-medium mt-2">Add 1 partner free. Upgrade to Pro for up to 5.</p>
+            <p className="text-[11px] text-white/70 font-label font-medium mt-2">Add 1 partner free. Upgrade to Pro for up to 5.</p>
           </div>
 
           {/* Invited partners list */}
           {invitedPartners.length > 0 && (
             <div className="space-y-2 mb-4">
               {invitedPartners.map((p, i) => (
-                <div key={i} className="flex items-center gap-3 px-4 py-3 bg-emerald-500/10 rounded-2xl ring-1 ring-emerald-500/20">
-                  <MaterialIcon name="check_circle" filled className="text-emerald-400 text-lg" />
+                <div key={i} className="flex items-center gap-3 px-4 py-3 bg-black/20 rounded-2xl ring-1 ring-emerald-400/30">
+                  <MaterialIcon name="check_circle" filled className="text-emerald-300 text-lg" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-label font-bold text-slate-100 truncate">{p.name}</p>
-                    <p className="text-[10px] text-slate-400 truncate">{p.email}</p>
+                    <p className="text-sm font-label font-bold text-white truncate">{p.name}</p>
+                    <p className="text-[10px] text-white/60 truncate">{p.email}</p>
                   </div>
-                  <span className="text-[10px] text-emerald-400 font-label font-bold">Invited</span>
+                  <span className="text-[10px] text-emerald-300 font-label font-bold">Invited</span>
                 </div>
               ))}
             </div>
@@ -675,35 +675,35 @@ function OnboardingContent() {
 
           {/* Form - greyed out after 2 invites on free plan */}
           {invitedPartners.length >= 2 ? (
-            <div className="bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-3xl p-6 opacity-50 pointer-events-none">
+            <div className="bg-black/25 backdrop-blur-md border border-white/10 rounded-3xl p-6 opacity-50 pointer-events-none">
               <div className="text-center space-y-3">
-                <span className="material-symbols-outlined text-3xl text-slate-500">lock</span>
-                <p className="text-sm font-headline font-bold text-slate-100">Free plan limit reached</p>
-                <p className="text-xs text-slate-400 font-body">Upgrade to Pro to add up to 5 accountability partners.</p>
+                <span className="material-symbols-outlined text-3xl text-white/40">lock</span>
+                <p className="text-sm font-headline font-bold text-white">Free plan limit reached</p>
+                <p className="text-xs text-white/60 font-body">Upgrade to Pro to add up to 5 accountability partners.</p>
               </div>
             </div>
           ) : (
-            <div className="bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-3xl p-6 space-y-4">
+            <div className="bg-black/25 backdrop-blur-md border border-white/15 rounded-3xl p-6 space-y-4">
               {invitedPartners.length > 0 && (
-                <p className="text-xs text-primary font-label font-bold text-center">Add another partner ({2 - invitedPartners.length} remaining on free plan)</p>
+                <p className="text-xs text-white font-label font-bold text-center">Add another partner ({2 - invitedPartners.length} remaining on free plan)</p>
               )}
             <div>
-              <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their name</label>
+              <label className="block text-sm font-medium text-white mb-1.5 font-label">Their name</label>
               <input type="text" value={partnerName} onChange={(e) => setPartnerName(e.target.value)}
-                placeholder="First name" className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 text-slate-100 placeholder:text-slate-400 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
+                placeholder="First name" className="w-full px-4 py-3 rounded-2xl bg-black/20 border border-white/20 text-white placeholder:text-white/40 text-sm font-body focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their email</label>
+              <label className="block text-sm font-medium text-white mb-1.5 font-label">Their email</label>
               <input type="email" value={partnerEmail} onChange={(e) => setPartnerEmail(e.target.value)}
-                placeholder="partner@email.com" className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 text-slate-100 placeholder:text-slate-400 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
+                placeholder="partner@email.com" className="w-full px-4 py-3 rounded-2xl bg-black/20 border border-white/20 text-white placeholder:text-white/40 text-sm font-body focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Their phone <span className="text-slate-400 font-normal">(optional — for SMS alerts)</span></label>
+              <label className="block text-sm font-medium text-white mb-1.5 font-label">Their phone <span className="text-white/50 font-normal">(optional — for SMS alerts)</span></label>
               <input type="tel" value={partnerPhone} onChange={handlePhoneChange}
-                placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 text-slate-100 placeholder:text-slate-400 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200" />
+                placeholder="+1 (555) 123-4567" className="w-full px-4 py-3 rounded-2xl bg-black/20 border border-white/20 text-white placeholder:text-white/40 text-sm font-body focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-100 mb-1.5 font-label">Relationship <span className="text-slate-400 font-normal">(select all that apply)</span></label>
+              <label className="block text-sm font-medium text-white mb-1.5 font-label">Relationship <span className="text-white/50 font-normal">(select all that apply)</span></label>
               <div className="flex flex-wrap gap-2">
                 {[
                   { key: 'friend', label: 'Friend' },
@@ -720,8 +720,8 @@ function OnboardingContent() {
                       prev.includes(key) ? prev.filter(r => r !== key) : [...prev, key]
                     );
                   }}
-                    className={`px-4 py-2 rounded-full text-sm font-label font-medium border transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-                      relationships.includes(key) ? 'border-primary bg-primary/10 text-primary' : 'border-white/10 text-slate-400 hover:border-primary/30'
+                    className={`px-4 py-2 rounded-full text-sm font-label font-medium border transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 ${
+                      relationships.includes(key) ? 'border-white bg-white/20 text-white' : 'border-white/25 text-white/70 hover:border-white/50'
                     }`}>
                     {label}
                   </button>
@@ -734,7 +734,7 @@ function OnboardingContent() {
                   onChange={(e) => setCustomRelationship(e.target.value)}
                   placeholder="Describe your relationship"
                   maxLength={50}
-                  className="mt-2 w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 text-slate-100 placeholder:text-slate-400 text-sm font-body focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all duration-200"
+                  className="mt-2 w-full px-4 py-3 rounded-2xl bg-black/20 border border-white/20 text-white placeholder:text-white/40 text-sm font-body focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200"
                 />
               )}
             </div>
@@ -745,35 +745,35 @@ function OnboardingContent() {
 
           <div className="flex gap-3 mt-6 relative z-10">
             {invitedPartners.length > 0 ? (
-              <button onClick={() => setStep('rival-assessment')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer">
+              <button onClick={() => setStep('rival-assessment')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/30 text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer">
                 Continue \u2192
               </button>
             ) : (
-              <button onClick={() => initialStep === 'partner' ? router.push('/dashboard') : setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer">
+              <button onClick={() => initialStep === 'partner' ? router.push('/dashboard') : setStep('preview')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/30 text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer">
                 {initialStep === 'partner' ? '\u2190 Dashboard' : '\u2190 Back'}
               </button>
             )}
             {invitedPartners.length < 2 && (
               <button onClick={sendInvite} disabled={!partnerName.trim() || !partnerEmail.trim() || loading}
-                className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer">
+                className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-black/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer">
                 {loading ? 'Sending invite...' : invitedPartners.length > 0 ? 'Send another invite →' : 'Send invite →'}
               </button>
             )}
             {invitedPartners.length >= 2 && (
               <button onClick={() => setStep('rival-assessment')}
-                className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer">
+                className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-black/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer">
                 Continue →
               </button>
             )}
           </div>
 
-          <button onClick={enableSolo} className="w-full mt-3 py-2 text-xs text-slate-400 hover:text-slate-200 text-center font-body cursor-pointer transition-colors duration-200">
+          <button onClick={enableSolo} className="w-full mt-3 py-2 text-xs text-white/50 hover:text-white text-center font-body cursor-pointer transition-colors duration-200">
             I&apos;ll start in solo mode instead
           </button>
 
-          <div className="mt-4 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/5 ring-1 ring-primary/10">
-            <p className="text-xs text-slate-300 font-body leading-relaxed">
-              <span className="font-bold text-cyan-400">Why invite a partner?</span> Users with a confirmed partner get <span className="font-bold text-slate-100">30 free days</span>, the ability to <span className="font-bold text-slate-100">challenge false flags</span> to protect their streaks, and eligibility for <span className="font-bold text-slate-100">physical and digital awards</span> tied to streak milestones.
+          <div className="mt-4 px-4 py-3 rounded-2xl bg-black/20 border border-white/15">
+            <p className="text-xs text-white/80 font-body leading-relaxed">
+              <span className="font-bold text-white">Why invite a partner?</span> Users with a confirmed partner get <span className="font-bold text-white">30 free days</span>, the ability to <span className="font-bold text-white">challenge false flags</span> to protect their streaks, and eligibility for <span className="font-bold text-white">physical and digital awards</span> tied to streak milestones.
             </p>
           </div>
         </div>
