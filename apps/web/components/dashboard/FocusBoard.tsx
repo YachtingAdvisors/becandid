@@ -67,6 +67,20 @@ const ACTION_LABELS: Record<string, string> = {
   streak_bonus_90:       '90-Day Streak Bonus',
 };
 
+const ACTION_ICONS: Record<string, string> = {
+  focused_morning:       'wb_sunny',
+  focused_evening:       'dark_mode',
+  focused_full_day:      'check_circle',
+  check_in_completed:    'task_alt',
+  conversation_done:     'forum',
+  conversation_positive: 'sentiment_satisfied',
+  milestone_reached:     'emoji_events',
+  partner_encouraged:    'favorite',
+  streak_bonus_7:        'local_fire_department',
+  streak_bonus_30:       'bolt',
+  streak_bonus_90:       'military_tech',
+};
+
 // ─── Helpers ──────────────────────────────────────────────────
 function formatDateShort(dateStr: string): string {
   const d = new Date(dateStr + 'T12:00:00');
@@ -107,7 +121,7 @@ function getTodayStr(): string {
 export default function FocusBoard() {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showHistory, setShowHistory] = useState(false);
+  const [showAllActivity, setShowAllActivity] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [dayEvents, setDayEvents] = useState<DayEvent[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(false);
@@ -148,16 +162,26 @@ export default function FocusBoard() {
 
   if (loading) {
     return (
-      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-8">
-        <div className="h-6 skeleton-shimmer rounded w-48 mb-4" />
-        <div className="h-32 skeleton-shimmer rounded" />
+      <div className="space-y-5">
+        <div className="grid grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="bg-surface-container-lowest rounded-xl p-6">
+              <div className="h-10 skeleton-shimmer rounded w-24 mb-3" />
+              <div className="h-4 skeleton-shimmer rounded w-20" />
+            </div>
+          ))}
+        </div>
+        <div className="bg-surface-container-lowest rounded-xl p-8">
+          <div className="h-6 skeleton-shimmer rounded w-48 mb-4" />
+          <div className="h-32 skeleton-shimmer rounded" />
+        </div>
       </div>
     );
   }
 
   if (!stats) {
     return (
-      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 text-center text-on-surface-variant">
+      <div className="bg-surface-container-lowest rounded-xl p-6 text-center text-on-surface-variant">
         Unable to load focus data.
       </div>
     );
@@ -165,150 +189,180 @@ export default function FocusBoard() {
 
   const { balance, streak, heatmap, recentActions, milestones } = stats;
 
-  // Show a welcome callout when the board is brand new (no streak yet)
-  const isBrandNew = streak.streakDays === 0 && heatmap.every((d: any) => d.morning === 'focused' && d.evening === 'focused');
-
   // Count today's status
   const today = heatmap[heatmap.length - 1];
   const todayFocusedCount = today
     ? [today.morning, today.evening].filter(s => s === 'focused').length
     : 0;
+  const todayPending = today?.morning === 'pending' && today?.evening === 'pending';
 
-  // Week summaries for the 3-week view
-  const weeks = [
-    heatmap.slice(0, 7),
-    heatmap.slice(7, 14),
-    heatmap.slice(14, 21),
-  ];
+  const todayStatusLabel = todayPending
+    ? 'Not Started'
+    : todayFocusedCount === 2
+      ? 'Fully Focused'
+      : todayFocusedCount === 1
+        ? 'Partially Focused'
+        : 'Not Focused';
+
+  // Estimate yesterday's points change (sum points from actions in last 24h)
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  const recentPointsChange = recentActions
+    .filter(a => a.created_at >= yesterdayStr)
+    .reduce((sum, a) => sum + a.points, 0);
+
+  // Streak bar visualization (last 7 days)
+  const streakBarDays = heatmap.slice(-7);
+
+  // Activities to show
+  const visibleActions = showAllActivity ? recentActions : recentActions.slice(0, 5);
 
   return (
-    <div className="space-y-5">
-      {/* ─── Brand-new user callout ───────────────────────── */}
-      {isBrandNew && (
-        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-6 text-center">
-          <span className="material-symbols-outlined text-3xl text-on-surface-variant/40 mb-2 block">local_fire_department</span>
-          <h3 className="font-headline text-base font-bold text-on-surface mb-1">Your focus board starts today</h3>
-          <p className="text-sm text-on-surface-variant font-body max-w-md mx-auto leading-relaxed">
-            Each day has two halves &mdash; morning and evening. Stay focused through both to build your streak.
-          </p>
-        </div>
-      )}
-
-      {/* ─── Top Stats Row ─────────────────────────────────── */}
-      <div className="grid grid-cols-3 gap-3">
-        {/* Trust Points */}
-        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
-          <div className="text-2xl font-headline font-bold text-primary">
+    <div className="space-y-6">
+      {/* ─── Stats Row (3 bento cards) ─────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Card 1: Trust Points */}
+        <div className="bg-surface-container-lowest rounded-xl ring-1 ring-outline-variant/10 p-6">
+          <p className="text-5xl font-headline font-extrabold text-on-surface tracking-tight">
             {balance.toLocaleString()}
-          </div>
-          <div className="text-xs text-on-surface-variant mt-0.5">Trust Points</div>
+          </p>
+          <p className="text-sm text-on-surface-variant font-label mt-2">Trust Points</p>
+          {recentPointsChange !== 0 && (
+            <p className={`text-xs font-label mt-1 ${recentPointsChange > 0 ? 'text-tertiary' : 'text-error'}`}>
+              {recentPointsChange > 0 ? '+' : ''}{recentPointsChange} since yesterday
+            </p>
+          )}
         </div>
 
-        {/* Focus Streak */}
-        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
-          <div className="text-2xl font-headline font-bold text-emerald-600">
+        {/* Card 2: Day Streak */}
+        <div className="bg-surface-container-lowest rounded-xl ring-1 ring-outline-variant/10 p-6">
+          <p className="text-5xl font-headline font-extrabold text-on-surface tracking-tight">
             {streak.streakDays}
-          </div>
-          <div className="text-xs text-on-surface-variant mt-0.5">
-            Day Streak
+          </p>
+          <p className="text-sm text-on-surface-variant font-label mt-2">Day Streak</p>
+          {/* Streak bar visualization */}
+          <div className="flex items-center gap-1 mt-3">
+            {streakBarDays.map((day, i) => {
+              const bothFocused = day.morning === 'focused' && day.evening === 'focused';
+              const anyDistracted = day.morning === 'distracted' || day.evening === 'distracted';
+              return (
+                <div
+                  key={i}
+                  className={`h-2 w-2 rounded-full ${
+                    bothFocused
+                      ? 'bg-tertiary'
+                      : anyDistracted
+                        ? 'bg-error'
+                        : 'bg-surface-variant'
+                  }`}
+                  title={formatDateShort(day.date)}
+                />
+              );
+            })}
           </div>
         </div>
 
-        {/* Today */}
-        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
-          <div className="text-2xl font-headline font-bold">
-            {today?.morning === 'pending' && today?.evening === 'pending'
-              ? '—'
-              : todayFocusedCount === 2
-                ? <span className="material-symbols-outlined text-emerald-500">check_circle</span>
-                : todayFocusedCount === 1
-                  ? <span className="material-symbols-outlined text-amber-500">bolt</span>
-                  : <span className="material-symbols-outlined text-red-500">warning</span>}
+        {/* Card 3: Daily Status */}
+        <div className="bg-primary rounded-xl p-6 flex flex-col justify-between">
+          <div>
+            <p className="text-2xl font-headline font-extrabold text-on-primary tracking-tight">
+              {todayStatusLabel}
+            </p>
+            <p className="text-sm text-on-primary/70 font-label mt-1">
+              {todayPending ? 'Your day has not started yet' : `${todayFocusedCount}/2 segments focused`}
+            </p>
           </div>
-          <div className="text-xs text-on-surface-variant mt-0.5">
-            {today?.morning === 'pending' && today?.evening === 'pending'
-              ? 'Day Starting'
-              : todayFocusedCount === 2
-                ? 'Fully Focused'
-                : todayFocusedCount === 1
-                  ? 'Partially Focused'
-                  : 'Distracted'}
-          </div>
+          {todayFocusedCount < 2 && (
+            <button className="mt-4 self-start px-4 py-2 bg-on-primary text-primary rounded-lg text-sm font-label font-semibold hover:opacity-90 transition-opacity cursor-pointer">
+              Complete Focus
+            </button>
+          )}
         </div>
       </div>
 
-      {/* ─── 21-Day Heatmap ────────────────────────────────── */}
-      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-headline text-sm font-semibold text-on-surface">
-            3-Week Focus Map
-          </h3>
-          <div className="flex items-center gap-3 text-xs text-on-surface-variant">
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-3 rounded-sm bg-emerald-400 inline-block" /> Focused
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-3 rounded-sm bg-red-400 inline-block" /> Distracted
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-3 rounded-sm bg-surface-container inline-block" /> Pending
-            </span>
+      {/* ─── Asymmetric 2-column: Quote + Focus Map ────────── */}
+      <div className="grid grid-cols-12 gap-4">
+        {/* Left: Editorial quote card */}
+        <div className="col-span-12 lg:col-span-4 bg-tertiary-container rounded-xl p-6 flex flex-col justify-between">
+          <div>
+            <span className="material-symbols-outlined text-on-tertiary-container/40 text-3xl mb-4 block" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+            <p className="text-lg text-on-tertiary-container font-body italic leading-relaxed">
+              &ldquo;Begin with the end in mind. Your board starts fully green &mdash; every segment begins as focused. The green isn&rsquo;t earned &mdash; it&rsquo;s your natural state.&rdquo;
+            </p>
           </div>
+          <p className="text-sm text-on-tertiary-container/70 font-label mt-4">
+            &mdash; Stephen Covey
+          </p>
         </div>
 
-        {weeks.map((week, wi) => (
-          <div key={wi} className={wi > 0 ? 'mt-3 pt-3 border-t border-outline-variant/10' : ''}>
-            <div className="text-xs text-on-surface-variant mb-1.5 font-medium">
-              Week {wi + 1}
+        {/* Right: 3-Week Focus Map (WIDE) */}
+        <div className="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl ring-1 ring-outline-variant/10 p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-headline text-base font-bold text-on-surface">
+              3-Week Focus Map
+            </h3>
+            <div className="flex items-center gap-3 text-xs text-on-surface-variant">
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-sm bg-tertiary inline-block" /> Focused
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-sm bg-error inline-block" /> Distracted
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-sm bg-surface-variant inline-block" /> Pending
+              </span>
             </div>
-            <div className="grid grid-cols-7 gap-1.5">
-              {week.map((day, di) => {
-                const cellIndex = wi * 7 + di;
-                const isSelected = selectedDate === day.date;
+          </div>
+
+          {/* Wide grid: 21 columns (3 weeks x 7 days), AM row and PM row */}
+          <div className="w-full">
+            {/* Week labels */}
+            <div className="grid grid-cols-[auto_repeat(21,_1fr)] gap-x-1 mb-1">
+              <div className="w-8" />
+              {[1, 2, 3].map(w => (
+                <div key={w} className="col-span-7 text-center text-[10px] font-label font-semibold text-on-surface-variant uppercase tracking-wider">
+                  Week {w}
+                </div>
+              ))}
+            </div>
+
+            {/* Day name headers */}
+            <div className="grid grid-cols-[auto_repeat(21,_1fr)] gap-x-1 mb-1">
+              <div className="w-8" />
+              {heatmap.map((day) => (
+                <div key={day.date + '-label'} className="text-center text-[9px] text-on-surface-variant font-label">
+                  {getDayLabel(day.date).charAt(0)}
+                </div>
+              ))}
+            </div>
+
+            {/* AM Row */}
+            <div className="grid grid-cols-[auto_repeat(21,_1fr)] gap-x-1 gap-y-1 mb-1">
+              <div className="w-8 flex items-center text-[10px] font-label font-semibold text-on-surface-variant">
+                AM
+              </div>
+              {heatmap.map((day, i) => {
                 const isToday = day.date === todayStr;
                 const isHovered = hoveredDay === day.date;
-                const isMilestoneBoundary = cellIndex === 6 || cellIndex === 13;
                 return (
-                  <div key={day.date} className="text-center relative"
-                    style={{ animation: `fade-up 0.3s ease-out ${cellIndex * 30}ms both` }}>
-                    <div className="text-[10px] text-on-surface-variant mb-1">
-                      {getDayLabel(day.date)}
-                    </div>
+                  <div key={day.date + '-am'} className="relative">
                     <button
                       onClick={() => handleDayClick(day.date)}
                       onMouseEnter={() => setHoveredDay(day.date)}
                       onMouseLeave={() => setHoveredDay(null)}
-                      aria-label={`${formatDateShort(day.date)} — Morning: ${day.morning}, Evening: ${day.evening}`}
-                      className={`w-full cursor-pointer transition-all duration-200 rounded-md ${
-                        isToday ? 'animate-focus-pulse' : ''
-                      } ${
-                        isSelected ? 'ring-2 ring-primary ring-offset-1 scale-105' : 'hover:scale-105 hover:ring-1 hover:ring-primary/30'
+                      aria-label={`${formatDateShort(day.date)} AM: ${day.morning}`}
+                      className={`w-full aspect-square rounded-sm transition-all duration-200 cursor-pointer ${
+                        day.morning === 'focused'
+                          ? 'bg-tertiary'
+                          : day.morning === 'distracted'
+                            ? 'bg-error'
+                            : 'bg-surface-variant'
+                      } ${isToday ? 'ring-2 ring-primary ring-offset-1' : ''} ${
+                        selectedDate === day.date ? 'ring-2 ring-primary scale-110' : 'hover:scale-110 hover:ring-1 hover:ring-primary/30'
                       }`}
-                    >
-                      {/* Morning cell */}
-                      <div
-                        className={`h-5 rounded-t-md transition-colors duration-300 ${
-                          day.morning === 'focused'
-                            ? 'bg-emerald-400'
-                            : day.morning === 'distracted'
-                              ? 'bg-red-400'
-                              : 'bg-surface-container'
-                        }`}
-                      />
-                      {/* Evening cell */}
-                      <div
-                        className={`h-5 rounded-b-md mt-0.5 transition-colors duration-300 ${
-                          day.evening === 'focused'
-                            ? 'bg-emerald-400'
-                            : day.evening === 'distracted'
-                              ? 'bg-red-400'
-                              : 'bg-surface-container'
-                        }`}
-                      />
-                    </button>
-                    <div className="text-[9px] text-on-surface-variant mt-0.5">
-                      {formatDateShort(day.date).split(' ')[1]}
-                    </div>
+                      style={{ animation: `fade-up 0.3s ease-out ${i * 20}ms both` }}
+                    />
                     {/* Hover tooltip */}
                     {isHovered && (
                       <div className="absolute z-20 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-xl bg-on-surface text-surface-container-lowest text-[10px] font-label whitespace-nowrap shadow-lg pointer-events-none animate-fade-in">
@@ -318,105 +372,132 @@ export default function FocusBoard() {
                         <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-on-surface" />
                       </div>
                     )}
-                    {/* Streak milestone marker */}
-                    {isMilestoneBoundary && (
-                      <div className="absolute -right-1 top-3 bottom-3 w-0.5 bg-amber-400 rounded-full opacity-70" />
-                    )}
                   </div>
                 );
               })}
             </div>
 
-            {/* Day detail panel — shows below the week that contains the selected day */}
-            {week.some(d => d.date === selectedDate) && selectedDate && (
-              <div className="mt-3 bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 animate-fade-in">
-                {(() => {
-                  const day = week.find(d => d.date === selectedDate)!;
-                  const isDistracted = day.morning === 'distracted' || day.evening === 'distracted';
-                  const bothFocused = day.morning === 'focused' && day.evening === 'focused';
-                  return (
-                    <>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className={`material-symbols-outlined text-lg ${isDistracted ? 'text-red-500' : 'text-emerald-500'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                            {isDistracted ? 'warning' : 'check_circle'}
-                          </span>
-                          <div>
-                            <h4 className="text-sm font-headline font-bold text-on-surface">
-                              {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-                            </h4>
-                            <p className="text-[10px] text-on-surface-variant font-label">
-                              AM: <span className={day.morning === 'focused' ? 'text-emerald-600 font-bold' : day.morning === 'distracted' ? 'text-red-500 font-bold' : ''}>{day.morning}</span>
-                              {' · '}
-                              PM: <span className={day.evening === 'focused' ? 'text-emerald-600 font-bold' : day.evening === 'distracted' ? 'text-red-500 font-bold' : ''}>{day.evening}</span>
-                            </p>
-                          </div>
-                        </div>
-                        <button onClick={() => setSelectedDate(null)} aria-label="Close day detail" className="p-1 rounded-full hover:bg-surface-container-low cursor-pointer">
-                          <span className="material-symbols-outlined text-on-surface-variant text-sm">close</span>
-                        </button>
-                      </div>
-
-                      {loadingEvents ? (
-                        <div className="flex items-center justify-center py-4">
-                          <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-                        </div>
-                      ) : dayEvents.length > 0 ? (
-                        <div className="space-y-2">
-                          <p className="text-[10px] text-on-surface-variant font-label uppercase tracking-widest font-bold mb-2">
-                            {dayEvents.length} event{dayEvents.length !== 1 ? 's' : ''} flagged
-                          </p>
-                          {dayEvents.map(ev => (
-                            <div key={ev.id} className="flex items-center gap-3 px-3 py-2 bg-surface-container-low rounded-xl">
-                              <span className={`w-2 h-2 rounded-full shrink-0 ${
-                                ev.severity === 'high' ? 'bg-red-500' : ev.severity === 'medium' ? 'bg-amber-500' : 'bg-yellow-400'
-                              }`} />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-label font-medium text-on-surface truncate">
-                                  {GOAL_LABELS[ev.category as GoalCategory] ?? ev.category}
-                                  {ev.app_name && <span className="text-on-surface-variant font-normal"> — {ev.app_name}</span>}
-                                </p>
-                                <p className="text-[10px] text-on-surface-variant font-label">
-                                  {ev.platform} · {new Date(ev.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
-                                </p>
-                              </div>
-                              <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                                ev.severity === 'high' ? 'bg-red-100 text-red-700' : ev.severity === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-yellow-100 text-yellow-700'
-                              }`}>{ev.severity}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : bothFocused ? (
-                        <div className="text-center py-4">
-                          <span className="material-symbols-outlined text-3xl text-emerald-400 mb-2 block" style={{ fontVariationSettings: "'FILL' 1" }}>celebration</span>
-                          <p className="text-sm font-headline font-bold text-emerald-700">All clear!</p>
-                          <p className="text-xs text-on-surface-variant font-body mt-1">No flags this day. You stayed fully focused.</p>
-                        </div>
-                      ) : (
-                        <div className="text-center py-4">
-                          <span className="material-symbols-outlined text-2xl text-on-surface-variant/40 mb-1 block">event_available</span>
-                          <p className="text-xs text-on-surface-variant font-body">No events recorded for this day.</p>
-                        </div>
-                      )}
-                    </>
-                  );
-                })()}
+            {/* PM Row */}
+            <div className="grid grid-cols-[auto_repeat(21,_1fr)] gap-x-1 gap-y-1">
+              <div className="w-8 flex items-center text-[10px] font-label font-semibold text-on-surface-variant">
+                PM
               </div>
-            )}
-          </div>
-        ))}
+              {heatmap.map((day, i) => {
+                const isToday = day.date === todayStr;
+                return (
+                  <div key={day.date + '-pm'} className="relative">
+                    <button
+                      onClick={() => handleDayClick(day.date)}
+                      onMouseEnter={() => setHoveredDay(day.date)}
+                      onMouseLeave={() => setHoveredDay(null)}
+                      aria-label={`${formatDateShort(day.date)} PM: ${day.evening}`}
+                      className={`w-full aspect-square rounded-sm transition-all duration-200 cursor-pointer ${
+                        day.evening === 'focused'
+                          ? 'bg-tertiary'
+                          : day.evening === 'distracted'
+                            ? 'bg-error'
+                            : 'bg-surface-variant'
+                      } ${isToday ? 'ring-2 ring-primary ring-offset-1' : ''} ${
+                        selectedDate === day.date ? 'ring-2 ring-primary scale-110' : 'hover:scale-110 hover:ring-1 hover:ring-primary/30'
+                      }`}
+                      style={{ animation: `fade-up 0.3s ease-out ${(i * 20) + 10}ms both` }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
 
-        {/* Row labels */}
-        <div className="flex items-center gap-4 mt-2 text-[10px] text-on-surface-variant">
-          <span>Top row = Morning (5AM–5PM)</span>
-          <span>Bottom row = Evening (5PM–5AM)</span>
+            {/* Date labels below */}
+            <div className="grid grid-cols-[auto_repeat(21,_1fr)] gap-x-1 mt-1">
+              <div className="w-8" />
+              {heatmap.map((day) => (
+                <div key={day.date + '-num'} className="text-center text-[8px] text-on-surface-variant">
+                  {formatDateShort(day.date).split(' ')[1]}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Day detail panel (appears below the map when a day is clicked) */}
+          {selectedDate && (() => {
+            const day = heatmap.find(d => d.date === selectedDate);
+            if (!day) return null;
+            const isDistracted = day.morning === 'distracted' || day.evening === 'distracted';
+            const bothFocused = day.morning === 'focused' && day.evening === 'focused';
+            return (
+              <div className="mt-4 bg-surface-container-low rounded-xl p-4 animate-fade-in">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className={`material-symbols-outlined text-lg ${isDistracted ? 'text-error' : 'text-tertiary'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                      {isDistracted ? 'warning' : 'check_circle'}
+                    </span>
+                    <div>
+                      <h4 className="text-sm font-headline font-bold text-on-surface">
+                        {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                      </h4>
+                      <p className="text-[10px] text-on-surface-variant font-label">
+                        AM: <span className={day.morning === 'focused' ? 'text-tertiary font-bold' : day.morning === 'distracted' ? 'text-error font-bold' : ''}>{day.morning}</span>
+                        {' \u00b7 '}
+                        PM: <span className={day.evening === 'focused' ? 'text-tertiary font-bold' : day.evening === 'distracted' ? 'text-error font-bold' : ''}>{day.evening}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedDate(null)} aria-label="Close day detail" className="p-1 rounded-full hover:bg-surface-container cursor-pointer">
+                    <span className="material-symbols-outlined text-on-surface-variant text-sm">close</span>
+                  </button>
+                </div>
+
+                {loadingEvents ? (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                  </div>
+                ) : dayEvents.length > 0 ? (
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-on-surface-variant font-label uppercase tracking-widest font-bold mb-2">
+                      {dayEvents.length} event{dayEvents.length !== 1 ? 's' : ''} flagged
+                    </p>
+                    {dayEvents.map(ev => (
+                      <div key={ev.id} className="flex items-center gap-3 px-3 py-2 bg-surface-container-lowest rounded-xl">
+                        <span className={`w-2 h-2 rounded-full shrink-0 ${
+                          ev.severity === 'high' ? 'bg-error' : ev.severity === 'medium' ? 'bg-amber-500' : 'bg-yellow-400'
+                        }`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-label font-medium text-on-surface truncate">
+                            {GOAL_LABELS[ev.category as GoalCategory] ?? ev.category}
+                            {ev.app_name && <span className="text-on-surface-variant font-normal"> — {ev.app_name}</span>}
+                          </p>
+                          <p className="text-[10px] text-on-surface-variant font-label">
+                            {ev.platform} · {new Date(ev.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                          </p>
+                        </div>
+                        <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                          ev.severity === 'high' ? 'bg-error-container text-on-error-container' : ev.severity === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-yellow-100 text-yellow-700'
+                        }`}>{ev.severity}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : bothFocused ? (
+                  <div className="text-center py-4">
+                    <span className="material-symbols-outlined text-3xl text-tertiary mb-2 block" style={{ fontVariationSettings: "'FILL' 1" }}>celebration</span>
+                    <p className="text-sm font-headline font-bold text-on-surface">All clear!</p>
+                    <p className="text-xs text-on-surface-variant font-body mt-1">No flags this day. You stayed fully focused.</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <span className="material-symbols-outlined text-2xl text-on-surface-variant/40 mb-1 block">event_available</span>
+                    <p className="text-xs text-on-surface-variant font-body">No events recorded for this day.</p>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
       </div>
 
-      {/* ─── Milestones ────────────────────────────────────── */}
+      {/* ─── Milestones (if any) ──────────────────────────── */}
       {milestones.length > 0 && (
-        <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4">
-          <h3 className="font-headline text-sm font-semibold text-on-surface mb-3">
+        <div className="bg-surface-container-lowest rounded-xl ring-1 ring-outline-variant/10 p-5">
+          <h3 className="font-headline text-base font-bold text-on-surface mb-3">
             Milestones Unlocked
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -425,7 +506,7 @@ export default function FocusBoard() {
               return (
                 <div
                   key={m.milestone}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-xs font-medium text-amber-800"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-tertiary-container text-on-tertiary-container rounded-full text-xs font-medium"
                   title={`Unlocked ${new Date(m.unlocked_at).toLocaleDateString()}`}
                 >
                   <span className="material-symbols-outlined text-base">{info.icon}</span>
@@ -437,47 +518,58 @@ export default function FocusBoard() {
         </div>
       )}
 
-      {/* ─── Points History ────────────────────────────────── */}
-      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10">
-        <button
-          onClick={() => setShowHistory(!showHistory)}
-          aria-expanded={showHistory}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors"
-        >
-          <span>Recent Points Activity</span>
-          <span className="material-symbols-outlined text-on-surface-variant text-lg">{showHistory ? 'expand_less' : 'expand_more'}</span>
-        </button>
+      {/* ─── Recent Points Activity ──────────────────────── */}
+      <div className="bg-surface-container-lowest rounded-xl ring-1 ring-outline-variant/10">
+        <div className="px-5 pt-5 pb-3">
+          <h3 className="font-headline text-base font-bold text-on-surface">
+            Recent Points Activity
+          </h3>
+        </div>
 
-        {showHistory && (
-          <div className="border-t border-outline-variant/10 divide-y divide-outline-variant/5">
-            {recentActions.map((action, i) => (
-              <div key={i} className="flex items-center justify-between px-4 py-2.5">
-                <div>
-                  <div className="text-sm text-on-surface">
-                    {ACTION_LABELS[action.action] || action.action}
-                  </div>
-                  {action.note && (
-                    <div className="text-xs text-on-surface-variant">{action.note}</div>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={`text-sm font-semibold ${
-                    action.points > 0 ? 'text-emerald-600' : 'text-red-500'
-                  }`}>
-                    {action.points > 0 ? '+' : ''}{action.points}
-                  </span>
-                  <span className="text-xs text-on-surface-variant">
-                    {timeAgo(action.created_at)}
-                  </span>
-                </div>
+        <div className="divide-y divide-outline-variant/5">
+          {visibleActions.length === 0 && (
+            <div className="px-5 py-8 text-center text-sm text-on-surface-variant">
+              No points activity yet. Stay focused to start earning!
+            </div>
+          )}
+          {visibleActions.map((action, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-low transition-colors"
+            >
+              <span className="material-symbols-outlined text-on-surface-variant text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                {ACTION_ICONS[action.action] || 'stars'}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-on-surface font-label font-medium">
+                  {ACTION_LABELS[action.action] || action.action}
+                </p>
+                {action.note && (
+                  <p className="text-xs text-on-surface-variant truncate">{action.note}</p>
+                )}
               </div>
-            ))}
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="text-xs text-on-surface-variant font-label">
+                  {timeAgo(action.created_at)}
+                </span>
+                <span className={`text-sm font-semibold font-label ${
+                  action.points > 0 ? 'text-tertiary' : 'text-error'
+                }`}>
+                  {action.points > 0 ? '+' : ''}{action.points}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
 
-            {recentActions.length === 0 && (
-              <div className="px-4 py-6 text-center text-sm text-on-surface-variant">
-                No points activity yet. Stay focused to start earning!
-              </div>
-            )}
+        {recentActions.length > 5 && (
+          <div className="px-5 py-3 border-t border-outline-variant/10">
+            <button
+              onClick={() => setShowAllActivity(!showAllActivity)}
+              className="w-full text-center text-sm font-label font-semibold text-primary hover:text-primary/80 transition-colors cursor-pointer py-1"
+            >
+              {showAllActivity ? 'Show Less' : 'Show All Activity History'}
+            </button>
           </div>
         )}
       </div>
