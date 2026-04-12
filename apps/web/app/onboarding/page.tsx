@@ -502,12 +502,6 @@ function OnboardingContent() {
                 </h1>
               </div>
 
-              {stringerStep === 0 && (
-                <p className="text-base text-slate-300 leading-relaxed font-body max-w-lg">
-                  Be Candid is grounded in clinical research and backed by a team of psychiatrists and mental health counselors. The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life. That alignment is the foundation of authentic communication, reduced anxiety, and a nervous system that no longer carries the weight of a double life.
-                </p>
-              )}
-
               <div className="space-y-6" key={stringerStep} style={{ animation: 'fadeUp 0.4s ease' }}>
                 <h3 className="font-headline text-xl font-bold text-primary">{STRINGER_PILLARS[stringerStep].title}</h3>
                 <div className="relative pl-8 border-l-2 border-primary/30">
@@ -686,20 +680,17 @@ function OnboardingContent() {
             </div>
           )}
 
-          {/* Form - greyed out after 2 invites on free plan */}
-          {invitedPartners.length >= 2 ? (
-            <div className="bg-black/25 backdrop-blur-md border border-white/10 rounded-3xl p-6 opacity-50 pointer-events-none">
+          {/* Form - greyed out after 1 invite on free plan */}
+          {invitedPartners.length >= 1 ? (
+            <div className="bg-black/25 backdrop-blur-md border border-white/10 rounded-3xl p-6">
               <div className="text-center space-y-3">
-                <span className="material-symbols-outlined text-3xl text-white/40">lock</span>
-                <p className="text-sm font-headline font-bold text-white">Free plan limit reached</p>
-                <p className="text-xs text-white/60 font-body">Upgrade to Pro to add up to 5 accountability partners.</p>
+                <span className="material-symbols-outlined text-3xl text-emerald-400">check_circle</span>
+                <p className="text-sm font-headline font-bold text-white">Partner invited!</p>
+                <p className="text-xs text-white/70 font-body">Upgrade to Pro to add up to 5 accountability partners.</p>
               </div>
             </div>
           ) : (
             <div className="bg-black/25 backdrop-blur-md border border-white/15 rounded-3xl p-6 space-y-4">
-              {invitedPartners.length > 0 && (
-                <p className="text-xs text-white font-label font-bold text-center">Add another partner ({2 - invitedPartners.length} remaining on free plan)</p>
-              )}
             <div>
               <label className="block text-sm font-medium text-white mb-1.5 font-label">Their name</label>
               <input type="text" value={partnerName} onChange={(e) => setPartnerName(e.target.value)}
@@ -766,13 +757,13 @@ function OnboardingContent() {
                 {initialStep === 'partner' ? '\u2190 Dashboard' : '\u2190 Back'}
               </button>
             )}
-            {invitedPartners.length < 2 && (
+            {invitedPartners.length < 1 && (
               <button onClick={sendInvite} disabled={!partnerName.trim() || !partnerEmail.trim() || loading}
                 className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-black/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:shadow-none transition-all duration-200 cursor-pointer">
-                {loading ? 'Sending invite...' : invitedPartners.length > 0 ? 'Send another invite →' : 'Send invite →'}
+                {loading ? 'Sending invite...' : 'Send invite →'}
               </button>
             )}
-            {invitedPartners.length >= 2 && (
+            {invitedPartners.length >= 1 && (
               <button onClick={() => setStep('rival-assessment')}
                 className="flex-1 py-3 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-black/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer">
                 Continue →
