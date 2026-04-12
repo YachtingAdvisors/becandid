@@ -30,16 +30,14 @@ export default function MethodologyPage() {
       <PublicNav />
 
       {/* ── Hero (full-bleed background image) ─────────────────── */}
-      <section className="relative min-h-[819px] flex items-center justify-center text-center">
-        {/* Background image */}
-        <img
-          src="/images/features/alignment-tracking.webp"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          aria-hidden="true"
-        />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0c1214]/20 via-[#0c1214]/60 to-[#0c1214]" />
+      <section className="relative min-h-[819px] flex items-center justify-center text-center overflow-hidden">
+        {/* Abstract gradient background */}
+        <div className="absolute inset-0" aria-hidden="true">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0c1214] via-[#0f1d20] to-[#0c1214]" />
+          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full blur-[180px]" style={{ background: 'rgba(20, 184, 166, 0.08)' }} />
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[160px]" style={{ background: 'rgba(6, 182, 212, 0.06)' }} />
+          <div className="absolute top-1/3 right-1/3 w-[400px] h-[400px] rounded-full blur-[140px]" style={{ background: 'rgba(16, 185, 129, 0.05)' }} />
+        </div>
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 pt-32">
           {/* Badge */}
