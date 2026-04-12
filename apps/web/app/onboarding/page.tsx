@@ -13,7 +13,6 @@
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import GoalSelector from '@/components/onboarding/GoalSelector';
 import PartnerPreview from '@/components/onboarding/PartnerPreview';
 import type { GoalCategory, TrackedSubstance } from '@be-candid/shared';
@@ -824,12 +823,23 @@ function OnboardingContent() {
           </div>
 
           <div className="mt-8 space-y-3">
-            <Link
-              href="/dashboard/assessment?return_to=onboarding"
+            <button
+              onClick={() => {
+                // Complete signup: save widgets, show phrase animation, then redirect to assessment
+                fetch('/api/widgets', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ widgets: getDefaultWidgets(goals, motivators.join(',')) }),
+                }).catch(() => {});
+                setShowFullPhrase(true);
+                setTimeout(() => {
+                  router.push('/dashboard/assessment');
+                }, 4000);
+              }}
               className="block w-full py-4 text-sm font-headline font-bold rounded-full bg-primary text-on-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 text-center"
             >
               Take Assessment
-            </Link>
+            </button>
             <button
               onClick={() => setStep('done')}
               className="w-full py-3 text-sm font-headline font-bold text-on-surface-variant hover:text-on-surface text-center cursor-pointer transition-colors duration-200 rounded-full ring-1 ring-outline-variant/20 hover:ring-outline-variant/40"
