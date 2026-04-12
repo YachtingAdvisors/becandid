@@ -124,6 +124,7 @@ function OnboardingContent() {
     setPartnerPhone(formatPhone(raw));
   };
   const [motivators, setMotivators] = useState<FoundationalMotivator[]>([]);
+  const [checkedTips, setCheckedTips] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -391,18 +392,19 @@ function OnboardingContent() {
             </div>
             <h1 className="text-2xl font-headline font-semibold text-slate-100 mb-2">Tips for your journey</h1>
             <p className="text-sm text-slate-400 font-body leading-relaxed">
-              Quick wins to set yourself up for success with your selected rivals.
+              Tap each tip to mark it as noted. Quick wins to set yourself up for success.
             </p>
           </div>
 
           <div className="space-y-5">
-            {goals.slice(0, 3).map((category) => {
+            {goals.slice(0, 3).map((category, cardIdx) => {
               const tips = GOAL_TIPS[category];
               if (!tips || tips.length === 0) return null;
               return (
                 <div
                   key={category}
-                  className="rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/5 ring-1 ring-primary/10 overflow-hidden"
+                  className="rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/5 ring-1 ring-primary/10"
+                  style={{ animation: `fadeSlideUp 0.5s ease-out ${cardIdx * 0.15}s both` }}
                 >
                   <div className="px-5 py-3 border-b border-white/5 flex items-center gap-3">
                     <MaterialIcon name={tips[0].icon} filled className="text-primary text-lg" />
@@ -410,15 +412,44 @@ function OnboardingContent() {
                       {GOAL_LABELS[category]}
                     </span>
                   </div>
-                  <ul className="px-5 py-3 space-y-3">
-                    {tips.map((t, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="material-symbols-outlined text-slate-400 text-base mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 0" }}>
-                          {t.icon}
-                        </span>
-                        <span className="text-sm text-slate-300 font-body leading-relaxed">{t.tip}</span>
-                      </li>
-                    ))}
+                  <ul className="px-5 py-3 space-y-1">
+                    {tips.map((t, i) => {
+                      const tipKey = `${category}-${i}`;
+                      const checked = checkedTips.has(tipKey);
+                      return (
+                        <li key={i}>
+                          <button
+                            type="button"
+                            onClick={() => setCheckedTips(prev => {
+                              const next = new Set(prev);
+                              if (next.has(tipKey)) next.delete(tipKey); else next.add(tipKey);
+                              return next;
+                            })}
+                            className={`w-full flex items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-300 cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary/20 ${
+                              checked
+                                ? 'bg-primary/[0.06]'
+                                : 'hover:bg-white/[0.04]'
+                            }`}
+                            style={{ animation: `fadeSlideUp 0.4s ease-out ${cardIdx * 0.15 + (i + 1) * 0.08}s both` }}
+                          >
+                            <span className={`mt-0.5 shrink-0 w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-300 ${
+                              checked
+                                ? 'bg-primary border-primary text-on-primary'
+                                : 'border-white/20 text-transparent'
+                            }`}>
+                              {checked && (
+                                <MaterialIcon name="check" className="text-sm" />
+                              )}
+                            </span>
+                            <span className={`text-sm font-body leading-relaxed transition-all duration-300 ${
+                              checked ? 'text-slate-400' : 'text-slate-300'
+                            }`}>
+                              {t.tip}
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               );
@@ -488,12 +519,6 @@ function OnboardingContent() {
                   <span className="text-primary italic">{STRINGER_PILLARS[stringerStep].heading}</span>
                 </h1>
               </div>
-
-              {stringerStep === 0 && (
-                <p className="text-base text-slate-300 leading-relaxed font-body max-w-lg">
-                  Be Candid is grounded in clinical research and backed by a team of psychiatrists and mental health counselors. The core finding: your patterns are never random. They&apos;re shaped by the parts of your story that remain unaddressed. Understanding them is how you align your digital life with your real life. That alignment is the foundation of authentic communication, reduced anxiety, and a nervous system that no longer carries the weight of a double life.
-                </p>
-              )}
 
               <div className="space-y-6" key={stringerStep} style={{ animation: 'fadeUp 0.4s ease' }}>
                 <h3 className="font-headline text-xl font-bold text-primary">{STRINGER_PILLARS[stringerStep].title}</h3>
