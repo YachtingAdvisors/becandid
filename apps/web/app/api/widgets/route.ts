@@ -12,7 +12,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { getDefaultWidgets, WIDGET_REGISTRY } from '@/lib/widgets/registry';
 
-const VALID_IDS = new Set(WIDGET_REGISTRY.map(w => w.id));
+const REGISTRY_IDS = new Set(WIDGET_REGISTRY.map(w => w.id));
+
+// Dashboard page uses short IDs (e.g. 'hero', 'mood') while lib/widgets/registry
+// uses long IDs (e.g. 'dashboard_hero', 'quick_mood'). Accept both sets.
+const DASHBOARD_IDS = new Set([
+  'commitment', 'hero', 'mood', 'assessment', 'focus-board', 'checkin',
+  'featured', 'whats-new', 'coach', 'nudges', 'quote', 'challenge',
+  'chips', 'relationship', 'growth-journal', 'referral', 'spouse',
+  'screen-content', 'inventory', 'weekly-report', 'services', 'events',
+]);
+
+const VALID_IDS = new Set([...REGISTRY_IDS, ...DASHBOARD_IDS]);
 
 // -- GET: Current widget config -----------------------------------
 

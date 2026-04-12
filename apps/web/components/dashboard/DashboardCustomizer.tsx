@@ -39,9 +39,37 @@ interface SavedLayout {
   hidden: string[];
 }
 
-const DEFAULT_ORDER = WIDGET_REGISTRY.map(w => w.id);
-// Hide advanced widgets by default — reduce new-user overwhelm
-const DEFAULT_HIDDEN = ['referral', 'services', 'events', 'inventory', 'weekly-report', 'screen-content', 'spouse'];
+// Curated default order — essentials first, niche features last
+const DEFAULT_ORDER = [
+  'commitment',     // Morning Intention — start the day
+  'hero',           // Dashboard Hero — welcome + stats
+  'mood',           // Quick Mood — emotional check
+  'focus-board',    // Focus Board — daily focus tracking
+  'checkin',        // Check-in — accountability
+  'quote',          // Quote of the Day — motivation
+  'challenge',      // Daily Challenge — engagement
+  'nudges',         // Nudges — gentle reminders
+  'growth-journal', // Growth Journal — reflection
+  'chips',          // Focus Chips — milestones
+  'relationship',   // Relationship — partner status
+  // Hidden by default below
+  'assessment',     // Rival Assessment — taken once
+  'featured',       // Featured Cards — promo
+  'whats-new',      // What's New — updates
+  'coach',          // Scheduled Coach — premium
+  'referral',       // Referral — marketing
+  'spouse',         // Partner Impact — needs partner
+  'screen-content', // Screen Time & Filter — tools section
+  'inventory',      // Daily Inventory — advanced
+  'weekly-report',  // Weekly Report — periodic
+  'services',       // Other Services — extra
+  'events',         // Recent Events — monitoring
+];
+// Hide advanced/niche widgets by default — reduce new-user overwhelm
+const DEFAULT_HIDDEN = [
+  'assessment', 'featured', 'whats-new', 'coach', 'referral',
+  'spouse', 'screen-content', 'inventory', 'weekly-report', 'services', 'events',
+];
 const STORAGE_KEY = 'becandid-dashboard-layout';
 
 function loadLayout(serverWidgets?: string[] | null): SavedLayout {
@@ -80,13 +108,15 @@ function persistLayout(layout: SavedLayout) {
   if (typeof window === 'undefined') return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(layout));
 
-  // Sync to database: active widgets = ordered minus hidden
+  // Sync to database: send ordered visible widgets (hidden = everything not in list)
   const activeWidgets = layout.order.filter(id => !layout.hidden.includes(id));
   fetch('/api/widgets', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ widgets: activeWidgets }),
-  }).catch(() => {});
+  })
+    .then(res => { if (!res.ok) res.json().then(d => console.error('Widget save failed:', d.error)); })
+    .catch(err => console.error('Widget save network error:', err));
 }
 
 /* ─── Component ──────────────────────────────────────────── */
@@ -151,7 +181,7 @@ export default function DashboardCustomizer({ widgets, serverWidgets }: Props) {
   }
 
   function resetLayout() {
-    const fresh = { order: DEFAULT_ORDER, hidden: [] };
+    const fresh = { order: DEFAULT_ORDER, hidden: DEFAULT_HIDDEN };
     setLayout(fresh);
     persistLayout(fresh);
   }
