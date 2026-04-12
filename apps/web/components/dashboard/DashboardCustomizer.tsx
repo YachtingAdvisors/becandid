@@ -42,6 +42,7 @@ interface SavedLayout {
 // Curated default order — essentials first, niche features last
 const DEFAULT_ORDER = [
   'commitment',     // Morning Intention — start the day
+  'assessment',     // Rival Assessment — highly recommended for new users
   'hero',           // Dashboard Hero — welcome + stats
   'mood',           // Quick Mood — emotional check
   'focus-board',    // Focus Board — daily focus tracking
@@ -53,7 +54,6 @@ const DEFAULT_ORDER = [
   'chips',          // Focus Chips — milestones
   'relationship',   // Relationship — partner status
   // Hidden by default below
-  'assessment',     // Rival Assessment — taken once
   'featured',       // Featured Cards — promo
   'whats-new',      // What's New — updates
   'coach',          // Scheduled Coach — premium
@@ -67,7 +67,7 @@ const DEFAULT_ORDER = [
 ];
 // Hide advanced/niche widgets by default — reduce new-user overwhelm
 const DEFAULT_HIDDEN = [
-  'assessment', 'featured', 'whats-new', 'coach', 'referral',
+  'featured', 'whats-new', 'coach', 'referral',
   'spouse', 'screen-content', 'inventory', 'weekly-report', 'services', 'events',
 ];
 const STORAGE_KEY = 'becandid-dashboard-layout';
