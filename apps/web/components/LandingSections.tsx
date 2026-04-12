@@ -40,7 +40,7 @@ function useCountUp(end: number, duration = 1800) {
 
 /* ─── Social Proof Counter Bar ───────────────────────────────── */
 const STATS = [
-  { end: 16, label: 'rival categories', prefix: '', suffix: '' },
+  { end: 16, label: 'addiction categories to choose from', prefix: '', suffix: '' },
   { end: 24, label: 'behavioral patterns', prefix: '', suffix: '' },
   { end: 48, label: 'avg conversation rating', prefix: '', suffix: '', display: '4.8' },
 ];
