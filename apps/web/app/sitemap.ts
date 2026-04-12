@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/legal/privacy`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
     { url: `${baseUrl}/legal/terms`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
     { url: `${baseUrl}/legal/therapist-dpa`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${baseUrl}/help/mac-setup`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
   ];
 
   const blogPages: MetadataRoute.Sitemap = BLOG_POSTS.map(post => ({
