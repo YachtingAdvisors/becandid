@@ -375,9 +375,9 @@ export default function LandingPage() {
                 {/* Floating glass quote card */}
                 <div className="absolute bottom-8 left-8 right-8 glass-card rounded-2xl p-6">
                   <p className="font-body text-sm text-stone-300 italic leading-relaxed">
-                    {"\u201C"}Integrity is choosing courage over comfort; choosing what is right over what is fun, fast, or easy; and choosing to practice our values rather than simply professing them.{"\u201D"}
+                    {"\u201C"}The curious paradox is that when I accept myself just as I am, then I can change.{"\u201D"}
                   </p>
-                  <p className="font-label text-xs text-stone-500 mt-2">{"\u2014"} Bren&#233; Brown</p>
+                  <p className="font-label text-xs text-stone-500 mt-2">{"\u2014"} Carl Rogers</p>
                 </div>
               </div>
             </div>
