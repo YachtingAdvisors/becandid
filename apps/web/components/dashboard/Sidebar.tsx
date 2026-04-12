@@ -111,7 +111,7 @@ function NavGroupedItems({ navItems, isActive, onNavigate }: {
           <div key={groupId} className="mt-2">
             <button
               onClick={() => setExpanded(prev => ({ ...prev, [groupId]: !prev[groupId] }))}
-              className="flex items-center gap-3 px-4 py-2 w-full text-left rounded-xl text-[11px] font-headline font-semibold uppercase tracking-widest text-[#2b3435]/50 hover:text-[#2b3435]/80 transition-colors cursor-pointer"
+              className="flex items-center gap-3 px-4 py-2 w-full text-left rounded-xl text-[11px] font-headline font-semibold uppercase tracking-widest text-[#2b3435]/70 hover:text-[#2b3435]/90 transition-colors cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm w-5 text-center">{meta.icon}</span>
               <span className="flex-1">{meta.label}</span>

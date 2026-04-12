@@ -187,7 +187,7 @@ export default function DashboardHero({
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface text-on-surface text-sm font-label font-semibold ring-1 ring-outline-variant/20 hover:bg-surface-container transition-all duration-200"
           >
             <span className="material-symbols-outlined text-base">psychology</span>
-            Coach
+            Connect Therapist
           </button>
         </div>
       </section>
