@@ -375,9 +375,9 @@ export default function LandingPage() {
                 {/* Floating glass quote card */}
                 <div className="absolute bottom-8 left-8 right-8 glass-card rounded-2xl p-6">
                   <p className="font-body text-sm text-stone-300 italic leading-relaxed">
-                    {"\u201C"}The curious paradox is that when I accept myself just as I am, then I can change.{"\u201D"}
+                    {"\u201C"}What you are afraid to do is a clear indicator of the next thing you need to do.{"\u201D"}
                   </p>
-                  <p className="font-label text-xs text-stone-500 mt-2">{"\u2014"} Carl Rogers</p>
+                  <p className="font-label text-xs text-stone-500 mt-2">{"\u2014"} Ralph Waldo Emerson</p>
                 </div>
               </div>
             </div>
