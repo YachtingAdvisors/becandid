@@ -786,42 +786,39 @@ function OnboardingContent() {
       {step === 'rival-assessment' && (
         <div className="max-w-md w-full animate-fade-slide">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <MaterialIcon name="psychology_alt" filled className="text-primary text-3xl" />
-            </div>
-            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-2">Discover Your Rivals</h1>
-            <p className="text-xs text-primary font-label font-medium uppercase tracking-widest mb-4">Optional</p>
+            <h1 className="text-2xl font-headline font-semibold text-on-surface mb-3">Discover Your Rivals</h1>
             <p className="text-sm text-on-surface-variant leading-relaxed font-body max-w-sm mx-auto">
-              Not sure which rivals to focus on? Our Rival Assessment walks you through a series of reflective prompts to uncover the behavioral patterns that challenge you most — ranked by match strength.
+              Not sure which rivals to focus on? A short reflective assessment can uncover the behavioral patterns that challenge you most.
             </p>
           </div>
 
-          <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 p-6 space-y-4 shadow-sm">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                <MaterialIcon name="checklist" filled className="text-primary text-lg" />
+          <div className="bg-surface-container-lowest rounded-3xl ring-1 ring-outline-variant/10 overflow-hidden shadow-sm">
+            {/* Feature rows */}
+            <div className="p-5 flex items-start gap-4 border-b border-outline-variant/10">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <MaterialIcon name="checklist" filled className="text-primary text-base" />
               </div>
               <div>
-                <h3 className="text-sm font-label font-bold text-on-surface mb-1">4 reflective categories</h3>
+                <h3 className="text-sm font-label font-bold text-on-surface mb-0.5">4 reflective categories</h3>
                 <p className="text-xs text-on-surface-variant font-body leading-relaxed">Emotions, behaviors, triggers, and inner dialogue — select the words that resonate.</p>
               </div>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                <MaterialIcon name="analytics" filled className="text-primary text-lg" />
+            <div className="p-5 flex items-start gap-4 border-b border-outline-variant/10">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <MaterialIcon name="analytics" filled className="text-primary text-base" />
               </div>
               <div>
-                <h3 className="text-sm font-label font-bold text-on-surface mb-1">Personalized rival profile</h3>
+                <h3 className="text-sm font-label font-bold text-on-surface mb-0.5">Personalized rival profile</h3>
                 <p className="text-xs text-on-surface-variant font-body leading-relaxed">See which rivals are most likely to challenge you, ranked by how closely they match your responses.</p>
               </div>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                <MaterialIcon name="timer" filled className="text-primary text-lg" />
+            <div className="p-5 flex items-start gap-4">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <MaterialIcon name="timer" filled className="text-primary text-base" />
               </div>
               <div>
-                <h3 className="text-sm font-label font-bold text-on-surface mb-1">Takes about 3 minutes</h3>
-                <p className="text-xs text-on-surface-variant font-body leading-relaxed">Quick, private, and completely optional. You can always take it later from your dashboard.</p>
+                <h3 className="text-sm font-label font-bold text-on-surface mb-0.5">Takes about 3 minutes</h3>
+                <p className="text-xs text-on-surface-variant font-body leading-relaxed">Quick, private, and completely optional.</p>
               </div>
             </div>
           </div>
@@ -835,10 +832,13 @@ function OnboardingContent() {
             </Link>
             <button
               onClick={() => setStep('done')}
-              className="w-full py-3 text-sm text-on-surface-variant hover:text-on-surface text-center font-body cursor-pointer transition-colors duration-200"
+              className="w-full py-3 text-sm font-headline font-bold text-on-surface-variant hover:text-on-surface text-center cursor-pointer transition-colors duration-200 rounded-full ring-1 ring-outline-variant/20 hover:ring-outline-variant/40"
             >
-              Skip for Now
+              Skip &mdash; I&apos;ll take it later
             </button>
+            <p className="text-center text-xs text-on-surface-variant/70 font-body">
+              You can always find this in Settings &rarr; Rival Assessment
+            </p>
           </div>
         </div>
       )}
