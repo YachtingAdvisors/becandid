@@ -40,8 +40,8 @@ function useCountUp(end: number, duration = 1800) {
 
 /* ─── Social Proof Counter Bar ───────────────────────────────── */
 const STATS = [
-  { end: 50000, label: 'journal entries', prefix: '', suffix: '+' },
-  { end: 1000000, label: 'focused hours', prefix: '', suffix: '+' },
+  { end: 16, label: 'rival categories', prefix: '', suffix: '' },
+  { end: 24, label: 'behavioral patterns', prefix: '', suffix: '' },
   { end: 48, label: 'avg conversation rating', prefix: '', suffix: '', display: '4.8' },
 ];
 
@@ -77,10 +77,10 @@ export function SocialProofCounter() {
     <section className="py-16 lg:py-20 px-6 bg-white/[0.02]">
       <div ref={ref} className="max-w-screen-xl mx-auto text-center">
         <p className="font-body text-lg text-stone-400 mb-2">
-          Join a community of people aligning their digital lives
+          Built on research with <span className="text-cyan-400 font-bold">4,000</span> participants
         </p>
         <p className="font-body text-sm text-stone-500 mb-10">
-          78% of users noticed improved focus
+          Clinical-grade tools for digital accountability
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-16">
           {STATS.map((s) => (
