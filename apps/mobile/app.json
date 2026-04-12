@@ -14,12 +14,7 @@
       "backgroundColor": "#ffffff"
     },
     "plugins": [
-      [
-        "expo-router",
-        {
-          "root": "./app"
-        }
-      ],
+      "expo-router",
       [
         "expo-build-properties",
         {
