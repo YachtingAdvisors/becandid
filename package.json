@@ -2,9 +2,7 @@
   "name": "be-candid",
   "private": true,
   "workspaces": [
-    "apps/web",
-    "apps/desktop",
-    "apps/extension",
+    "apps/*",
     "packages/*"
   ],
   "scripts": {
