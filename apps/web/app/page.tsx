@@ -139,15 +139,15 @@ export default function LandingPage() {
 
               {/* Headline */}
               <h1 className="font-headline text-[2.75rem] sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold tracking-tight leading-[1.08]">
-                <span className="text-glow">Recovery starts with{' '}</span>
+                <span className="text-glow">Accountability,{' '}</span>
                 <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
-                  radical honesty.
+                  not surveillance.
                 </span>
               </h1>
 
               {/* Sub */}
-              <p className="font-body text-lg lg:text-xl text-stone-400 leading-relaxed max-w-md">
-                An accountability app that combines screen monitoring, guided journaling, and data-driven insights to help you break free from unwanted habits &mdash; for good.
+              <p className="font-body text-lg lg:text-xl text-stone-400 leading-relaxed max-w-lg">
+                Your patterns have a story to tell. We give them a voice and an audience. Be Candid is an accountability app that combines advanced screen monitoring, guided journaling, and data-driven insights to help you break free from unwanted habits &mdash; for good.
               </p>
 
               {/* CTAs */}
