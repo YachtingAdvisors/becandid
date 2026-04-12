@@ -743,7 +743,7 @@ function OnboardingContent() {
 
           {error && <p className="text-sm text-error mt-3 font-body">{error}</p>}
 
-          <div className="flex gap-3 mt-6">
+          <div className="flex gap-3 mt-6 relative z-10">
             {invitedPartners.length > 0 ? (
               <button onClick={() => setStep('rival-assessment')} className="px-6 py-3 text-sm font-headline font-bold rounded-full ring-1 ring-white/10 text-slate-400 hover:bg-white/5 transition-all duration-200 cursor-pointer">
                 Continue \u2192
