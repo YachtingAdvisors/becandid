@@ -453,6 +453,19 @@ function OnboardingContent() {
       {/* ═══════ STEP 2: Philosophy Intro (editorial layout) ═══════ */}
       {step === 'stringer' && (
         <div className="max-w-5xl w-full animate-fade-slide">
+          {/* Sun callout */}
+          {stringerStep === 0 && (
+            <div className="flex items-end justify-center gap-2 mb-6 animate-fade-in">
+              <svg width="28" height="48" viewBox="0 0 28 48" fill="none" className="shrink-0">
+                <path d="M14 44V8" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M6 16L14 6L22 16" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <p className="text-sm text-emerald-400 font-label font-semibold leading-snug pb-1">
+                You&apos;re almost there &mdash; can you see the sun rising?
+              </p>
+            </div>
+          )}
+
           {/* Progress dots */}
           <nav className="flex gap-2 mb-12">
             {STRINGER_PILLARS.map((_, i) => (
