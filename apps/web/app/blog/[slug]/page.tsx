@@ -71,7 +71,7 @@ export default async function BlogPostPage({ params }: Props) {
       />
 
       {/* Back link */}
-      <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-stone-400 hover:text-cyan-400 font-label mb-8 transition-colors">
+      <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-stone-300 hover:text-cyan-400 font-label mb-8 transition-colors">
         <span className="material-symbols-outlined text-base">arrow_back</span>
         All articles
       </Link>
@@ -85,10 +85,10 @@ export default async function BlogPostPage({ params }: Props) {
             </span>
           ))}
         </div>
-        <h1 className="font-headline text-3xl md:text-4xl font-extrabold tracking-tight text-slate-100 mb-4">
+        <h1 className="font-headline text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">
           {post.title}
         </h1>
-        <div className="flex items-center gap-3 text-sm text-stone-500 font-label">
+        <div className="flex items-center gap-3 text-sm text-stone-400 font-label">
           <span>{post.author}</span>
           <span>&middot;</span>
           <span>{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
@@ -111,11 +111,11 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
           <div className="flex flex-wrap justify-center gap-2 mb-4">
             {post.tags.slice(0, 3).map((tag: string) => (
-              <span key={tag} className="px-3 py-1 rounded-full bg-white/10 text-white/70 text-xs font-label font-bold uppercase tracking-wider">{tag}</span>
+              <span key={tag} className="px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs font-label font-bold uppercase tracking-wider">{tag}</span>
             ))}
           </div>
           <h2 className="font-headline text-2xl md:text-3xl font-extrabold text-white leading-tight max-w-xl">{post.title}</h2>
-          <p className="font-body text-sm text-white/50 mt-3 max-w-md">{post.description}</p>
+          <p className="font-body text-sm text-white/70 mt-3 max-w-md">{post.description}</p>
         </div>
       </div>
 
@@ -125,11 +125,11 @@ export default async function BlogPostPage({ params }: Props) {
           prose-headings:font-headline prose-headings:tracking-tight prose-headings:text-white
           prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4
           prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3
-          prose-p:font-body prose-p:text-stone-200 prose-p:leading-relaxed prose-p:mb-4
-          prose-li:text-stone-200
+          prose-p:font-body prose-p:text-stone-100 prose-p:leading-relaxed prose-p:mb-4
+          prose-li:text-stone-100
           prose-strong:text-white
-          prose-blockquote:text-stone-300 prose-blockquote:border-primary/40
-          prose-td:text-stone-200 prose-th:text-white
+          prose-blockquote:text-stone-200 prose-blockquote:border-primary/40
+          prose-td:text-stone-100 prose-th:text-white
           prose-hr:border-stone-700/50
           prose-em:text-teal-400 prose-em:not-italic prose-em:font-medium
           prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline"
