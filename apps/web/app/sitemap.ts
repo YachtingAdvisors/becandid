@@ -1,9 +1,7 @@
 import type { MetadataRoute } from 'next';
-import { getAllBlogPosts } from '@/content/blog/loader';
+import { getAllBlogPosts, getSeoPublishedPosts } from '@/content/blog/loader';
 
-const BLOG_POSTS = getAllBlogPosts();
-
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
   const staticPages: MetadataRoute.Sitemap = [
@@ -25,7 +23,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/legal/therapist-dpa`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
   ];
 
-  const blogPages: MetadataRoute.Sitemap = BLOG_POSTS.map(post => ({
+  // Merge static + database blog posts, deduplicate by slug
+  const staticPosts = getAllBlogPosts();
+  const seoPosts = await getSeoPublishedPosts();
+  const slugs = new Set(staticPosts.map(p => p.slug));
+  const allPosts = [...staticPosts, ...seoPosts.filter(p => !slugs.has(p.slug))];
+
+  const blogPages: MetadataRoute.Sitemap = allPosts.map(post => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly' as const,

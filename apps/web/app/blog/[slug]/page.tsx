@@ -35,6 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: post.title,
     description: post.description,
+    alternates: {
+      canonical: `https://becandid.io/blog/${slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.description,
@@ -42,6 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: post.date,
       authors: [post.author],
       tags: post.tags,
+      url: `https://becandid.io/blog/${slug}`,
       images: [{ url: ogImageUrl, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
@@ -53,10 +57,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+function getRelatedPosts(
+  currentSlug: string,
+  currentTags: string[],
+  allPosts: { slug: string; title: string; tags: string[]; date: string; readTime: string }[],
+  count = 3,
+) {
+  const tagSet = new Set(currentTags.map(t => t.toLowerCase()));
+  return allPosts
+    .filter(p => p.slug !== currentSlug)
+    .map(p => ({
+      ...p,
+      score: p.tags.filter(t => tagSet.has(t.toLowerCase())).length,
+    }))
+    .sort((a, b) => b.score - a.score || new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, count);
+}
+
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = (await getAllPosts()).find(p => p.slug === slug);
+  const allPosts = await getAllPosts();
+  const post = allPosts.find(p => p.slug === slug);
   if (!post) notFound();
+  const relatedPosts = getRelatedPosts(slug, post.tags, allPosts);
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-16">
@@ -145,6 +168,32 @@ export default async function BlogPostPage({ params }: Props) {
           text={`${post.title} — ${post.description}`}
         />
       </div>
+
+      {/* Related posts */}
+      {relatedPosts.length > 0 && (
+        <div className="mt-12 pt-8 border-t border-stone-800">
+          <h2 className="font-headline text-lg font-bold text-slate-200 mb-5">
+            Related articles
+          </h2>
+          <div className="grid gap-3">
+            {relatedPosts.map(rp => (
+              <Link
+                key={rp.slug}
+                href={`/blog/${rp.slug}`}
+                className="group flex items-start gap-3 bg-white/[0.03] rounded-xl ring-1 ring-white/10 p-4 hover:ring-cyan-400/20 transition-all"
+              >
+                <span className="material-symbols-outlined text-cyan-400/60 text-lg mt-0.5 group-hover:text-cyan-400 transition-colors">article</span>
+                <div>
+                  <h3 className="font-headline text-sm font-bold text-slate-200 group-hover:text-cyan-400 transition-colors">
+                    {rp.title}
+                  </h3>
+                  <span className="text-xs text-stone-500 font-label">{rp.readTime}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* CTA */}
       <div className="mt-12 bg-white/[0.03] backdrop-blur-sm rounded-3xl ring-1 ring-white/10 p-8 text-center relative overflow-hidden before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-cyan-400/40 before:to-transparent">

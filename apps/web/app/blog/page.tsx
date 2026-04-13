@@ -1,8 +1,25 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // revalidate every hour
 
 import { getAllBlogPosts, getSeoPublishedPosts } from '@/content/blog/loader';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Blog — Digital Wellness Insights',
+  description:
+    'Science-backed articles on breaking phone addiction, building accountability, screen time management, and aligning your digital life with your values.',
+  alternates: {
+    canonical: 'https://becandid.io/blog',
+  },
+  openGraph: {
+    title: 'Blog — Digital Wellness Insights | Be Candid',
+    description:
+      'Science-backed articles on breaking phone addiction, building accountability, and healthier relationships with technology.',
+    url: 'https://becandid.io/blog',
+    type: 'website',
+  },
+};
 
 export default async function BlogIndexPage() {
   const staticPosts = getAllBlogPosts();
