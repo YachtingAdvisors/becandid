@@ -69,6 +69,14 @@ export default function TherapistsPage() {
         name: 'Be Candid Therapy Portal',
         description: 'Inpatient-level insights for outpatient therapists. Real-time client patterns, journal entries, and digital triggers.',
         url: 'https://becandid.io/therapists',
+        brand: { '@type': 'Brand', name: 'Be Candid' },
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          description: 'Free therapist portal — included with client Pro plans',
+        },
       }} />
 
       <PublicNav />
