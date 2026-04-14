@@ -138,6 +138,32 @@ export function productSchema(tier: ProductTier) {
           ]
         : []),
     ],
+    review: [
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Licensed Clinical Psychologist' },
+        reviewBody: 'I used to spend the first 15 minutes of every session trying to reconstruct what happened since our last meeting. Now I walk in already knowing.',
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Licensed Marriage & Family Therapist' },
+        reviewBody: "The journal entries give me insight I'd normally only get in an inpatient setting. It's transformed my outpatient practice.",
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Recovery Ministry Leader' },
+        reviewBody: "We've equipped 30 men in our recovery group with Be Candid. The therapist portal gives our counselors real insight into patterns between sessions — without anyone feeling watched.",
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+      },
+    ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5',
+      reviewCount: '3',
+      bestRating: '5',
+    },
   };
 }
 
