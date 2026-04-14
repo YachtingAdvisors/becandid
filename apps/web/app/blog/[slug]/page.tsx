@@ -11,6 +11,7 @@ async function getAllPosts() {
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import ShareButton from '@/components/ShareButton';
+import BlogEmailCapture from '@/components/BlogEmailCapture';
 import { articleSchema } from '@/lib/structuredData';
 
 interface Props {
@@ -168,6 +169,9 @@ export default async function BlogPostPage({ params }: Props) {
           text={`${post.title} — ${post.description}`}
         />
       </div>
+
+      {/* Email capture */}
+      <BlogEmailCapture />
 
       {/* Related posts */}
       {relatedPosts.length > 0 && (

@@ -7,9 +7,13 @@ import MaterialIcon from '@/components/ui/MaterialIcon';
 export const metadata: Metadata = {
   title: 'For Therapists — Inpatient-Level Insights, Outpatient Setting',
   description: 'See your client\'s real-time patterns, journal entries, and digital triggers. Walk into every session as the most present and insightful therapist they\'ve ever had.',
+  alternates: {
+    canonical: 'https://becandid.io/therapists',
+  },
   openGraph: {
     title: 'Be Candid for Therapists',
     description: 'Inpatient-level insights without the inpatient setting. Real-time client patterns, journal entries, and digital triggers.',
+    url: 'https://becandid.io/therapists',
     type: 'website',
   },
 };
