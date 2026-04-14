@@ -57,6 +57,10 @@ BEGIN
 END;
 $$;
 
+-- Lock down permissions: only service_role (used by pg_cron / backend) can call this
+REVOKE ALL ON FUNCTION public.cleanup_old_events() FROM anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.cleanup_old_events() TO service_role;
+
 -- Schedule via pg_cron if available (runs daily at 3:00 AM UTC)
 -- If pg_cron is not enabled, call cleanup_old_events() from an
 -- external cron job (e.g., Supabase Edge Function or server cron).
