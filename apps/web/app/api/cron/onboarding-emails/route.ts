@@ -228,7 +228,10 @@ async function sendEmail(
 ): Promise<void> {
   const { Resend } = await import('resend');
   const resend = new Resend(process.env.RESEND_API_KEY!);
-  await resend.emails.send({ from: FROM, to, subject, html });
+  const { error } = await resend.emails.send({ from: FROM, to, subject, html });
+  if (error) {
+    throw new Error(`Resend API error: ${error.message}`);
+  }
 }
 
 // ─── Handler ────────────────────────────────────────────────

@@ -195,7 +195,7 @@ export async function sendFatigueWarning(userId: string, analysis: FatigueAnalys
   // Create nudge
   await db.from('nudges').insert({
     user_id: userId,
-    type: 'partner_fatigue',
+    trigger_type: 'partner_fatigue',
     severity: 'info',
     title: 'Your partner might need care',
     message,

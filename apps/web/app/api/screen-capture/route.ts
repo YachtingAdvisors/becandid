@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
       : await analyzeImage(image, 'image/jpeg', userGoals, user.id, substances);
 
     // Only create an event if something meaningful was detected
-    if (analysis.categories.length > 0 && analysis.confidence > 0.3) {
+    if (analysis.categories.length > 0 && analysis.confidence > 0.7) {
       // Map the first detected image category back to a GoalCategory
       const goalCategory = mapToGoalCategory(analysis.categories, userGoals);
 

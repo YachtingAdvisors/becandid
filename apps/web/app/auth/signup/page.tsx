@@ -40,11 +40,33 @@ function SignUpForm() {
     }
 
     if (data.user) {
-      await fetch('/api/auth/profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), referral_code: referralCode || undefined }),
-      }).catch(() => {});
+      // Create the DB profile — retry once on failure since this is critical
+      let profileCreated = false;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const res = await fetch('/api/auth/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name.trim(), referral_code: referralCode || undefined }),
+          });
+          if (res.ok || res.status === 200 || res.status === 201) {
+            profileCreated = true;
+            break;
+          }
+          // Non-OK response — log and retry
+          console.error(`[signup] Profile creation attempt ${attempt + 1} returned ${res.status}`);
+        } catch (err) {
+          console.error(`[signup] Profile creation attempt ${attempt + 1} failed:`, err);
+        }
+        // Brief pause before retry
+        if (attempt === 0) await new Promise(r => setTimeout(r, 1000));
+      }
+
+      if (!profileCreated) {
+        setError('Account created but profile setup failed. Please sign out and sign back in, or contact support.');
+        setLoading(false);
+        return;
+      }
     }
 
     router.push('/onboarding');

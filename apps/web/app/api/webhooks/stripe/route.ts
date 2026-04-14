@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
         // Find user by Stripe customer ID
         const db = createServiceClient();
         const { data: user } = await db.from('users')
-          .select('id, email, name, subscription_plan, subscription_status, payment_failed_at')
+          .select('id, email, name, subscription_plan, subscription_status, payment_failed_at, org_plan_id')
           .eq('stripe_customer_id', customerId)
           .single();
 
@@ -177,10 +177,25 @@ export async function POST(req: NextRequest) {
           try {
             if (daysSinceFirstFailure >= 7) {
               // 7+ days: downgrade to free and send final email
+
+              // Decrement org plan enrollment if user was on one
+              if (user.org_plan_id) {
+                const { data: orgPlan } = await db.from('organization_plans')
+                  .select('id, users_enrolled')
+                  .eq('id', user.org_plan_id)
+                  .single();
+                if (orgPlan) {
+                  await db.from('organization_plans')
+                    .update({ users_enrolled: Math.max(0, (orgPlan.users_enrolled || 1) - 1) })
+                    .eq('id', orgPlan.id);
+                }
+              }
+
               await db.from('users').update({
                 subscription_plan: 'free',
                 subscription_status: 'canceled',
                 payment_failed_at: null,
+                org_plan_id: null,
               }).eq('id', user.id);
 
               await db.from('audit_log').insert({

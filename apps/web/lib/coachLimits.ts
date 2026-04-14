@@ -30,7 +30,7 @@ export async function checkCoachLimit(
   userId: string,
 ): Promise<CoachLimitResult> {
   // BETA: unlimited for everyone
-  const BETA_MODE = true;
+  const BETA_MODE = process.env.NEXT_PUBLIC_BETA_MODE === 'true';
   if (BETA_MODE) return { allowed: true, remaining: -1, limit: -1, plan: 'beta' };
 
   // Get user plan + grandfathered status

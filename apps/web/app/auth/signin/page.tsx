@@ -19,6 +19,7 @@ function SignInForm() {
   const [error, setError] = useState('');
   const [showMFA, setShowMFA] = useState(false);
   const reason = searchParams.get('reason');
+  const callbackError = searchParams.get('error');
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -111,7 +112,17 @@ function SignInForm() {
             </div>
 
             <form onSubmit={handleSignIn} className="space-y-5">
-              {reason === 'idle' && !error && (
+              {callbackError && !error && (
+                <div className="px-4 py-3 rounded-2xl bg-red-900/20 ring-1 ring-red-500/20 text-red-400 text-sm font-body flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-red-900/30 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[18px]">error</span>
+                  </div>
+                  {callbackError === 'auth_callback_failed'
+                    ? 'The sign-in link has expired or is invalid. Please try again.'
+                    : 'Authentication failed. Please try again.'}
+                </div>
+              )}
+              {reason === 'idle' && !error && !callbackError && (
                 <div className="px-4 py-3 rounded-2xl bg-amber-900/20 ring-1 ring-amber-500/20 text-amber-400 text-sm font-body flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-amber-900/30 flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-[18px]">schedule</span>

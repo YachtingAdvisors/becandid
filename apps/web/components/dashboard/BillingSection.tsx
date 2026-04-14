@@ -36,12 +36,20 @@ export default function BillingSection() {
 
   async function handleUpgrade() {
     setUpgrading(true);
-    const res = await fetch('/api/billing', { method: 'POST' });
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else if (data.fallback) {
-      alert('Billing is not configured yet. Contact support.');
+    try {
+      const res = await fetch('/api/billing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ price_id: 'pro_annual' }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else if (data.error) {
+        alert('Billing is not configured yet. Contact support.');
+      }
+    } catch {
+      alert('Something went wrong. Please try again.');
     }
     setUpgrading(false);
   }

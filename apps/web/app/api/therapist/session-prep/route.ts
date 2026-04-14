@@ -290,7 +290,7 @@ If data is insufficient for a section, provide an honest note like "Insufficient
     });
 
     await getResend().emails.send({
-      from: 'Be Candid <noreply@becandid.io>',
+      from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>',
       to: therapistProfile.email,
       subject: `Session Prep: ${report.client_name} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`,
       html,

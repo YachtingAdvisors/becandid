@@ -6,7 +6,7 @@
 
 import { SupabaseClient } from '@supabase/supabase-js';
 
-export type Plan = 'free' | 'pro' | 'team';
+export type Plan = 'free' | 'pro' | 'therapy';
 
 export interface PlanLimits {
   aiGuidesPerMonth: number;       // -1 = unlimited
@@ -37,7 +37,7 @@ const LIMITS: Record<Plan, PlanLimits> = {
     contextualPrompts: true,
     weeklyDigest: true,
   },
-  team: {
+  therapy: {
     aiGuidesPerMonth: -1,
     regenerationsPerMonth: -1,
     maxPartners: 10,

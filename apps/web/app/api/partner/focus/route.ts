@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import {
   calculateFocusStreak,
+  calculateFocusStreakAsOf,
   get21DayHeatmap,
   getTrustPointsBalance,
   getUnlockedMilestones,
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest) {
   // Find who this partner is monitoring
   const { data: partnership } = await db
     .from('partners')
-    .select('user_id')
+    .select('user_id, accepted_at')
     .eq('partner_user_id', user.id)
     .eq('status', 'active')
     .maybeSingle();
@@ -41,11 +42,14 @@ export async function GET(req: NextRequest) {
 
   const tz = monitoredUser?.timezone || 'America/New_York';
 
-  const [balance, streak, heatmap, milestones] = await Promise.all([
+  const [balance, streak, heatmap, milestones, streakWhenJoined] = await Promise.all([
     getTrustPointsBalance(db, monitoredUserId),
     calculateFocusStreak(db, monitoredUserId, tz),
     get21DayHeatmap(db, monitoredUserId, tz),
     getUnlockedMilestones(db, monitoredUserId),
+    partnership.accepted_at
+      ? calculateFocusStreakAsOf(db, monitoredUserId, partnership.accepted_at, tz)
+      : Promise.resolve(0),
   ]);
 
   return NextResponse.json({
@@ -55,5 +59,6 @@ export async function GET(req: NextRequest) {
     streak,
     heatmap,
     milestones,
+    streakWhenJoined,
   });
 }

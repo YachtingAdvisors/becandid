@@ -100,8 +100,16 @@ async function captureOnce() {
     const jpegBuffer = screenshot.toJPEG(60);
     const base64 = jpegBuffer.toString('base64');
 
-    // Upload for analysis
-    const result = await uploadCapture(base64);
+    // Collect metadata for the pre-classifier (avoids expensive Vision API calls)
+    const metadata = {
+      activeApp: primarySource.name || 'Unknown',
+      windowTitle: primarySource.name || undefined,
+      timestamp: new Date().toISOString(),
+      screenChanged: true,
+    };
+
+    // Upload for analysis with metadata
+    const result = await uploadCapture(base64, metadata);
 
     // Update stats
     store.set('heartbeats_today', (store.get('heartbeats_today') || 0) + 1);

@@ -31,7 +31,7 @@ const FEATURE_COPY: Record<Feature, { title: string; description: string; emoji:
   partnerLimit: { title: 'Multiple Partners', description: 'Add up to 3 accountability partners with priority levels', emoji: 'handshake' },
 };
 
-const BETA_MODE = true;
+const BETA_MODE = process.env.NEXT_PUBLIC_BETA_MODE === 'true';
 
 export default function Paywall({
   feature,
@@ -103,19 +103,19 @@ export default function Paywall({
           {requiredPlan === 'pro' ? (
             <>
               <p className="text-3xl font-headline font-bold text-on-surface">
-                {billing === 'monthly' ? '$9.99' : '$99'}
+                {billing === 'monthly' ? '$9.99' : '$79'}
               </p>
               <p className="text-xs text-on-surface-variant">
-                {billing === 'monthly' ? '/month' : '/year ($8.25/month)'}
+                {billing === 'monthly' ? '/month' : '/year ($6.58/month)'}
               </p>
             </>
           ) : (
             <>
               <p className="text-3xl font-headline font-bold text-on-surface">
-                {billing === 'monthly' ? '$19.99' : '$179'}
+                {billing === 'monthly' ? '$19.99' : '$159'}
               </p>
               <p className="text-xs text-on-surface-variant">
-                {billing === 'monthly' ? '/month' : '/year ($14.92/month)'}
+                {billing === 'monthly' ? '/month' : '/year ($13.25/month)'}
               </p>
             </>
           )}

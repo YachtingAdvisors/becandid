@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     try {
       const { Resend } = await import('resend');
       const resend = new Resend(process.env.RESEND_API_KEY!);
-      const from = process.env.RESEND_FROM_EMAIL ?? 'alerts@updates.becandid.io';
+      const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
       await resend.emails.send({
         from,
         to: 'slaser90@gmail.com',

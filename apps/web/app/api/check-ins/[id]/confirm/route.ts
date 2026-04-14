@@ -6,6 +6,8 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { confirmUserCheckIn, confirmPartnerCheckIn, type UserMood, type PartnerMood } from '@/lib/checkInEngine';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError, sanitizeText, isValidUUID, auditLog } from '@/lib/security';
+import { buildConfirmationFollowUpEmail, buildFollowUpSMS } from '@/lib/checkInNotifications';
+import { pushNotifyUser } from '@/lib/pushNotify';
 
 export async function POST(
   req: NextRequest,
@@ -68,6 +70,86 @@ export async function POST(
       userId: user.id,
       metadata: { checkInId, role: isMonitoredUser ? 'user' : 'partner', mood: body.mood },
     });
+
+    // Send follow-up notification to the other party if check-in is now partial
+    // (i.e. one side confirmed, the other hasn't yet)
+    if (result.status === 'partial') {
+      try {
+        const { data: fullCheckIn } = await db
+          .from('check_ins')
+          .select('user_id, partner_user_id')
+          .eq('id', checkInId)
+          .single();
+
+        if (fullCheckIn) {
+          // Determine who to notify (the person who has NOT confirmed yet)
+          const recipientUserId = isMonitoredUser
+            ? fullCheckIn.partner_user_id
+            : fullCheckIn.user_id;
+
+          if (recipientUserId) {
+            // Get names for both parties
+            const [confirmerProfile, recipientProfile] = await Promise.all([
+              db.from('users').select('name, email, phone').eq('id', user.id).single(),
+              db.from('users').select('name, email, phone').eq('id', recipientUserId).single(),
+            ]);
+
+            const confirmerName = confirmerProfile.data?.name?.split(' ')[0] ?? 'Your partner';
+            const recipientName = recipientProfile.data?.name?.split(' ')[0] ?? 'there';
+
+            const emailContent = buildConfirmationFollowUpEmail({
+              recipientName,
+              confirmerName,
+              confirmerRole: isMonitoredUser ? 'user' : 'partner',
+              checkInId,
+            });
+
+            const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+            const { Resend } = await import('resend');
+            const resend = new Resend(process.env.RESEND_API_KEY!);
+
+            const sends: Promise<any>[] = [];
+
+            // Email follow-up
+            if (recipientProfile.data?.email) {
+              sends.push(resend.emails.send({
+                from: FROM,
+                to: recipientProfile.data.email,
+                ...emailContent,
+              }));
+            }
+
+            // Push notification follow-up
+            sends.push(pushNotifyUser(db, recipientUserId, {
+              type: 'check_in',
+              title: `${confirmerName} just checked in`,
+              body: `${confirmerName} confirmed their check-in. Your turn, ${recipientName}!`,
+              data: {
+                url: isMonitoredUser ? '/partner/checkins' : '/dashboard/checkins',
+                tag: `checkin-followup-${checkInId}`,
+              },
+            }));
+
+            // SMS follow-up
+            if (recipientProfile.data?.phone) {
+              const smsBody = buildFollowUpSMS(recipientName, confirmerName);
+              const twilio = (await import('twilio')).default;
+              const smsClient = twilio(process.env.TWILIO_ACCOUNT_SID!, process.env.TWILIO_AUTH_TOKEN!);
+              sends.push(smsClient.messages.create({
+                body: smsBody,
+                from: process.env.TWILIO_PHONE_NUMBER!,
+                to: recipientProfile.data.phone,
+              }));
+            }
+
+            await Promise.allSettled(sends);
+          }
+        }
+      } catch (notifErr) {
+        // Non-fatal — confirmation was recorded even if follow-up notification fails
+        console.error('[check-in/confirm] Follow-up notification error:', notifErr);
+      }
+    }
 
     return NextResponse.json({
       success: true,

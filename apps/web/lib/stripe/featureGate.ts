@@ -36,7 +36,7 @@ export async function checkFeatureGate(userId: string, feature: FeatureKey): Pro
   // ── BETA MODE: All features free for everyone ──────────────
   // During the beta period, all users get full access to every feature.
   // Remove this block when beta ends and paid plans go live.
-  const BETA_MODE = true;
+  const BETA_MODE = process.env.NEXT_PUBLIC_BETA_MODE === 'true';
   if (BETA_MODE) {
     return { allowed: true, plan: 'therapy' as PlanId };
   }
@@ -82,7 +82,7 @@ export async function checkFeatureGate(userId: string, feature: FeatureKey): Pro
 
 export async function checkAIGuideLimit(userId: string): Promise<GateResult & { used?: number; limit?: number }> {
   // BETA: unlimited for everyone
-  const BETA_MODE = true;
+  const BETA_MODE = process.env.NEXT_PUBLIC_BETA_MODE === 'true';
   if (BETA_MODE) return { allowed: true, plan: 'therapy' as PlanId };
 
   const db = createServiceClient();
@@ -134,7 +134,7 @@ export async function checkAIGuideLimit(userId: string): Promise<GateResult & { 
 
 export async function checkPartnerLimit(userId: string): Promise<GateResult & { count?: number; limit?: number }> {
   // BETA: unlimited for everyone
-  const BETA_MODE = true;
+  const BETA_MODE = process.env.NEXT_PUBLIC_BETA_MODE === 'true';
   if (BETA_MODE) return { allowed: true, plan: 'therapy' as PlanId };
 
   const db = createServiceClient();
