@@ -195,7 +195,7 @@ interface ArticleProps {
 export function articleSchema(props: ArticleProps) {
   return {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: props.headline,
     description: props.description,
     datePublished: props.datePublished,

@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   alternates: {
-    canonical: '/',
+    canonical: 'https://becandid.io',
   },
   robots: {
     index: true,
