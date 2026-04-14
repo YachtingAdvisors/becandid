@@ -95,6 +95,17 @@ export function productSchema(tier: ProductTier) {
     merchantReturnDays: 0,
   };
 
+  const shippingDetails = {
+    '@type': 'OfferShippingDetails',
+    shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'USD' },
+    shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+    deliveryTime: {
+      '@type': 'ShippingDeliveryTime',
+      handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+      transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+    },
+  };
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -112,6 +123,7 @@ export function productSchema(tier: ProductTier) {
               availability: 'https://schema.org/InStock',
               name: `${tier.name} Monthly`,
               hasMerchantReturnPolicy: returnPolicy,
+              shippingDetails,
             },
           ]
         : [
@@ -122,6 +134,7 @@ export function productSchema(tier: ProductTier) {
               availability: 'https://schema.org/InStock',
               name: `${tier.name} Free`,
               hasMerchantReturnPolicy: returnPolicy,
+              shippingDetails,
             },
           ]),
       ...(tier.annualPrice > 0
@@ -134,6 +147,7 @@ export function productSchema(tier: ProductTier) {
               availability: 'https://schema.org/InStock',
               name: `${tier.name} Annual`,
               hasMerchantReturnPolicy: returnPolicy,
+              shippingDetails,
             },
           ]
         : []),
