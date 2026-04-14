@@ -88,6 +88,13 @@ interface ProductTier {
 }
 
 export function productSchema(tier: ProductTier) {
+  const returnPolicy = {
+    '@type': 'MerchantReturnPolicy',
+    applicableCountry: 'US',
+    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+    merchantReturnDays: 0,
+  };
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -104,6 +111,7 @@ export function productSchema(tier: ProductTier) {
               priceValidUntil: new Date(new Date().getFullYear() + 1, 0, 1).toISOString().split('T')[0],
               availability: 'https://schema.org/InStock',
               name: `${tier.name} Monthly`,
+              hasMerchantReturnPolicy: returnPolicy,
             },
           ]
         : [
@@ -113,6 +121,7 @@ export function productSchema(tier: ProductTier) {
               priceCurrency: 'USD',
               availability: 'https://schema.org/InStock',
               name: `${tier.name} Free`,
+              hasMerchantReturnPolicy: returnPolicy,
             },
           ]),
       ...(tier.annualPrice > 0
@@ -124,6 +133,7 @@ export function productSchema(tier: ProductTier) {
               priceValidUntil: new Date(new Date().getFullYear() + 1, 0, 1).toISOString().split('T')[0],
               availability: 'https://schema.org/InStock',
               name: `${tier.name} Annual`,
+              hasMerchantReturnPolicy: returnPolicy,
             },
           ]
         : []),

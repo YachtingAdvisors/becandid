@@ -75,7 +75,14 @@ export default function TherapistsPage() {
           price: '0',
           priceCurrency: 'USD',
           availability: 'https://schema.org/InStock',
-          description: 'Free therapist portal — included with client Pro plans',
+          description: 'Free during beta — therapist portal for client insights',
+          priceValidUntil: '2026-12-31',
+          hasMerchantReturnPolicy: {
+            '@type': 'MerchantReturnPolicy',
+            applicableCountry: 'US',
+            returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+            merchantReturnDays: 0,
+          },
         },
       }} />
 
