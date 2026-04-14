@@ -14,6 +14,7 @@ const tabs = [
   { href: '/admin/health', label: 'Health', icon: 'monitor_heart' },
   { href: '/admin/audit', label: 'Audit Log', icon: 'policy' },
   { href: '/admin/email', label: 'Email', icon: 'mail' },
+  { href: '/admin/subscribers', label: 'Subscribers', icon: 'mark_email_read' },
   { href: '/admin/features', label: 'Features', icon: 'toggle_on' },
   { href: '/admin/export', label: 'Export', icon: 'download' },
 ];
