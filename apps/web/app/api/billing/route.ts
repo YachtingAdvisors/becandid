@@ -46,8 +46,8 @@ export async function POST(req: NextRequest) {
     const session = await createCheckoutSession(
       user.id,
       price_id,
-      `${APP_URL}/dashboard/settings?checkout=success`,
-      `${APP_URL}/dashboard/settings?checkout=canceled`
+      `${APP_URL}/thank-you`,
+      `${APP_URL}/pricing?checkout=canceled`
     );
 
     return NextResponse.json({ url: session.url });
