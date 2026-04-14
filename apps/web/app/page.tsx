@@ -232,7 +232,7 @@ export default function LandingPage() {
               </div>
 
               {/* Floating badge: HIPAA Ready — top-left */}
-              <div className="absolute top-12 -left-10 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10 animate-float-slow">
+              <div className="absolute -top-4 -left-10 glass-card px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-lg shadow-black/20 z-10 animate-float-slow">
                 <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
                   <MaterialIcon name="health_and_safety" className="text-cyan-400 text-base" filled />
                 </div>
