@@ -3,7 +3,7 @@
   "name": "Be Candid - Awareness Monitor",
   "version": "1.0.0",
   "description": "Privacy-first browsing awareness for accountability.",
-  "permissions": ["tabs", "activeTab", "storage", "alarms", "webNavigation", "idle"],
+  "permissions": ["tabs", "activeTab", "storage", "alarms", "webNavigation", "idle", "declarativeNetRequest"],
   "host_permissions": ["https://becandid.io/*", "https://*.becandid.io/*", "https://*.vercel.app/*", "https://*.supabase.co/*"],
   "background": {
     "service_worker": "src/background/service-worker.js",

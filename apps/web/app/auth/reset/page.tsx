@@ -18,13 +18,32 @@ export default function ResetPasswordPage() {
     setError('');
 
     const supabase = createClient();
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/auth/update-password`,
-    });
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/update-password`,
+      });
 
-    if (resetError) {
-      // Don't reveal whether the email exists
-      // Always show success to prevent enumeration
+      if (resetError) {
+        // Rate-limit or server errors should be shown to the user.
+        // "User not found"-style errors are NOT returned by Supabase
+        // for resetPasswordForEmail, so we can safely surface the message.
+        if (resetError.status && resetError.status >= 429) {
+          setError('Too many requests. Please wait a moment and try again.');
+          setLoading(false);
+          return;
+        }
+        if (resetError.status && resetError.status >= 500) {
+          setError('Something went wrong on our end. Please try again later.');
+          setLoading(false);
+          return;
+        }
+        // For any other non-enumeration error, show it
+        // (Supabase does not reveal whether the email exists)
+      }
+    } catch {
+      setError('Network error. Please check your connection and try again.');
+      setLoading(false);
+      return;
     }
 
     setSent(true);

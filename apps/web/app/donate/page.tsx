@@ -1,20 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
+import DonateButtons from './DonateButtons';
 
 export const metadata: Metadata = {
   title: 'Give Access — Be Candid',
   description: 'Donate to provide free accountability tools to students in underprivileged communities. Every dollar gives a student access to Be Candid.',
 };
-
-const IMPACT_TIERS = [
-  { amount: 10, students: 1, label: '1 student for a year', icon: 'person' },
-  { amount: 50, students: 5, label: '5 students for a year', icon: 'group' },
-  { amount: 100, students: 10, label: 'A classroom', icon: 'school' },
-  { amount: 250, students: 25, label: 'A grade level', icon: 'diversity_3' },
-  { amount: 500, students: 50, label: 'A school program', icon: 'apartment' },
-  { amount: 0, students: 0, label: 'Custom amount', icon: 'edit' },
-];
 
 const STATS = [
   { number: '1 in 3', label: 'teens report compulsive screen use' },
@@ -57,58 +49,7 @@ export default function DonatePage() {
             Be Candid is free during beta. Your support keeps it that way.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                amount: 5,
-                name: 'Believer',
-                icon: 'handshake',
-                color: 'text-emerald-600 bg-emerald-50 border-emerald-200',
-                perks: 'Name in Discord supporters channel',
-              },
-              {
-                amount: 15,
-                name: 'Builder',
-                icon: 'construction',
-                color: 'text-blue-600 bg-blue-50 border-blue-200',
-                perks: 'Early access to new features + Builder role in Discord',
-              },
-              {
-                amount: 25,
-                name: 'Champion',
-                icon: 'military_tech',
-                color: 'text-amber-600 bg-amber-50 border-amber-200',
-                perks: 'Everything above + monthly call with the founder',
-              },
-              {
-                amount: 0,
-                name: 'One-Time',
-                icon: 'favorite',
-                color: 'text-violet-600 bg-violet-50 border-violet-200',
-                perks: 'One-time donations always welcome',
-              },
-            ].map((tier) => (
-              <a
-                key={tier.name}
-                href={tier.amount > 0
-                  ? `https://donate.stripe.com/test_placeholder?amount=${tier.amount * 100}&recurring=monthly`
-                  : '#student-sponsorship'
-                }
-                target={tier.amount > 0 ? '_blank' : undefined}
-                rel={tier.amount > 0 ? 'noopener noreferrer' : undefined}
-                className={`group rounded-3xl border p-5 text-center hover:ring-2 hover:ring-primary/30 hover:-translate-y-1 transition-all ${tier.color}`}
-              >
-                <span className="material-symbols-outlined text-3xl mb-2 block group-hover:scale-110 transition-transform">
-                  {tier.icon}
-                </span>
-                <p className="font-headline text-xl font-extrabold">
-                  {tier.amount > 0 ? `$${tier.amount}/mo` : 'Any amount'}
-                </p>
-                <p className="font-headline text-sm font-bold mt-0.5">{tier.name}</p>
-                <p className="text-xs font-body mt-2 leading-relaxed opacity-80">{tier.perks}</p>
-              </a>
-            ))}
-          </div>
+          <DonateButtons section="support" />
 
           <div className="text-center mt-6">
             <a
@@ -144,30 +85,7 @@ export default function DonatePage() {
             $10 gives one student a full year of Be Candid Pro — every feature, no limits.
           </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {IMPACT_TIERS.map((tier) => (
-              <a
-                key={tier.amount || 'custom'}
-                href={tier.amount > 0
-                  ? `https://donate.stripe.com/test_placeholder?amount=${tier.amount * 100}`
-                  : 'mailto:shawn@becandid.io?subject=Custom%20Donation%20—%20Give%20Access'
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 text-center hover:ring-2 hover:ring-primary/30 hover:-translate-y-1 transition-all"
-              >
-                <span className="material-symbols-outlined text-3xl text-primary mb-2 block group-hover:scale-110 transition-transform">
-                  {tier.icon}
-                </span>
-                {tier.amount > 0 ? (
-                  <p className="font-headline text-2xl font-extrabold text-on-surface">${tier.amount}</p>
-                ) : (
-                  <p className="font-headline text-lg font-extrabold text-on-surface">Your choice</p>
-                )}
-                <p className="text-xs text-on-surface-variant font-body mt-1">{tier.label}</p>
-              </a>
-            ))}
-          </div>
+          <DonateButtons section="impact" />
 
           <p className="text-center text-xs text-on-surface-variant/60 font-body mt-4">
             Donations are processed securely via Stripe. Be Candid is not yet a registered 501(c)(3) — donations are not tax-deductible at this time.

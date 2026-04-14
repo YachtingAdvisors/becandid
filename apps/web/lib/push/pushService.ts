@@ -37,8 +37,19 @@ const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY ?? '';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY ?? '';
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT ?? 'mailto:push@becandid.io';
 
-if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
+// TODO(push-setup): VAPID keys must be generated and set in .env for web push
+// to actually deliver notifications. Without them, all web pushes are silently
+// skipped. Generate keys with: npx web-push generate-vapid-keys
+// Then set VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY in your environment.
+const VAPID_CONFIGURED = !!(VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY);
+
+if (VAPID_CONFIGURED) {
   webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+} else if (process.env.NODE_ENV === 'production') {
+  console.error(
+    '[push] VAPID keys not configured — web push notifications will NOT be delivered. ' +
+    'Run `npx web-push generate-vapid-keys` and set VAPID_PUBLIC_KEY + VAPID_PRIVATE_KEY.'
+  );
 }
 
 // ─── Send to a single subscription ─────────────────────────
@@ -62,8 +73,10 @@ async function sendWebPush(
   subscriptionJson: string,
   payload: PushPayload
 ): Promise<void> {
-  if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
-    console.warn('[push] VAPID keys not configured — skipping web push');
+  if (!VAPID_CONFIGURED) {
+    // Log at error level in production so this doesn't go unnoticed
+    const logFn = process.env.NODE_ENV === 'production' ? console.error : console.warn;
+    logFn('[push] VAPID keys not configured — web push NOT delivered. Set VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY.');
     return;
   }
 

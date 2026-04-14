@@ -6,11 +6,10 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { safeError, auditLog } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
-// Valid promo codes and what they grant
+// Valid promo codes and what they grant.
+// Keys are stored uppercase; lookup is case-insensitive via .toUpperCase().
 const PROMO_CODES: Record<string, { plan: string; days: number }> = {
   'HONEST': { plan: 'pro', days: 365 },
-  'honest': { plan: 'pro', days: 365 },
-  'Honest': { plan: 'pro', days: 365 },
 };
 
 export async function POST(req: NextRequest) {
@@ -71,8 +70,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // ── Check static promo codes ────────────────────────────────
-    const promo = PROMO_CODES[code];
+    // ── Check static promo codes (case-insensitive) ──────────────
+    const promo = PROMO_CODES[code.toUpperCase()];
 
     if (!promo) {
       return NextResponse.json({ error: 'Invalid promo code' }, { status: 400 });

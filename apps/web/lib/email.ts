@@ -9,7 +9,15 @@ import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 import { emailWrapper } from './email/template';
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
-const FROM = process.env.RESEND_FROM_EMAIL ?? 'alerts@updates.becandid.io';
+
+/**
+ * Canonical FROM address for all outbound emails.
+ * Import this from '@/lib/email' instead of defining your own FROM constant.
+ * Using a single sender identity avoids SPF/DKIM alignment issues.
+ */
+export const EMAIL_FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+
+const FROM = EMAIL_FROM;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
 // ─── Partner Alert Email ──────────────────────────────────────

@@ -6,18 +6,31 @@
 // products in the Stripe Dashboard.
 // ============================================================
 
+function requireEnv(name: string, prefix: string): string {
+  const value = process.env[name];
+  if (!value) {
+    // In development/beta, log a warning but don't crash
+    if (process.env.NEXT_PUBLIC_BETA_MODE === 'true' || process.env.NODE_ENV === 'development') {
+      console.warn(`[Stripe] Missing env var ${name} — billing features will not work until this is set.`);
+      return `${prefix}_NOT_CONFIGURED`;
+    }
+    throw new Error(`Missing required environment variable: ${name}. Set it in .env.local or your hosting provider.`);
+  }
+  return value;
+}
+
 export const STRIPE_CONFIG = {
   // Create these in Stripe Dashboard → Products
-  // Then paste the IDs here
+  // Then set the corresponding env vars
   products: {
-    pro: process.env.STRIPE_PRODUCT_PRO || 'prod_REPLACE_ME',
-    therapy: process.env.STRIPE_PRODUCT_THERAPY || 'prod_REPLACE_ME',
+    pro: requireEnv('STRIPE_PRODUCT_PRO', 'prod'),
+    therapy: requireEnv('STRIPE_PRODUCT_THERAPY', 'prod'),
   },
   prices: {
-    pro_monthly: process.env.STRIPE_PRICE_PRO_MONTHLY || 'price_REPLACE_ME',
-    pro_annual: process.env.STRIPE_PRICE_PRO_ANNUAL || 'price_REPLACE_ME',
-    therapy_monthly: process.env.STRIPE_PRICE_THERAPY_MONTHLY || 'price_REPLACE_ME',
-    therapy_annual: process.env.STRIPE_PRICE_THERAPY_ANNUAL || 'price_REPLACE_ME',
+    pro_monthly: requireEnv('STRIPE_PRICE_PRO_MONTHLY', 'price'),
+    pro_annual: requireEnv('STRIPE_PRICE_PRO_ANNUAL', 'price'),
+    therapy_monthly: requireEnv('STRIPE_PRICE_THERAPY_MONTHLY', 'price'),
+    therapy_annual: requireEnv('STRIPE_PRICE_THERAPY_ANNUAL', 'price'),
   },
   trialDays: 21,
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',

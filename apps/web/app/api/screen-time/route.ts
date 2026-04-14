@@ -16,13 +16,86 @@ import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { getScreenTimeRules } from '@/lib/screenTime';
 import { isTeenAccount } from '@/lib/teenMode';
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const url = new URL(req.url);
+  const includeAggregates = url.searchParams.get('aggregates') !== 'false';
+
   const rules = await getScreenTimeRules(user.id);
-  return NextResponse.json({ rules });
+
+  if (!includeAggregates) {
+    return NextResponse.json({ rules });
+  }
+
+  // Build date boundaries for daily, weekly, and monthly aggregates
+  const now = new Date();
+
+  const todayStart = new Date(now);
+  todayStart.setHours(0, 0, 0, 0);
+
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - now.getDay()); // Sunday
+  weekStart.setHours(0, 0, 0, 0);
+
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const db = createServiceClient();
+
+  // Fetch events for the entire month (covers daily + weekly + monthly)
+  const { data: monthEvents } = await db
+    .from('events')
+    .select('category, duration_seconds, timestamp')
+    .eq('user_id', user.id)
+    .gte('timestamp', monthStart.toISOString())
+    .order('timestamp', { ascending: true });
+
+  const events = monthEvents ?? [];
+
+  // Helper to aggregate events by category
+  function aggregateByCategory(filtered: typeof events) {
+    const byCategory: Record<string, { total_seconds: number; event_count: number }> = {};
+    let totalSeconds = 0;
+
+    for (const e of filtered) {
+      const dur = e.duration_seconds ?? 0;
+      totalSeconds += dur;
+      if (!byCategory[e.category]) {
+        byCategory[e.category] = { total_seconds: 0, event_count: 0 };
+      }
+      byCategory[e.category].total_seconds += dur;
+      byCategory[e.category].event_count += 1;
+    }
+
+    return {
+      total_seconds: totalSeconds,
+      total_minutes: Math.round(totalSeconds / 60),
+      by_category: byCategory,
+    };
+  }
+
+  const todayISO = todayStart.toISOString();
+  const weekISO = weekStart.toISOString();
+
+  const daily = aggregateByCategory(events.filter(e => e.timestamp >= todayISO));
+  const weekly = aggregateByCategory(events.filter(e => e.timestamp >= weekISO));
+  const monthly = aggregateByCategory(events);
+
+  return NextResponse.json({
+    rules,
+    aggregates: {
+      daily,
+      weekly,
+      monthly,
+      period: {
+        today: todayISO,
+        week_start: weekISO,
+        month_start: monthStart.toISOString(),
+      },
+    },
+  });
 }
 
 export async function POST(req: NextRequest) {

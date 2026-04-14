@@ -124,13 +124,14 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
   const db = createServiceClient();
 
   try {
-    // ── 1. Log event (encrypted metadata) ───────────────
+    // ── 1. Log event (encrypted metadata + app_name) ────
+    const rawAppName = event.app_name || event.metadata?.domain || event.metadata?.app_name || null;
     const { data: savedEvent, error: eventError } = await db.from('events').insert({
       user_id: userId,
       category: event.category,
       severity: event.severity,
       platform: event.platform,
-      app_name: event.app_name || event.metadata?.domain || event.metadata?.app_name || null,
+      app_name: rawAppName ? encrypt(rawAppName, userId) : null,
       duration_seconds: event.duration_seconds || event.metadata?.duration_seconds || null,
       timestamp: event.timestamp,
       metadata: event.metadata ? encrypt(JSON.stringify(event.metadata), userId) : null,
@@ -138,14 +139,58 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
 
     if (eventError) throw new Error(`Event insert failed: ${eventError.message}`);
 
-    // ── Step 0: Content filter check ─────────────────────
+    // ── Step 0: Vulnerability window check ────────────────
+    // If the user has a vulnerability window configured for
+    // the current day/hour, escalate severity automatically.
+    try {
+      const now = new Date(event.timestamp);
+      const dayOfWeek = now.getDay(); // 0 = Sunday
+      const currentHour = now.getHours();
+
+      const { data: vulnWindows } = await db
+        .from('vulnerability_windows')
+        .select('id, label, start_hour, end_hour, day_of_week, notify_partner')
+        .eq('user_id', userId);
+
+      if (vulnWindows && vulnWindows.length > 0) {
+        const activeWindow = vulnWindows.find((w: any) => {
+          const daysMatch = !w.day_of_week || w.day_of_week.length === 0 || w.day_of_week.includes(dayOfWeek);
+          const hourMatch = w.start_hour <= w.end_hour
+            ? currentHour >= w.start_hour && currentHour < w.end_hour
+            : currentHour >= w.start_hour || currentHour < w.end_hour; // overnight window
+          return daysMatch && hourMatch;
+        });
+
+        if (activeWindow) {
+          // Escalate: low -> medium, medium -> high
+          if (event.severity === 'low') event.severity = 'medium';
+          else if (event.severity === 'medium') event.severity = 'high';
+
+          // Add vulnerability window context to metadata
+          event.metadata = {
+            ...event.metadata,
+            vulnerability_window: activeWindow.label,
+            vulnerability_window_id: activeWindow.id,
+          };
+
+          console.info(`[alertPipeline] Vulnerability window active: "${activeWindow.label}" — severity escalated to ${event.severity}`);
+        }
+      }
+    } catch (e) {
+      console.error('Vulnerability window check failed (non-fatal):', e);
+    }
+
+    // ── Step 0a: Content filter check ────────────────────
     const filterResult = await filterContent(
       userId,
       event.metadata?.url as string || null,
       event.metadata?.domain as string || null,
       event.metadata?.app_name as string || event.platform || null,
       {}
-    ).catch(() => null);
+    ).catch((e) => {
+      console.error('[alertPipeline] Content filter check failed (non-fatal):', e);
+      return null;
+    });
 
     // Auto-escalate severity if content filter flags it as blocked
     if (filterResult?.blocked && event.severity !== 'high') {
@@ -290,7 +335,7 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
       });
 
       const guideText = response.content.filter((b): b is Anthropic.TextBlock => b.type === 'text').map((b) => b.text).join('');
-      try { userGuide = JSON.parse(guideText.replace(/```json|```/g, '').trim()); } catch { userGuide = { opening: 'Take a moment to reflect.', next_step: 'Write in your journal.' }; }
+      try { userGuide = JSON.parse(guideText.replace(/```json|```/g, '').trim()); } catch (e) { console.warn('[alertPipeline] Failed to parse solo guide JSON, using fallback:', e); userGuide = { opening: 'Take a moment to reflect.', next_step: 'Write in your journal.' }; }
 
       // Save alert (encrypted guide)
       const { data: alert } = await db.from('alerts').insert({
@@ -346,7 +391,8 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
         const parsed = JSON.parse(guideText.replace(/```json|```/g, '').trim());
         userGuide = parsed.user_guide;
         partnerGuide = parsed.partner_guide;
-      } catch {
+      } catch (e) {
+        console.warn('[alertPipeline] Failed to parse partner guide JSON, using fallback:', e);
         userGuide = { opening: 'Take a moment to reflect.', next_step: 'Write in your journal.' };
         partnerGuide = { opening: 'Your partner needs your support.', conversation_starters: ['How are you doing?'] };
       }
@@ -378,8 +424,9 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
         // Increment alerts_this_week
         try {
           await db.rpc('increment_partner_alerts', { p_partner_id: partner.id });
-        } catch {
-          // Fallback if RPC doesn't exist
+        } catch (rpcErr) {
+          // Fallback if RPC doesn't exist — log so we know to create it
+          console.warn('[alertPipeline] increment_partner_alerts RPC failed, using fallback:', rpcErr);
           await db.from('partners').update({ alerts_this_week: ((partner as any).alerts_this_week || 0) + 1 }).eq('id', partner.id);
         }
 
@@ -515,7 +562,9 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
         action: 'alert_pipeline_error',
         metadata: { error: error.message?.slice(0, 200) },
       });
-    } catch {}
+    } catch (auditErr) {
+      console.error('[alertPipeline] Failed to write error audit log:', auditErr);
+    }
     throw error;
   }
 }

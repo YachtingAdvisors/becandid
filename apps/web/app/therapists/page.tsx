@@ -240,7 +240,7 @@ export default function TherapistsPage() {
           <p className="font-headline text-2xl font-bold mb-6">
             $19.99<span className="text-base font-normal text-white/60">/month</span>
             <span className="text-white/40 mx-3">|</span>
-            $179<span className="text-base font-normal text-white/60">/year</span>
+            $159<span className="text-base font-normal text-white/60">/year</span>
           </p>
           <Link href="/auth/signup?plan=therapy" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-primary text-lg font-headline font-bold shadow-lg hover:shadow-xl transition-all">
             Start Free Trial

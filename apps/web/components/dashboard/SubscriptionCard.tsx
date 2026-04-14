@@ -68,7 +68,7 @@ export default function SubscriptionCard() {
   const isGrandfathered = data.grandfathered === true;
 
   // BETA MODE: everyone gets full access
-  const BETA_MODE = true;
+  const BETA_MODE = process.env.NEXT_PUBLIC_BETA_MODE === 'true';
   if (BETA_MODE) {
     return (
       <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">

@@ -270,6 +270,57 @@ export async function calculateFocusStreak(
   return { streakDays, streakSegments };
 }
 
+/**
+ * Calculate the focus streak as of a specific date (e.g. when a partner joined).
+ * Walks backward from `asOfDate` through focus_segments.
+ */
+export async function calculateFocusStreakAsOf(
+  db: SupabaseClient,
+  userId: string,
+  asOfDate: string, // ISO timestamp or YYYY-MM-DD
+  timezone: string = 'America/New_York'
+): Promise<number> {
+  const dateStr = new Date(asOfDate).toLocaleDateString('en-CA', { timeZone: timezone });
+
+  const { data: segments } = await db
+    .from('focus_segments')
+    .select('date, segment, status')
+    .eq('user_id', userId)
+    .lte('date', dateStr)
+    .order('date', { ascending: false })
+    .limit(240);
+
+  if (!segments || segments.length === 0) return 0;
+
+  const byDate = new Map<string, { morning?: SegmentStatus; evening?: SegmentStatus }>();
+  for (const s of segments) {
+    if (!byDate.has(s.date)) byDate.set(s.date, {});
+    byDate.get(s.date)![s.segment as Segment] = s.status as SegmentStatus;
+  }
+
+  let streakDays = 0;
+  const cursor = new Date(dateStr);
+
+  while (true) {
+    const curDateStr = cursor.toLocaleDateString('en-CA', { timeZone: timezone });
+    const day = byDate.get(curDateStr);
+    if (!day) break;
+
+    const mFocused = day.morning === 'focused';
+    const eFocused = day.evening === 'focused';
+
+    if (mFocused && eFocused) {
+      streakDays++;
+    } else {
+      break;
+    }
+
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  return streakDays;
+}
+
 // ─── Check & Award Streak Milestones ─────────────────────────
 
 export async function checkStreakMilestones(

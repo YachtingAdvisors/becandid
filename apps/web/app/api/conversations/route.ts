@@ -112,14 +112,49 @@ export async function GET(req: NextRequest) {
     if (!user) return safeError('GET /api/conversations', 'Unauthorized', 401);
 
     const db = createServiceClient();
-    const limit = Math.min(parseInt(new URL(req.url).searchParams.get('limit') ?? '20') || 20, 50);
+    const { searchParams } = new URL(req.url);
+    const limit = Math.min(parseInt(searchParams.get('limit') ?? '20') || 20, 50);
+    const role = searchParams.get('role'); // 'user' | 'partner' | null
 
-    const { data: conversations } = await db
-      .from('conversations')
-      .select('*, alerts(id, sent_at, events(category, severity, platform, timestamp))')
-      .eq('user_id', user.id)
-      .order('completed_at', { ascending: false })
-      .limit(limit);
+    let targetUserId = user.id;
+
+    if (role === 'partner') {
+      // Partner wants to see their monitored user's conversations.
+      // Look up who this partner is monitoring.
+      const { data: partnership } = await db
+        .from('partners')
+        .select('user_id')
+        .eq('partner_user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      if (!partnership) {
+        return NextResponse.json({ conversations: [] });
+      }
+      targetUserId = partnership.user_id;
+    }
+
+    let conversations;
+
+    if (role === 'partner') {
+      // Find conversations linked to the monitored user's alerts
+      const { data } = await db
+        .from('conversations')
+        .select('*, alerts!inner(id, sent_at, events(category, severity, platform, timestamp))')
+        .eq('alerts.user_id', targetUserId)
+        .order('completed_at', { ascending: false })
+        .limit(limit);
+      conversations = data;
+    } else {
+      // Default: conversations the current user recorded
+      const { data } = await db
+        .from('conversations')
+        .select('*, alerts(id, sent_at, events(category, severity, platform, timestamp))')
+        .eq('user_id', targetUserId)
+        .order('completed_at', { ascending: false })
+        .limit(limit);
+      conversations = data;
+    }
 
     return NextResponse.json({ conversations: conversations ?? [] });
   } catch (err) {

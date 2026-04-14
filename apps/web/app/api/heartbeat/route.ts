@@ -43,7 +43,10 @@ export async function POST(req: NextRequest) {
   const rowsUpdated = data?.length ?? 0;
   if (rowsUpdated === 0) {
     console.error('[heartbeat POST] No rows updated. User ID:', user.id, 'Email:', user.email);
-    return NextResponse.json({ ok: false, error: 'Update failed' }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: 'Heartbeat update failed — no rows matched', retry: true },
+      { status: 200, headers: { 'X-Heartbeat-Status': 'update-missed' } }
+    );
   }
 
   return NextResponse.json({ ok: true, rows_updated: rowsUpdated, isolation_only: isolationOnly });

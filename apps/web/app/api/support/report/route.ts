@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY!);
 
     await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL ?? 'support@becandid.io',
+      from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>',
       to: 'shawn@becandid.io',
       replyTo: profile?.email || user.email || undefined,
       subject: `[${type.toUpperCase()}] Issue report from ${profile?.name || 'a user'}`,

@@ -164,6 +164,31 @@ async function syncSubscriptionForUser(
     update.trial_ends_at = new Date(subscription.trial_end * 1000).toISOString();
   }
 
+  // If canceling, check if user was on an org plan and decrement enrollment
+  if (status === 'canceled') {
+    const { data: cancelingUser } = await db.from('users')
+      .select('org_plan_id')
+      .eq('id', userId)
+      .single();
+
+    if (cancelingUser?.org_plan_id) {
+      // Decrement the org plan enrollment count (floor at 0)
+      const { data: orgPlan } = await db.from('organization_plans')
+        .select('id, users_enrolled')
+        .eq('id', cancelingUser.org_plan_id)
+        .single();
+
+      if (orgPlan) {
+        await db.from('organization_plans')
+          .update({ users_enrolled: Math.max(0, (orgPlan.users_enrolled || 1) - 1) })
+          .eq('id', orgPlan.id);
+      }
+
+      // Clear the org_plan_id on the user
+      update.org_plan_id = null;
+    }
+  }
+
   await db.from('users').update(update).eq('id', userId);
 
   // Audit log
