@@ -600,7 +600,6 @@ export default function LandingPage() {
                 <ul className="space-y-2.5">
                   {[
                     { label: 'Features', href: '#features' },
-                    { label: 'Download', href: '/download' },
                     { label: 'Pricing', href: '/pricing' },
                     { label: 'Families', href: '/families' },
                     { label: 'Blog', href: '/blog' },
