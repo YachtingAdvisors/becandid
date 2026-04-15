@@ -215,7 +215,11 @@ export default function PricingPage() {
                 }`}
               >
                 {/* FREE DURING BETA badge */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-bold font-label uppercase tracking-wider shadow-lg">
+                <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-bold font-label uppercase tracking-wider shadow-lg ${
+                  tier.highlight
+                    ? 'bg-white text-slate-900'
+                    : 'bg-emerald-500 text-white'
+                }`}>
                   Free During Beta
                 </div>
 
