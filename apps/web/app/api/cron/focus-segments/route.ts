@@ -15,6 +15,7 @@ import {
 import { onFocusedSegment } from '@/lib/relationshipHooks';
 import { updateRelationshipStreaks } from '@/lib/relationshipEngine';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { logCronRun } from '@/lib/cronAudit';
 
 // Vercel Crons send GET requests
 export async function GET(req: NextRequest) { return handleCron(req); }
@@ -83,6 +84,7 @@ async function handleCron(req: NextRequest) {
   // Update relationship streaks for all users
   await updateRelationshipStreaks().catch(() => {});
 
+  await logCronRun(db, 'focus-segments', { processed: results.length });
   return NextResponse.json({
     processed: results.length,
     results,

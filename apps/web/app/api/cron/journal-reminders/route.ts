@@ -26,6 +26,7 @@ import {
   THERAPEUTIC_PROMPTS,
 } from '@be-candid/shared';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { logCronRun } from '@/lib/cronAudit';
 import { escapeHtml } from '@/lib/security';
 
 function getResend() {
@@ -385,6 +386,7 @@ export async function GET(req: NextRequest) {
     console.error('Relapse notification scan failed:', e);
   }
 
+  await logCronRun(db, 'journal-reminders', { sent, skipped, users_processed: prefs.length });
   return NextResponse.json({
     sent,
     skipped,

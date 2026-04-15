@@ -313,7 +313,7 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
       alertRecord = alert;
     } else if (solo) {
       // Solo: self-reflection guide only
-      const soloModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+      const soloModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
       const soloSystemText = SOLO_GUIDE_SYSTEM_PROMPT + (categoryGuidance ? `\n\n${categoryGuidance}` : '');
       const response = await getAnthropic().messages.create({
         model: soloModel,
@@ -366,7 +366,7 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
         systemPrompt += SPOUSE_GUIDE_ADDITION;
       }
 
-      const partnerModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+      const partnerModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
       const response = await getAnthropic().messages.create({
         model: partnerModel,
         max_tokens: 1200,
@@ -564,6 +564,30 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
       });
     } catch (auditErr) {
       console.error('[alertPipeline] Failed to write error audit log:', auditErr);
+    }
+    // Notify admin — fire and forget, never block the throw
+    try {
+      await getResend().emails.send({
+        from: FROM,
+        to: 'slaser90@gmail.com',
+        subject: `[Be Candid] Alert pipeline error — user ${userId.slice(0, 8)}`,
+        html: `<div style="font-family:system-ui,sans-serif;max-width:520px;padding:24px;">
+          <h2 style="color:#dc2626;margin:0 0 12px;">Alert Pipeline Error</h2>
+          <p style="color:#374151;font-size:14px;line-height:1.6;margin:0 0 16px;">
+            The alert pipeline failed for user <code>${userId.slice(0, 8)}…</code>.
+            The user's alert was not delivered.
+          </p>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <tr><td style="padding:6px 12px 6px 0;color:#6b7280;white-space:nowrap;">Error</td><td style="padding:6px 0;color:#111827;font-family:monospace;">${(error.message ?? 'Unknown error').slice(0, 300)}</td></tr>
+            <tr><td style="padding:6px 12px 6px 0;color:#6b7280;white-space:nowrap;">Category</td><td style="padding:6px 0;color:#111827;">${event.category} (${event.severity})</td></tr>
+            <tr><td style="padding:6px 12px 6px 0;color:#6b7280;white-space:nowrap;">Platform</td><td style="padding:6px 0;color:#111827;">${event.platform}</td></tr>
+            <tr><td style="padding:6px 12px 6px 0;color:#6b7280;white-space:nowrap;">Time</td><td style="padding:6px 0;color:#111827;">${new Date(event.timestamp).toLocaleString()}</td></tr>
+          </table>
+          <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;">Check the Audit Log in the admin panel for full details.</p>
+        </div>`,
+      });
+    } catch (emailErr) {
+      console.error('[alertPipeline] Failed to send admin error email:', emailErr);
     }
     throw error;
   }

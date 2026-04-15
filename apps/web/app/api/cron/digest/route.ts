@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { GOAL_LABELS, getCategoryEmoji, type GoalCategory } from '@be-candid/shared';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { logCronRun } from '@/lib/cronAudit';
 import { escapeHtml } from '@/lib/security';
 import { decrypt } from '@/lib/encryption';
 
@@ -212,5 +213,6 @@ async function handleCron(req: NextRequest) {
     }
   }
 
+    await logCronRun(db, 'digest', {sent: results.sent, skipped: results.skipped, errors: results.errors, users_processed: results.sent + results.skipped});
   return NextResponse.json({ ok: true, ...results });
 }

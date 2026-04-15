@@ -10,10 +10,19 @@ interface CronInfo {
   users_processed: number | null;
 }
 
+interface IndexingStatus {
+  state: 'running' | 'complete' | 'stalled';
+  total_submitted: number;
+  submitted_this_cycle: number;
+  remaining_this_cycle: number;
+  last_submission: string | null;
+}
+
 interface HealthData {
   db_connected: boolean;
   recent_errors: number;
   cron_status: Record<string, CronInfo>;
+  indexing_status: IndexingStatus;
   table_sizes: Record<string, number>;
   cost_estimate: { daily: number; monthly: number };
   uptime_since: string | null;
@@ -98,6 +107,9 @@ export default function AdminHealthClient() {
         />
       </div>
 
+      {/* Google Indexing status */}
+      <IndexingCard status={health.indexing_status} />
+
       {/* Cron jobs status */}
       <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-6">
         <h2 className="font-headline text-base font-bold text-on-surface mb-4">
@@ -136,6 +148,97 @@ export default function AdminHealthClient() {
 }
 
 // ─── Sub-components ──────────────────────────────────────────
+
+function IndexingCard({ status }: { status: IndexingStatus }) {
+  const { state, total_submitted, submitted_this_cycle, remaining_this_cycle, last_submission } = status;
+
+  const pct = total_submitted > 0
+    ? Math.round((submitted_this_cycle / total_submitted) * 100)
+    : 0;
+
+  const stateConfig = {
+    running: {
+      dot: 'bg-blue-500',
+      badge: 'bg-blue-500/10 text-blue-700',
+      label: 'Running',
+      icon: 'sync',
+      iconColor: 'text-blue-500',
+      desc: `${submitted_this_cycle} of ${total_submitted} pages submitted this cycle — ${remaining_this_cycle} remaining`,
+    },
+    complete: {
+      dot: 'bg-green-500',
+      badge: 'bg-green-500/10 text-green-700',
+      label: 'Complete',
+      icon: 'check_circle',
+      iconColor: 'text-green-500',
+      desc: `All ${total_submitted} known pages submitted this cycle. Cron will resume when new pages are added.`,
+    },
+    stalled: {
+      dot: 'bg-error',
+      badge: 'bg-error/10 text-error',
+      label: 'Stalled',
+      icon: 'warning',
+      iconColor: 'text-error',
+      desc: total_submitted === 0
+        ? 'No submissions recorded yet — cron may not have run.'
+        : `Last submission was over 2 days ago. Check Vercel Crons.`,
+    },
+  }[state];
+
+  return (
+    <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-6 space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <span className={`material-symbols-outlined text-xl ${stateConfig.iconColor}`}>
+            {stateConfig.icon}
+          </span>
+          <h2 className="font-headline text-base font-bold text-on-surface">
+            Google Search Indexing
+          </h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`w-2.5 h-2.5 rounded-full ${stateConfig.dot}`} />
+          <span className={`text-xs font-label font-semibold px-2.5 py-0.5 rounded-full ${stateConfig.badge}`}>
+            {stateConfig.label}
+          </span>
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      {total_submitted > 0 && (
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-xs font-label text-on-surface-variant">
+            <span>{submitted_this_cycle} of {total_submitted} pages this cycle</span>
+            <span>{pct}%</span>
+          </div>
+          <div className="h-2 w-full rounded-full bg-surface-container overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all ${
+                state === 'complete' ? 'bg-green-500' :
+                state === 'stalled' ? 'bg-error' : 'bg-blue-500'
+              }`}
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Status description */}
+      <p className="text-sm font-body text-on-surface-variant">{stateConfig.desc}</p>
+
+      {/* Footer meta */}
+      <div className="flex items-center gap-1.5 text-xs font-label text-on-surface-variant">
+        <span className="material-symbols-outlined text-sm">schedule</span>
+        {last_submission
+          ? `Last submission: ${formatRelative(last_submission)}`
+          : 'No submissions recorded'}
+        <span className="mx-1">·</span>
+        <span>10 pages/day · runs at 06:00 UTC</span>
+      </div>
+    </div>
+  );
+}
 
 function StatusCard({
   icon,

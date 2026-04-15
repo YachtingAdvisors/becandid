@@ -20,6 +20,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { logCronRun } from '@/lib/cronAudit';
 import { escapeHtml } from '@/lib/security';
 import { emailWrapper } from '@/lib/email/template';
 
@@ -342,5 +343,6 @@ async function handleCron(req: NextRequest) {
     }
   }
 
+    await logCronRun(db, 'onboarding-emails', {sent: results.sent, skipped: results.skipped, errors: results.errors, users_processed: results.sent + results.skipped});
   return NextResponse.json({ ok: true, ...results });
 }

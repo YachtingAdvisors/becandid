@@ -11,6 +11,7 @@ const tabs = [
   { href: '/admin/engagement', label: 'Engagement', icon: 'monitoring' },
   { href: '/admin/moderation', label: 'Moderation', icon: 'shield' },
   { href: '/admin/support', label: 'Support', icon: 'support_agent' },
+  { href: '/admin/seo', label: 'SEO', icon: 'query_stats' },
   { href: '/admin/health', label: 'Health', icon: 'monitor_heart' },
   { href: '/admin/audit', label: 'Audit Log', icon: 'policy' },
   { href: '/admin/email', label: 'Email', icon: 'mail' },

@@ -16,6 +16,7 @@ import { createServiceClient } from '@/lib/supabase';
 import { sendPushToUser } from '@/lib/push/pushService';
 import { Resend } from 'resend';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { logCronRun } from '@/lib/cronAudit';
 import { emailWrapper } from '@/lib/email/template';
 import { escapeHtml } from '@/lib/security';
 
@@ -234,5 +235,6 @@ async function handleCron(req: NextRequest) {
     }
   }
 
+    await logCronRun(db, 'isolation-nudges', {sent: results.nudgesSent, skipped: results.skipped, users_processed: results.total});
   return NextResponse.json({ ok: true, ...results });
 }
