@@ -93,10 +93,10 @@ export async function GET(req: NextRequest) {
   const fiveMinAgo = Date.now() - 5 * 60 * 1000;
   const appRunning = lastHeartbeat > fiveMinAgo;
 
-  // Detect possible account mismatch: the user has a heartbeat record but it's
-  // stale, which may indicate the desktop app is signed into a different account.
-  // We intentionally do NOT query other users to avoid leaking email addresses.
-  const mismatch = !appRunning && lastHeartbeat > 0;
+  // Account mismatch cannot be reliably detected without cross-user queries
+  // (which would leak email addresses). "App was running but isn't now" is normal
+  // behaviour — the user closed it, their laptop slept, etc. Never show the warning.
+  const mismatch = false;
 
   // Isolation-only users don't need the desktop app at all
   const userGoals: string[] = data?.goals ?? [];
