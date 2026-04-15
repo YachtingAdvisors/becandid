@@ -197,6 +197,136 @@ export default function MethodologyPage() {
         </div>
       </section>
 
+      {/* ── Privacy, Precision & Human Learning ──────────────── */}
+      <section className="px-6 py-28 max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <p className="text-teal-400 font-label text-xs font-bold uppercase tracking-widest mb-3">Built Differently</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Accountability That Honors Dignity and Privacy</h2>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+            Most accountability software treats your partner like a detective. We built something closer to a coach.
+            Your partner never sees what you were looking at — only the signal that a conversation might help.
+          </p>
+        </div>
+
+        {/* Three-column principles */}
+        <div className="grid md:grid-cols-3 gap-6 mb-16">
+          <div className="p-8 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col">
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/10 flex items-center justify-center mb-5">
+              <Icon name="visibility_off" className="text-teal-400 text-2xl" />
+            </div>
+            <h3 className="text-white font-bold text-lg mb-3">What partners never see</h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-5">
+              No URLs. No search terms. No browsing history. No screenshots. No category names on the lock screen.
+              Partners receive one signal: <em className="text-slate-300">&ldquo;your partner could use your support.&rdquo;</em>
+            </p>
+            <ul className="space-y-2.5 mt-auto">
+              {['Specific websites or apps visited', 'Screen content or images', 'Search queries', 'Timestamped activity logs'].map(item => (
+                <li key={item} className="flex items-start gap-2 text-xs text-slate-500">
+                  <Icon name="block" className="text-red-400/70 text-sm mt-0.5 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="p-8 rounded-2xl bg-teal-500/5 border border-teal-500/15 flex flex-col">
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/15 flex items-center justify-center mb-5">
+              <Icon name="forum" className="text-teal-400 text-2xl" />
+            </div>
+            <h3 className="text-white font-bold text-lg mb-3">What partners do receive</h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-5">
+              A conversation guide — built on Motivational Interviewing — that gives partners the right questions
+              and orientation to show up with curiosity instead of judgment.
+            </p>
+            <ul className="space-y-2.5 mt-auto">
+              {[
+                'A behavioral signal, not a report card',
+                'Category-specific conversation prompts',
+                'Emotional context for what the pattern often means',
+                'Questions that open space rather than close it',
+              ].map(item => (
+                <li key={item} className="flex items-start gap-2 text-xs text-slate-300">
+                  <Icon name="check_circle" className="text-teal-400 text-sm mt-0.5 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="p-8 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col">
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/10 flex items-center justify-center mb-5">
+              <Icon name="model_training" className="text-teal-400 text-2xl" />
+            </div>
+            <h3 className="text-white font-bold text-lg mb-3">A system that learns from humans</h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-5">
+              Every alert can be contested by the partner with one tap. That feedback feeds directly into the detection
+              model — making the system more accurate with every correction.
+            </p>
+            <ul className="space-y-2.5 mt-auto">
+              {[
+                'One-tap alert contesting eliminates false positives',
+                'Human feedback trains the ML model in real time',
+                'Accuracy improves continuously across all users',
+                'Context-aware — news, work, and recovery content handled differently',
+              ].map(item => (
+                <li key={item} className="flex items-start gap-2 text-xs text-slate-300">
+                  <Icon name="check_circle" className="text-teal-400 text-sm mt-0.5 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Full-width callout */}
+        <div className="relative rounded-3xl overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-950/80 via-stone-950 to-stone-950" />
+          <div className="absolute top-0 left-0 w-[500px] h-[300px] rounded-full blur-[120px]" style={{ background: 'rgba(20,184,166,0.08)' }} />
+          <div className="relative z-10 px-10 py-14 grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <p className="text-teal-400 font-label text-xs font-bold uppercase tracking-widest mb-4">The Result</p>
+              <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-5">
+                The most accurate — and most human — accountability software ever built.
+              </h3>
+              <p className="text-slate-400 leading-relaxed">
+                We optimize for precision over detection volume, because a false accusation does more damage than a missed flag.
+                By combining machine learning refined on real human feedback with conversation guides rooted in clinical research,
+                we&apos;ve built a system that gets smarter over time — without ever losing sight of the people using it.
+              </p>
+            </div>
+            <div className="space-y-5">
+              {[
+                {
+                  icon: 'gpp_good',
+                  title: 'Accuracy over volume',
+                  body: "We'd rather miss a flag than make a wrongful one. One false accusation in a fragile relationship does more harm than a dozen missed detections.",
+                },
+                {
+                  icon: 'psychology',
+                  title: 'Partner as companion, not monitor',
+                  body: 'Conversation guides turn the partner from an enforcement agent into a co-navigator — changing the entire emotional dynamic of accountability.',
+                },
+                {
+                  icon: 'loop',
+                  title: 'Continuous learning, continuously human',
+                  body: 'Every alert contestation teaches the model. The system becomes more accurate because real people told us where the rules failed.',
+                },
+              ].map(item => (
+                <div key={item.title} className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <Icon name={item.icon} className="text-teal-400 text-lg" />
+                  </div>
+                  <div>
+                    <h4 className="text-white font-semibold text-sm mb-1">{item.title}</h4>
+                    <p className="text-slate-400 text-sm leading-relaxed">{item.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Our Technology ────────────────────────────────────── */}
       <section className="px-6 py-28 max-w-7xl mx-auto">
         <div className="text-center mb-16">
