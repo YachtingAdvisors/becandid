@@ -20,6 +20,14 @@ interface EventRow {
   timestamp: string;
 }
 
+/** Filter out encrypted/hashed/base64 strings stored as app_name */
+function isReadableAppName(s?: string): s is string {
+  if (!s || s.length > 60) return false;
+  if (/^[A-Za-z0-9+/=]{20,}$/.test(s)) return false;
+  if (/^[a-f0-9]{24,}$/.test(s)) return false;
+  return true;
+}
+
 const SEVERITY_STYLES: Record<Severity, string> = {
   low: 'bg-tertiary-container text-on-tertiary-container',
   medium: 'bg-tertiary-container text-on-tertiary-container',
@@ -169,7 +177,7 @@ export default function ActivityPage() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-label font-medium text-on-surface">
                       {GOAL_LABELS[event.category] ?? event.category}
-                      {event.app_name && (
+                      {isReadableAppName(event.app_name) && (
                         <span className="text-on-surface-variant font-normal"> — {event.app_name}</span>
                       )}
                     </div>

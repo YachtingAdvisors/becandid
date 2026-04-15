@@ -283,7 +283,40 @@ export const GOAL_DESCRIPTIONS: Record<GoalCategory, string> = {
   custom:           'Define your own category to monitor',
 };
 
-// ─── Emojis ──────────────────────────────────────────────────
+// ─── Material Symbols Icons ─────────────────────────────────
+
+export function getCategoryIcon(category: GoalCategory): string {
+  const map: Record<GoalCategory, string> = {
+    pornography:       'visibility_off',
+    sexting:           'chat_bubble',
+    social_media:      'phone_android',
+    binge_watching:    'live_tv',
+    impulse_shopping:  'shopping_cart',
+    doomscrolling:     'newspaper',
+    alcohol_drugs:     'local_bar',
+    vaping_tobacco:    'smoking_rooms',
+    eating_disorder:   'warning',
+    body_checking:     'person_search',
+    gambling:          'casino',
+    sports_betting:    'sports_football',
+    day_trading:       'trending_up',
+    dating_apps:       'heart_broken',
+    emotional_affairs: 'forum',
+    gaming:            'sports_esports',
+    rage_content:      'local_fire_department',
+    gossip_drama:      'record_voice_over',
+    isolation:         'door_front',
+    ai_relationships:  'smart_toy',
+    overworking:       'work',
+    sleep_avoidance:   'bedtime',
+    self_harm:         'healing',
+    procrastination:   'hourglass_empty',
+    custom:            'tune',
+  };
+  return map[category] ?? 'warning';
+}
+
+// ─── Emojis (legacy) ────────────────────────────────────────
 
 export function getCategoryEmoji(category: GoalCategory): string {
   const map: Record<GoalCategory, string> = {

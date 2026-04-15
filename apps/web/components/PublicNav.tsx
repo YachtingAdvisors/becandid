@@ -4,12 +4,31 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase';
 
 export default function PublicNav() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [orgOpen, setOrgOpen] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  /* ── Check auth state ───────────────────────────────────────── */
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        // Use display name from metadata, or email prefix as fallback
+        const name = user.user_metadata?.name
+          || user.user_metadata?.full_name
+          || user.email?.split('@')[0]
+          || 'Account';
+        setUserName(name.split(' ')[0]); // First name only
+      }
+      setAuthChecked(true);
+    });
+  }, []);
 
   /* ── Scroll-aware backdrop ───────────────────────────────── */
   useEffect(() => {
@@ -172,20 +191,46 @@ export default function PublicNav() {
 
           {/* ── Right side actions ────────────────────────────── */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/auth/signin"
-              className="hidden sm:block text-sm text-stone-400 hover:text-stone-200 transition-colors duration-200 font-body"
-            >
-              Log in
-            </Link>
-
-            {/* CTA button with gradient + glow */}
-            <Link
-              href="/auth/signup"
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-primary-container text-white text-sm font-label font-bold transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110 hover:scale-[1.03] active:scale-[0.98]"
-            >
-              Get Started
-            </Link>
+            {authChecked && userName ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] text-stone-200 text-sm font-label font-medium transition-all duration-200 hover:bg-white/[0.12] hover:text-white"
+                >
+                  <span
+                    className="material-symbols-outlined text-base text-primary"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    account_circle
+                  </span>
+                  {userName}
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-primary-container text-white text-sm font-label font-bold transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110 hover:scale-[1.03] active:scale-[0.98]"
+                >
+                  Dashboard
+                </Link>
+              </>
+            ) : authChecked ? (
+              <>
+                <Link
+                  href="/auth/signin"
+                  className="hidden sm:block text-sm text-stone-400 hover:text-stone-200 transition-colors duration-200 font-body"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-primary-container text-white text-sm font-label font-bold transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110 hover:scale-[1.03] active:scale-[0.98]"
+                >
+                  Get Started
+                </Link>
+              </>
+            ) : (
+              /* Placeholder to prevent layout shift while checking auth */
+              <div className="w-[180px]" />
+            )}
 
             {/* Hamburger with aria-expanded */}
             <button
@@ -286,31 +331,69 @@ export default function PublicNav() {
 
           <div className="border-t border-white/[0.06] my-4" />
 
-          <Link
-            href="/auth/signin"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-3 py-3.5 px-3 rounded-xl text-base text-stone-400 hover:text-stone-200 hover:bg-white/[0.03] font-body transition-all duration-300"
-            style={{
-              transitionDelay: menuOpen ? `${links.length * 50}ms` : '0ms',
-              opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
-            }}
-          >
-            Log in
-          </Link>
+          {userName ? (
+            <>
+              <Link
+                href="/dashboard"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 py-3.5 px-3 rounded-xl text-base text-stone-200 hover:bg-white/[0.05] font-body transition-all duration-300"
+                style={{
+                  transitionDelay: menuOpen ? `${links.length * 50}ms` : '0ms',
+                  opacity: menuOpen ? 1 : 0,
+                  transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
+                }}
+              >
+                <span
+                  className="material-symbols-outlined text-xl text-primary"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  account_circle
+                </span>
+                {userName}
+              </Link>
 
-          <Link
-            href="/auth/signup"
-            onClick={() => setMenuOpen(false)}
-            className="block text-center mt-4 px-5 py-3 rounded-full bg-gradient-to-r from-primary to-primary-container text-white text-sm font-label font-bold transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
-            style={{
-              transitionDelay: menuOpen ? `${(links.length + 1) * 50}ms` : '0ms',
-              opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
-            }}
-          >
-            Get Started
-          </Link>
+              <Link
+                href="/dashboard"
+                onClick={() => setMenuOpen(false)}
+                className="block text-center mt-4 px-5 py-3 rounded-full bg-gradient-to-r from-primary to-primary-container text-white text-sm font-label font-bold transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
+                style={{
+                  transitionDelay: menuOpen ? `${(links.length + 1) * 50}ms` : '0ms',
+                  opacity: menuOpen ? 1 : 0,
+                  transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
+                }}
+              >
+                Go to Dashboard
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/auth/signin"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 py-3.5 px-3 rounded-xl text-base text-stone-400 hover:text-stone-200 hover:bg-white/[0.03] font-body transition-all duration-300"
+                style={{
+                  transitionDelay: menuOpen ? `${links.length * 50}ms` : '0ms',
+                  opacity: menuOpen ? 1 : 0,
+                  transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
+                }}
+              >
+                Log in
+              </Link>
+
+              <Link
+                href="/auth/signup"
+                onClick={() => setMenuOpen(false)}
+                className="block text-center mt-4 px-5 py-3 rounded-full bg-gradient-to-r from-primary to-primary-container text-white text-sm font-label font-bold transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
+                style={{
+                  transitionDelay: menuOpen ? `${(links.length + 1) * 50}ms` : '0ms',
+                  opacity: menuOpen ? 1 : 0,
+                  transform: menuOpen ? 'translateX(0)' : 'translateX(20px)',
+                }}
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </>

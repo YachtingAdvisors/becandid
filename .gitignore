@@ -36,3 +36,10 @@ next-env.d.ts
 packages-raw/
 .vercel
 supabase/.temp/
+
+# Android signing
+*.jks
+*.keystore
+!apps/mobile/android/app/debug.keystore
+apps/mobile/android/gradle.properties
+apps/mobile/android/local.properties

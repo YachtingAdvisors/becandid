@@ -61,6 +61,7 @@ type EventItem = {
   severity: number;
   platform?: string;
   domain?: string;
+  app_name?: string;
   created_at: string;
   metadata?: Record<string, any>;
   contested?: boolean;
@@ -222,9 +223,26 @@ export default function ActivityScreen() {
     [fetchEvents]
   );
 
+  const isReadable = (s: string): boolean => {
+    // Filter out encrypted/hashed/base64 strings — they contain long runs
+    // of mixed alphanumeric chars with no spaces or recognizable structure
+    if (s.length > 60) return false;
+    if (/^[A-Za-z0-9+/=]{20,}$/.test(s)) return false; // base64-like
+    if (/^[a-f0-9]{24,}$/.test(s)) return false; // hex hash
+    return true;
+  };
+
   const getDomainDisplay = (item: EventItem): string | null => {
-    if (item.domain) return item.domain;
-    if (item.metadata?.domain) return item.metadata.domain;
+    const candidates = [
+      item.domain,
+      item.app_name,
+      item.metadata?.domain,
+    ];
+
+    for (const val of candidates) {
+      if (val && typeof val === 'string' && isReadable(val)) return val;
+    }
+
     if (item.metadata?.url) {
       try {
         return new URL(item.metadata.url).hostname;

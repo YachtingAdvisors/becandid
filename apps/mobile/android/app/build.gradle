@@ -66,7 +66,7 @@ react {
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = (findProperty('android.enableProguardInReleaseBuilds') ?: false).toBoolean()
+def enableProguardInReleaseBuilds = (findProperty('android.enableProguardInReleaseBuilds') ?: true).toBoolean()
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -92,7 +92,7 @@ android {
         applicationId 'io.becandid.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 3
         versionName "1.0.0"
     }
     signingConfigs {
@@ -102,16 +102,20 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file(findProperty('RELEASE_STORE_FILE') ?: 'debug.keystore')
+            storePassword findProperty('RELEASE_STORE_PASSWORD') ?: 'android'
+            keyAlias findProperty('RELEASE_KEY_ALIAS') ?: 'androiddebugkey'
+            keyPassword findProperty('RELEASE_KEY_PASSWORD') ?: 'android'
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
-            shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
+            signingConfig signingConfigs.release
+            shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: true)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             crunchPngs (findProperty('android.enablePngCrunchInReleaseBuilds')?.toBoolean() ?: true)

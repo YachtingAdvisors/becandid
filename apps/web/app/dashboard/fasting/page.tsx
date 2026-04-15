@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { GOAL_LABELS, getCategoryEmoji, type GoalCategory, ALL_GOAL_CATEGORIES } from '@be-candid/shared';
+import { GOAL_LABELS, getCategoryIcon, type GoalCategory, ALL_GOAL_CATEGORIES } from '@be-candid/shared';
 
 /* ── Types ───────────────────────────────────────────────── */
 
@@ -261,31 +261,46 @@ export default function FastingPage() {
               What are you fasting from?
             </label>
             <div className="flex flex-wrap gap-2 mb-3">
-              {ALL_GOAL_CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => {
-                    setLabel(GOAL_LABELS[cat]);
-                  }}
-                  className={`px-3 py-2 rounded-full text-xs font-label font-medium transition-all cursor-pointer ${
-                    label === GOAL_LABELS[cat]
-                      ? 'bg-primary text-on-primary shadow-md shadow-primary/20'
-                      : 'bg-surface-container-low text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30'
-                  }`}
-                >
-                  {getCategoryEmoji(cat)} {GOAL_LABELS[cat]}
-                </button>
-              ))}
+              {ALL_GOAL_CATEGORIES.map((cat) => {
+                const isSelected = label === GOAL_LABELS[cat];
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setLabel(GOAL_LABELS[cat])}
+                    className={`inline-flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full text-xs font-label font-medium transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-primary text-on-primary shadow-md shadow-primary/20'
+                        : 'bg-surface-container-low text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30 hover:text-on-surface'
+                    }`}
+                  >
+                    <span
+                      className={`material-symbols-outlined text-sm ${isSelected ? 'text-on-primary' : 'text-on-surface-variant/70'}`}
+                      style={{ fontSize: '16px', fontVariationSettings: isSelected ? "'FILL' 1" : "'FILL' 0" }}
+                    >
+                      {getCategoryIcon(cat)}
+                    </span>
+                    {GOAL_LABELS[cat]}
+                  </button>
+                );
+              })}
               <button
                 type="button"
                 onClick={() => setLabel('')}
-                className={`px-3 py-2 rounded-full text-xs font-label font-medium transition-all cursor-pointer ${
+                className={`inline-flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full text-xs font-label font-medium transition-all cursor-pointer ${
                   label !== '' && !Object.values(GOAL_LABELS).includes(label)
                     ? 'bg-primary text-on-primary shadow-md shadow-primary/20'
-                    : 'bg-surface-container-low text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30'
+                    : 'bg-surface-container-low text-on-surface-variant ring-1 ring-outline-variant/20 hover:ring-primary/30 hover:text-on-surface'
                 }`}
               >
+                <span
+                  className={`material-symbols-outlined text-sm ${
+                    label !== '' && !Object.values(GOAL_LABELS).includes(label) ? 'text-on-primary' : 'text-on-surface-variant/70'
+                  }`}
+                  style={{ fontSize: '16px' }}
+                >
+                  edit
+                </span>
                 Other
               </button>
             </div>
