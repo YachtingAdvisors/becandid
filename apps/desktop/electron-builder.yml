@@ -41,7 +41,10 @@ afterSign: scripts/notarize.js
 win:
   icon: assets/icon.ico
   target:
-    - nsis
+    - target: nsis
+      arch:
+        - x64
+        - arm64
 
 nsis:
   oneClick: true

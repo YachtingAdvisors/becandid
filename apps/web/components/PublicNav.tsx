@@ -56,6 +56,7 @@ export default function PublicNav() {
       { href: '/org#schools', label: 'Schools' },
     ]},
     { href: '/blog', label: 'Blog' },
+    { href: '/download', label: 'Download' },
   ];
 
   const isActive = (href: string) => {

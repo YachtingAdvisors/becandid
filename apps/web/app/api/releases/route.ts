@@ -67,36 +67,24 @@ export async function GET() {
     };
     if (ghToken) headers.Authorization = `Bearer ${ghToken}`;
 
-    const res = await fetch(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`,
+    // Fetch all recent releases so we can aggregate assets across
+    // platform-specific releases (e.g. v1.0.0 for macOS, v1.0.0-win for Windows)
+    const listRes = await fetch(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases?per_page=10`,
       { headers, next: { revalidate: 300 } }
     );
 
-    if (!res.ok) {
-      // If no "latest" release, try listing all releases and pick first
-      const listRes = await fetch(
-        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases?per_page=5`,
-        { headers, next: { revalidate: 300 } }
-      );
-
-      if (!listRes.ok) {
-        return NextResponse.json({ error: 'Unable to fetch releases' }, { status: 502 });
-      }
-
-      const releases = await listRes.json();
-      if (!releases.length) {
-        return NextResponse.json({ error: 'No releases found' }, { status: 404 });
-      }
-
-      // Use the first non-draft release
-      const release = releases.find((r: any) => !r.draft) ?? releases[0];
-      const data = buildReleaseInfo(release);
-      cache = { data, fetchedAt: Date.now() };
-      return NextResponse.json(data);
+    if (!listRes.ok) {
+      return NextResponse.json({ error: 'Unable to fetch releases' }, { status: 502 });
     }
 
-    const release = await res.json();
-    const data = buildReleaseInfo(release);
+    const releases = (await listRes.json()).filter((r: any) => !r.draft);
+    if (!releases.length) {
+      return NextResponse.json({ error: 'No releases found' }, { status: 404 });
+    }
+
+    // Aggregate assets across all releases — first match wins per platform
+    const data = buildAggregatedReleaseInfo(releases);
     cache = { data, fetchedAt: Date.now() };
     return NextResponse.json(data);
   } catch (err) {
@@ -107,7 +95,8 @@ export async function GET() {
   }
 }
 
-function buildReleaseInfo(release: any): ReleaseInfo {
+/** Aggregate assets across multiple releases so platform-specific tags are combined */
+function buildAggregatedReleaseInfo(releases: any[]): ReleaseInfo {
   const assets: ReleaseInfo['assets'] = {
     windowsX64: null,
     windowsArm64: null,
@@ -115,32 +104,33 @@ function buildReleaseInfo(release: any): ReleaseInfo {
     macZip: null,
   };
 
-  // Collect .sha256 sidecar files separately
   const sha256Files: { baseName: string; url: string }[] = [];
 
-  for (const asset of release.assets ?? []) {
-    const name: string = asset.name;
-    if (name.toLowerCase().endsWith('.sha256')) {
-      // Strip the .sha256 suffix to get the base file name it corresponds to
-      sha256Files.push({
-        baseName: name.slice(0, -7), // remove '.sha256'
-        url: asset.browser_download_url,
-      });
-      continue;
-    }
+  // Walk all releases — first match per platform wins
+  for (const release of releases) {
+    for (const asset of release.assets ?? []) {
+      const name: string = asset.name;
+      if (name.toLowerCase().endsWith('.sha256')) {
+        sha256Files.push({
+          baseName: name.slice(0, -7),
+          url: asset.browser_download_url,
+        });
+        continue;
+      }
 
-    const key = classifyAsset(name);
-    if (key && !assets[key]) {
-      assets[key] = {
-        name: asset.name,
-        url: asset.browser_download_url,
-        size: asset.size,
-        sha256Url: null,
-      };
+      const key = classifyAsset(name);
+      if (key && !assets[key]) {
+        assets[key] = {
+          name: asset.name,
+          url: asset.browser_download_url,
+          size: asset.size,
+          sha256Url: null,
+        };
+      }
     }
   }
 
-  // Second pass: match .sha256 files to their corresponding assets
+  // Match .sha256 files to their corresponding assets
   for (const sha of sha256Files) {
     for (const key of Object.keys(assets) as (keyof ReleaseInfo['assets'])[]) {
       const a = assets[key];
@@ -150,10 +140,17 @@ function buildReleaseInfo(release: any): ReleaseInfo {
     }
   }
 
+  // Use the most recent release for version metadata
+  const latest = releases[0];
   return {
-    version: release.tag_name?.replace(/^v/, '') ?? '0.0.0',
-    tag: release.tag_name ?? '',
-    publishedAt: release.published_at ?? release.created_at ?? '',
+    version: latest.tag_name?.replace(/^v/, '').replace(/-win$/, '') ?? '0.0.0',
+    tag: latest.tag_name ?? '',
+    publishedAt: latest.published_at ?? latest.created_at ?? '',
     assets,
   };
+}
+
+/** Build from a single release (kept for backwards compatibility) */
+function buildReleaseInfo(release: any): ReleaseInfo {
+  return buildAggregatedReleaseInfo([release]);
 }

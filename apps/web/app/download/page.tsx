@@ -1,8 +1,18 @@
-export const dynamic = 'force-dynamic';
-import { redirect } from 'next/navigation';
+import type { Metadata } from 'next';
 import { createServerSupabaseClient } from '@/lib/supabase';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
+
+export const metadata: Metadata = {
+  title: 'Download Be Candid — Desktop, Mobile & Browser',
+  description:
+    'Download Be Candid for Windows, macOS, Android, or install the Chrome extension. Professional-grade accountability tools for every platform.',
+  openGraph: {
+    title: 'Download Be Candid',
+    description: 'Professional-grade accountability tools for Windows, macOS, Android, and Chrome.',
+    url: 'https://becandid.io/download',
+  },
+};
 
 /* ── Chrome Web Store URL (update once published) ────────────── */
 const CHROME_STORE_URL = '#'; // TODO: replace with Chrome Web Store link after submission
@@ -31,10 +41,10 @@ async function fetchRelease() {
 }
 
 export default async function DownloadPage() {
-  // Require authentication — redirect to signin if not logged in
+  // Page is public for SEO — but downloads require sign-in
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect('/auth/signin?redirect=/download');
+  const isLoggedIn = !!user;
 
   const release = await fetchRelease();
   const winX64Url = release?.assets?.windowsX64?.url ?? FALLBACK_WINDOWS_X64;
@@ -96,15 +106,25 @@ export default async function DownloadPage() {
                 ))}
               </ul>
 
-              <a
-                href={CHROME_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
-              >
-                <MaterialIcon name="add_circle" className="text-lg" />
-                Add to Chrome
-              </a>
+              {isLoggedIn ? (
+                <a
+                  href={CHROME_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                >
+                  <MaterialIcon name="add_circle" className="text-lg" />
+                  Add to Chrome
+                </a>
+              ) : (
+                <Link
+                  href="/auth/signin?redirect=/download"
+                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                >
+                  <MaterialIcon name="lock" className="text-lg" />
+                  Sign in to Download
+                </Link>
+              )}
 
               <p className="text-stone-500 text-xs mt-4 text-center">
                 Works with Chrome, Edge, Brave, and Arc
@@ -145,34 +165,46 @@ export default async function DownloadPage() {
               </ul>
 
               <div className="space-y-3">
-                {macDmgUrl ? (
-                  <a
-                    href={macDmgUrl}
+                {!isLoggedIn ? (
+                  <Link
+                    href="/auth/signin?redirect=/download"
                     className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
                   >
-                    <MaterialIcon name="download" className="text-lg" />
-                    macOS — Download
-                  </a>
+                    <MaterialIcon name="lock" className="text-lg" />
+                    Sign in to Download
+                  </Link>
                 ) : (
-                  <div className="w-full px-6 py-3.5 bg-stone-700 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
-                    <MaterialIcon name="pause_circle" className="text-lg" />
-                    {' '}macOS — Temporarily Unavailable
-                  </div>
+                  <>
+                    {macDmgUrl ? (
+                      <a
+                        href={macDmgUrl}
+                        className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                      >
+                        <MaterialIcon name="download" className="text-lg" />
+                        macOS — Download
+                      </a>
+                    ) : (
+                      <div className="w-full px-6 py-3.5 bg-stone-700 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
+                        <MaterialIcon name="pause_circle" className="text-lg" />
+                        {' '}macOS — Temporarily Unavailable
+                      </div>
+                    )}
+                    <a
+                      href={winX64Url}
+                      className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                    >
+                      <MaterialIcon name="download" className="text-lg" />
+                      Windows (x64){winX64Size ? ` — ${winX64Size}` : ' — Download'}
+                    </a>
+                    <a
+                      href={winArmUrl}
+                      className="inline-flex items-center gap-2 w-full justify-center px-6 py-3 text-slate-400 hover:text-white rounded-full font-label font-semibold text-xs tracking-wide transition-all duration-200 cursor-pointer hover:bg-white/5"
+                    >
+                      <MaterialIcon name="download" className="text-sm" />
+                      Windows (ARM64){winArmSize ? ` — ${winArmSize}` : ' — Download'}
+                    </a>
+                  </>
                 )}
-                <a
-                  href={winX64Url}
-                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
-                >
-                  <MaterialIcon name="download" className="text-lg" />
-                  Windows (x64){winX64Size ? ` — ${winX64Size}` : ' — Download'}
-                </a>
-                <a
-                  href={winArmUrl}
-                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3 text-slate-400 hover:text-white rounded-full font-label font-semibold text-xs tracking-wide transition-all duration-200 cursor-pointer hover:bg-white/5"
-                >
-                  <MaterialIcon name="download" className="text-sm" />
-                  Windows (ARM64){winArmSize ? ` — ${winArmSize}` : ' — Download'}
-                </a>
               </div>
               {version && (
                 <p className="text-stone-500 text-xs mt-3 text-center">
@@ -211,13 +243,23 @@ export default async function DownloadPage() {
               </ul>
 
               <div className="space-y-2">
-                <a
-                  href="mailto:shawn@becandid.io?subject=Android%20Beta%20Access&body=I%27d%20like%20to%20join%20the%20Be%20Candid%20Android%20beta."
-                  className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
-                >
-                  <MaterialIcon name="science" className="text-lg" />
-                  Join Android Beta
-                </a>
+                {isLoggedIn ? (
+                  <a
+                    href="mailto:shawn@becandid.io?subject=Android%20Beta%20Access&body=I%27d%20like%20to%20join%20the%20Be%20Candid%20Android%20beta."
+                    className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                  >
+                    <MaterialIcon name="science" className="text-lg" />
+                    Join Android Beta
+                  </a>
+                ) : (
+                  <Link
+                    href="/auth/signin?redirect=/download"
+                    className="inline-flex items-center gap-2 w-full justify-center px-6 py-3.5 bg-gradient-to-r from-teal-600 to-primary-container text-white rounded-full font-label font-bold text-sm tracking-wide shadow-lg shadow-teal-600/20 hover:shadow-xl hover:brightness-110 active:scale-95 transition-all duration-200 cursor-pointer"
+                  >
+                    <MaterialIcon name="lock" className="text-lg" />
+                    Sign in to Download
+                  </Link>
+                )}
                 <div className="w-full px-4 py-3.5 bg-stone-800 text-stone-400 rounded-full font-label font-bold text-sm tracking-wide text-center cursor-not-allowed">
                   App Store — Coming Soon
                 </div>
