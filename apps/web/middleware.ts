@@ -4,6 +4,7 @@
 
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { isAdmin } from '@/lib/isAdmin';
 
 // Paths that never require authentication
 const PUBLIC_PATHS = [
@@ -32,7 +33,7 @@ const PUBLIC_PATHS = [
 ];
 
 const CRON_PATHS = ['/api/cron'];
-const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/partners/accept', '/api/webhooks/', '/api/og', '/api/auth/check-lockout', '/api/auth/record-attempt', '/api/auth/sessions'];
+const PUBLIC_API_PATHS = ['/api/partners/invite', '/api/webhooks/', '/api/og', '/api/auth/check-lockout', '/api/auth/record-attempt'];
 
 // ─── Content Security Policy ─────────────────────────────────
 function buildCSP(): string {
@@ -78,6 +79,27 @@ function jsonError(msg: string, status: number) {
     JSON.stringify({ error: msg }),
     { status, headers: { 'Content-Type': 'application/json' } }
   );
+}
+
+function isTrustedMutationOrigin(request: NextRequest): boolean {
+  const origin = request.headers.get('origin');
+  const referer = request.headers.get('referer');
+  const fetchSite = request.headers.get('sec-fetch-site');
+  const requestOrigin = request.nextUrl.origin;
+
+  if (fetchSite === 'same-origin' || fetchSite === 'same-site' || fetchSite === 'none') {
+    return true;
+  }
+
+  if (origin) {
+    return origin === requestOrigin || isAllowedExtensionOrigin(origin);
+  }
+
+  if (referer) {
+    return referer.startsWith(`${requestOrigin}/`);
+  }
+
+  return false;
 }
 
 // ─── Timing-Safe Comparison ──────────────────────────────────
@@ -158,6 +180,15 @@ export async function middleware(request: NextRequest) {
       return response;
     }
 
+    // ── 3b. Origin check for cookie-authenticated mutations ──
+    const isApiMutation = pathname.startsWith('/api/')
+      && !['GET', 'HEAD', 'OPTIONS'].includes(request.method);
+    const hasBearerAuth = request.headers.get('authorization')?.startsWith('Bearer ');
+
+    if (isApiMutation && !hasBearerAuth && !isTrustedMutationOrigin(request)) {
+      return jsonError('Forbidden', 403);
+    }
+
     // ── 4. Check Supabase env vars exist ────────────────────
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -221,13 +252,19 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    // ── 5b. MFA enforcement — redirect to challenge if aal2 required ──
-    if (user && (pathname.startsWith('/dashboard') || pathname.startsWith('/partner'))) {
-      // Skip the MFA challenge page itself to avoid redirect loops
-      if (!pathname.startsWith('/auth/')) {
-        try {
+    // ── 5b. MFA enforcement — stronger on admin surfaces ──
+    if (user && !pathname.startsWith('/auth/')) {
+      try {
+        const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/api/admin/');
+        const isProtectedAppRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/partner');
+
+        if (isAdminRoute || isProtectedAppRoute) {
           const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-          if (aal.data?.currentLevel === 'aal1' && aal.data?.nextLevel === 'aal2') {
+
+          if (isAdminRoute && isAdmin(user.email || '') && aal.data?.currentLevel !== 'aal2') {
+            if (pathname.startsWith('/api/')) {
+              return jsonError('Admin access requires MFA', 403);
+            }
             const url = request.nextUrl.clone();
             url.pathname = '/auth/mfa-verify';
             url.searchParams.set('redirect', pathname);
@@ -235,9 +272,18 @@ export async function middleware(request: NextRequest) {
             applyHeaders(redir);
             return redir;
           }
-        } catch {
-          // Fail open — don't block if MFA check fails
+
+          if (isProtectedAppRoute && aal.data?.currentLevel === 'aal1' && aal.data?.nextLevel === 'aal2') {
+            const url = request.nextUrl.clone();
+            url.pathname = '/auth/mfa-verify';
+            url.searchParams.set('redirect', pathname);
+            const redir = NextResponse.redirect(url);
+            applyHeaders(redir);
+            return redir;
+          }
         }
+      } catch {
+        // Fail open — don't block if MFA check fails
       }
     }
 

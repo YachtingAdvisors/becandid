@@ -4,14 +4,21 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { actionLimiter, checkUserRate, ipRateLimit, rateLimitResponse } from '@/lib/rateLimit';
+import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
 import { safeError, sanitizeText, sanitizeName } from '@/lib/security';
 
 export async function GET(req: NextRequest) {
   try {
     // Rate limit by IP for public endpoint
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-    if (!ipRateLimit.check(`therapist-dir:${ip}`)) return rateLimitResponse();
+    const blocked = await checkDistributedRateLimit({
+      scope: 'therapist-directory',
+      key: ip,
+      max: 120,
+      windowMs: 60_000,
+    });
+    if (blocked) return blocked;
 
     const db = createServiceClient();
 

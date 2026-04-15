@@ -16,8 +16,7 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/auth/profile', 'Unauthorized', 401);
 
-    const db = createServiceClient();
-    const { data: profile } = await db.from('users').select('*').eq('id', user.id).single();
+    const { data: profile } = await supabase.from('users').select('*').eq('id', user.id).single();
     if (!profile) return safeError('GET /api/auth/profile', 'Not found', 404);
 
     return NextResponse.json({ profile });
@@ -54,16 +53,14 @@ export async function PATCH(req: NextRequest) {
       updateData.phone = cleanPhone;
     }
 
-    const db = createServiceClient();
-
     // If goals are changing, fetch old goals for comparison
     let oldGoals: string[] | null = null;
     if (updateData.goals) {
-      const { data: current } = await db.from('users').select('goals, name').eq('id', user.id).single();
+      const { data: current } = await supabase.from('users').select('goals, name').eq('id', user.id).single();
       oldGoals = current?.goals ?? [];
     }
 
-    const { error } = await db.from('users').update(updateData).eq('id', user.id);
+    const { error } = await supabase.from('users').update(updateData).eq('id', user.id);
     if (error) return safeError('PATCH /api/auth/profile', error);
 
     auditLog({ action: 'profile.update', userId: user.id, metadata: { fields: Object.keys(parsed.data) } });
@@ -76,14 +73,14 @@ export async function PATCH(req: NextRequest) {
 
       if (added.length > 0 || removed.length > 0) {
         try {
-          const { data: partner } = await db
+          const { data: partner } = await supabase
             .from('partners')
             .select('partner_email, partner_name, partner_user_id')
             .eq('user_id', user.id)
             .eq('status', 'active')
             .maybeSingle();
 
-          const { data: profile } = await db.from('users').select('name').eq('id', user.id).single();
+          const { data: profile } = await supabase.from('users').select('name').eq('id', user.id).single();
 
           if (partner?.partner_email) {
             const { Resend } = await import('resend');
@@ -125,10 +122,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     if (!body?.name) return safeError('POST /api/auth/profile', 'Name required', 400);
 
-    const db = createServiceClient();
-
     // Check if profile already exists
-    const { data: existing } = await db.from('users').select('id').eq('id', user.id).maybeSingle();
+    const { data: existing } = await supabase.from('users').select('id').eq('id', user.id).maybeSingle();
     if (existing) return NextResponse.json({ success: true }); // Already exists
 
     // Generate a unique referral code for this user
@@ -138,7 +133,7 @@ export async function POST(req: NextRequest) {
     const trialDays = 21;
     const trialEnds = new Date(Date.now() + trialDays * 24 * 60 * 60 * 1000).toISOString();
 
-    const { error } = await db.from('users').insert({
+    const { error } = await supabase.from('users').insert({
       id: user.id,
       email: user.email!,
       name: sanitizeName(body.name),
@@ -168,19 +163,20 @@ export async function POST(req: NextRequest) {
 
     // Process referral if a code was provided
     if (body.referral_code && typeof body.referral_code === 'string') {
-      const { data: referrer } = await db
+      const { data: referrer } = await supabase
         .from('users')
         .select('id')
         .eq('referral_code', body.referral_code)
         .maybeSingle();
 
       if (referrer && referrer.id !== user.id) {
-        await db
+        await supabase
           .from('users')
           .update({ referred_by: referrer.id })
           .eq('id', user.id);
 
-        await applyReferralReward(db, referrer.id, user.id, body.referral_code);
+        const adminDb = createServiceClient();
+        await applyReferralReward(adminDb, referrer.id, user.id, body.referral_code);
         auditLog({ action: 'referral.applied', userId: user.id, metadata: { referrerId: referrer.id } });
       }
     }

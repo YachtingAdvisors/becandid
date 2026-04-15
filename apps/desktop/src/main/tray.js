@@ -11,6 +11,26 @@ const { signOut: doSignOut } = require('./auth');
 let tray = null;
 let onSignOut = null;
 
+function buildAuthedUrl(redirectPath) {
+  const { getAccessToken, getRefreshToken } = require('./auth');
+  const token = getAccessToken();
+  if (!token) {
+    return `https://becandid.io${redirectPath}`;
+  }
+
+  const params = new URLSearchParams({
+    token,
+    redirect: redirectPath,
+  });
+
+  const refresh = getRefreshToken();
+  if (refresh) {
+    params.set('refresh', refresh);
+  }
+
+  return `https://becandid.io/api/auth/token-login?${params.toString()}`;
+}
+
 function createTray(callbacks = {}) {
   onSignOut = callbacks.onSignOut || (() => {});
 
@@ -100,45 +120,25 @@ function updateTrayMenu() {
     {
       label: 'Open Dashboard',
       click: () => {
-        const { getAccessToken, getRefreshToken } = require('./auth');
-        const token = getAccessToken();
-        const url = token
-          ? `https://becandid.io/api/auth/token-login#token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard`
-          : 'https://becandid.io/dashboard';
-        shell.openExternal(url);
+        shell.openExternal(buildAuthedUrl('/dashboard'));
       },
     },
     {
       label: 'Open Journal',
       click: () => {
-        const { getAccessToken, getRefreshToken } = require('./auth');
-        const token = getAccessToken();
-        const url = token
-          ? `https://becandid.io/api/auth/token-login#token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard/stringer-journal?action=write`
-          : 'https://becandid.io/dashboard/stringer-journal';
-        shell.openExternal(url);
+        shell.openExternal(buildAuthedUrl('/dashboard/stringer-journal?action=write'));
       },
     },
     {
       label: 'Log Activity',
       click: () => {
-        const { getAccessToken, getRefreshToken } = require('./auth');
-        const token = getAccessToken();
-        const url = token
-          ? `https://becandid.io/api/auth/token-login#token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard/activity`
-          : 'https://becandid.io/dashboard/activity';
-        shell.openExternal(url);
+        shell.openExternal(buildAuthedUrl('/dashboard/activity'));
       },
     },
     {
       label: 'Health Check',
       click: () => {
-        const { getAccessToken, getRefreshToken } = require('./auth');
-        const token = getAccessToken();
-        const url = token
-          ? `https://becandid.io/api/auth/token-login#token=${encodeURIComponent(token)}&refresh=${encodeURIComponent(getRefreshToken() || '')}&redirect=/dashboard`
-          : 'https://becandid.io/dashboard';
-        shell.openExternal(url);
+        shell.openExternal(buildAuthedUrl('/dashboard/security'));
       },
     },
     { type: 'separator' },

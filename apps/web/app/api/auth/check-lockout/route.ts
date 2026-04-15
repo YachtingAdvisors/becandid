@@ -8,7 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { checkAccountLocked } from '@/lib/accountLockout';
-import { authLimiter, rateLimitResponse } from '@/lib/rateLimit';
+import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
 
 export async function POST(request: NextRequest) {
   // Rate limit by IP (10 req/min)
@@ -17,9 +17,13 @@ export async function POST(request: NextRequest) {
     request.headers.get('x-real-ip') ||
     'unknown';
 
-  if (!authLimiter.check(`lockout-check:${ip}`)) {
-    return rateLimitResponse(60);
-  }
+  const blocked = await checkDistributedRateLimit({
+    scope: 'auth-check-lockout',
+    key: ip,
+    max: 10,
+    windowMs: 60_000,
+  });
+  if (blocked) return blocked;
 
   try {
     const body = await request.json();

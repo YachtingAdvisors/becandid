@@ -2,17 +2,58 @@
  * Chrome storage helpers for the Be Candid extension.
  */
 
+const AUTH_LOCAL_KEYS = ['refresh_token', 'user_id'];
+const AUTH_SESSION_KEYS = ['access_token', 'expires_at'];
+
+async function authSessionGet(keys) {
+  try {
+    if (chrome.storage.session) {
+      return await chrome.storage.session.get(keys);
+    }
+  } catch {}
+  return chrome.storage.local.get(keys);
+}
+
+async function authSessionSet(values) {
+  try {
+    if (chrome.storage.session) {
+      await chrome.storage.session.set(values);
+      return;
+    }
+  } catch {}
+  await chrome.storage.local.set(values);
+}
+
+async function authSessionRemove(keys) {
+  try {
+    if (chrome.storage.session) {
+      await chrome.storage.session.remove(keys);
+      return;
+    }
+  } catch {}
+  await chrome.storage.local.remove(keys);
+}
+
 export async function getSession() {
-  const result = await chrome.storage.local.get(['access_token', 'refresh_token', 'expires_at', 'user_id']);
-  return result;
+  const [persistent, transient] = await Promise.all([
+    chrome.storage.local.get(AUTH_LOCAL_KEYS),
+    authSessionGet(AUTH_SESSION_KEYS),
+  ]);
+  return { ...persistent, ...transient };
 }
 
 export async function setSession({ access_token, refresh_token, expires_at, user_id }) {
-  await chrome.storage.local.set({ access_token, refresh_token, expires_at, user_id });
+  await Promise.all([
+    chrome.storage.local.set({ refresh_token, user_id }),
+    authSessionSet({ access_token, expires_at }),
+  ]);
 }
 
 export async function clearSession() {
-  await chrome.storage.local.remove(['access_token', 'refresh_token', 'expires_at', 'user_id', 'settings']);
+  await Promise.all([
+    chrome.storage.local.remove([...AUTH_LOCAL_KEYS, 'settings']),
+    authSessionRemove(AUTH_SESSION_KEYS),
+  ]);
 }
 
 export async function getSettings() {

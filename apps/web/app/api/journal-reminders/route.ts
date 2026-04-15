@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { checkFeatureGate } from '@/lib/stripe/featureGate';
 
 const VALID_FREQUENCIES = ['daily', 'every_2_days', 'every_3_days', 'weekly'];
 
@@ -45,6 +46,15 @@ export async function PUT(req: NextRequest) {
 
   const blocked = checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
+
+  // Feature gate: journal reminders require Pro+
+  const gate = await checkFeatureGate(user.id, 'journalReminders');
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { error: gate.reason, upgrade_to: gate.requiredPlan },
+      { status: 403 },
+    );
+  }
 
   const body = await req.json();
   const {

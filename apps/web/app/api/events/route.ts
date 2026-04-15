@@ -17,27 +17,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { runAlertPipeline } from '@/lib/alertPipeline';
-import { sanitizeText } from '@/lib/security';
+import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
+import {
+  buildIdempotencyKey,
+  getIdempotencyState,
+  reserveIdempotencyKey,
+  storeIdempotentResponse,
+} from '@/lib/idempotency';
 import { GOAL_LABELS } from '@be-candid/shared';
 
 const VALID_SEVERITIES = ['low', 'medium', 'high'];
 const VALID_PLATFORMS = ['web', 'ios', 'android', 'extension', 'desktop'];
 const MAX_BATCH_SIZE = 20;
 const MAX_EVENTS_PER_HOUR = 30;
+const IDEMPOTENCY_TTL_MS = 60 * 60 * 1000;
 
-// ── Simple per-user rate tracking ───────────────────────────
-const userEventCounts = new Map<string, { count: number; resetAt: number }>();
-
-function checkUserRate(userId: string): boolean {
-  const now = Date.now();
-  const entry = userEventCounts.get(userId);
-  if (!entry || now > entry.resetAt) {
-    userEventCounts.set(userId, { count: 1, resetAt: now + 3600000 });
-    return true;
+async function consumeEventBudget(userId: string, count: number) {
+  for (let i = 0; i < count; i++) {
+    const blocked = await checkDistributedRateLimit({
+      scope: 'event-ingest',
+      key: userId,
+      max: MAX_EVENTS_PER_HOUR,
+      windowMs: 3_600_000,
+    });
+    if (blocked) {
+      return { blocked, processed: i };
+    }
   }
-  if (entry.count >= MAX_EVENTS_PER_HOUR) return false;
-  entry.count++;
-  return true;
+
+  return { blocked: null as Response | null, processed: count };
 }
 
 // ── POST ────────────────────────────────────────────────────
@@ -46,27 +54,51 @@ export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  if (!checkUserRate(user.id)) {
+  const body = await req.json();
+  const candidateEvents = body.batch && Array.isArray(body.events)
+    ? body.events.slice(0, MAX_BATCH_SIZE)
+    : null;
+  const idempotencyKey = typeof body.idempotency_key === 'string'
+    ? `events:${user.id}:${body.idempotency_key}`
+    : buildIdempotencyKey(
+        'events',
+        user.id,
+        candidateEvents ? { batch: true, events: candidateEvents } : body,
+      );
+
+  const existing = await getIdempotencyState(idempotencyKey);
+  if (existing.state === 'replay') return existing.response;
+  if (existing.state === 'pending') {
     return NextResponse.json(
-      { error: 'Rate limit exceeded. Max 30 events per hour.' },
-      { status: 429, headers: { 'Retry-After': '60' } }
+      { duplicate: true, pending: true },
+      { status: 202, headers: { 'Cache-Control': 'no-store' } },
     );
   }
 
-  const body = await req.json();
-
   // ── Batch sync (from offline queue) ───────────────────
   if (body.batch && Array.isArray(body.events)) {
-    const events = body.events.slice(0, MAX_BATCH_SIZE);
+    const events = candidateEvents ?? [];
 
-    // Rate limit by total events, not just by request
-    for (let i = 0; i < events.length; i++) {
-      if (!checkUserRate(user.id)) {
-        return NextResponse.json(
-          { error: 'Rate limit exceeded', processed: i },
-          { status: 429, headers: { 'Retry-After': '60' } }
-        );
-      }
+    const budget = await consumeEventBudget(user.id, events.length);
+    if (budget.blocked) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded', processed: budget.processed },
+        { status: 429, headers: budget.blocked.headers },
+      );
+    }
+
+    const reservation = await reserveIdempotencyKey(
+      idempotencyKey,
+      'events',
+      user.id,
+      IDEMPOTENCY_TTL_MS,
+    );
+    if (reservation.state === 'replay') return reservation.response;
+    if (reservation.state === 'pending') {
+      return NextResponse.json(
+        { duplicate: true, pending: true },
+        { status: 202, headers: { 'Cache-Control': 'no-store' } },
+      );
     }
 
     const results = [];
@@ -95,19 +127,48 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({
+    const responseBody = {
       batch: true,
       total: events.length,
       synced: results.filter((r) => r.success).length,
       failed: results.filter((r) => !r.success).length,
       results,
+    };
+
+    await storeIdempotentResponse(idempotencyKey, {
+      status: 200,
+      body: responseBody,
     });
+
+    return NextResponse.json(responseBody);
   }
 
   // ── Single event ──────────────────────────────────────
   const validated = validateEvent(body);
   if (!validated.valid) {
     return NextResponse.json({ error: validated.error }, { status: 400 });
+  }
+
+  const budget = await consumeEventBudget(user.id, 1);
+  if (budget.blocked) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Max 30 events per hour.' },
+      { status: 429, headers: budget.blocked.headers },
+    );
+  }
+
+  const reservation = await reserveIdempotencyKey(
+    idempotencyKey,
+    'events',
+    user.id,
+    IDEMPOTENCY_TTL_MS,
+  );
+  if (reservation.state === 'replay') return reservation.response;
+  if (reservation.state === 'pending') {
+    return NextResponse.json(
+      { duplicate: true, pending: true },
+      { status: 202, headers: { 'Cache-Control': 'no-store' } },
+    );
   }
 
   try {
@@ -121,10 +182,17 @@ export async function POST(req: NextRequest) {
       metadata: body.metadata,
     });
 
-    return NextResponse.json({
+    const responseBody = {
       alert_id: result.alert.id,
       solo_mode: result.solo,
-    }, { status: 201 });
+    };
+
+    await storeIdempotentResponse(idempotencyKey, {
+      status: 201,
+      body: responseBody,
+    });
+
+    return NextResponse.json(responseBody, { status: 201 });
   } catch (e: any) {
     console.error('Event processing failed:', e);
     return NextResponse.json({ error: 'Event processing failed' }, { status: 500 });

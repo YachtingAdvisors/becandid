@@ -17,6 +17,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/contexts/AuthContext';
@@ -137,8 +138,13 @@ export default function SignInScreen() {
       >
         {/* Logo / Brand */}
         <View style={styles.logoContainer}>
+          <Image
+            source={require('../../assets/icon.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
           <Text style={styles.logoText}>Be Candid</Text>
-          <Text style={styles.tagline}>Accountability starts here</Text>
+          <Text style={styles.tagline}>Be honest. Be free.</Text>
         </View>
 
         {/* Biometric button -- shown above form when enabled */}
@@ -268,6 +274,12 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     marginBottom: 48,
+  },
+  logoImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    marginBottom: 16,
   },
   logoText: {
     fontSize: 32,

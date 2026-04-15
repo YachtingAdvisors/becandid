@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html><head><link rel="stylesheet" href="shared.css">
+<style>
+.checkin-card {
+  background: #fff; border-radius: 1.65vw; padding: 2.3vw;
+  border: 1px solid #f0ece8; margin-bottom: 1.45%;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.question { font-size: 1.75vw; font-weight: 700; color: #1a1a1a; line-height: 1.4; margin-bottom: 1.45%; }
+.mood-grid { display: flex; gap: 0.8vw; flex-wrap: wrap; margin-bottom: 0.8%; }
+.mood-option {
+  flex: 1; min-width: 7vw; text-align: center; padding: 1.45vw 0.8vw;
+  border-radius: 1.25vw; border: 2px solid #f0ece8; background: #fff;
+}
+.mood-option.selected { border-color: #226477; background: #f0f9f9; }
+.mood-option .emoji { font-size: 2.5vw; margin-bottom: 0.4vw; display: block; }
+.mood-option .label { font-size: 1.25vw; font-weight: 600; color: #555; }
+.mood-option.selected .label { color: #226477; }
+.slider-section { margin: 1.65% 0; }
+.slider-track {
+  width: 100%; height: 0.6vw; background: #e8e8e8; border-radius: 0.3vw;
+  position: relative; margin-bottom: 0.6%;
+}
+.slider-fill { width: 35%; height: 100%; background: linear-gradient(90deg, #2a8a8a, #226477); border-radius: 0.3vw; }
+.slider-thumb {
+  width: 2.1vw; height: 2.1vw; border-radius: 50%; background: #226477;
+  border: 0.2vw solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  position: absolute; top: -0.75vw; left: 33%;
+}
+.slider-labels { display: flex; justify-content: space-between; font-size: 1.15vw; color: #aaa; }
+.progress-dots { display: flex; justify-content: center; gap: 0.6vw; margin: 1.65% 0; }
+.dot { width: 0.8vw; height: 0.8vw; border-radius: 50%; background: #ddd; }
+.dot.active { background: #226477; width: 2.1vw; border-radius: 0.4vw; }
+.dot.done { background: #2a8a8a; }
+.step-label { text-align: center; font-size: 1.25vw; color: #999; margin-bottom: 1.85%; }
+.privacy-note {
+  display: flex; align-items: center; gap: 0.6vw; padding: 1.25vw;
+  background: #f8f8f8; border-radius: 1vw; margin-top: 1.25%;
+}
+.privacy-icon { font-size: 1.65vw; }
+.privacy-text { font-size: 1.15vw; color: #888; line-height: 1.4; }
+</style>
+</head><body>
+<div class="screen">
+  <div class="status-bar"><span>9:41</span><span>Be Candid</span><span>100%</span></div>
+  <div class="page-title">Daily Check-in</div>
+  <div class="step-label">Step 2 of 4</div>
+  <div class="progress-dots">
+    <div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+  <div class="checkin-card">
+    <div class="question">How are you feeling right now?</div>
+    <div class="mood-grid">
+      <div class="mood-option"><span class="emoji">&#x1F614;</span><span class="label">Struggling</span></div>
+      <div class="mood-option"><span class="emoji">&#x1F610;</span><span class="label">Okay</span></div>
+      <div class="mood-option selected"><span class="emoji">&#x1F60A;</span><span class="label">Good</span></div>
+      <div class="mood-option"><span class="emoji">&#x1F4AA;</span><span class="label">Strong</span></div>
+    </div>
+  </div>
+  <div class="checkin-card">
+    <div class="question">How strong is the urge today?</div>
+    <div class="slider-section">
+      <div class="slider-track"><div class="slider-fill"></div><div class="slider-thumb"></div></div>
+      <div class="slider-labels"><span>None</span><span>Mild</span><span>Moderate</span><span>Strong</span><span>Intense</span></div>
+    </div>
+  </div>
+  <div class="checkin-card">
+    <div class="question">Any triggers today?</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.6vw;">
+      <span class="tag tag-rose">Stress</span>
+      <span class="tag tag-amber" style="border: 2px solid #226477;">Loneliness</span>
+      <span class="tag tag-teal">Boredom</span>
+      <span class="tag tag-green">Fatigue</span>
+      <span class="tag tag-rose">Conflict</span>
+      <span class="tag tag-amber">Late night</span>
+    </div>
+  </div>
+  <div class="privacy-note">
+    <span class="privacy-icon">&#x1F512;</span>
+    <span class="privacy-text">Your check-in is encrypted end-to-end. Only you and your accountability partner can see this.</span>
+  </div>
+  <div class="nav-bottom">
+    <div class="nav-item"><span class="nav-icon">&#x1F3E0;</span>Home</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4D3;</span>Journal</div>
+    <div class="nav-item active"><span class="nav-icon">&#x2714;</span>Check-in</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4CA;</span>Activity</div>
+    <div class="nav-item"><span class="nav-icon">&#x2699;</span>Settings</div>
+  </div>
+</div>
+</body></html>

@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError, auditLog, escapeHtml } from '@/lib/security';
+import { createInviteToken } from '@/lib/inviteTokens';
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,9 +39,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate new token
-    const newToken = crypto.randomUUID();
+    const { rawToken: newToken, tokenHash, expiresAt } = createInviteToken();
     await db.from('partners')
-      .update({ invite_token: newToken, invited_at: new Date().toISOString() })
+      .update({
+        invite_token: tokenHash,
+        invite_expires_at: expiresAt,
+        invited_at: new Date().toISOString(),
+      })
       .eq('id', partner.id);
 
     // Send via Resend

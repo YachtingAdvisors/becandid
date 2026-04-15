@@ -17,7 +17,7 @@ interface Tier {
   ctaHref: string;
   highlight: boolean;
   badge?: string;
-  features: { text: string; included: boolean }[];
+  features: { text: string; included: boolean; premium?: boolean }[];
 }
 
 const TIER_ICONS: Record<string, string> = {
@@ -38,17 +38,17 @@ const TIERS: Tier[] = [
     ctaHref: '/auth/signup',
     highlight: false,
     features: [
-      { text: 'Screen awareness (16 categories)', included: true },
-      { text: '1 accountability partner', included: true },
+      { text: '2 accountability partners', included: true },
       { text: '3 conversation guides / month', included: true },
       { text: '1 therapist connection', included: true },
-      { text: 'Manual journal (no AI prompts)', included: true },
+      { text: 'Manual journal', included: true },
       { text: 'Basic dashboard + streaks', included: true },
       { text: 'Solo mode', included: true },
       { text: 'Relationship level', included: true },
       { text: 'Crisis resource detection', included: true },
+      { text: 'Screen awareness', included: false },
       { text: 'Journal reminders', included: false },
-      { text: 'Weekly AI reflection', included: false },
+      { text: 'Weekly guided reflection', included: false },
       { text: 'Pattern detection', included: false },
       { text: 'Therapist portal', included: false },
     ],
@@ -66,12 +66,13 @@ const TIERS: Tier[] = [
     badge: '21 days free',
     features: [
       { text: 'Everything in Free', included: true },
+      { text: 'Screen awareness (12 categories)', included: true, premium: true },
       { text: 'Unlimited conversation guides', included: true },
       { text: 'Up to 5 accountability partners', included: true },
       { text: 'Scheduled journal reminders', included: true },
-      { text: 'Weekly AI reflection', included: true },
-      { text: 'Vulnerability windows', included: true },
-      { text: 'Pattern detection', included: true },
+      { text: 'Weekly guided reflection', included: true },
+      { text: 'Vulnerability windows', included: true, premium: true },
+      { text: 'Pattern detection', included: true, premium: true },
       { text: 'Conversation outcome tracking', included: true },
       { text: 'Spouse experience + Committed Contender', included: true },
       { text: 'Data export (JSON)', included: true },
@@ -94,11 +95,11 @@ const TIERS: Tier[] = [
       { text: 'Unlimited partners', included: true },
       { text: 'Full therapist portal access', included: true },
       { text: 'Therapist reads client journal entries between sessions', included: true },
-      { text: 'Daily mood trends & emotional pattern tracking', included: true },
+      { text: 'Daily mood trends & emotional pattern tracking', included: true, premium: true },
       { text: 'Focus streak history & relapse timeline', included: true },
-      { text: 'Digital trigger map — sites, apps, times of day', included: true },
+      { text: 'Digital trigger map — patterns, tags, times of day', included: true, premium: true },
       { text: 'Conversation outcome tracking (partner interactions)', included: true },
-      { text: 'Vulnerability window detection & alerts', included: true },
+      { text: 'Vulnerability window detection & alerts', included: true, premium: true },
       { text: '5 granular consent toggles — client stays in control', included: true },
       { text: 'HIPAA-ready encryption & audit logging', included: true },
       { text: 'Therapist Data Processing Agreement included', included: true },
@@ -214,7 +215,7 @@ export default function PricingPage() {
                 }`}
               >
                 {/* FREE DURING BETA badge */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-400/20 text-emerald-300 text-[10px] font-bold font-label uppercase tracking-wider border border-emerald-400/30">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-bold font-label uppercase tracking-wider shadow-lg">
                   Free During Beta
                 </div>
 
@@ -292,18 +293,41 @@ export default function PricingPage() {
                 {/* Feature list with stagger animation */}
                 <div className="pricing-stagger space-y-2.5 mb-8">
                   {tier.features.map((f, i) => (
-                    <div key={i} className="flex items-start gap-2.5">
+                    <div
+                      key={i}
+                      className={`flex items-start gap-2.5 ${
+                        f.premium && f.included
+                          ? 'rounded-lg px-2 py-1.5 -mx-2 ' +
+                            (tier.highlight
+                              ? 'bg-white/[0.08]'
+                              : 'bg-cyan-500/[0.06] border border-cyan-400/10')
+                          : ''
+                      }`}
+                    >
                       {f.included ? (
-                        <span
-                          className={`material-symbols-outlined text-[16px] mt-0.5 flex-shrink-0 ${
-                            tier.highlight
-                              ? 'text-on-primary'
-                              : 'text-teal-400'
-                          }`}
-                          style={{ fontVariationSettings: "'FILL' 1" }}
-                        >
-                          check_circle
-                        </span>
+                        f.premium ? (
+                          <span
+                            className={`material-symbols-outlined text-[18px] mt-0.5 flex-shrink-0 ${
+                              tier.highlight
+                                ? 'text-amber-200'
+                                : 'text-amber-400'
+                            }`}
+                            style={{ fontVariationSettings: "'FILL' 1" }}
+                          >
+                            auto_awesome
+                          </span>
+                        ) : (
+                          <span
+                            className={`material-symbols-outlined text-[16px] mt-0.5 flex-shrink-0 ${
+                              tier.highlight
+                                ? 'text-on-primary'
+                                : 'text-teal-400'
+                            }`}
+                            style={{ fontVariationSettings: "'FILL' 1" }}
+                          >
+                            check_circle
+                          </span>
+                        )
                       ) : (
                         <span className="material-symbols-outlined text-[16px] mt-0.5 flex-shrink-0 text-stone-600">
                           close
@@ -312,9 +336,13 @@ export default function PricingPage() {
                       <span
                         className={`text-xs font-body leading-relaxed ${
                           f.included
-                            ? tier.highlight
-                              ? 'text-on-primary'
-                              : 'text-slate-300'
+                            ? f.premium
+                              ? tier.highlight
+                                ? 'text-on-primary font-semibold'
+                                : 'text-slate-200 font-semibold'
+                              : tier.highlight
+                                ? 'text-on-primary'
+                                : 'text-slate-300'
                             : 'text-stone-500'
                         }`}
                       >

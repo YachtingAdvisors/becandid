@@ -20,6 +20,7 @@ function SignInForm() {
   const [showMFA, setShowMFA] = useState(false);
   const reason = searchParams.get('reason');
   const callbackError = searchParams.get('error');
+  const message = searchParams.get('message');
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -58,13 +59,6 @@ function SignInForm() {
       setLoading(false);
       return;
     }
-
-    // Record successful attempt (clears failed attempts)
-    fetch('/api/auth/record-attempt', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, success: true }),
-    }).catch(() => {});
 
     // Check if MFA is required before redirecting
     const { data: factors } = await supabase.auth.mfa.listFactors();
@@ -128,6 +122,14 @@ function SignInForm() {
                     <span className="material-symbols-outlined text-[18px]">schedule</span>
                   </div>
                   You were signed out due to inactivity.
+                </div>
+              )}
+              {message === 'verify_email_then_accept' && !error && !callbackError && !reason && (
+                <div className="px-4 py-3 rounded-2xl bg-cyan-900/20 ring-1 ring-cyan-500/20 text-cyan-300 text-sm font-body flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-cyan-900/30 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[18px]">mail</span>
+                  </div>
+                  Verify your email, then sign in with the invited address to accept the partnership.
                 </div>
               )}
               {error && (

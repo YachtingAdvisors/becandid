@@ -13,26 +13,21 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
+import { checkFeatureGate } from '@/lib/stripe/featureGate';
 import { analyzeImage, analyzeScreenshot } from '@/lib/imageAnalysis';
 import { runAlertPipeline } from '@/lib/alertPipeline';
 import type { ScreenshotMetadata } from '@/lib/imageClassifier';
+import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
+import {
+  buildIdempotencyKey,
+  getIdempotencyState,
+  reserveIdempotencyKey,
+  storeIdempotentResponse,
+} from '@/lib/idempotency';
 
-// Rate limit: 20 captures per hour per user
-const captureCounts = new Map<string, { count: number; resetAt: number }>();
 const MAX_CAPTURES_PER_HOUR = 20;
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
-
-function checkCaptureRate(userId: string): boolean {
-  const now = Date.now();
-  const entry = captureCounts.get(userId);
-  if (!entry || now > entry.resetAt) {
-    captureCounts.set(userId, { count: 1, resetAt: now + 3600_000 });
-    return true;
-  }
-  if (entry.count >= MAX_CAPTURES_PER_HOUR) return false;
-  entry.count++;
-  return true;
-}
+const IDEMPOTENCY_TTL_MS = 30 * 60 * 1000;
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,10 +36,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!checkCaptureRate(user.id)) {
+    // Feature gate: screen awareness requires Pro+
+    const gate = await checkFeatureGate(user.id, 'patternDetection');
+    if (!gate.allowed) {
       return NextResponse.json(
-        { error: 'Rate limit exceeded. Max 20 captures per hour.' },
-        { status: 429, headers: { 'Retry-After': '60' } }
+        { error: 'Screen awareness requires a Pro plan or higher', upgrade_to: gate.requiredPlan },
+        { status: 403 },
       );
     }
 
@@ -90,6 +87,49 @@ export async function POST(req: NextRequest) {
       screenChanged: rawMetadata?.screenChanged ?? true,
     };
 
+    const idempotencyKey = typeof body?.idempotency_key === 'string'
+      ? `screen-capture:${user.id}:${body.idempotency_key}`
+      : buildIdempotencyKey('screen-capture', user.id, {
+          image,
+          metadata: screenshotMetadata,
+        });
+
+    const existing = await getIdempotencyState(idempotencyKey);
+    if (existing.state === 'replay') return existing.response;
+    if (existing.state === 'pending') {
+      return NextResponse.json(
+        { duplicate: true, pending: true },
+        { status: 202, headers: { 'Cache-Control': 'no-store' } },
+      );
+    }
+
+    const blocked = await checkDistributedRateLimit({
+      scope: 'screen-capture',
+      key: user.id,
+      max: MAX_CAPTURES_PER_HOUR,
+      windowMs: 3_600_000,
+    });
+    if (blocked) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Max 20 captures per hour.' },
+        { status: 429, headers: blocked.headers },
+      );
+    }
+
+    const reservation = await reserveIdempotencyKey(
+      idempotencyKey,
+      'screen-capture',
+      user.id,
+      IDEMPOTENCY_TTL_MS,
+    );
+    if (reservation.state === 'replay') return reservation.response;
+    if (reservation.state === 'pending') {
+      return NextResponse.json(
+        { duplicate: true, pending: true },
+        { status: 202, headers: { 'Cache-Control': 'no-store' } },
+      );
+    }
+
     // Run selective analysis: pre-classifier first, Vision only if needed
     const substances = trackedSubstances as import('@be-candid/shared').TrackedSubstance[];
     const analysis = rawMetadata
@@ -120,22 +160,36 @@ export async function POST(req: NextRequest) {
         return null;
       });
 
-      return NextResponse.json({
+      const responseBody = {
         analyzed: true,
         categories: analysis.categories,
         severity: analysis.severity,
         event_id: pipelineResult ? 'created' : null,
         source: analysis.source,
+      };
+
+      await storeIdempotentResponse(idempotencyKey, {
+        status: 200,
+        body: responseBody,
       });
+
+      return NextResponse.json(responseBody);
     }
 
-    return NextResponse.json({
+    const responseBody = {
       analyzed: true,
       categories: analysis.categories,
       severity: analysis.severity,
       event_id: null,
       source: analysis.source,
+    };
+
+    await storeIdempotentResponse(idempotencyKey, {
+      status: 200,
+      body: responseBody,
     });
+
+    return NextResponse.json(responseBody);
   } catch (error) {
     console.error('[screen-capture] Error:', error);
     return NextResponse.json({ error: 'Analysis failed' }, { status: 500 });

@@ -9,25 +9,39 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { authLimiter, checkUserRate } from '@/lib/rateLimit';
+import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
+
+function getSafeRedirectPath(rawRedirect: string | null): string {
+  if (!rawRedirect) return '/dashboard';
+  if (!rawRedirect.startsWith('/')) return '/dashboard';
+  if (rawRedirect.startsWith('//')) return '/dashboard';
+  return rawRedirect;
+}
 
 export async function GET(req: NextRequest) {
   // IP-based rate limit for token exchange (no authenticated user yet)
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  const blocked = checkUserRate(authLimiter, `token-login:${ip}`);
+  const blocked = await checkDistributedRateLimit({
+    scope: 'token-login',
+    key: ip,
+    max: 10,
+    windowMs: 900_000,
+  });
   if (blocked) return blocked;
 
   const token = req.nextUrl.searchParams.get('token');
   const refresh = req.nextUrl.searchParams.get('refresh') || '';
-  const redirect = req.nextUrl.searchParams.get('redirect') || '/dashboard';
+  const redirect = getSafeRedirectPath(req.nextUrl.searchParams.get('redirect'));
 
   if (!token) {
     return NextResponse.redirect(new URL('/auth/signin', req.url));
   }
 
   try {
-    const redirectUrl = new URL(redirect, req.url);
+    const redirectUrl = new URL(redirect, req.nextUrl.origin);
     const response = NextResponse.redirect(redirectUrl);
+    response.headers.set('Cache-Control', 'no-store');
+    response.headers.set('Referrer-Policy', 'no-referrer');
 
     // Create a Supabase client that writes cookies to the response
     const supabase = createServerClient(

@@ -5,16 +5,11 @@ export const dynamic = 'force-dynamic';
 // GET    → export all user data as JSON (GDPR Article 15)
 // PUT    → update data retention preferences
 // DELETE → purge specific data categories
-//
-// GET /api/privacy/sessions → list active sessions
-// DELETE /api/privacy/sessions → log out all other devices
-// DELETE /api/privacy/sessions?id=<id> → log out specific device
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { decrypt, decryptJournalEntries, decryptGuide } from '@/lib/encryption';
-import { getActiveSessions, forceLogoutAll } from '@/lib/sessionSecurity';
 import { accountLimiter, actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
 
@@ -24,14 +19,6 @@ export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const url = new URL(req.url);
-
-  // Sessions sub-route (lightweight — no extra rate limit)
-  if (url.pathname.endsWith('/sessions')) {
-    const sessions = await getActiveSessions(user.id);
-    return NextResponse.json({ sessions });
-  }
 
   // Data export is expensive — use strict rate limit
   const blocked = checkUserRate(accountLimiter, user.id);
@@ -249,7 +236,7 @@ export async function PUT(req: NextRequest) {
   return NextResponse.json({ event_retention_days });
 }
 
-// ── DELETE: Purge data or manage sessions ───────────────────
+// ── DELETE: Purge data ──────────────────────────────────────
 
 export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -258,26 +245,6 @@ export async function DELETE(req: NextRequest) {
 
   const blocked = checkUserRate(accountLimiter, user.id);
   if (blocked) return blocked;
-
-  const url = new URL(req.url);
-
-  // Sessions sub-route
-  if (url.pathname.includes('/sessions')) {
-    const sessionId = url.searchParams.get('id');
-    const db = createServiceClient();
-
-    if (sessionId) {
-      // Log out specific device
-      await db.from('user_sessions').delete()
-        .eq('id', sessionId).eq('user_id', user.id);
-      return NextResponse.json({ removed: true });
-    } else {
-      // Log out all other devices
-      const currentDeviceHash = url.searchParams.get('keep');
-      await forceLogoutAll(user.id, currentDeviceHash || undefined);
-      return NextResponse.json({ logged_out_all: true });
-    }
-  }
 
   // Data purge
   const body = await req.json().catch(() => null);

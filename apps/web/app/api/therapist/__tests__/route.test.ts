@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 // ── Mocks ────────────────────────────────────────────────────
 
@@ -10,7 +10,7 @@ function chainBuilder(resolvedValue: { data: any; error: any; count?: number | n
   const chain: any = {};
   const methods = [
     'select', 'insert', 'upsert', 'update', 'delete',
-    'eq', 'single', 'order', 'range', 'contains',
+    'eq', 'in', 'single', 'order', 'range', 'contains',
   ];
   methods.forEach((m) => {
     chain[m] = vi.fn(() => chain);
@@ -63,10 +63,6 @@ vi.mock('resend', () => ({
   })),
 }));
 
-vi.mock('crypto', () => ({
-  randomUUID: vi.fn(() => 'test-token-uuid'),
-}));
-
 // ── Helpers ──────────────────────────────────────────────────
 
 function makeRequest(method: string, url: string, body?: any): NextRequest {
@@ -75,7 +71,7 @@ function makeRequest(method: string, url: string, body?: any): NextRequest {
     init.body = JSON.stringify(body);
     init.headers = { 'Content-Type': 'application/json' };
   }
-  return new NextRequest(new URL(url, 'http://localhost:3000'), init as any);
+  return new Request(new URL(url, 'http://localhost:3000'), init as any) as unknown as NextRequest;
 }
 
 function mockAuthUser(user: { id: string; email: string } | null) {
@@ -145,11 +141,11 @@ describe('POST /api/therapist (invite)', () => {
 
   it('returns 400 when body is not valid JSON', async () => {
     mockAuthUser({ id: 'user-1', email: 'test@example.com' });
-    const req = new NextRequest(new URL('/api/therapist', 'http://localhost:3000'), {
+    const req = new Request(new URL('/api/therapist', 'http://localhost:3000'), {
       method: 'POST',
       body: 'bad json',
       headers: { 'Content-Type': 'application/json' },
-    } as any);
+    } as any) as unknown as NextRequest;
 
     const { POST } = await import('../route');
     const res = await POST(req);
@@ -239,11 +235,11 @@ describe('PATCH /api/therapist', () => {
 
   it('returns 400 when body is not valid JSON', async () => {
     mockAuthUser({ id: 'user-1', email: 'test@example.com' });
-    const req = new NextRequest(new URL('/api/therapist', 'http://localhost:3000'), {
+    const req = new Request(new URL('/api/therapist', 'http://localhost:3000'), {
       method: 'PATCH',
       body: 'not json',
       headers: { 'Content-Type': 'application/json' },
-    } as any);
+    } as any) as unknown as NextRequest;
 
     const { PATCH } = await import('../route');
     const res = await PATCH(req);
@@ -251,6 +247,34 @@ describe('PATCH /api/therapist', () => {
     expect(res.status).toBe(400);
     const json = await res.json();
     expect(json.error).toBe('Invalid JSON');
+  });
+
+  it('returns 403 when the signed-in therapist email does not match the invite', async () => {
+    mockAuthUser({ id: 'therapist-1', email: 'other@example.com' });
+
+    const chain = chainBuilder({
+      data: {
+        id: 'conn-1',
+        user_id: 'user-1',
+        status: 'pending',
+        therapist_email: 'dr@example.com',
+        invite_expires_at: '2099-01-01T00:00:00.000Z',
+      },
+      error: null,
+    });
+    mockFrom.mockReturnValue(chain);
+
+    const req = makeRequest('PATCH', '/api/therapist', {
+      action: 'accept',
+      invite_token: 'valid-token',
+    });
+
+    const { PATCH } = await import('../route');
+    const res = await PATCH(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(403);
+    expect(json.error).toMatch(/invited email/i);
   });
 });
 

@@ -111,6 +111,7 @@ export function productSchema(tier: ProductTier) {
     '@type': 'Product',
     name: `Be Candid ${tier.name}`,
     description: tier.description,
+    image: `${BASE_URL}/icon-512.png`,
     brand: { '@type': 'Brand', name: 'Be Candid' },
     offers: [
       ...(tier.monthlyPrice > 0

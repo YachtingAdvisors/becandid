@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html><head><link rel="stylesheet" href="shared.css">
+<style>
+.chat-container { padding-bottom: 10.4%; }
+.message {
+  max-width: 85%; margin-bottom: 1.25%; padding: 1.65vw;
+  border-radius: 1.45vw; font-size: 1.45vw; line-height: 1.6;
+}
+.msg-coach {
+  background: #fff; border: 1px solid #f0ece8; color: #333;
+  border-bottom-left-radius: 0.4vw; margin-right: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.msg-user {
+  background: linear-gradient(135deg, #226477, #2a8a8a); color: #fff;
+  border-bottom-right-radius: 0.4vw; margin-left: auto;
+}
+.coach-header { display: flex; align-items: center; gap: 0.8vw; margin-bottom: 0.4vw; }
+.coach-name { font-size: 1.25vw; font-weight: 700; color: #226477; }
+.coach-badge { font-size: 1vw; color: #999; }
+.coach-avatar {
+  width: 3.3vw; height: 3.3vw; border-radius: 50%;
+  background: linear-gradient(135deg, #226477, #2a8a8a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.45vw;
+}
+.input-bar {
+  position: absolute; bottom: 8.9%; left: 4.4%; right: 4.4%;
+  display: flex; gap: 0.8vw; align-items: center;
+}
+.input-field {
+  flex: 1; padding: 1.45vw 1.85vw; border-radius: 1.45vw;
+  background: #fff; border: 2px solid #e8e8e8;
+  font-size: 1.45vw; color: #999;
+}
+.send-btn {
+  width: 3.7vw; height: 3.7vw; border-radius: 50%;
+  background: linear-gradient(135deg, #226477, #2a8a8a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.65vw; color: #fff;
+}
+.suggestion-chips { display: flex; gap: 0.6vw; flex-wrap: wrap; margin-top: 0.8%; }
+.chip {
+  padding: 0.8vw 1.45vw; border-radius: 1.25vw;
+  background: #f0f9f9; border: 1px solid #c8e6e6;
+  font-size: 1.25vw; color: #226477; font-weight: 600;
+}
+</style>
+</head><body>
+<div class="screen">
+  <div class="status-bar"><span>9:41</span><span>Be Candid</span><span>100%</span></div>
+  <div style="display: flex; align-items: center; gap: 1vw; margin-bottom: 1.85%;">
+    <div class="coach-avatar">&#x1F9E0;</div>
+    <div>
+      <div style="font-size: 1.75vw; font-weight: 800; color: #1a1a1a;">Conversation Guide</div>
+      <div style="font-size: 1.25vw; color: #2a8a8a; font-weight: 600;">AI-powered &bull; Clinically informed</div>
+    </div>
+  </div>
+  <div class="chat-container">
+    <div class="message msg-coach">
+      <div class="coach-header"><span class="coach-name">Be Candid Coach</span><span class="coach-badge">&#x2022; AI Guide</span></div>
+      I noticed your check-in mentioned loneliness as a trigger last night. Can you tell me more about what was happening before you started scrolling?
+    </div>
+    <div class="message msg-user">
+      Sarah was working late again. I was alone on the couch and just started mindlessly scrolling. I didn't even realize what I was doing until 45 minutes had passed.
+    </div>
+    <div class="message msg-coach">
+      <div class="coach-header"><span class="coach-name">Be Candid Coach</span></div>
+      That's a really honest observation. The pattern you're describing — where the behavior starts before conscious awareness kicks in — is actually one of the most common experiences. Research shows that <strong>unmet relational needs</strong> are often the fuel, not the content itself.<br><br>What do you think you were actually looking for in that moment?
+    </div>
+    <div class="message msg-user">
+      I think I just wanted to feel connected to something. To not feel alone.
+    </div>
+    <div class="message msg-coach">
+      <div class="coach-header"><span class="coach-name">Be Candid Coach</span></div>
+      That makes complete sense. The longing for connection is one of the deepest human needs. The question isn't whether that need is valid — it absolutely is. The question is whether the behavior you reached for actually <em>met</em> that need, or left you feeling more disconnected.<br><br>What would it look like to reach for connection differently next time?
+      <div class="suggestion-chips">
+        <div class="chip">Text my partner</div>
+        <div class="chip">Journal about it</div>
+        <div class="chip">Call a friend</div>
+      </div>
+    </div>
+  </div>
+  <div class="input-bar">
+    <div class="input-field">Share what's on your mind...</div>
+    <div class="send-btn">&#x27A4;</div>
+  </div>
+  <div class="nav-bottom">
+    <div class="nav-item"><span class="nav-icon">&#x1F3E0;</span>Home</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4D3;</span>Journal</div>
+    <div class="nav-item"><span class="nav-icon">&#x2714;</span>Check-in</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4CA;</span>Activity</div>
+    <div class="nav-item"><span class="nav-icon">&#x2699;</span>Settings</div>
+  </div>
+</div>
+</body></html>

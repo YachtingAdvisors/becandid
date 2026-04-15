@@ -1,17 +1,20 @@
 import { CONFIG } from './config.js';
 import { getSession } from './storage.js';
 
+let refreshInFlight = null;
+
 /**
  * Authenticated API request to Be Candid.
  */
 async function apiRequest(method, path, body = null) {
   const session = await getSession();
-  if (!session.access_token) {
+  const accessToken = session.access_token || await refreshAccessToken();
+  if (!accessToken) {
     throw new Error('Not authenticated');
   }
 
   const headers = {
-    'Authorization': `Bearer ${session.access_token}`,
+    'Authorization': `Bearer ${accessToken}`,
     'Content-Type': 'application/json',
   };
 
@@ -50,10 +53,12 @@ export function apiPatch(path, body) {
  * Refresh the access token using the stored refresh token.
  */
 async function refreshAccessToken() {
+  if (refreshInFlight) return refreshInFlight;
+
   const session = await getSession();
   if (!session.refresh_token) return null;
 
-  try {
+  refreshInFlight = (async () => {
     const res = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
       method: 'POST',
       headers: {
@@ -75,7 +80,9 @@ async function refreshAccessToken() {
     });
 
     return data.access_token;
-  } catch {
-    return null;
-  }
+  })().catch(() => null).finally(() => {
+    refreshInFlight = null;
+  });
+
+  return refreshInFlight;
 }

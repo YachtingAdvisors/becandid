@@ -130,7 +130,7 @@ export default function PrivacyPage() {
               </li>
               <li className="flex items-start gap-2">
                 <MaterialIcon name="shield" className="text-primary text-base mt-0.5 flex-shrink-0" />
-                <span>Authentication tokens are stored locally on your device (browser extension local storage) and never shared with third parties.</span>
+                <span>Authentication tokens stay on your device. The desktop app encrypts tokens at rest, and the browser extension keeps short-lived access tokens in session storage with refresh tokens stored separately.</span>
               </li>
               <li className="flex items-start gap-2">
                 <MaterialIcon name="shield" className="text-primary text-base mt-0.5 flex-shrink-0" />

@@ -17,21 +17,15 @@ import { sendPush } from './push/pushService';
 
 const MAX_CONCURRENT_SESSIONS = 5;
 
-interface SessionInfo {
-  user_id: string;
-  device_hash: string;
-  ip_address: string;
-  user_agent: string;
-  platform: 'web' | 'ios' | 'android';
-  last_active_at: string;
-}
-
 // ── Device fingerprint ──────────────────────────────────────
-// Hash of user agent + platform — not personally identifying,
+// Hash of user agent + platform — stable across IP changes,
 // but enough to detect "new device" scenarios.
 
-export function getDeviceHash(userAgent: string, ip: string): string {
-  return hashValue(`${userAgent}:${ip}`).slice(0, 16);
+export function getDeviceHash(
+  userAgent: string,
+  platform: 'web' | 'ios' | 'android' = 'web',
+): string {
+  return hashValue(`${userAgent}:${platform}`).slice(0, 16);
 }
 
 // ── Record session activity ─────────────────────────────────
