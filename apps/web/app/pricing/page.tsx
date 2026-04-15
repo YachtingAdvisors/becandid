@@ -38,8 +38,7 @@ const TIERS: Tier[] = [
     ctaHref: '/auth/signup',
     highlight: false,
     features: [
-      { text: 'Screen awareness (16 categories)', included: true },
-      { text: '1 accountability partner', included: true },
+      { text: '2 accountability partners', included: true },
       { text: '3 conversation guides / month', included: true },
       { text: '1 therapist connection', included: true },
       { text: 'Manual journal (no AI prompts)', included: true },
@@ -47,6 +46,7 @@ const TIERS: Tier[] = [
       { text: 'Solo mode', included: true },
       { text: 'Relationship level', included: true },
       { text: 'Crisis resource detection', included: true },
+      { text: 'Screen awareness', included: false },
       { text: 'Journal reminders', included: false },
       { text: 'Weekly AI reflection', included: false },
       { text: 'Pattern detection', included: false },
@@ -66,6 +66,7 @@ const TIERS: Tier[] = [
     badge: '21 days free',
     features: [
       { text: 'Everything in Free', included: true },
+      { text: 'Screen awareness (16 categories)', included: true },
       { text: 'Unlimited conversation guides', included: true },
       { text: 'Up to 5 accountability partners', included: true },
       { text: 'Scheduled journal reminders', included: true },

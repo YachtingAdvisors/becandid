@@ -23,7 +23,7 @@
           "android": {
             "image": "./assets/adaptive-icon.png",
             "resizeMode": "native",
-            "backgroundColor": "#226779",
+            "backgroundColor": "#216578",
             "imageWidth": 200
           }
         }
@@ -41,7 +41,7 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#226779",
+          "color": "#216578",
           "sounds": []
         }
       ]
@@ -61,7 +61,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#226779"
+        "backgroundColor": "#216578"
       },
       "package": "io.becandid.app",
       "permissions": [
