@@ -13,6 +13,7 @@ import {
 } from '@/lib/checkInEngine';
 import { generateContextualPrompt } from '@/lib/checkInPrompts';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { logCronRun } from '@/lib/cronAudit';
 import { pushNotifyUser } from '@/lib/pushNotify';
 
 // Vercel Crons send GET requests
@@ -172,6 +173,7 @@ async function handleCron(req: NextRequest) {
     }
   }
 
+    await logCronRun(db, 'checkin', {sent: results.sent, skipped: results.skipped, errors: results.errors, users_processed: results.sent + results.skipped});
   return NextResponse.json({ ok: true, ...results });
 }
 

@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { generateWeeklyReflection } from '@/lib/weeklyReflection';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { logCronRun } from '@/lib/cronAudit';
 
 export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
@@ -63,6 +64,7 @@ export async function GET(req: NextRequest) {
     await new Promise((r) => setTimeout(r, 2000));
   }
 
+  await logCronRun(db, 'weekly-reflection', { users_processed: userIds.length, generated, failed });
   return NextResponse.json({
     eligible_users: userIds.length,
     generated,

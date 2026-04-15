@@ -16,6 +16,7 @@ import { detectPatterns } from '@/lib/patternDetector';
 import { detectPredictivePatterns, type PredictiveAlert } from '@/lib/predictivePatterns';
 import { analyzePartnerFatigue, sendFatigueWarning } from '@/lib/partnerFatigue';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { logCronRun } from '@/lib/cronAudit';
 
 export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
@@ -103,6 +104,7 @@ export async function GET(req: NextRequest) {
     }).neq('id', '00000000-0000-0000-0000-000000000000'); // Update all
   }
 
+  await logCronRun(db, 'patterns', { processed: users.length, patterns_detected: patternsDetected });
   return NextResponse.json({
     processed: users.length,
     patterns_detected: patternsDetected,
