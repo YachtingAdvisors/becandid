@@ -20,8 +20,9 @@ import { Resend } from 'resend';
 import type { GoalCategory } from '@be-candid/shared';
 import { GOAL_LABELS } from '@be-candid/shared';
 import { createServiceClient } from './supabase';
-import { encrypt, encryptGuide } from './encryption';
+import { encrypt, encryptGuide, decrypt } from './encryption';
 import { isUserSolo, SOLO_GUIDE_SYSTEM_PROMPT } from './soloMode';
+import { checkFalsePositiveRules } from './falsePositiveCheck';
 import { onEventFlagged } from './focusIntegration';
 import { triggerRelapseJournal } from './journalRelapseTrigger';
 import { sanitizePushPayload, sanitizePartnerAlert } from './push/pushPrivacy';
@@ -138,6 +139,40 @@ export async function runAlertPipeline(userId: string, event: AlertEvent) {
     }).select().single();
 
     if (eventError) throw new Error(`Event insert failed: ${eventError.message}`);
+
+    // ── Step 0 (pre): False positive suppression check ─────
+    // If a previous contest was accepted for this app/domain/url,
+    // suppress the flag entirely and return early.
+    try {
+      const fpMatch = await checkFalsePositiveRules(db, userId, {
+        appName: rawAppName,
+        urlHash: event.metadata?.url_hash as string || null,
+        category: event.category,
+      });
+
+      if (fpMatch) {
+        console.info(
+          `[alertPipeline] Suppressed false positive for user ${userId.slice(0, 8)}… ` +
+          `(rule: ${fpMatch.match_type}=${fpMatch.match_value})`
+        );
+
+        // Mark the event as suppressed in audit log
+        await db.from('audit_log').insert({
+          user_id: userId,
+          action: 'alert_suppressed_false_positive',
+          metadata: {
+            event_id: savedEvent.id,
+            rule_id: fpMatch.id,
+            match_type: fpMatch.match_type,
+            category: event.category,
+          },
+        });
+
+        return { suppressed: true, rule: fpMatch };
+      }
+    } catch (e) {
+      console.error('False positive check failed (non-fatal):', e);
+    }
 
     // ── Step 0: Vulnerability window check ────────────────
     // If the user has a vulnerability window configured for

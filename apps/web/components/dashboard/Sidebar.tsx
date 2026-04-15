@@ -512,7 +512,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       {open && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div className="absolute inset-0 bg-[#2b3435]/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#f7fafa] dark:bg-[#1a2526] flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
+          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#f7fafa] dark:bg-[#1a2526] flex flex-col shadow-2xl overflow-hidden" style={{ animation: 'slideIn 0.2s ease-out' }}>
             <button onClick={() => setOpen(false)}
               aria-label="Close menu"
               className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center text-[#2b3435]/60 hover:bg-[#e2e9ea] cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#276772]/30">

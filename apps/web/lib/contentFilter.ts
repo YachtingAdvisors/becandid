@@ -11,6 +11,7 @@
 
 import { createServiceClient } from './supabase';
 import { checkDomain, checkUrl, getCategoryForDomain } from './contentBlocklist';
+import { checkFalsePositiveRules } from './falsePositiveCheck';
 import type { GoalCategory } from '@be-candid/shared';
 
 export interface FilterResult {
@@ -19,7 +20,7 @@ export interface FilterResult {
   category: GoalCategory | null;
   confidence: number; // 0-1
   reason: string;
-  source: 'blocklist' | 'pattern' | 'ai' | 'user_rule';
+  source: 'blocklist' | 'pattern' | 'ai' | 'user_rule' | 'false_positive_rule';
 }
 
 export interface ContentRule {
@@ -73,6 +74,28 @@ export async function filterContent(
   metadata?: Record<string, unknown>
 ): Promise<FilterResult> {
   const effectiveDomain = domain || (url ? extractDomainFromUrl(url) : null);
+
+  // Step 0: Check false positive rules (admin-accepted contests)
+  try {
+    const db = createServiceClient();
+    const fpMatch = await checkFalsePositiveRules(db, userId, {
+      appName: appName || undefined,
+      domain: effectiveDomain || undefined,
+    });
+
+    if (fpMatch) {
+      return {
+        blocked: false,
+        flagged: false,
+        category: null,
+        confidence: 1.0,
+        reason: `False positive rule: ${fpMatch.match_type}=${fpMatch.match_value}`,
+        source: 'false_positive_rule',
+      };
+    }
+  } catch (e) {
+    console.error('False positive rule check failed (non-fatal):', e);
+  }
 
   // Step 1: Check user's custom allow rules first (overrides blocklist)
   const userRules = await getUserContentRules(userId);
