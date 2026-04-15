@@ -261,7 +261,7 @@ export async function middleware(request: NextRequest) {
         if (isAdminRoute || isProtectedAppRoute) {
           const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
 
-          if (isAdminRoute && isAdmin(user.email || '') && aal.data?.currentLevel !== 'aal2') {
+          if (isAdminRoute && isAdmin(user.email || '') && aal.data?.nextLevel === 'aal2' && aal.data?.currentLevel !== 'aal2') {
             if (pathname.startsWith('/api/')) {
               return jsonError('Admin access requires MFA', 403);
             }
