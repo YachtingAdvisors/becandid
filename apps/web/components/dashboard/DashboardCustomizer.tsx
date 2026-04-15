@@ -44,16 +44,40 @@ const DEFAULT_ORDER = WIDGET_REGISTRY.map(w => w.id);
 const DEFAULT_HIDDEN = ['referral', 'services', 'events', 'inventory', 'weekly-report', 'screen-content', 'spouse'];
 const STORAGE_KEY = 'becandid-dashboard-layout';
 
+// Map server (long) widget IDs to client (short) IDs
+const SERVER_TO_CLIENT: Record<string, string> = {
+  dashboard_hero: 'hero', quick_mood: 'mood', daily_commitment: 'commitment',
+  daily_challenge: 'challenge', daily_inventory: 'inventory', quote_of_day: 'quote',
+  scheduled_coach: 'coach', focus_board_mini: 'focus-board', checkin_mini: 'checkin',
+  growth_journal: 'growth-journal', focus_chips: 'chips', relationship_mini: 'relationship',
+  spouse_impact: 'spouse', referral_card: 'referral', nudge_banner: 'nudges',
+  whats_new: 'whats-new', recent_events: 'events', weekly_report: 'weekly-report',
+  screen_time: 'screen-content', content_filter: 'screen-content',
+  crisis_detection: 'featured', partner_awareness: 'featured',
+};
+const CLIENT_IDS = new Set(DEFAULT_ORDER);
+
+function normalizeServerIds(ids: string[]): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const id of ids) {
+    const mapped = SERVER_TO_CLIENT[id] ?? id;
+    if (!seen.has(mapped)) { seen.add(mapped); result.push(mapped); }
+  }
+  return result;
+}
+
 function loadLayout(serverWidgets?: string[] | null): SavedLayout {
   if (typeof window === 'undefined') return { order: DEFAULT_ORDER, hidden: DEFAULT_HIDDEN };
 
   // If server has a saved widget config, use it as source of truth
   if (serverWidgets && serverWidgets.length > 0) {
-    const serverSet = new Set(serverWidgets);
+    const normalized = normalizeServerIds(serverWidgets);
+    const serverSet = new Set(normalized);
     // Widgets NOT in the server list are hidden
     const hidden = DEFAULT_ORDER.filter(id => !serverSet.has(id));
     // Order: server widgets first, then any new widgets not yet in server config
-    const order = [...serverWidgets];
+    const order = [...normalized.filter(id => CLIENT_IDS.has(id))];
     for (const id of DEFAULT_ORDER) {
       if (!serverSet.has(id)) order.push(id);
     }
@@ -76,17 +100,33 @@ function loadLayout(serverWidgets?: string[] | null): SavedLayout {
   return { order: DEFAULT_ORDER, hidden: DEFAULT_HIDDEN };
 }
 
-function persistLayout(layout: SavedLayout) {
+function persistLayout(
+  layout: SavedLayout,
+  onError?: (failed: boolean) => void,
+) {
   if (typeof window === 'undefined') return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(layout));
 
   // Sync to database: active widgets = ordered minus hidden
   const activeWidgets = layout.order.filter(id => !layout.hidden.includes(id));
-  fetch('/api/widgets', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ widgets: activeWidgets }),
-  }).catch(() => {});
+
+  const save = (attempt: number) =>
+    fetch('/api/widgets', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ widgets: activeWidgets }),
+    }).then(res => {
+      if (!res.ok) throw new Error(`Save failed: ${res.status}`);
+      onError?.(false);
+    }).catch(() => {
+      if (attempt < 2) {
+        setTimeout(() => save(attempt + 1), 1500);
+      } else {
+        onError?.(true);
+      }
+    });
+
+  save(0);
 }
 
 /* ─── Component ──────────────────────────────────────────── */
@@ -97,12 +137,25 @@ interface Props {
 
 export default function DashboardCustomizer({ widgets, serverWidgets }: Props) {
   const [editing, setEditing] = useState(false);
-  const [layout, setLayout] = useState<SavedLayout>({ order: DEFAULT_ORDER, hidden: [] });
+  const [layout, setLayout] = useState<SavedLayout>(() => loadLayout(serverWidgets));
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState(false);
 
+  // Re-sync if serverWidgets prop changes (e.g. after revalidation)
   useEffect(() => {
-    setLayout(loadLayout(serverWidgets));
+    const loaded = loadLayout(serverWidgets);
+    setLayout(loaded);
+
+    // If server has no saved config but localStorage does, push local to server
+    if (!serverWidgets && typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          persistLayout(loaded, setSaveError);
+        }
+      } catch {}
+    }
   }, [serverWidgets]);
 
   const toggleWidget = useCallback((id: string) => {
@@ -111,7 +164,7 @@ export default function DashboardCustomizer({ widgets, serverWidgets }: Props) {
         ? prev.hidden.filter(h => h !== id)
         : [...prev.hidden, id];
       const next = { ...prev, hidden };
-      persistLayout(next);
+      persistLayout(next, setSaveError);
       return next;
     });
   }, []);
@@ -153,7 +206,7 @@ export default function DashboardCustomizer({ widgets, serverWidgets }: Props) {
   function resetLayout() {
     const fresh = { order: DEFAULT_ORDER, hidden: [] };
     setLayout(fresh);
-    persistLayout(fresh);
+    persistLayout(fresh, setSaveError);
   }
 
   // Touch drag support — use move up/down buttons as fallback
@@ -164,7 +217,7 @@ export default function DashboardCustomizer({ widgets, serverWidgets }: Props) {
       if (idx <= 0) return prev;
       [order[idx - 1], order[idx]] = [order[idx], order[idx - 1]];
       const next = { ...prev, order };
-      persistLayout(next);
+      persistLayout(next, setSaveError);
       return next;
     });
   }
@@ -176,7 +229,7 @@ export default function DashboardCustomizer({ widgets, serverWidgets }: Props) {
       if (idx === -1 || idx >= order.length - 1) return prev;
       [order[idx], order[idx + 1]] = [order[idx + 1], order[idx]];
       const next = { ...prev, order };
-      persistLayout(next);
+      persistLayout(next, setSaveError);
       return next;
     });
   }
@@ -199,6 +252,14 @@ export default function DashboardCustomizer({ widgets, serverWidgets }: Props) {
           {editing ? 'Done Editing' : 'Customize'}
         </button>
       </div>
+
+      {/* Save error banner */}
+      {saveError && (
+        <div className="mb-4 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-error/10 text-error text-sm font-medium">
+          <span className="material-symbols-outlined text-base">cloud_off</span>
+          Dashboard changes saved locally but couldn&apos;t sync to your account. They&apos;ll retry on your next visit.
+        </div>
+      )}
 
       {/* Widget manager panel */}
       {editing && (

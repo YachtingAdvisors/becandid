@@ -111,7 +111,7 @@ export default async function DashboardLayout({
         </div>
         </SWRProvider>
         <RealtimeProvider />
-        <BuildWithUs />
+        <div className="hidden lg:block"><BuildWithUs /></div>
         <QuickActionFab />
       </main>
     </div>
