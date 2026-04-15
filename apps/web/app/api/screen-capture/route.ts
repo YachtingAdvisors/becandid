@@ -13,6 +13,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
+import { checkFeatureGate } from '@/lib/stripe/featureGate';
 import { analyzeImage, analyzeScreenshot } from '@/lib/imageAnalysis';
 import { runAlertPipeline } from '@/lib/alertPipeline';
 import type { ScreenshotMetadata } from '@/lib/imageClassifier';
@@ -33,6 +34,15 @@ export async function POST(req: NextRequest) {
     const user = await getUserFromRequest(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Feature gate: screen awareness requires Pro+
+    const gate = await checkFeatureGate(user.id, 'patternDetection');
+    if (!gate.allowed) {
+      return NextResponse.json(
+        { error: 'Screen awareness requires a Pro plan or higher', upgrade_to: gate.requiredPlan },
+        { status: 403 },
+      );
     }
 
     const body = await req.json();

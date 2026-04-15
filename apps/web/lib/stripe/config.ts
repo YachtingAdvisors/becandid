@@ -58,7 +58,7 @@ export interface PlanLimits {
 export const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
   free: {
     aiGuidesPerMonth: 3,
-    maxPartners: 1,
+    maxPartners: 2,
     journalReminders: false,
     weeklyReflection: false,
     vulnerabilityWindows: false,

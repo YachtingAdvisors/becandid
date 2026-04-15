@@ -16,6 +16,7 @@ import { encrypt } from '@/lib/encryption';
 import { onOutcomeRated, onBothCompletedOutcome } from '@/lib/relationshipHooks';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
+import { checkFeatureGate } from '@/lib/stripe/featureGate';
 import Anthropic from '@anthropic-ai/sdk';
 import { getModel, getMaxTokens } from '@/lib/modelRouter';
 import { logApiCost } from '@/lib/costTracker';
@@ -32,6 +33,15 @@ export async function POST(req: NextRequest) {
 
   const blocked = checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
+
+  // Feature gate: conversation outcomes require Pro+
+  const gate = await checkFeatureGate(user.id, 'conversationOutcomes');
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { error: gate.reason, upgrade_to: gate.requiredPlan },
+      { status: 403 },
+    );
+  }
 
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });

@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { generateWeeklyReflection } from '@/lib/weeklyReflection';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { checkFeatureGate } from '@/lib/stripe/featureGate';
 
 export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
@@ -49,9 +50,14 @@ export async function GET(req: NextRequest) {
 
   let generated = 0;
   let failed = 0;
+  let skippedPlan = 0;
 
   for (const userId of userIds) {
     try {
+      // Feature gate: weekly reflection requires Pro+
+      const gate = await checkFeatureGate(userId, 'weeklyReflection');
+      if (!gate.allowed) { skippedPlan++; continue; }
+
       const reflection = await generateWeeklyReflection(userId);
       if (reflection) generated++;
     } catch (e) {
@@ -66,6 +72,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     eligible_users: userIds.length,
     generated,
+    skipped_free_plan: skippedPlan,
     failed,
   });
 }

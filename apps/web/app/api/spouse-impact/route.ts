@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { checkFeatureGate } from '@/lib/stripe/featureGate';
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -18,6 +19,15 @@ export async function GET(req: NextRequest) {
 
   const blocked = checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
+
+  // Feature gate: spouse experience requires Pro+
+  const gate = await checkFeatureGate(user.id, 'spouseExperience');
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { error: gate.reason, upgrade_to: gate.requiredPlan },
+      { status: 403 },
+    );
+  }
 
   const db = createServiceClient();
 

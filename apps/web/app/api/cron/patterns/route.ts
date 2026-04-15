@@ -16,6 +16,7 @@ import { detectPatterns } from '@/lib/patternDetector';
 import { detectPredictivePatterns, type PredictiveAlert } from '@/lib/predictivePatterns';
 import { analyzePartnerFatigue, sendFatigueWarning } from '@/lib/partnerFatigue';
 import { verifyCronAuth } from '@/lib/cronAuth';
+import { checkFeatureGate } from '@/lib/stripe/featureGate';
 
 export async function GET(req: NextRequest) {
   const authError = verifyCronAuth(req);
@@ -25,6 +26,7 @@ export async function GET(req: NextRequest) {
   let patternsDetected = 0;
   let predictiveAlertsDetected = 0;
   let fatigueWarnings = 0;
+  let skippedPlan = 0;
   let errors = 0;
 
   // Get all active users
@@ -33,6 +35,10 @@ export async function GET(req: NextRequest) {
 
   for (const user of users) {
     try {
+      // Feature gate: pattern detection requires Pro+
+      const gate = await checkFeatureGate(user.id, 'patternDetection');
+      if (!gate.allowed) { skippedPlan++; continue; }
+
       // 1. Pattern detection (reactive)
       const patterns = await detectPatterns(db, user.id);
       patternsDetected += patterns.length;
@@ -105,6 +111,7 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     processed: users.length,
+    skipped_free_plan: skippedPlan,
     patterns_detected: patternsDetected,
     predictive_alerts: predictiveAlertsDetected,
     fatigue_warnings: fatigueWarnings,

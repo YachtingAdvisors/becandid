@@ -22,8 +22,8 @@ const LIMITS: Record<Plan, PlanLimits> = {
   free: {
     aiGuidesPerMonth: 3,
     regenerationsPerMonth: 3,
-    maxPartners: 1,
-    vulnerabilityWindows: 3,
+    maxPartners: 2,
+    vulnerabilityWindows: 0,
     patternDetection: false,
     contextualPrompts: false,
     weeklyDigest: true,

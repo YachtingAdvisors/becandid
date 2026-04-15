@@ -18,6 +18,7 @@ import { awardRelationshipXP } from '@/lib/relationshipEngine';
 import { checkContenderMilestones, analyzeTrustTrend } from '@/lib/spouseExperience';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
+import { checkFeatureGate } from '@/lib/stripe/featureGate';
 
 const ENCRYPTED_FIELDS = ['freewrite', 'impact', 'needs', 'boundaries'] as const;
 
@@ -45,6 +46,15 @@ export async function GET(req: NextRequest) {
 
   const blocked = checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
+
+  // Feature gate: spouse experience requires Pro+
+  const gate = await checkFeatureGate(user.id, 'spouseExperience');
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { error: gate.reason, upgrade_to: gate.requiredPlan },
+      { status: 403 },
+    );
+  }
 
   const url = new URL(req.url);
   const db = createServiceClient();
@@ -87,6 +97,15 @@ export async function POST(req: NextRequest) {
 
   const blocked = checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
+
+  // Feature gate: spouse experience requires Pro+
+  const gate = await checkFeatureGate(user.id, 'spouseExperience');
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { error: gate.reason, upgrade_to: gate.requiredPlan },
+      { status: 403 },
+    );
+  }
 
   const url = new URL(req.url);
   const db = createServiceClient();
@@ -181,6 +200,15 @@ export async function PATCH(req: NextRequest) {
   const blocked = checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
+  // Feature gate: spouse experience requires Pro+
+  const gate = await checkFeatureGate(user.id, 'spouseExperience');
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { error: gate.reason, upgrade_to: gate.requiredPlan },
+      { status: 403 },
+    );
+  }
+
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const { id, share } = body;
@@ -236,6 +264,15 @@ export async function DELETE(req: NextRequest) {
 
   const blocked = checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
+
+  // Feature gate: spouse experience requires Pro+
+  const gate = await checkFeatureGate(user.id, 'spouseExperience');
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { error: gate.reason, upgrade_to: gate.requiredPlan },
+      { status: 403 },
+    );
+  }
 
   const id = new URL(req.url).searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
