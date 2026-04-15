@@ -6,10 +6,15 @@ export const dynamic = 'force-dynamic';
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { createHash } from 'crypto';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { isNonScanUser } from '@/lib/isolationMode';
 import { safeError } from '@/lib/security';
+
+function emailHash(email: string): string {
+  return createHash('sha256').update(email.toLowerCase().trim()).digest('hex');
+}
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -29,9 +34,13 @@ export async function POST(req: NextRequest) {
   const goals: string[] = profileData?.goals ?? [];
   const isolationOnly = isNonScanUser(goals);
 
+  // Store a hash of the authenticated email alongside the timestamp.
+  // The GET endpoint uses this to detect desktop/web account mismatch.
+  const hash = user.email ? emailHash(user.email) : null;
+
   const { data, error, count } = await db
     .from('users')
-    .update({ last_heartbeat: now })
+    .update({ last_heartbeat: now, last_heartbeat_email_hash: hash })
     .eq('id', user.id)
     .select('id');
 
@@ -76,7 +85,7 @@ export async function GET(req: NextRequest) {
   // Try with last_heartbeat column
   const { data, error } = await db
     .from('users')
-    .select('email, last_heartbeat, monitoring_enabled, goals')
+    .select('email, last_heartbeat, last_heartbeat_email_hash, monitoring_enabled, goals')
     .eq('id', userId)
     .single();
 
@@ -93,10 +102,18 @@ export async function GET(req: NextRequest) {
   const fiveMinAgo = Date.now() - 5 * 60 * 1000;
   const appRunning = lastHeartbeat > fiveMinAgo;
 
-  // Account mismatch cannot be reliably detected without cross-user queries
-  // (which would leak email addresses). "App was running but isn't now" is normal
-  // behaviour — the user closed it, their laptop slept, etc. Never show the warning.
-  const mismatch = false;
+  // Real mismatch detection: the desktop app stores a hash of the email it's
+  // signed in as on every heartbeat POST. We compare that to the hash of the
+  // web session's email. A mismatch is certain only when the desktop is actively
+  // running (fresh heartbeat within 5 min) AND the hashes differ — meaning a
+  // different account sent that heartbeat. No emails are ever compared directly.
+  const webHash = data?.email ? emailHash(data.email) : null;
+  const desktopHash = data?.last_heartbeat_email_hash ?? null;
+  const mismatch =
+    appRunning &&
+    webHash !== null &&
+    desktopHash !== null &&
+    webHash !== desktopHash;
 
   // Isolation-only users don't need the desktop app at all
   const userGoals: string[] = data?.goals ?? [];
