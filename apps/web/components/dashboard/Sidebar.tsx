@@ -53,10 +53,10 @@ const navLinkBase =
   'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium font-headline cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#276772]/30';
 
 const navLinkActive =
-  'text-[#276772] font-bold border-r-4 border-[#276772] bg-white/50';
+  'text-[#276772] dark:text-cyan-300 font-bold border-r-4 border-[#276772] dark:border-cyan-400 bg-white/50 dark:bg-white/10';
 
 const navLinkInactive =
-  'text-[#2b3435] opacity-70 hover:bg-[#e2e9ea]';
+  'text-[#2b3435] dark:text-stone-300 opacity-70 hover:bg-[#e2e9ea] dark:hover:bg-white/10';
 
 function NavGroupedItems({ navItems, isActive, onNavigate }: {
   navItems: Array<{ id: string; href: string; label: string; icon: string; group?: string }>;
@@ -111,7 +111,7 @@ function NavGroupedItems({ navItems, isActive, onNavigate }: {
           <div key={groupId} className="mt-2">
             <button
               onClick={() => setExpanded(prev => ({ ...prev, [groupId]: !prev[groupId] }))}
-              className="flex items-center gap-3 px-4 py-2 w-full text-left rounded-xl text-[11px] font-headline font-semibold uppercase tracking-widest text-[#2b3435]/50 hover:text-[#2b3435]/80 transition-colors cursor-pointer"
+              className="flex items-center gap-3 px-4 py-2 w-full text-left rounded-xl text-[11px] font-headline font-semibold uppercase tracking-widest text-[#2b3435]/50 dark:text-stone-500 hover:text-[#2b3435]/80 dark:hover:text-stone-300 transition-colors cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm w-5 text-center">{meta.icon}</span>
               <span className="flex-1">{meta.label}</span>
@@ -206,9 +206,9 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       <div className="px-5 pt-6 pb-4">
         <div className="flex items-center gap-2.5">
           <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
-          <span className="font-headline font-bold text-lg text-[#276772]">Be Candid</span>
+          <span className="font-headline font-bold text-lg text-[#276772] dark:text-cyan-300">Be Candid</span>
         </div>
-        <p className="mt-1 pl-[3.25rem] text-[10px] uppercase tracking-widest text-[#2b3435]/40 font-headline font-medium">
+        <p className="mt-1 pl-[3.25rem] text-[10px] uppercase tracking-widest text-[#2b3435]/40 dark:text-stone-500 font-headline font-medium">
           Mental Sanctuary
         </p>
       </div>
@@ -328,8 +328,8 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
         <NavGroupedItems navItems={navItems} isActive={isActive} onNavigate={() => setOpen(false)} />
 
         {/* Tools section */}
-        <div className="mt-3 pt-3 border-t border-[#2b3435]/10">
-          <span className="px-4 text-[10px] font-headline font-semibold uppercase tracking-widest text-[#2b3435]/40 mb-1 block">Tools</span>
+        <div className="mt-3 pt-3 border-t border-[#2b3435]/10 dark:border-white/10">
+          <span className="px-4 text-[10px] font-headline font-semibold uppercase tracking-widest text-[#2b3435]/40 dark:text-stone-500 mb-1 block">Tools</span>
           <div className="flex flex-col gap-1 mt-1">
             <Link
               href="/dashboard/screen-time"
@@ -355,7 +355,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
         </div>
 
         {/* Guardian section */}
-        <div className="mt-3 pt-3 border-t border-[#2b3435]/10">
+        <div className="mt-3 pt-3 border-t border-[#2b3435]/10 dark:border-white/10">
           <div className="flex flex-col gap-1">
             <Link
               href="/guardian"
@@ -402,7 +402,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       </div>
 
       {/* ---- User profile + logout ---- */}
-      <div className="px-3 py-3 border-t border-[#2b3435]/10 relative">
+      <div className="px-3 py-3 border-t border-[#2b3435]/10 dark:border-white/10 relative">
         <div className="flex items-center gap-1 mb-1 px-2">
           <div className="flex-1" />
           <NotificationCenter />
@@ -411,7 +411,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
           onClick={() => setShowProfileMenu(!showProfileMenu)}
           aria-expanded={showProfileMenu}
           aria-label="Profile menu"
-          className="w-full flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-[#e2e9ea] cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#276772]/30"
+          className="w-full flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-[#e2e9ea] dark:hover:bg-white/10 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#276772]/30"
         >
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -422,21 +422,21 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
             </div>
           )}
           <div className="min-w-0 flex-1 text-left">
-            <p className="text-sm font-headline font-bold text-[#2b3435] truncate">{userName}</p>
-            <p className="text-[10px] text-[#2b3435]/50 font-headline tracking-wide truncate">Pro Member</p>
+            <p className="text-sm font-headline font-bold text-[#2b3435] dark:text-white truncate">{userName}</p>
+            <p className="text-[10px] text-[#2b3435]/50 dark:text-stone-500 font-headline tracking-wide truncate">Pro Member</p>
           </div>
-          <span className="material-symbols-outlined text-[#2b3435]/40 text-base">
+          <span className="material-symbols-outlined text-[#2b3435]/40 dark:text-stone-500 text-base">
             {showProfileMenu ? 'expand_less' : 'expand_more'}
           </span>
         </button>
 
         {/* Profile dropdown menu */}
         {showProfileMenu && (
-          <div className="absolute bottom-full left-3 right-3 mb-1 bg-white rounded-xl shadow-lg ring-1 ring-[#2b3435]/10 overflow-hidden z-50">
+          <div className="absolute bottom-full left-3 right-3 mb-1 bg-white dark:bg-[#1e2e30] rounded-xl shadow-lg ring-1 ring-[#2b3435]/10 dark:ring-white/10 overflow-hidden z-50">
             <Link
               href="/dashboard/settings"
               onClick={() => { setShowProfileMenu(false); setOpen(false); }}
-              className="flex items-center gap-3 px-4 py-3 text-sm font-headline text-[#2b3435] hover:bg-[#e2e9ea] cursor-pointer transition-colors"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-headline text-[#2b3435] dark:text-stone-200 hover:bg-[#e2e9ea] dark:hover:bg-white/10 cursor-pointer transition-colors"
             >
               <span className="material-symbols-outlined text-base text-[#2b3435]/60">settings</span>
               Settings
@@ -444,7 +444,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
             <button
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploadingAvatar}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-headline text-[#2b3435] hover:bg-[#e2e9ea] cursor-pointer transition-colors disabled:opacity-50"
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-headline text-[#2b3435] dark:text-stone-200 hover:bg-[#e2e9ea] dark:hover:bg-white/10 cursor-pointer transition-colors disabled:opacity-50"
             >
               <span className="material-symbols-outlined text-base text-[#2b3435]/60">photo_camera</span>
               {uploadingAvatar ? 'Uploading...' : 'Change avatar'}
@@ -456,7 +456,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
               onChange={handleAvatarUpload}
               className="hidden"
             />
-            <div className="border-t border-[#2b3435]/10" />
+            <div className="border-t border-[#2b3435]/10 dark:border-white/10" />
             <button
               onClick={async () => {
                 setLoggingOut(true);
@@ -479,7 +479,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
 
       {/* ---- Clinical expertise note ---- */}
       <div className="px-5 pb-4">
-        <p className="text-[10px] text-[#2b3435]/30 font-headline leading-tight">Designed with clinical expertise</p>
+        <p className="text-[10px] text-[#2b3435]/30 dark:text-stone-600 font-headline leading-tight">Designed with clinical expertise</p>
       </div>
     </div>
   );
@@ -488,7 +488,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
     <>
       {/* Mobile hamburger */}
       <button onClick={() => setOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-40 w-11 h-11 rounded-xl bg-white/80 backdrop-blur-xl border border-[#2b3435]/10 shadow-sm flex items-center justify-center cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#276772]/30"
+        className="lg:hidden fixed top-4 left-4 z-40 w-11 h-11 rounded-xl bg-white/80 dark:bg-[#1a2526]/80 backdrop-blur-xl border border-[#2b3435]/10 dark:border-white/10 shadow-sm flex items-center justify-center cursor-pointer transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#276772]/30"
         aria-label="Open menu">
         <svg className="w-5 h-5 text-[#2b3435]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -496,7 +496,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       </button>
 
       {/* Desktop sidebar */}
-      <aside aria-label="Main navigation" className="hidden lg:flex w-64 shrink-0 bg-[#f7fafa] border-r border-[#2b3435]/10 flex-col min-h-screen sticky top-0">
+      <aside aria-label="Main navigation" className="hidden lg:flex w-64 shrink-0 bg-[#f7fafa] dark:bg-[#1a2526] border-r border-[#2b3435]/10 dark:border-white/10 flex-col min-h-screen sticky top-0">
         {sidebarContent}
       </aside>
 
@@ -504,7 +504,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       {open && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div className="absolute inset-0 bg-[#2b3435]/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#f7fafa] flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
+          <aside className="absolute left-0 top-0 bottom-0 w-64 bg-[#f7fafa] dark:bg-[#1a2526] flex flex-col shadow-2xl" style={{ animation: 'slideIn 0.2s ease-out' }}>
             <button onClick={() => setOpen(false)}
               aria-label="Close menu"
               className="absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center text-[#2b3435]/60 hover:bg-[#e2e9ea] cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#276772]/30">
@@ -516,7 +516,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       )}
 
       {/* Mobile bottom nav bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-t border-[#2b3435]/10">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-[#1a2526]/90 backdrop-blur-xl border-t border-[#2b3435]/10 dark:border-white/10">
         <nav aria-label="Mobile navigation" className="flex items-center justify-around px-2 py-1">
           {MOBILE_TABS_ALL.filter(tab => !soloMode || tab.solo).map((tab) => {
             const active = isActive(tab.href);
