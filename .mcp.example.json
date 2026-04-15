@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "/opt/homebrew/bin/npx",
+      "args": ["-y", "@supabase/mcp-server-supabase"],
+      "env": {
+        "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin",
+        "SUPABASE_URL": "https://your-project.supabase.co",
+        "SUPABASE_SERVICE_ROLE_KEY": "rotate-and-set-a-local-service-role-key"
+      }
+    },
+    "stripe": {
+      "command": "/opt/homebrew/bin/npx",
+      "args": ["-y", "@stripe/mcp", "--api-key", "rotate-and-set-a-local-stripe-secret-key"],
+      "env": {
+        "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+      }
+    }
+  }
+}

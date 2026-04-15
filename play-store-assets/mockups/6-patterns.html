@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html><head><link rel="stylesheet" href="shared.css">
+<style>
+.week-chart {
+  display: flex; align-items: flex-end; gap: 0.8vw;
+  height: 14.5vh; padding: 0 1vw; margin-bottom: 0.8%;
+}
+.bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.4vw; }
+.bar { width: 100%; border-radius: 0.6vw 0.6vw 0.2vw 0.2vw; min-height: 0.4vw; }
+.bar.low { background: #d4edda; }
+.bar.med { background: #fef3cd; }
+.bar.high { background: #226477; }
+.bar-label { font-size: 1.15vw; color: #999; font-weight: 600; }
+.vulnerability-card {
+  background: linear-gradient(135deg, #fff5f5, #fff);
+  border: 1px solid #ffe0e6; border-radius: 1.45vw;
+  padding: 1.65vw; margin-bottom: 1.45%;
+}
+.vuln-title { font-size: 1.45vw; font-weight: 700; color: #9b1c31; margin-bottom: 0.4%; }
+.vuln-time { font-size: 2.5vw; font-weight: 800; color: #1a1a1a; margin-bottom: 0.4%; }
+.vuln-desc { font-size: 1.25vw; color: #888; line-height: 1.4; }
+.category-grid { display: flex; flex-wrap: wrap; gap: 0.6vw; margin-bottom: 1.65%; }
+.category-pill {
+  display: flex; align-items: center; gap: 0.4vw;
+  padding: 0.7vw 1.25vw; border-radius: 1vw;
+  background: #fff; border: 1px solid #f0ece8;
+  font-size: 1.25vw; font-weight: 600; color: #555;
+}
+.cat-dot { width: 0.7vw; height: 0.7vw; border-radius: 50%; }
+.pattern-item {
+  display: flex; align-items: center; gap: 1vw;
+  padding: 1.25vw 0; border-bottom: 1px solid #f0ece8;
+}
+.pattern-icon {
+  width: 3.3vw; height: 3.3vw; border-radius: 1vw;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.65vw; flex-shrink: 0;
+}
+.pattern-detail { flex: 1; }
+.pattern-name { font-size: 1.45vw; font-weight: 700; color: #333; }
+.pattern-desc { font-size: 1.15vw; color: #888; margin-top: 0.2vw; }
+.pattern-trend { font-size: 1.45vw; font-weight: 800; }
+.trend-down { color: #2a8a8a; }
+.trend-up { color: #dc3545; }
+</style>
+</head><body>
+<div class="screen">
+  <div class="status-bar"><span>9:41</span><span>Be Candid</span><span>100%</span></div>
+  <div class="page-title">Activity &amp; Patterns</div>
+  <div class="page-subtitle">Understanding your digital behavior</div>
+  <div class="vulnerability-card">
+    <div class="vuln-title">&#x26A0; Vulnerability Window Detected</div>
+    <div class="vuln-time">10:00 PM - 12:00 AM</div>
+    <div class="vuln-desc">You're most likely to engage in unwanted patterns during this window. 73% of your triggers occur here.</div>
+  </div>
+  <div class="section-title">This Week</div>
+  <div class="card">
+    <div class="week-chart">
+      <div class="bar-group"><div class="bar high" style="height: 65%;"></div><div class="bar-label">M</div></div>
+      <div class="bar-group"><div class="bar low" style="height: 20%;"></div><div class="bar-label">T</div></div>
+      <div class="bar-group"><div class="bar low" style="height: 15%;"></div><div class="bar-label">W</div></div>
+      <div class="bar-group"><div class="bar med" style="height: 40%;"></div><div class="bar-label">T</div></div>
+      <div class="bar-group"><div class="bar low" style="height: 25%;"></div><div class="bar-label">F</div></div>
+      <div class="bar-group"><div class="bar high" style="height: 80%;"></div><div class="bar-label">S</div></div>
+      <div class="bar-group"><div class="bar med" style="height: 35%;"></div><div class="bar-label">S</div></div>
+    </div>
+  </div>
+  <div class="section-title">Rival Categories Tracked</div>
+  <div class="category-grid">
+    <div class="category-pill"><div class="cat-dot" style="background: #dc3545;"></div>Social Media</div>
+    <div class="category-pill"><div class="cat-dot" style="background: #fd7e14;"></div>Doomscrolling</div>
+    <div class="category-pill"><div class="cat-dot" style="background: #226477;"></div>Gaming</div>
+    <div class="category-pill"><div class="cat-dot" style="background: #6f42c1;"></div>Gambling</div>
+    <div class="category-pill"><div class="cat-dot" style="background: #e83e8c;"></div>Dating Apps</div>
+    <div class="category-pill"><div class="cat-dot" style="background: #20c997;"></div>AI Chatbots</div>
+    <div class="category-pill" style="color: #aaa; border-style: dashed;">+19 more</div>
+  </div>
+  <div class="section-title">Key Patterns</div>
+  <div class="card" style="padding: 0.6vw 1.85vw;">
+    <div class="pattern-item">
+      <div class="pattern-icon" style="background: #d4edda;">&#x1F4C9;</div>
+      <div class="pattern-detail"><div class="pattern-name">Late-night scrolling</div><div class="pattern-desc">Down 42% from last month</div></div>
+      <div class="pattern-trend trend-down">&#x2193; 42%</div>
+    </div>
+    <div class="pattern-item">
+      <div class="pattern-icon" style="background: #d4edda;">&#x1F4C9;</div>
+      <div class="pattern-detail"><div class="pattern-name">Social media binges</div><div class="pattern-desc">Down 28% from last month</div></div>
+      <div class="pattern-trend trend-down">&#x2193; 28%</div>
+    </div>
+    <div class="pattern-item" style="border: none;">
+      <div class="pattern-icon" style="background: #ffe0e6;">&#x1F4C8;</div>
+      <div class="pattern-detail"><div class="pattern-name">Weekend triggers</div><div class="pattern-desc">Saturdays need attention</div></div>
+      <div class="pattern-trend trend-up">&#x2191; 15%</div>
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <div class="nav-item"><span class="nav-icon">&#x1F3E0;</span>Home</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4D3;</span>Journal</div>
+    <div class="nav-item"><span class="nav-icon">&#x2714;</span>Check-in</div>
+    <div class="nav-item active"><span class="nav-icon">&#x1F4CA;</span>Activity</div>
+    <div class="nav-item"><span class="nav-icon">&#x2699;</span>Settings</div>
+  </div>
+</div>
+</body></html>

@@ -2,6 +2,39 @@ import { CONFIG } from '../shared/config.js';
 import { getSession, setSession, clearSession, setSettings } from '../shared/storage.js';
 import { setUserRules } from './contentFilter.js';
 
+async function ensureAccessToken(explicitToken) {
+  if (explicitToken) return explicitToken;
+
+  const session = await getSession();
+  if (session.access_token) return session.access_token;
+  if (!session.refresh_token) return null;
+
+  try {
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: {
+        'apikey': CONFIG.SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refresh_token: session.refresh_token }),
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    await setSession({
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+      expires_at: Date.now() + (data.expires_in * 1000),
+      user_id: data.user?.id || session.user_id,
+    });
+
+    return data.access_token;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Sign in with email and password via Supabase REST API.
  */
@@ -47,7 +80,7 @@ export async function signOut() {
  */
 export async function isAuthenticated() {
   const session = await getSession();
-  return !!session.access_token;
+  return !!(session.access_token || session.refresh_token);
 }
 
 /**
@@ -55,9 +88,10 @@ export async function isAuthenticated() {
  */
 export async function fetchSettings(token) {
   try {
-    const session = token ? { access_token: token } : await getSession();
+    const accessToken = await ensureAccessToken(token);
+    if (!accessToken) return null;
     const res = await fetch(`${CONFIG.API_URL}/api/extension/settings`, {
-      headers: { 'Authorization': `Bearer ${session.access_token}` },
+      headers: { 'Authorization': `Bearer ${accessToken}` },
     });
     if (res.ok) {
       const settings = await res.json();

@@ -15,6 +15,7 @@ import { aiGuideLimiter, checkUserRate } from '@/lib/rateLimit';
 import Anthropic from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
 import { emailWrapper } from '@/lib/email/template';
+import { escapeHtml } from '@/lib/security';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
@@ -283,16 +284,18 @@ If data is insufficient for a section, provide an honest note like "Insufficient
 
     const emailBody = buildEmailBody(report);
     const html = emailWrapper({
-      preheader: `Session prep for ${report.client_name} — 2-week briefing`,
+      preheader: escapeHtml(`Session prep for ${String(report.client_name || 'Unknown')} - 2-week briefing`),
       body: emailBody,
       ctaUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io'}/therapist/clients/${clientId}`,
       ctaLabel: 'Open Client Portal',
     });
 
+    const subjectClientName = String(report.client_name || 'Unknown').replace(/[\r\n]+/g, ' ').trim();
+
     await getResend().emails.send({
       from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>',
       to: therapistProfile.email,
-      subject: `Session Prep: ${report.client_name} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`,
+      subject: `Session Prep: ${subjectClientName} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`,
       html,
     });
 
@@ -305,11 +308,26 @@ If data is insufficient for a section, provide an honest note like "Insufficient
 // ── Email HTML builder ─────────────────────────────────────────
 
 function buildEmailBody(report: any): string {
+  const clientName = escapeHtml(String(report.client_name || 'Unknown'));
+  const overallSummary = escapeHtml(String(report.overall_summary || ''));
+  const moodTrend = escapeHtml(String(report.mood_trajectory?.trend || 'N/A'));
+  const averageValue = report.mood_trajectory?.average != null
+    ? escapeHtml(`${report.mood_trajectory.average}/5`)
+    : 'N/A';
+  const notableShifts = renderInlineList(report.mood_trajectory?.notable_shifts);
+  const tributaries = renderInlineList(report.journal_themes?.tributaries);
+  const longings = renderInlineList(report.journal_themes?.longings);
+  const roadmapInsights = renderInlineList(report.journal_themes?.roadmap_insights);
+  const recurringTags = renderInlineList(report.journal_themes?.recurring_tags);
+  const behavioralSummary = escapeHtml(String(report.behavioral_patterns?.summary || 'N/A'));
+  const behavioralFrequency = escapeHtml(String(report.behavioral_patterns?.frequency_note || ''));
+  const talkingPoints = renderBulletList(report.talking_points);
+
   const riskSection = report.risk_flags?.length
     ? `<div style="background:#fef2f2;border-left:3px solid #ef4444;padding:16px;margin-bottom:20px;border-radius:0 8px 8px 0;">
         <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:#ef4444;margin:0 0 8px;">Risk Flags</h3>
         <ul style="margin:0;padding-left:18px;color:#374151;line-height:1.8;">
-          ${report.risk_flags.map((f: string) => `<li>${f}</li>`).join('')}
+          ${renderBulletList(report.risk_flags)}
         </ul>
       </div>`
     : '';
@@ -318,7 +336,7 @@ function buildEmailBody(report: any): string {
     ? `<div style="background:#f0fdf4;border-left:3px solid #10b981;padding:16px;margin-bottom:20px;border-radius:0 8px 8px 0;">
         <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:#10b981;margin:0 0 8px;">Growth Observations</h3>
         <ul style="margin:0;padding-left:18px;color:#374151;line-height:1.8;">
-          ${report.growth_observations.map((g: string) => `<li>${g}</li>`).join('')}
+          ${renderBulletList(report.growth_observations)}
         </ul>
       </div>`
     : '';
@@ -326,38 +344,38 @@ function buildEmailBody(report: any): string {
   return `
     <h2 style="color:#226779;font-size:20px;margin-bottom:4px;">Session Prep Report</h2>
     <p style="color:#6b7280;font-size:14px;margin-bottom:20px;">
-      ${report.client_name} &mdash; ${report.period_days}-day briefing &mdash; Generated ${new Date(report.generated_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+      ${clientName} &mdash; ${escapeHtml(String(report.period_days || 14))}-day briefing &mdash; Generated ${escapeHtml(new Date(report.generated_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))}
     </p>
 
-    <p style="margin:0 0 20px;color:#374151;line-height:1.6;font-size:14px;">${report.overall_summary || ''}</p>
+    <p style="margin:0 0 20px;color:#374151;line-height:1.6;font-size:14px;">${overallSummary}</p>
 
     <div style="background:#f8f7ff;border-left:3px solid #226779;padding:16px;margin-bottom:20px;border-radius:0 8px 8px 0;">
       <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:#226779;margin:0 0 8px;">Mood Trajectory</h3>
       <p style="margin:0;color:#374151;line-height:1.6;font-size:14px;">
-        <strong>Trend:</strong> ${report.mood_trajectory?.trend || 'N/A'}<br/>
-        <strong>Average:</strong> ${report.mood_trajectory?.average != null ? `${report.mood_trajectory.average}/5` : 'N/A'}
+        <strong>Trend:</strong> ${moodTrend}<br/>
+        <strong>Average:</strong> ${averageValue}
       </p>
-      ${report.mood_trajectory?.notable_shifts?.length ? `<p style="margin:8px 0 0;color:#6b7280;font-size:13px;">Notable: ${report.mood_trajectory.notable_shifts.join('; ')}</p>` : ''}
+      ${notableShifts ? `<p style="margin:8px 0 0;color:#6b7280;font-size:13px;">Notable: ${notableShifts}</p>` : ''}
     </div>
 
     <div style="background:#f8f7ff;border-left:3px solid #7c3aed;padding:16px;margin-bottom:20px;border-radius:0 8px 8px 0;">
       <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:#7c3aed;margin:0 0 8px;">Journal Themes</h3>
-      ${report.journal_themes?.tributaries?.length ? `<p style="margin:0 0 6px;color:#374151;font-size:13px;"><strong>Tributaries:</strong> ${report.journal_themes.tributaries.join(', ')}</p>` : ''}
-      ${report.journal_themes?.longings?.length ? `<p style="margin:0 0 6px;color:#374151;font-size:13px;"><strong>Longings:</strong> ${report.journal_themes.longings.join(', ')}</p>` : ''}
-      ${report.journal_themes?.roadmap_insights?.length ? `<p style="margin:0 0 6px;color:#374151;font-size:13px;"><strong>Roadmap:</strong> ${report.journal_themes.roadmap_insights.join(', ')}</p>` : ''}
-      ${report.journal_themes?.recurring_tags?.length ? `<p style="margin:0;color:#374151;font-size:13px;"><strong>Tags:</strong> ${report.journal_themes.recurring_tags.join(', ')}</p>` : ''}
+      ${tributaries ? `<p style="margin:0 0 6px;color:#374151;font-size:13px;"><strong>Tributaries:</strong> ${tributaries}</p>` : ''}
+      ${longings ? `<p style="margin:0 0 6px;color:#374151;font-size:13px;"><strong>Longings:</strong> ${longings}</p>` : ''}
+      ${roadmapInsights ? `<p style="margin:0 0 6px;color:#374151;font-size:13px;"><strong>Roadmap:</strong> ${roadmapInsights}</p>` : ''}
+      ${recurringTags ? `<p style="margin:0;color:#374151;font-size:13px;"><strong>Tags:</strong> ${recurringTags}</p>` : ''}
     </div>
 
     <div style="background:#fefce8;border-left:3px solid #d97706;padding:16px;margin-bottom:20px;border-radius:0 8px 8px 0;">
       <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:#d97706;margin:0 0 8px;">Behavioral Patterns</h3>
-      <p style="margin:0;color:#374151;line-height:1.6;font-size:14px;">${report.behavioral_patterns?.summary || 'N/A'}</p>
-      ${report.behavioral_patterns?.frequency_note ? `<p style="margin:6px 0 0;color:#6b7280;font-size:13px;">${report.behavioral_patterns.frequency_note}</p>` : ''}
+      <p style="margin:0;color:#374151;line-height:1.6;font-size:14px;">${behavioralSummary}</p>
+      ${behavioralFrequency ? `<p style="margin:6px 0 0;color:#6b7280;font-size:13px;">${behavioralFrequency}</p>` : ''}
     </div>
 
     <div style="background:#f0f9ff;border-left:3px solid #0284c7;padding:16px;margin-bottom:20px;border-radius:0 8px 8px 0;">
       <h3 style="font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:#0284c7;margin:0 0 8px;">Suggested Talking Points</h3>
       <ol style="margin:0;padding-left:18px;color:#374151;line-height:1.8;">
-        ${(report.talking_points || []).map((p: string) => `<li>${p}</li>`).join('')}
+        ${talkingPoints}
       </ol>
     </div>
 
@@ -365,7 +383,17 @@ function buildEmailBody(report: any): string {
     ${growthSection}
 
     <p style="margin:20px 0 0;color:#9ca3af;font-size:11px;line-height:1.5;text-align:center;">
-      Data summary: ${report.data_summary?.journal_entries ?? 0} journal entries, ${report.data_summary?.mood_readings ?? 0} mood readings, ${report.data_summary?.events ?? 0} events, ${report.data_summary?.outcomes ?? 0} outcomes
+      Data summary: ${escapeHtml(String(report.data_summary?.journal_entries ?? 0))} journal entries, ${escapeHtml(String(report.data_summary?.mood_readings ?? 0))} mood readings, ${escapeHtml(String(report.data_summary?.events ?? 0))} events, ${escapeHtml(String(report.data_summary?.outcomes ?? 0))} outcomes
     </p>
   `;
+}
+
+function renderInlineList(items: unknown): string {
+  if (!Array.isArray(items) || items.length === 0) return '';
+  return items.map((item) => escapeHtml(String(item))).join(', ');
+}
+
+function renderBulletList(items: unknown): string {
+  if (!Array.isArray(items) || items.length === 0) return '';
+  return items.map((item) => `<li>${escapeHtml(String(item))}</li>`).join('');
 }

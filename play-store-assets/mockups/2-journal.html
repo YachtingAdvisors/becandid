@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html><head><link rel="stylesheet" href="shared.css">
+<style>
+.journal-entry {
+  background: #fff; border-radius: 1.45vw; padding: 1.85vw;
+  border: 1px solid #f0ece8; margin-bottom: 1%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.entry-date { font-size: 1.15vw; color: #999; font-weight: 600; margin-bottom: 0.6%; }
+.entry-mood { display: flex; align-items: center; gap: 0.6vw; margin-bottom: 0.8%; }
+.mood-emoji { font-size: 2.1vw; }
+.mood-text { font-size: 1.45vw; font-weight: 700; color: #333; }
+.entry-prompt {
+  font-size: 1.35vw; color: #226477; font-weight: 600;
+  font-style: italic; margin-bottom: 0.8%; line-height: 1.4;
+  padding-left: 1vw; border-left: 0.2vw solid #226477;
+}
+.entry-body { font-size: 1.45vw; color: #555; line-height: 1.6; }
+.entry-tags { display: flex; flex-wrap: wrap; gap: 0.4vw; margin-top: 1%; }
+.guided-badge {
+  display: inline-flex; align-items: center; gap: 0.4vw;
+  background: #f0f9f9; border: 1px solid #c8e6e6;
+  border-radius: 0.8vw; padding: 0.5vw 1vw;
+  font-size: 1.15vw; font-weight: 600; color: #226477;
+  margin-bottom: 1.25%;
+}
+.new-entry-btn {
+  display: flex; align-items: center; justify-content: center; gap: 0.8vw;
+  width: 100%; padding: 1.65vw; border-radius: 1.45vw;
+  background: linear-gradient(135deg, #226477, #2a8a8a);
+  color: #fff; font-size: 1.55vw; font-weight: 700;
+  margin-top: 0.8%;
+}
+</style>
+</head><body>
+<div class="screen">
+  <div class="status-bar"><span>9:41</span><span>Be Candid</span><span>100%</span></div>
+  <div class="page-title">Candid Journal</div>
+  <div class="page-subtitle">Therapist-designed guided reflections</div>
+  <div class="guided-badge">&#x1F9E0; Guided by research with 4,000 participants</div>
+  <div class="journal-entry">
+    <div class="entry-date">Today, 9:15 AM</div>
+    <div class="entry-mood"><span class="mood-emoji">&#x1F60C;</span><span class="mood-text">Calm &amp; Reflective</span></div>
+    <div class="entry-prompt">"What unmet need were you trying to fill the last time you felt pulled toward an old pattern?"</div>
+    <div class="entry-body">I think it was loneliness. Sarah was out late and I was scrolling without thinking. The pattern detection alert actually helped me pause and recognize what was happening before...</div>
+    <div class="entry-tags">
+      <span class="tag tag-teal">loneliness</span>
+      <span class="tag tag-amber">evening trigger</span>
+      <span class="tag tag-green">self-awareness</span>
+    </div>
+  </div>
+  <div class="journal-entry">
+    <div class="entry-date">Yesterday, 11:30 PM</div>
+    <div class="entry-mood"><span class="mood-emoji">&#x1F4AA;</span><span class="mood-text">Strong</span></div>
+    <div class="entry-prompt">"Describe a moment this week where you chose differently than you would have six months ago."</div>
+    <div class="entry-body">Got the vulnerability window alert at 10:45pm. Instead of ignoring it like I used to, I texted my partner Marcus and we had a quick check-in. It was enough to break the cycle.</div>
+    <div class="entry-tags">
+      <span class="tag tag-green">growth</span>
+      <span class="tag tag-teal">partner support</span>
+    </div>
+  </div>
+  <div class="journal-entry" style="opacity: 0.6;">
+    <div class="entry-date">2 days ago, 8:00 AM</div>
+    <div class="entry-mood"><span class="mood-emoji">&#x1F914;</span><span class="mood-text">Thoughtful</span></div>
+    <div class="entry-body" style="font-size: 1.35vw;">Reflecting on what my tributaries look like this week...</div>
+  </div>
+  <div class="new-entry-btn">&#x270D; New Journal Entry</div>
+  <div class="nav-bottom">
+    <div class="nav-item"><span class="nav-icon">&#x1F3E0;</span>Home</div>
+    <div class="nav-item active"><span class="nav-icon">&#x1F4D3;</span>Journal</div>
+    <div class="nav-item"><span class="nav-icon">&#x2714;</span>Check-in</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4CA;</span>Activity</div>
+    <div class="nav-item"><span class="nav-icon">&#x2699;</span>Settings</div>
+  </div>
+</div>
+</body></html>

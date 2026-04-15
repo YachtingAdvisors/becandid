@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html><head><link rel="stylesheet" href="shared.css">
+<style>
+.partner-header {
+  display: flex; align-items: center; gap: 1.25vw;
+  background: #fff; border-radius: 1.65vw; padding: 1.85vw;
+  border: 1px solid #f0ece8; margin-bottom: 1.45%;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.partner-info { flex: 1; }
+.partner-name { font-size: 1.85vw; font-weight: 800; color: #1a1a1a; }
+.partner-status { font-size: 1.25vw; color: #2a8a8a; font-weight: 600; margin-top: 0.2vw; }
+.partner-since { font-size: 1.15vw; color: #aaa; margin-top: 0.2vw; }
+.shared-stats { display: flex; gap: 1vw; margin-bottom: 1.45%; }
+.shared-stat {
+  flex: 1; background: #fff; border-radius: 1.25vw; padding: 1.45vw;
+  text-align: center; border: 1px solid #f0ece8;
+}
+.shared-stat-value { font-size: 2.3vw; font-weight: 800; color: #226477; }
+.shared-stat-label { font-size: 1vw; color: #999; font-weight: 600; margin-top: 0.2vw; }
+.activity-item {
+  display: flex; align-items: flex-start; gap: 1vw;
+  padding: 1.45vw 0; border-bottom: 1px solid #f0ece8;
+}
+.activity-icon {
+  width: 2.9vw; height: 2.9vw; border-radius: 0.8vw;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.45vw; flex-shrink: 0;
+}
+.activity-icon.journal { background: #e0f5f5; }
+.activity-icon.checkin { background: #d4edda; }
+.activity-icon.streak { background: #fef3cd; }
+.activity-icon.alert { background: #ffe0e6; }
+.activity-text { font-size: 1.35vw; color: #333; line-height: 1.4; }
+.activity-time { font-size: 1.15vw; color: #aaa; margin-top: 0.3vw; }
+.consent-banner {
+  display: flex; align-items: center; gap: 0.8vw;
+  background: #f0f9f9; border: 1px solid #c8e6e6;
+  border-radius: 1.25vw; padding: 1.25vw 1.45vw; margin-bottom: 1.45%;
+}
+.consent-icon { font-size: 1.85vw; }
+.consent-text { font-size: 1.15vw; color: #226477; line-height: 1.4; font-weight: 500; }
+.action-btns { display: flex; gap: 0.8vw; margin-top: 1.45%; }
+.action-btn {
+  flex: 1; padding: 1.45vw; border-radius: 1.25vw; text-align: center;
+  font-size: 1.35vw; font-weight: 700;
+}
+.btn-encourage { background: linear-gradient(135deg, #226477, #2a8a8a); color: #fff; }
+.btn-checkin { background: #fff; border: 2px solid #226477; color: #226477; }
+</style>
+</head><body>
+<div class="screen">
+  <div class="status-bar"><span>9:41</span><span>Be Candid</span><span>100%</span></div>
+  <div class="page-title">Accountability Partner</div>
+  <div class="page-subtitle">Mutual support, not surveillance</div>
+  <div class="partner-header">
+    <div class="avatar" style="width: 5.2vw; height: 5.2vw; font-size: 2.1vw;">M</div>
+    <div class="partner-info">
+      <div class="partner-name">Marcus</div>
+      <div class="partner-status">&#x1F7E2; Active today</div>
+      <div class="partner-since">Partners for 47 days</div>
+    </div>
+  </div>
+  <div class="consent-banner">
+    <span class="consent-icon">&#x1F6E1;</span>
+    <span class="consent-text">Marcus has chosen to share: check-in summaries, streak status, and journal frequency. No browsing data is shared.</span>
+  </div>
+  <div class="shared-stats">
+    <div class="shared-stat"><div class="shared-stat-value">14</div><div class="shared-stat-label">Their streak</div></div>
+    <div class="shared-stat"><div class="shared-stat-value">89%</div><div class="shared-stat-label">Check-in rate</div></div>
+    <div class="shared-stat"><div class="shared-stat-value">4</div><div class="shared-stat-label">Journals/wk</div></div>
+  </div>
+  <div class="section-title">Recent Activity</div>
+  <div class="card" style="padding: 0.6vw 1.85vw;">
+    <div class="activity-item">
+      <div class="activity-icon checkin">&#x2714;</div>
+      <div><div class="activity-text"><strong>Marcus</strong> completed a daily check-in</div><div class="activity-time">2 hours ago</div></div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-icon journal">&#x270D;</div>
+      <div><div class="activity-text"><strong>Marcus</strong> wrote a journal entry</div><div class="activity-time">Yesterday, 10:30 PM</div></div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-icon streak">&#x1F525;</div>
+      <div><div class="activity-text"><strong>Marcus</strong> hit a 14-day streak!</div><div class="activity-time">Yesterday, 8:00 AM</div></div>
+    </div>
+    <div class="activity-item" style="border: none;">
+      <div class="activity-icon alert">&#x26A0;</div>
+      <div><div class="activity-text"><strong>Marcus</strong> flagged a vulnerability window</div><div class="activity-time">2 days ago, 11:15 PM</div></div>
+    </div>
+  </div>
+  <div class="action-btns">
+    <div class="action-btn btn-encourage">&#x1F4AC; Send Encouragement</div>
+    <div class="action-btn btn-checkin">&#x2714; Request Check-in</div>
+  </div>
+  <div class="nav-bottom">
+    <div class="nav-item"><span class="nav-icon">&#x1F3E0;</span>Home</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4D3;</span>Journal</div>
+    <div class="nav-item"><span class="nav-icon">&#x2714;</span>Check-in</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4CA;</span>Activity</div>
+    <div class="nav-item"><span class="nav-icon">&#x2699;</span>Settings</div>
+  </div>
+</div>
+</body></html>

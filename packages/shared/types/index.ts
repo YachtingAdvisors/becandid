@@ -390,7 +390,8 @@ export interface Partner {
   partner_name: string;
   partner_phone?: string;
   status: PartnerStatus;
-  invite_token: string;
+  invite_token?: string | null;
+  invite_expires_at?: string | null;
   invited_at: string;
   accepted_at?: string;
 }
@@ -472,10 +473,12 @@ export interface Guardian {
   id: string;
   guardian_user_id: string;
   teen_user_id: string;
+  guardian_email?: string | null;
   relationship: GuardianRelationship;
   status: 'pending' | 'active' | 'revoked';
   permissions: GuardianPermissions;
-  invite_token: string;
+  invite_token?: string | null;
+  invite_expires_at?: string | null;
   created_at: string;
 }
 

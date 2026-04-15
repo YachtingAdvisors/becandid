@@ -10,51 +10,15 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-interface Session {
-  id: string;
-  deviceHash: string;
-  platform: string;
-  lastActive: string;
-  ip: string;
-  device: string;
-}
-
-const PLATFORM_ICONS: Record<string, string> = {
-  ios: 'phone_iphone', android: 'phone_android', web: 'computer',
-};
-
-export default function PrivacySettings() {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [retention, setRetention] = useState(90);
-  const [loading, setLoading] = useState(true);
+export default function PrivacySettings({ initialRetentionDays = 90 }: { initialRetentionDays?: number }) {
+  const [retention, setRetention] = useState(initialRetentionDays);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [purging, setPurging] = useState<string | null>(null);
   const [showPurge, setShowPurge] = useState(false);
-
-  useEffect(() => {
-    Promise.all([
-      fetch('/api/privacy/sessions').then((r) => r.json()),
-      fetch('/api/privacy').then(() => {}), // Just to check retention
-    ]).then(([sessionsData]) => {
-      setSessions(sessionsData.sessions || []);
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, []);
-
-  const removeSession = async (id: string) => {
-    await fetch(`/api/privacy/sessions?id=${id}`, { method: 'DELETE' });
-    setSessions((prev) => prev.filter((s) => s.id !== id));
-  };
-
-  const logoutAll = async () => {
-    if (!confirm('Log out from all other devices? You\'ll stay signed in here.')) return;
-    await fetch('/api/privacy/sessions', { method: 'DELETE' });
-    setSessions((prev) => prev.slice(0, 1)); // Keep current
-  };
 
   const updateRetention = async (days: number) => {
     setRetention(days);
@@ -101,51 +65,8 @@ export default function PrivacySettings() {
     setShowPurge(false);
   };
 
-  if (loading) return <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5"><div className="h-48 animate-pulse bg-surface-container-low rounded-lg" /></div>;
-
   return (
     <div className="space-y-4">
-      {/* Active Sessions */}
-      <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-lg">enhanced_encryption</span>
-            <h3 className="text-sm font-semibold text-on-surface">Active Sessions</h3>
-          </div>
-          {sessions.length > 1 && (
-            <button onClick={logoutAll}
-              className="text-xs text-red-500 hover:text-red-700 font-medium">
-              Log out everywhere else
-            </button>
-          )}
-        </div>
-        <div className="space-y-2">
-          {sessions.map((s, i) => (
-            <div key={s.id} className="flex items-center justify-between py-2.5 px-3 rounded-lg bg-surface-container-low border border-outline-variant">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-lg">{PLATFORM_ICONS[s.platform] || 'computer'}</span>
-                <div>
-                  <p className="text-sm font-medium text-on-surface">{s.device}</p>
-                  <p className="text-xs text-on-surface-variant">
-                    {s.ip} · {new Date(s.lastActive).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    {i === 0 && <span className="text-emerald-600 ml-1">· This device</span>}
-                  </p>
-                </div>
-              </div>
-              {i > 0 && (
-                <button onClick={() => removeSession(s.id)}
-                  className="text-xs text-red-400 hover:text-red-600 px-2 py-1">
-                  Remove
-                </button>
-              )}
-            </div>
-          ))}
-          {sessions.length === 0 && (
-            <p className="text-sm text-on-surface-variant text-center py-4">No active sessions found</p>
-          )}
-        </div>
-      </div>
-
       {/* Data Retention */}
       <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-5">
         <div className="flex items-center gap-2.5 mb-3">
@@ -160,6 +81,7 @@ export default function PrivacySettings() {
           <input
             type="range" min={30} max={365} step={30} value={retention}
             onChange={(e) => updateRetention(parseInt(e.target.value))}
+            disabled={saving}
             className="flex-1 h-2 bg-surface-container rounded-full appearance-none cursor-pointer accent-primary"
           />
           <span className="text-sm font-medium text-on-surface w-20 text-right">

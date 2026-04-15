@@ -5,8 +5,8 @@
 // ============================================================
 
 import { createServiceClient } from './supabase';
-import { generateInviteToken } from '@be-candid/shared';
 import type { GuardianRelationship, GuardianPermissions } from '@be-candid/shared';
+import { createInviteToken, getInviteTokenCandidates, isInviteExpired } from './inviteTokens';
 
 // ── Invite a guardian ──────────────────────────────────────
 // The inviter can be either a teen inviting a parent or a parent
@@ -17,16 +17,18 @@ export async function inviteGuardian(
   relationship: GuardianRelationship
 ): Promise<string> {
   const db = createServiceClient();
-  const token = generateInviteToken();
+  const { rawToken: token, tokenHash, expiresAt } = createInviteToken();
 
   // Determine if inviter is the teen or the guardian
   // For now, the inviter is always the teen (teen sends invite to a guardian)
   const { error } = await db.from('guardians').insert({
     guardian_user_id: inviterUserId, // Placeholder — replaced on accept
     teen_user_id: inviterUserId,
+    guardian_email: email,
     relationship,
     status: 'pending',
-    invite_token: token,
+    invite_token: tokenHash,
+    invite_expires_at: expiresAt,
     permissions: {
       view_events: true,
       view_journal: false, // Journal is SACRED — never default true
@@ -51,19 +53,26 @@ export async function inviteGuardian(
 // ── Accept guardian invite ─────────────────────────────────
 export async function acceptGuardianInvite(
   token: string,
-  guardianUserId: string
+  guardianUserId: string,
+  guardianEmail?: string | null
 ): Promise<void> {
   const db = createServiceClient();
 
   const { data: invite, error: fetchError } = await db
     .from('guardians')
     .select('*')
-    .eq('invite_token', token)
+    .in('invite_token', getInviteTokenCandidates(token))
     .eq('status', 'pending')
     .single();
 
   if (fetchError || !invite) {
     throw new Error('Invalid or expired invite token');
+  }
+  if (isInviteExpired(invite.invite_expires_at)) {
+    throw new Error('Invite token has expired');
+  }
+  if (invite.guardian_email && guardianEmail?.trim().toLowerCase() !== invite.guardian_email.trim().toLowerCase()) {
+    throw new Error('Sign in with the invited email address to accept guardian access');
   }
 
   // Prevent self-guardianship
@@ -77,6 +86,8 @@ export async function acceptGuardianInvite(
       guardian_user_id: guardianUserId,
       status: 'active',
       accepted_at: new Date().toISOString(),
+      invite_token: null,
+      invite_expires_at: null,
     })
     .eq('id', invite.id);
 

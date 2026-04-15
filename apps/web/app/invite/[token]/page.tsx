@@ -75,8 +75,6 @@ export default function InvitePage() {
       return;
     }
 
-    // signUp may return a user even when email confirmation is required
-    // (user.identities will be empty if the email is already taken)
     const newUserId = signUpData?.user?.id;
     if (!newUserId) {
       setError('Signup succeeded but no user was returned. Please check your email and try signing in.');
@@ -84,40 +82,30 @@ export default function InvitePage() {
       return;
     }
 
-    // If email confirmation is required, the session won't exist yet.
-    // Check whether we actually got a session.
     const hasSession = !!signUpData?.session;
 
-    // Try to create the profile — this may 401 if no session cookie yet,
-    // which is fine; the accept endpoint will create the user row via ensureUserRow.
     if (hasSession) {
       await fetch('/api/auth/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), invited_as_partner: true }),
       }).catch(() => {});
-    }
+      const res = await fetch('/api/partners/accept', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
 
-    // Accept the invite, passing userId for the inline signup flow
-    // so the accept endpoint can work even without a session cookie.
-    const res = await fetch('/api/partners/accept', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, userId: newUserId }),
-    });
+      if (!res.ok) {
+        const d = await res.json();
+        setError(d.error ?? 'Failed to accept');
+        setAccepting(false);
+        return;
+      }
 
-    if (!res.ok) {
-      const d = await res.json();
-      setError(d.error ?? 'Failed to accept');
-      setAccepting(false);
-      return;
-    }
-
-    // If we have a session, go to onboarding; otherwise prompt to verify email
-    if (hasSession) {
       router.push('/partner/onboarding');
     } else {
-      router.push('/auth/signin?message=invite_accepted_verify_email');
+      router.push(`/auth/signin?redirect=/invite/${token}&message=verify_email_then_accept`);
     }
   }
 

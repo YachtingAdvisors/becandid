@@ -129,7 +129,7 @@ export default async function SettingsPage() {
 
   const privacyTab = (
     <>
-      <PrivacySettings />
+      <PrivacySettings initialRetentionDays={raw.event_retention_days ?? 90} />
       <MFASetup />
       <ActiveSessions />
       {/* Data Export */}

@@ -1,14 +1,15 @@
 // ============================================================
 // POST /api/auth/record-attempt
 //
-// Records a failed or successful login attempt. On success,
-// clears all prior failed attempts for the email.
+// Records a failed login attempt.
+// Successful logins are cleared server-side from an
+// authenticated session in /api/auth/sessions.
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
-import { recordFailedAttempt, clearFailedAttempts } from '@/lib/accountLockout';
-import { authLimiter, rateLimitResponse } from '@/lib/rateLimit';
+import { recordFailedAttempt } from '@/lib/accountLockout';
+import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
 
 export async function POST(request: NextRequest) {
   const ip =
@@ -16,9 +17,13 @@ export async function POST(request: NextRequest) {
     request.headers.get('x-real-ip') ||
     'unknown';
 
-  if (!authLimiter.check(`record-attempt:${ip}`)) {
-    return rateLimitResponse(60);
-  }
+  const blocked = await checkDistributedRateLimit({
+    scope: 'auth-record-attempt',
+    key: ip,
+    max: 10,
+    windowMs: 60_000,
+  });
+  if (blocked) return blocked;
 
   try {
     const body = await request.json();
@@ -34,10 +39,13 @@ export async function POST(request: NextRequest) {
     const db = createServiceClient();
 
     if (success) {
-      await clearFailedAttempts(db, email);
-    } else {
-      await recordFailedAttempt(db, email, ip);
+      return NextResponse.json(
+        { error: 'Successful attempts are recorded server-side after authentication' },
+        { status: 400 }
+      );
     }
+
+    await recordFailedAttempt(db, email, ip);
 
     return NextResponse.json({ ok: true });
   } catch {

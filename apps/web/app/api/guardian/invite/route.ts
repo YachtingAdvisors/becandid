@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { inviteGuardian, acceptGuardianInvite } from '@/lib/guardianControls';
+import { sanitizeEmail } from '@/lib/security';
 
 const VALID_RELATIONSHIPS = ['parent', 'guardian', 'counselor', 'mentor'];
 
@@ -36,8 +37,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const validatedEmail = sanitizeEmail(body.email);
+  if (!validatedEmail) {
+    return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
+  }
+
   try {
-    const token = await inviteGuardian(user.id, body.email, body.relationship);
+    const token = await inviteGuardian(user.id, validatedEmail, body.relationship);
     return NextResponse.json({ ok: true, token }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 400 });
@@ -58,7 +64,7 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    await acceptGuardianInvite(body.token, user.id);
+    await acceptGuardianInvite(body.token, user.id, user.email ?? null);
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 400 });

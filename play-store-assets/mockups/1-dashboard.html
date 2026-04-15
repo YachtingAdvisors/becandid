@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html><head><link rel="stylesheet" href="shared.css">
+<style>
+.welcome { font-size: 2.3vw; font-weight: 800; color: #1a1a1a; margin-bottom: 0.3%; }
+.welcome-sub { font-size: 1.45vw; color: #888; margin-bottom: 2.1%; }
+.streak-badge {
+  display: inline-flex; align-items: center; gap: 0.6vw;
+  background: linear-gradient(135deg, #fef3cd, #fff8e1); border: 1px solid #f0d36e;
+  border-radius: 1.25vw; padding: 0.8vw 1.45vw; margin-bottom: 1.9%;
+  font-size: 1.35vw; font-weight: 700; color: #856404;
+}
+.quick-actions { display: flex; gap: 1vw; margin-top: 1.65%; }
+.quick-btn {
+  flex: 1; background: #fff; border-radius: 1.25vw; padding: 1.45vw 1vw;
+  text-align: center; border: 1px solid #f0ece8;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.quick-icon { font-size: 2.1vw; color: #226477; margin-bottom: 0.4vw; }
+.quick-label { font-size: 1.25vw; font-weight: 600; color: #555; }
+.insight-card {
+  background: linear-gradient(135deg, #f0f9f9, #fff); border-radius: 1.45vw;
+  padding: 1.85vw; border: 1px solid #d4edda; margin-top: 1.25%;
+}
+.insight-label { font-size: 1.15vw; font-weight: 700; color: #2a8a8a; text-transform: uppercase; letter-spacing: 0.1vw; margin-bottom: 0.6%; }
+.insight-text { font-size: 1.45vw; color: #333; line-height: 1.5; }
+</style>
+</head><body>
+<div class="screen">
+  <div class="status-bar"><span>9:41</span><span>Be Candid</span><span>100%</span></div>
+  <div class="streak-badge">&#x1F525; 14-day streak</div>
+  <div class="welcome">Welcome back, Alex</div>
+  <div class="welcome-sub">Your digital sanctuary for clarity and progress.</div>
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">Trust Points</div>
+      <div class="stat-value">847</div>
+      <div class="stat-sub">Earned through consistency</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Day Streak</div>
+      <div class="stat-value">14</div>
+      <div class="stat-sub">Personal best!</div>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">Journals</div>
+      <div class="stat-value">23</div>
+      <div class="stat-sub">Written this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Mood Trend</div>
+      <div class="stat-value" style="color: #2a8a8a;">&#8599;</div>
+      <div class="stat-sub">Improving this week</div>
+    </div>
+  </div>
+  <div class="insight-card">
+    <div class="insight-label">Today's Insight</div>
+    <div class="insight-text">Your vulnerability window is typically between 10pm-12am. You've been 8 days without triggering this pattern. Keep going.</div>
+  </div>
+  <div class="quick-actions">
+    <div class="quick-btn"><div class="quick-icon">&#x270D;</div><div class="quick-label">Journal</div></div>
+    <div class="quick-btn"><div class="quick-icon">&#x2714;</div><div class="quick-label">Check-in</div></div>
+    <div class="quick-btn"><div class="quick-icon">&#x1F4AC;</div><div class="quick-label">Coach</div></div>
+  </div>
+  <div class="nav-bottom">
+    <div class="nav-item active"><span class="nav-icon">&#x1F3E0;</span>Home</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4D3;</span>Journal</div>
+    <div class="nav-item"><span class="nav-icon">&#x2714;</span>Check-in</div>
+    <div class="nav-item"><span class="nav-icon">&#x1F4CA;</span>Activity</div>
+    <div class="nav-item"><span class="nav-icon">&#x2699;</span>Settings</div>
+  </div>
+</div>
+</body></html>

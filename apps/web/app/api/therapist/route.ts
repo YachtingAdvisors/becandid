@@ -16,7 +16,7 @@ import { decryptJournalEntries, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { sanitizeEmail, sanitizeName, safeError, escapeHtml } from '@/lib/security';
 import { Resend } from 'resend';
-import { randomUUID } from 'crypto';
+import { createInviteToken, getInviteTokenCandidates, isInviteExpired, normalizeInviteToken } from '@/lib/inviteTokens';
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@becandid.io>';
@@ -71,21 +71,45 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 400 });
   }
 
-  const token = randomUUID();
   const cleanName = therapist_name ? sanitizeName(therapist_name) : null;
+  const { rawToken: token, tokenHash, expiresAt } = createInviteToken();
 
-  const { data: connection, error } = await db.from('therapist_connections').upsert({
-    user_id: user.id,
+  const invitePayload = {
     therapist_email: validatedEmail,
     therapist_name: cleanName,
-    invite_token: token,
+    invite_token: tokenHash,
+    invite_expires_at: expiresAt,
     status: 'pending',
+    therapist_user_id: null,
+    accepted_at: null,
+    revoked_at: null,
     can_see_journal: can_see_journal ?? true,
     can_see_moods: can_see_moods ?? true,
     can_see_streaks: can_see_streaks ?? true,
     can_see_outcomes: can_see_outcomes ?? true,
     can_see_patterns: can_see_patterns ?? false,
-  }, { onConflict: 'id' }).select().single();
+  };
+
+  let connection: any;
+  let error: any;
+
+  if (existing?.id) {
+    const result = await db.from('therapist_connections')
+      .update(invitePayload)
+      .eq('id', existing.id)
+      .eq('user_id', user.id)
+      .select('id, user_id, therapist_email, therapist_name, status, can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns, accepted_at, revoked_at, created_at')
+      .single();
+    connection = result.data;
+    error = result.error;
+  } else {
+    const result = await db.from('therapist_connections').insert({
+      user_id: user.id,
+      ...invitePayload,
+    }).select('id, user_id, therapist_email, therapist_name, status, can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns, accepted_at, revoked_at, created_at').single();
+    connection = result.data;
+    error = result.error;
+  }
 
   if (error) return safeError('POST /api/therapist', error);
 
@@ -189,19 +213,23 @@ export async function PATCH(req: NextRequest) {
 
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
-  const { connection_id, action, invite_token, can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns } = body;
+  const { connection_id, action, can_see_journal, can_see_moods, can_see_streaks, can_see_outcomes, can_see_patterns } = body;
+  const inviteToken = normalizeInviteToken(body?.invite_token);
 
   const db = createServiceClient();
 
   // ── Accept invite via token ──────────────────────────────
-  if (action === 'accept' && invite_token) {
+  if (action === 'accept' && inviteToken) {
     const { data: conn, error: lookupErr } = await db.from('therapist_connections')
-      .select('id, user_id, status, therapist_email')
-      .eq('invite_token', invite_token)
+      .select('id, user_id, status, therapist_email, invite_expires_at')
+      .in('invite_token', getInviteTokenCandidates(inviteToken))
       .single();
 
     if (lookupErr || !conn) {
       return NextResponse.json({ error: 'Invalid or expired invite token' }, { status: 404 });
+    }
+    if (isInviteExpired(conn.invite_expires_at)) {
+      return NextResponse.json({ error: 'This invitation has expired' }, { status: 410 });
     }
     if (conn.status === 'accepted') {
       return NextResponse.json({ error: 'Already accepted', connection_id: conn.id }, { status: 400 });
@@ -209,11 +237,21 @@ export async function PATCH(req: NextRequest) {
     if (conn.status === 'revoked') {
       return NextResponse.json({ error: 'This invitation has been revoked' }, { status: 410 });
     }
+    const signedInEmail = user.email?.trim().toLowerCase();
+    const invitedEmail = conn.therapist_email?.trim().toLowerCase();
+    if (!signedInEmail || !invitedEmail || signedInEmail !== invitedEmail) {
+      return NextResponse.json(
+        { error: 'Sign in with the invited email address to accept this therapist invitation' },
+        { status: 403 }
+      );
+    }
 
     const { error: updateErr } = await db.from('therapist_connections').update({
       therapist_user_id: user.id,
       status: 'accepted',
       accepted_at: new Date().toISOString(),
+      invite_token: null,
+      invite_expires_at: null,
     }).eq('id', conn.id);
 
     if (updateErr) return safeError('PATCH /api/therapist', updateErr);
@@ -238,6 +276,8 @@ export async function PATCH(req: NextRequest) {
     await db.from('therapist_connections').update({
       status: 'revoked',
       revoked_at: new Date().toISOString(),
+      invite_token: null,
+      invite_expires_at: null,
     }).eq('id', connection_id).eq('user_id', user.id);
 
     await db.from('audit_log').insert({

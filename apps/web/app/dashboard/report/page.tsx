@@ -60,11 +60,11 @@ export default function AccountabilityReport() {
       // Fetch all data in parallel
       const [momentumRes, profileRes] = await Promise.all([
         fetch('/api/momentum').then((r) => (r.ok ? r.json() : null)),
-        fetch('/api/account').then((r) => (r.ok ? r.json() : null)),
+        fetch('/api/auth/profile').then((r) => (r.ok ? r.json() : null)),
       ]);
 
       const momentum = momentumRes?.data ?? momentumRes;
-      const profile = profileRes?.data ?? profileRes;
+      const profile = profileRes?.profile ?? profileRes?.data ?? profileRes;
 
       setData({
         name: profile?.name ?? 'User',

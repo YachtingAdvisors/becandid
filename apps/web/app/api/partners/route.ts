@@ -7,6 +7,7 @@ import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '
 import { z } from 'zod';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError, sanitizeName, sanitizeEmail, sanitizePhone, auditLog, escapeHtml } from '@/lib/security';
+import { createInviteToken } from '@/lib/inviteTokens';
 
 const InviteSchema = z.object({
   partner_name: z.string().min(1).max(100),
@@ -96,7 +97,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: upgradeMsg }, { status: 400 });
     }
 
-    const inviteToken = crypto.randomUUID();
+    const { rawToken: inviteToken, tokenHash, expiresAt } = createInviteToken();
 
     const { data: partner, error } = await db
       .from('partners')
@@ -106,10 +107,11 @@ export async function POST(req: NextRequest) {
         partner_name: cleanName,
         partner_phone: cleanPhone,
         relationship: parsed.data.relationship_type,
-        invite_token: inviteToken,
+        invite_token: tokenHash,
+        invite_expires_at: expiresAt,
         status: 'pending',
       })
-      .select()
+      .select('id, user_id, partner_user_id, partner_email, partner_name, partner_phone, status, relationship, invited_at, accepted_at')
       .single();
 
     if (error) {

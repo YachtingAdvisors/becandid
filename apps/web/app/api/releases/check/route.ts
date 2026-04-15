@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 // Compares the provided version against the latest GitHub release using semver.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { actionLimiter, rateLimitResponse } from '@/lib/rateLimit';
+import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
 
 const GITHUB_OWNER = 'YachtingAdvisors';
 const GITHUB_REPO = 'becandid';
@@ -100,7 +100,13 @@ async function fetchLatestRelease(): Promise<LatestRelease> {
 export async function GET(req: NextRequest) {
   // ── Rate limit by IP ────────────────────────────────────────
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (!actionLimiter.check(`release-check:${ip}`)) return rateLimitResponse();
+  const blocked = await checkDistributedRateLimit({
+    scope: 'release-check',
+    key: ip,
+    max: 30,
+    windowMs: 3_600_000,
+  });
+  if (blocked) return blocked;
 
   // ── Validate version param ──────────────────────────────────
   const { searchParams } = new URL(req.url);

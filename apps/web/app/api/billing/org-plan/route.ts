@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { safeError, sanitizeText, sanitizeName } from '@/lib/security';
-import { ipRateLimit, rateLimitResponse } from '@/lib/rateLimit';
+import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
 import { Resend } from 'resend';
 import { emailWrapper } from '@/lib/email/template';
 
@@ -31,9 +31,13 @@ export async function POST(req: NextRequest) {
   try {
     // Rate limit by IP since this is public
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-    if (!ipRateLimit.check(`org-plan:${ip}`)) {
-      return rateLimitResponse();
-    }
+    const blocked = await checkDistributedRateLimit({
+      scope: 'org-plan',
+      key: ip,
+      max: 120,
+      windowMs: 60_000,
+    });
+    if (blocked) return blocked;
 
     const body = await req.json().catch(() => null);
     if (!body) {
