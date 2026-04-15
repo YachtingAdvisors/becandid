@@ -215,7 +215,7 @@ export default function PricingPage() {
                 }`}
               >
                 {/* FREE DURING BETA badge */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-400/20 text-emerald-300 text-[10px] font-bold font-label uppercase tracking-wider border border-emerald-400/30">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-bold font-label uppercase tracking-wider shadow-lg">
                   Free During Beta
                 </div>
 
