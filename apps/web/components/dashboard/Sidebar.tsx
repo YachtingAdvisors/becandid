@@ -12,7 +12,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import DarkModeToggle from '@/components/DarkModeToggle';
-import NotificationCenter from '@/components/dashboard/NotificationCenter';
+import NotificationCenter, { NotificationBadge } from '@/components/dashboard/NotificationCenter';
 
 interface NavItem {
   id: string;
@@ -409,24 +409,23 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
 
       {/* ---- User profile + logout ---- */}
       <div className="px-3 py-3 border-t border-[#2b3435]/10 dark:border-white/10 relative">
-        <div className="flex items-center gap-1 mb-1 px-2">
-          <div className="flex-1" />
-          <NotificationCenter />
-        </div>
         <button
           onClick={() => setShowProfileMenu(!showProfileMenu)}
           aria-expanded={showProfileMenu}
           aria-label="Profile menu"
           className="w-full flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-[#e2e9ea] dark:hover:bg-white/10 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#276772]/30"
         >
-          {avatarUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={avatarUrl} alt={`${userName}'s avatar`} className="w-9 h-9 rounded-full object-cover shrink-0" />
-          ) : (
-            <div className="w-9 h-9 rounded-full bg-[#276772]/10 flex items-center justify-center shrink-0">
-              <span className="text-sm font-headline font-bold text-[#276772]">{userName.charAt(0).toUpperCase()}</span>
-            </div>
-          )}
+          <div className="relative">
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt={`${userName}'s avatar`} className="w-9 h-9 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-[#276772]/10 flex items-center justify-center shrink-0">
+                <span className="text-sm font-headline font-bold text-[#276772]">{userName.charAt(0).toUpperCase()}</span>
+              </div>
+            )}
+            <NotificationBadge />
+          </div>
           <div className="min-w-0 flex-1 text-left">
             <p className="text-sm font-headline font-bold text-[#2b3435] dark:text-white truncate">{userName}</p>
             <p className="text-[10px] text-[#2b3435]/50 dark:text-stone-500 font-headline tracking-wide truncate">Pro Member</p>
@@ -439,6 +438,9 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
         {/* Profile dropdown menu */}
         {showProfileMenu && (
           <div className="absolute bottom-full left-3 right-3 mb-1 bg-white dark:bg-[#1e2e30] rounded-xl shadow-lg ring-1 ring-[#2b3435]/10 dark:ring-white/10 overflow-hidden z-50">
+            {/* Inline Notifications */}
+            <NotificationCenter />
+            <div className="border-t border-[#2b3435]/10 dark:border-white/10" />
             <Link
               href="/dashboard/settings"
               onClick={() => { setShowProfileMenu(false); setOpen(false); }}
