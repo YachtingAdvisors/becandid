@@ -19,6 +19,7 @@ const CRON_JOBS = [
   'weekly-reflection',
   'partner-impact',
   'reengagement',
+  'google-indexing',
 ];
 
 export async function GET() {
@@ -47,6 +48,10 @@ export async function GET() {
     Date.now() - 24 * 60 * 60 * 1000
   ).toISOString();
 
+  const sevenDaysAgo = new Date(
+    Date.now() - 7 * 24 * 60 * 60 * 1000
+  ).toISOString();
+
   // ─── Parallel fetches ────────────────────────────────────────
   const [
     errorCountRes,
@@ -57,6 +62,9 @@ export async function GET() {
     nudgeCountRes,
     auditCountRes,
     partnerCountRes,
+    indexingTotalRes,
+    indexingCycleRes,
+    indexingLastRunRes,
   ] = await Promise.all([
     // Error count (24h)
     db
@@ -77,6 +85,19 @@ export async function GET() {
     db.from('nudges').select('id', { count: 'exact', head: true }),
     db.from('audit_log').select('id', { count: 'exact', head: true }),
     db.from('partners').select('id', { count: 'exact', head: true }),
+    // Google Indexing: total URLs ever submitted
+    db.from('indexing_submissions').select('url', { count: 'exact', head: true }),
+    // Google Indexing: submitted within the current 7-day window (cron's dedup window)
+    db
+      .from('indexing_submissions')
+      .select('url', { count: 'exact', head: true })
+      .gte('submitted_at', sevenDaysAgo),
+    // Google Indexing: most recent submission timestamp
+    db
+      .from('indexing_submissions')
+      .select('url, submitted_at')
+      .order('submitted_at', { ascending: false })
+      .limit(1),
   ]);
 
   // ─── Cron job status ────────────────────────────────────────
@@ -116,6 +137,28 @@ export async function GET() {
   const activeUsers = userCountRes.count || 0;
   const estimatedDailyCost = activeUsers * 0.02; // ~$0.02 per active user per day
 
+  // ─── Google Indexing status ─────────────────────────────────
+  const totalSubmitted = indexingTotalRes.count ?? 0;
+  const submittedThisCycle = indexingCycleRes.count ?? 0;
+  const lastSubmission = indexingLastRunRes.data?.[0]?.submitted_at ?? null;
+
+  // State logic:
+  //   complete  — every known URL was touched in the last 7-day window
+  //   running   — there are still URLs outside the current window
+  //   stalled   — table is empty or last submission is older than 2 days (cron missed a run)
+  const daysSinceLastSub = lastSubmission
+    ? (Date.now() - new Date(lastSubmission).getTime()) / (1000 * 60 * 60 * 24)
+    : Infinity;
+
+  let indexingState: 'running' | 'complete' | 'stalled';
+  if (totalSubmitted === 0 || daysSinceLastSub > 2) {
+    indexingState = 'stalled';
+  } else if (submittedThisCycle >= totalSubmitted && totalSubmitted > 0) {
+    indexingState = 'complete';
+  } else {
+    indexingState = 'running';
+  }
+
   return NextResponse.json({
     db_connected: dbConnected,
     recent_errors: errorCountRes.count || 0,
@@ -123,6 +166,13 @@ export async function GET() {
       Object.entries(cronStatus).map(([k, v]) => [k, v.last_run])
     ),
     cron_status: cronStatus,
+    indexing_status: {
+      state: indexingState,
+      total_submitted: totalSubmitted,
+      submitted_this_cycle: submittedThisCycle,
+      remaining_this_cycle: Math.max(0, totalSubmitted - submittedThisCycle),
+      last_submission: lastSubmission,
+    },
     table_sizes: {
       users: userCountRes.count || 0,
       events: eventCountRes.count || 0,
