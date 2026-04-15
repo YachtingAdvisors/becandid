@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
   <title>Reach Out</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,10 +17,11 @@
       -webkit-app-region: drag;
     }
     .container {
-      padding: 40px 28px 28px;
+      padding: 40px 28px 40px;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      -webkit-app-region: no-drag;
     }
     .header {
       text-align: center;
@@ -102,6 +103,20 @@
       color: #5e5f5f;
     }
     .btn-secondary:hover { background: #e4e4e3; }
+    .success {
+      text-align: center;
+      padding-top: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .success .icon { margin-bottom: 12px; }
+    .success-msg {
+      font-size: 13px;
+      color: #5e5f5f;
+      line-height: 1.6;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -133,7 +148,63 @@
       count.textContent = msg.value.length;
     });
 
+    function showSuccess() {
+      document.querySelector('.container').innerHTML = `
+        <div class="success drag-region">
+          <div class="icon">💛</div>
+          <h1>Message Sent</h1>
+          <p class="success-msg">It takes real courage to reach out.<br>That's what being candid is all about.</p>
+          <button class="btn btn-primary" style="margin-top:18px;-webkit-app-region:no-drag;" onclick="window.becandid.cancelReachOut()">Done</button>
+        </div>
+      `;
+    }
+
+    function showNoPartner() {
+      document.querySelector('.container').innerHTML = `
+        <div class="success drag-region" style="-webkit-app-region:drag;">
+          <div class="icon">🌱</div>
+          <h1>You're Not Alone</h1>
+          <p class="success-msg" style="margin-bottom:6px;">Research shows that people with an accountability partner are <strong>65% more likely</strong> to reach their goals.</p>
+          <p class="success-msg" style="font-size:12px;color:#226779;">Think of someone you trust — a friend, mentor, spouse, or counselor. They'll receive a simple invite to walk alongside you.</p>
+          <div style="width:100%;margin-top:16px;-webkit-app-region:no-drag;">
+            <input id="inv-name" type="text" placeholder="Their name" style="width:100%;padding:10px 14px;border:none;border-radius:10px;background:#eeeeed;font-family:inherit;font-size:13px;color:#313333;outline:none;margin-bottom:8px;" />
+            <input id="inv-email" type="email" placeholder="Email address" style="width:100%;padding:10px 14px;border:none;border-radius:10px;background:#eeeeed;font-family:inherit;font-size:13px;color:#313333;outline:none;margin-bottom:8px;" />
+            <input id="inv-phone" type="tel" placeholder="Phone number (optional)" style="width:100%;padding:10px 14px;border:none;border-radius:10px;background:#eeeeed;font-family:inherit;font-size:13px;color:#313333;outline:none;margin-bottom:14px;" />
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-secondary" onclick="window.becandid.cancelReachOut()">Not Yet</button>
+              <button class="btn btn-primary" id="invite-btn">Invite Partner</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('invite-btn').addEventListener('click', () => {
+        const name = document.getElementById('inv-name').value.trim();
+        const email = document.getElementById('inv-email').value.trim();
+        const phone = document.getElementById('inv-phone').value.trim();
+        if (!name || !email) return;
+        document.getElementById('invite-btn').disabled = true;
+        document.getElementById('invite-btn').textContent = 'Sending...';
+        window.becandid.invitePartner({ name, email, phone });
+      });
+      window.becandid.resizeWindow(380, 560);
+      document.getElementById('inv-name').focus();
+    }
+
+    function showInviteSent() {
+      document.querySelector('.container').innerHTML = `
+        <div class="success drag-region">
+          <div class="icon">💌</div>
+          <h1>Invite Sent!</h1>
+          <p class="success-msg">That took real courage. Your partner will receive an invitation to walk alongside you on Be Candid.</p>
+          <p class="success-msg" style="font-size:11px;color:#226779;margin-top:8px;">You just took one of the most important steps in your journey. Accountability changes everything.</p>
+          <button class="btn btn-primary" style="margin-top:18px;-webkit-app-region:no-drag;" onclick="window.becandid.cancelReachOut()">Done</button>
+        </div>
+      `;
+      window.becandid.resizeWindow(380, 340);
+    }
+
     sendBtn.addEventListener('click', () => {
+      if (!msg.value.trim()) return;
       sendBtn.disabled = true;
       sendBtn.textContent = 'Sending...';
       window.becandid.sendReachOut(msg.value.trim());
@@ -142,6 +213,11 @@
     cancelBtn.addEventListener('click', () => {
       window.becandid.cancelReachOut();
     });
+
+    // Listen for signals from main process
+    window.becandid.onReachOutSuccess(() => showSuccess());
+    window.becandid.onNoPartner(() => showNoPartner());
+    window.becandid.onInviteSent(() => showInviteSent());
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') window.becandid.cancelReachOut();

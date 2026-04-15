@@ -305,15 +305,21 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
         )}
         {/* Account mismatch warning */}
         {mismatch && !appRunning && (
-          <div className="px-3 py-2.5 rounded-xl bg-orange-50 ring-1 ring-orange-200/50 space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-orange-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
-              <span className="text-[11px] text-orange-800 font-headline font-bold">Account Mismatch</span>
+          <button
+            onClick={() => router.push('/dashboard/settings')}
+            className="w-full text-left px-3 py-2.5 rounded-xl bg-orange-50 ring-1 ring-orange-200/50 space-y-1 hover:bg-orange-100 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-orange-600 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+                <span className="text-[11px] text-orange-800 font-headline font-bold">Account Mismatch</span>
+              </div>
+              <span className="material-symbols-outlined text-orange-400 text-sm">arrow_forward</span>
             </div>
             <p className="text-[10px] text-orange-700 font-headline leading-relaxed">
-              Your desktop app may be signed into a different account. Sign into the same account on both to sync monitoring.
+              Your desktop app may be signed into a different account. Tap to resolve.
             </p>
-          </div>
+          </button>
         )}
         {soloMode && (
           <div className="px-3 py-2 rounded-xl bg-[#276772]/10 flex items-center gap-2">

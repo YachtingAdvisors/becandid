@@ -292,6 +292,20 @@ export default function SettingsForm({ profile, hasPartner = false }: SettingsFo
           onSubstancesChange={setTrackedSubstances}
           disabled={loading}
         />
+
+        {/* Inline save for rivals */}
+        <div className="pt-3">
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="w-full py-3 bg-primary text-on-primary rounded-full font-headline font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 disabled:opacity-50 cursor-pointer"
+          >
+            {loading ? 'Saving…' : `Save ${goals.length} Rival${goals.length !== 1 ? 's' : ''}`}
+          </button>
+          {saved && (
+            <p className="text-center text-xs text-emerald-500 font-label mt-2">Saved!</p>
+          )}
+        </div>
       </section>
 
       {/* ── Fasting ───────────────────────────────────────── */}

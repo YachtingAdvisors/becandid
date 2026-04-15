@@ -6,6 +6,10 @@
  * into the event/alert pipeline.
  */
 
+// Suppress EPIPE errors from broken stdout/stderr pipes (happens when launched from CLI)
+process.stdout?.on?.('error', () => {});
+process.stderr?.on?.('error', () => {});
+
 const { app, BrowserWindow, powerMonitor, ipcMain, systemPreferences, desktopCapturer } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
