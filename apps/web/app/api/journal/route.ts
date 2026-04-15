@@ -81,6 +81,7 @@ function buildNotesText(entries: StringerJournalEntry[]) {
       const val = e[p.id as keyof StringerJournalEntry] as string | null;
       if (val) t += '▸ ' + p.label + '\n  ' + p.question + '\n\n' + val + '\n\n';
     });
+    if (e.neural_priming) t += '▸ Your Future Self (Neural Priming)\n  Writing from the memory of who you\'ve become.\n\n' + e.neural_priming + '\n\n';
     if (e.tags?.length) t += 'Tags: ' + e.tags.join(', ') + '\n';
     t += '\n';
   });
@@ -104,6 +105,7 @@ function buildMarkdown(entries: StringerJournalEntry[]) {
       const val = e[p.id as keyof StringerJournalEntry] as string | null;
       if (val) md += `### ${p.label}\n> ${p.question}\n\n${val}\n\n`;
     });
+    if (e.neural_priming) md += `### ✨ Your Future Self\n> Writing from the memory of who you've become.\n\n${e.neural_priming}\n\n`;
     if (e.mood) {
       const moods = ['', 'Heavy', 'Low', 'Neutral', 'Lighter', 'Hopeful'];
       md += `**Mood:** ${moods[e.mood]} (${'●'.repeat(e.mood)}${'○'.repeat(5 - e.mood)})\n\n`;
@@ -130,6 +132,11 @@ function buildENEX(entries: StringerJournalEntry[]) {
         content += `<p>${escXml(val).replace(/\n/g, '<br/>')}</p>`;
       }
     });
+    if (e.neural_priming) {
+      content += `<h3>✨ Your Future Self</h3>`;
+      content += `<p style="font-style:italic;color:#888;">Writing from the memory of who you've become.</p>`;
+      content += `<p>${escXml(e.neural_priming).replace(/\n/g, '<br/>')}</p>`;
+    }
     if (e.mood) {
       const moods = ['', 'Heavy', 'Low', 'Neutral', 'Lighter', 'Hopeful'];
       content += `<p><b>Mood:</b> ${moods[e.mood]}</p>`;
@@ -281,9 +288,9 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
-  const { freewrite, tributaries, longing, roadmap, mood, tags, alert_id, trigger_type, prompt_shown } = body;
+  const { freewrite, tributaries, longing, roadmap, neural_priming, mood, tags, alert_id, trigger_type, prompt_shown } = body;
 
-  if (!freewrite?.trim() && !tributaries?.trim() && !longing?.trim() && !roadmap?.trim()) {
+  if (!freewrite?.trim() && !tributaries?.trim() && !longing?.trim() && !roadmap?.trim() && !neural_priming?.trim()) {
     return NextResponse.json({ error: 'At least one field required' }, { status: 400 });
   }
 
@@ -294,6 +301,7 @@ export async function POST(req: NextRequest) {
     tributaries: tributaries?.trim() || null,
     longing: longing?.trim() || null,
     roadmap: roadmap?.trim() || null,
+    neural_priming: neural_priming?.trim() || null,
     mood: mood || null,
     tags: tags || [],
     alert_id: alert_id || null,
@@ -330,7 +338,7 @@ export async function PATCH(req: NextRequest) {
 
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
-  const { id, freewrite, tributaries, longing, roadmap, mood, tags } = body;
+  const { id, freewrite, tributaries, longing, roadmap, neural_priming, mood, tags } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
   const db = createServiceClient();
@@ -339,6 +347,7 @@ export async function PATCH(req: NextRequest) {
     tributaries: tributaries?.trim() || null,
     longing: longing?.trim() || null,
     roadmap: roadmap?.trim() || null,
+    neural_priming: neural_priming?.trim() || null,
     mood: mood || null,
     tags: tags || [],
     updated_at: new Date().toISOString(),

@@ -97,7 +97,7 @@ export default function StringerJournalPage() {
 
   // Form state
   const [freewrite, setFreewrite] = useState('');
-  const [answers, setAnswers] = useState({ tributaries: '', longing: '', roadmap: '' });
+  const [answers, setAnswers] = useState({ tributaries: '', longing: '', roadmap: '', neuralPriming: '' });
   const [expandedPrompts, setExpandedPrompts] = useState<Record<string, boolean>>({});
   const [mood, setMood] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -162,11 +162,11 @@ export default function StringerJournalPage() {
   useEffect(() => { fetchEntries(); }, [fetchEntries]);
 
   const resetForm = () => {
-    setFreewrite(''); setAnswers({ tributaries: '', longing: '', roadmap: '' });
+    setFreewrite(''); setAnswers({ tributaries: '', longing: '', roadmap: '', neuralPriming: '' });
     setExpandedPrompts({}); setMood(null); setSelectedTags([]);
   };
 
-  const hasContent = freewrite.trim() || answers.tributaries.trim() || answers.longing.trim() || answers.roadmap.trim();
+  const hasContent = freewrite.trim() || answers.tributaries.trim() || answers.longing.trim() || answers.roadmap.trim() || answers.neuralPriming.trim();
 
   // Save new entry
   const handleSave = async () => {
@@ -181,6 +181,7 @@ export default function StringerJournalPage() {
           tributaries: answers.tributaries || undefined,
           longing: answers.longing || undefined,
           roadmap: answers.roadmap || undefined,
+          neural_priming: answers.neuralPriming || undefined,
           mood, tags: selectedTags,
           alert_id: alertId || undefined,
           trigger_type: triggerType || 'manual',
@@ -214,6 +215,7 @@ export default function StringerJournalPage() {
           tributaries: answers.tributaries || undefined,
           longing: answers.longing || undefined,
           roadmap: answers.roadmap || undefined,
+          neural_priming: answers.neuralPriming || undefined,
           mood, tags: selectedTags,
         }),
       });
@@ -228,7 +230,7 @@ export default function StringerJournalPage() {
 
   const startEdit = (entry: any) => {
     setFreewrite(entry.freewrite || '');
-    setAnswers({ tributaries: entry.tributaries || '', longing: entry.longing || '', roadmap: entry.roadmap || '' });
+    setAnswers({ tributaries: entry.tributaries || '', longing: entry.longing || '', roadmap: entry.roadmap || '', neuralPriming: entry.neural_priming || '' });
     setMood(entry.mood || null); setSelectedTags(entry.tags || []);
     const expanded: Record<string, boolean> = {};
     STRINGER_PROMPTS.forEach((p) => { if (entry[p.id]) expanded[p.id] = true; });
@@ -442,6 +444,75 @@ export default function StringerJournalPage() {
             );
           })}
         </div>
+
+        {/* Neural Priming — Your Future Self */}
+        <div className={`rounded-2xl border ${answers.neuralPriming.trim() ? 'border-violet-300' : 'border-outline-variant'} overflow-hidden mt-2`}>
+          <button
+            onClick={() => setExpandedPrompts((prev) => ({ ...prev, neuralPriming: !prev.neuralPriming }))}
+            className={`w-full px-4 py-3 flex items-center justify-between text-left cursor-pointer transition-colors duration-200 ${expandedPrompts.neuralPriming || answers.neuralPriming.trim() ? 'bg-violet-50/50' : 'bg-surface-container-lowest hover:bg-surface-container-low'}`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-base">✨</span>
+              <div>
+                <span className={`text-sm font-label font-medium ${answers.neuralPriming.trim() ? 'text-violet-600' : 'text-on-surface'}`}>
+                  Your Future Self
+                </span>
+                <span className="ml-2 text-[10px] font-label uppercase tracking-wider text-violet-400 bg-violet-50 px-1.5 py-0.5 rounded-full">Neural Priming</span>
+                {answers.neuralPriming.trim() && !expandedPrompts.neuralPriming && (
+                  <p className="text-xs text-on-surface-variant mt-0.5 truncate max-w-[180px] sm:max-w-[240px] font-body">
+                    {answers.neuralPriming.slice(0, 60)}…
+                  </p>
+                )}
+              </div>
+            </div>
+            <span className="text-on-surface-variant text-lg">{expandedPrompts.neuralPriming ? '▾' : '▸'}</span>
+          </button>
+
+          {expandedPrompts.neuralPriming && (
+            <div className="px-4 pb-4 pt-2 bg-violet-50/30">
+              {/* Concept explainer */}
+              <div className="mb-4 p-3 rounded-xl bg-violet-50 border border-violet-100">
+                <p className="text-xs text-violet-700 leading-relaxed">
+                  <strong>Self-directed neural priming</strong> — writing about your future self in past tense activates the same neural networks used for recalling real memories. Your brain treats it as lived experience, strengthening belief and dissolving resistance to change.
+                </p>
+              </div>
+
+              {/* Guided steps */}
+              <div className="space-y-2.5 mb-4">
+                {[
+                  { n: 1, label: 'Set the scene', cue: "It's 3 years from now. Describe one ordinary moment from your future life — morning, a walk, a conversation. Ground it in the senses." },
+                  { n: 2, label: 'Name the struggle that was', cue: 'Write about the behavior that used to follow you — in past tense. What did it cost you? Use "I used to…" or "There was a time when…"' },
+                  { n: 3, label: 'The turning point', cue: "The shift wasn't overnight. Who showed up for you? What did you start believing differently? Write it as memory." },
+                  { n: 4, label: 'Who you are now', cue: 'Write from the present moment of this future self. What does freedom feel like? What do you want your past self to know?' },
+                ].map((s) => (
+                  <div key={s.n} className="flex gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-violet-200 text-violet-700 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{s.n}</div>
+                    <div>
+                      <p className="text-xs font-label font-semibold text-violet-700 mb-0.5">{s.label}</p>
+                      <p className="text-xs text-on-surface-variant font-body leading-relaxed">{s.cue}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-start gap-2 mb-1.5">
+                <p className="text-sm text-on-surface-variant italic font-body flex-1">
+                  Write as if you're looking back. Start with: <em>"It's been three years now…"</em>
+                </p>
+                <VoiceJournal
+                  fieldName="neuralPriming"
+                  onTranscript={(text) => setAnswers((prev) => ({ ...prev, neuralPriming: prev.neuralPriming ? prev.neuralPriming + ' ' + text : text }))}
+                />
+              </div>
+              <textarea
+                value={answers.neuralPriming}
+                onChange={(e) => setAnswers((prev) => ({ ...prev, neuralPriming: e.target.value }))}
+                placeholder={'It\'s been three years now. I\'m sitting here and I realize how different everything feels…'}
+                className="w-full h-36 px-3 py-2.5 rounded-2xl ring-1 ring-violet-200/50 bg-surface-container-lowest text-on-surface text-sm font-body leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-violet-400/30 placeholder:text-on-surface-variant/50"
+              />
+            </div>
+          )}
+        </div>
       </div>
       )}
 
@@ -602,6 +673,17 @@ export default function StringerJournalPage() {
                 </div>
               );
             })}
+            {selected.neural_priming && (
+              <div className="mb-4 p-4 rounded-2xl bg-violet-50/50 border border-violet-200">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span>✨</span>
+                  <h3 className="text-sm font-label font-semibold text-violet-600">Your Future Self</h3>
+                  <span className="text-[10px] font-label uppercase tracking-wider text-violet-400 bg-violet-50 px-1.5 py-0.5 rounded-full">Neural Priming</span>
+                </div>
+                <p className="text-xs text-on-surface-variant italic mb-2 font-body">Writing from the memory of who you&apos;ve become.</p>
+                <p className="text-sm text-on-surface leading-relaxed whitespace-pre-wrap font-body">{selected.neural_priming}</p>
+              </div>
+            )}
             {selected.tags?.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-3 mt-3 border-t border-outline-variant">
                 {selected.tags.map((tag: string) => (
@@ -649,7 +731,7 @@ export default function StringerJournalPage() {
               )}
               {filtered.map((entry, entryIdx) => {
                 const filled = STRINGER_PROMPTS.filter((p) => entry[p.id]);
-                const preview = entry.freewrite || entry.tributaries || entry.longing || entry.roadmap || '';
+                const preview = entry.freewrite || entry.tributaries || entry.longing || entry.roadmap || entry.neural_priming || '';
                 const isLong = preview.length > 180;
                 const isExpanded = expandedEntries.has(entry.id);
                 const moodBorder = entry.mood ? (MOOD_BORDERS[entry.mood as number] || MOOD_BORDER_DEFAULT) : MOOD_BORDER_DEFAULT;
@@ -670,6 +752,7 @@ export default function StringerJournalPage() {
                           <span className={`w-1.5 h-1.5 rounded-full ${entry.tributaries ? 'bg-primary' : 'bg-outline-variant/30'}`} title="Tributaries" />
                           <span className={`w-1.5 h-1.5 rounded-full ${entry.longing ? 'bg-primary' : 'bg-outline-variant/30'}`} title="Longing" />
                           <span className={`w-1.5 h-1.5 rounded-full ${entry.roadmap ? 'bg-primary' : 'bg-outline-variant/30'}`} title="Roadmap" />
+                          <span className={`w-1.5 h-1.5 rounded-full ${entry.neural_priming ? 'bg-violet-400' : 'bg-outline-variant/30'}`} title="Neural Priming" />
                         </span>
                         {entry.trigger_type === 'relapse' && <span className="text-[9px] px-1.5 py-0.5 rounded-full font-label bg-error/10 text-error">relapse</span>}
                         {entry.trigger_type === 'reminder' && <span className="text-[9px] px-1.5 py-0.5 rounded-full font-label bg-secondary-container text-secondary">reminder</span>}

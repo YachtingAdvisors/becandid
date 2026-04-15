@@ -11,6 +11,7 @@ export interface StringerJournalEntry {
   tributaries: string | null;
   longing: string | null;
   roadmap: string | null;
+  neural_priming: string | null;
   alert_id: string | null;
   trigger_type: 'relapse' | 'reminder' | 'manual';
   mood: 1 | 2 | 3 | 4 | 5 | null;
@@ -93,9 +94,42 @@ export const RELAPSE_NOTIFICATION_PROMPTS = [
   "Your partner was notified. That takes courage. They're your ally in climbing toward connection and trust. Now write for yourself.",
 ];
 
+// ── Neural Priming ─────────────────────────────────────────────
+// Self-directed neural priming: writing about the future self in
+// past tense activates the same neural networks used for recalling
+// real memories — strengthening belief and reducing psychological
+// resistance to long-term goals.
+
+export const NEURAL_PRIMING_STEPS = [
+  {
+    step: 1,
+    label: 'Set the scene',
+    instruction: "It's 3 years from now. Where are you? Describe a single ordinary moment from this future life — morning coffee, a walk, a conversation. Ground it in the senses.",
+    example: '"It\'s a Tuesday morning. I\'m sitting on the back porch with coffee..."',
+  },
+  {
+    step: 2,
+    label: 'Name the struggle that was',
+    instruction: 'Write about the behavior that used to follow you — in past tense. What did it cost you? What did you tell yourself back then? Let yourself see it clearly without shame.',
+    example: '"There was a time when I couldn\'t get through a weekend without..."',
+  },
+  {
+    step: 3,
+    label: 'The turning point',
+    instruction: 'The shift wasn\'t overnight — but it was real. Write about the period when things began to change. Who showed up for you? What did you start believing differently?',
+    example: '"I remember when I finally started telling the truth to..."',
+  },
+  {
+    step: 4,
+    label: 'Who you are now',
+    instruction: 'Write from the present moment of this future self. What does freedom feel like in your body? What do you do with the energy that used to go to the struggle? What do you want the person reading this — your past self — to know?',
+    example: '"I want you to know it was worth it. The hardest part was..."',
+  },
+] as const;
+
 // Therapeutic journal prompts — deeper, category-based prompts
 // for the PromptPicker component in the journal write flow
-export const THERAPEUTIC_PROMPTS: Array<{ text: string; category: 'reflection' | 'letter' | 'imagination' | 'body' | 'relationship' }> = [
+export const THERAPEUTIC_PROMPTS: Array<{ text: string; category: 'reflection' | 'letter' | 'imagination' | 'body' | 'relationship' | 'future_self' }> = [
   // Reflection — with growth transformation verbs
   { text: "What would your younger self think of who you are today? What would they say about the person climbing toward presence and compassion?", category: 'reflection' },
   { text: "If shame had a voice, what would it say? Now write what compassion would say back. Which voice are you climbing toward?", category: 'reflection' },
@@ -130,6 +164,13 @@ export const THERAPEUTIC_PROMPTS: Array<{ text: string; category: 'reflection' |
 
   // AI relationships — fantasizing vs. connecting
   { text: "What would you lose if you deleted the AI companion? What would you gain by climbing from fantasizing into real connecting?", category: 'imagination' },
+
+  // Future Self — neural priming prompts
+  { text: "It's 3 years from now and you're free. Write one paragraph in past tense about what the struggle used to cost you — and one about what you did with the freedom.", category: 'future_self' },
+  { text: "Write a single scene from your future life — in past tense — where the old pattern simply doesn't come up. What are you doing instead? Who's with you?", category: 'future_self' },
+  { text: "From 3 years in the future, write to your past self on a hard day. What do you know now that they desperately needed to hear?", category: 'future_self' },
+  { text: "Describe the version of you that exists after the work is done. Not perfect — but free. Write it as memory, not as hope.", category: 'future_self' },
+  { text: "Your future self is watching you write this entry right now. What would they say about the courage it takes to show up here today?", category: 'future_self' },
 ];
 
 export const STRINGER_QUOTES = [
