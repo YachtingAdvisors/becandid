@@ -161,6 +161,85 @@ async function fetchGscData(token: string): Promise<{
   return { byPage, topQueries };
 }
 
+// ─── Bing Webmaster Tools data ──────────────────────────────
+
+interface BingPageStats {
+  url: string;
+  clicks: number;
+  impressions: number;
+  ctr: number;
+  position: number;
+}
+
+interface BingKeyword {
+  query: string;
+  clicks: number;
+  impressions: number;
+  position: number;
+}
+
+async function fetchBingData(): Promise<{
+  byPage: Map<string, { clicks: number; impressions: number; ctr: number; position: number }>;
+  topKeywords: BingKeyword[];
+  totalClicks: number;
+  totalImpressions: number;
+} | null> {
+  const apiKey = process.env.BING_API_KEY;
+  if (!apiKey) return null;
+
+  const siteUrl = encodeURIComponent(BASE_URL + '/');
+
+  try {
+    // Fetch page-level stats (last 30 days)
+    const pageRes = await fetch(
+      `https://ssl.bing.com/webmaster/api.svc/json/GetPageStats?apikey=${apiKey}&siteUrl=${siteUrl}`,
+    );
+    const pageData = await pageRes.json();
+
+    const byPage = new Map<string, { clicks: number; impressions: number; ctr: number; position: number }>();
+    let totalClicks = 0;
+    let totalImpressions = 0;
+
+    if (Array.isArray(pageData?.d)) {
+      for (const row of pageData.d) {
+        const url = row.Query ?? row.Url ?? '';
+        const clicks = row.Clicks ?? 0;
+        const impressions = row.Impressions ?? 0;
+        totalClicks += clicks;
+        totalImpressions += impressions;
+        byPage.set(url, {
+          clicks,
+          impressions,
+          ctr: impressions > 0 ? clicks / impressions : 0,
+          position: row.AvgPosition ?? row.Position ?? 0,
+        });
+      }
+    }
+
+    // Fetch top keywords
+    const kwRes = await fetch(
+      `https://ssl.bing.com/webmaster/api.svc/json/GetQueryStats?apikey=${apiKey}&siteUrl=${siteUrl}`,
+    );
+    const kwData = await kwRes.json();
+
+    const topKeywords: BingKeyword[] = [];
+    if (Array.isArray(kwData?.d)) {
+      for (const row of kwData.d.slice(0, 20)) {
+        topKeywords.push({
+          query: row.Query ?? '',
+          clicks: row.Clicks ?? 0,
+          impressions: row.Impressions ?? 0,
+          position: row.AvgPosition ?? row.Position ?? 0,
+        });
+      }
+    }
+
+    return { byPage, topKeywords, totalClicks, totalImpressions };
+  } catch {
+    return null;
+  }
+}
+
 // ─── Personalization logic ──────────────────────────────────
 
 type PersonalizePriority = 'critical' | 'recommended';
@@ -241,6 +320,14 @@ export async function GET() {
     // GSC unavailable — show content data only
   }
 
+  // Try to fetch Bing data (non-fatal if it fails)
+  let bingData: Awaited<ReturnType<typeof fetchBingData>> = null;
+  try {
+    bingData = await fetchBingData();
+  } catch {
+    // Bing unavailable — continue without
+  }
+
   const now = Date.now();
 
   const enriched = (articles ?? []).map(article => {
@@ -285,5 +372,11 @@ export async function GET() {
     },
     top_queries: topQueries,
     gsc_available: gscAvailable,
+    bing: bingData ? {
+      available: true,
+      clicks_30d: bingData.totalClicks,
+      impressions_30d: bingData.totalImpressions,
+      top_keywords: bingData.topKeywords,
+    } : { available: false },
   });
 }

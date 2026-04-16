@@ -46,11 +46,19 @@ interface TopQuery {
   position: number;
 }
 
+interface BingData {
+  available: boolean;
+  clicks_30d?: number;
+  impressions_30d?: number;
+  top_keywords?: TopQuery[];
+}
+
 interface SeoData {
   articles: SeoArticle[];
   totals: Totals;
   top_queries: TopQuery[];
   gsc_available: boolean;
+  bing?: BingData;
 }
 
 type SortKey = 'clicks' | 'impressions' | 'position' | 'date';
@@ -76,7 +84,7 @@ export default function SeoStrategyClient() {
   if (loading) return <SkeletonLoader />;
   if (error || !data) return <ErrorState message={error} />;
 
-  const { articles, totals, top_queries, gsc_available } = data;
+  const { articles, totals, top_queries, gsc_available, bing } = data;
 
   // Filter
   let filtered = articles.filter(a => {
@@ -133,6 +141,20 @@ export default function SeoStrategyClient() {
           highlight={totals.articles_needing_attention > 0}
         />
       </div>
+
+      {/* Bing stats row */}
+      {bing?.available && (
+        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 space-y-3">
+          <h2 className="font-headline text-sm font-bold text-on-surface flex items-center gap-2">
+            <span className="text-base">🔷</span>
+            Bing Webmaster Tools (30d)
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            <StatCard label="Bing Clicks" value={(bing.clicks_30d ?? 0).toLocaleString()} icon="ads_click" ok />
+            <StatCard label="Bing Impressions" value={(bing.impressions_30d ?? 0).toLocaleString()} icon="visibility" ok />
+          </div>
+        </div>
+      )}
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-2">
@@ -210,6 +232,39 @@ export default function SeoStrategyClient() {
               </thead>
               <tbody className="divide-y divide-outline-variant/40">
                 {top_queries.map(q => (
+                  <tr key={q.query} className="hover:bg-surface-container/50 transition-colors">
+                    <td className="py-2 pr-4 font-body text-on-surface">{q.query}</td>
+                    <td className="py-2 pr-4 text-right font-label font-semibold text-on-surface">{q.clicks}</td>
+                    <td className="py-2 pr-4 text-right font-label text-on-surface-variant">{q.impressions.toLocaleString()}</td>
+                    <td className="py-2 text-right">
+                      <PositionBadge position={q.position} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      {/* Bing top keywords */}
+      {bing?.available && (bing.top_keywords ?? []).length > 0 && (
+        <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-6">
+          <h2 className="font-headline text-base font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span className="text-lg">🔷</span>
+            Bing Top Keywords (30d)
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs font-label font-medium text-on-surface-variant border-b border-outline-variant">
+                  <th className="pb-2 pr-4">Keyword</th>
+                  <th className="pb-2 pr-4 text-right">Clicks</th>
+                  <th className="pb-2 pr-4 text-right">Impressions</th>
+                  <th className="pb-2 text-right">Avg Position</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-outline-variant/40">
+                {bing.top_keywords!.map(q => (
                   <tr key={q.query} className="hover:bg-surface-container/50 transition-colors">
                     <td className="py-2 pr-4 font-body text-on-surface">{q.query}</td>
                     <td className="py-2 pr-4 text-right font-label font-semibold text-on-surface">{q.clicks}</td>
