@@ -17,6 +17,9 @@ import {
   Alert,
   ActivityIndicator,
   RefreshControl,
+  Modal,
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -52,6 +55,33 @@ const STREAK_MODES = [
   },
 ] as const;
 
+const GOAL_OPTIONS: { key: string; label: string; emoji: string }[] = [
+  { key: 'pornography',       label: 'Pornography',           emoji: '🚫' },
+  { key: 'sexting',           label: 'Sexting',               emoji: '📵' },
+  { key: 'social_media',      label: 'Social Media',          emoji: '📱' },
+  { key: 'binge_watching',    label: 'Binge Watching',        emoji: '📺' },
+  { key: 'impulse_shopping',  label: 'Impulse Shopping',      emoji: '🛍️' },
+  { key: 'doomscrolling',     label: 'Doomscrolling',         emoji: '📰' },
+  { key: 'alcohol_drugs',     label: 'Alcohol & Drugs',       emoji: '🍺' },
+  { key: 'vaping_tobacco',    label: 'Vaping & Tobacco',      emoji: '🚬' },
+  { key: 'eating_disorder',   label: 'Eating Disorder',       emoji: '🍽️' },
+  { key: 'body_checking',     label: 'Body Checking',         emoji: '🪞' },
+  { key: 'gambling',          label: 'Gambling',              emoji: '🎰' },
+  { key: 'sports_betting',    label: 'Sports Betting',        emoji: '⚽' },
+  { key: 'day_trading',       label: 'Day Trading',           emoji: '📈' },
+  { key: 'dating_apps',       label: 'Dating Apps',           emoji: '💘' },
+  { key: 'emotional_affairs', label: 'Emotional Affairs',     emoji: '💬' },
+  { key: 'gaming',            label: 'Gaming',                emoji: '🎮' },
+  { key: 'rage_content',      label: 'Rage Content',          emoji: '😡' },
+  { key: 'gossip_drama',      label: 'Gossip & Drama',        emoji: '🗣️' },
+  { key: 'isolation',         label: 'Isolation',             emoji: '🏠' },
+  { key: 'ai_relationships',  label: 'AI Relationships',      emoji: '🤖' },
+  { key: 'overworking',       label: 'Overworking',           emoji: '💼' },
+  { key: 'sleep_avoidance',   label: 'Sleep Avoidance',       emoji: '😴' },
+  { key: 'self_harm',         label: 'Self-Harm Recovery',    emoji: '🩺' },
+  { key: 'procrastination',   label: 'Procrastination',       emoji: '⏳' },
+];
+
 type Profile = {
   display_name?: string;
   email?: string;
@@ -86,6 +116,9 @@ export default function SettingsScreen() {
   const [notifyDigests, setNotifyDigests] = useState(true);
   const [notifyPartnerAlerts, setNotifyPartnerAlerts] = useState(true);
   const [notifyCheckIns, setNotifyCheckIns] = useState(true);
+  const [goals, setGoals] = useState<string[]>([]);
+  const [showGoalsPicker, setShowGoalsPicker] = useState(false);
+  const [savingGoals, setSavingGoals] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -107,6 +140,7 @@ export default function SettingsScreen() {
         setNotifyDigests(data.notification_digests ?? true);
         setNotifyPartnerAlerts(data.notification_partner_alerts ?? true);
         setNotifyCheckIns(data.notification_check_ins ?? true);
+        setGoals(data.goals ?? []);
       }
     } catch (e) {
       console.warn('[Settings] Fetch error:', e);
@@ -197,6 +231,43 @@ export default function SettingsScreen() {
     },
     []
   );
+
+  const toggleGoal = useCallback((key: string) => {
+    setGoals(prev =>
+      prev.includes(key) ? prev.filter(g => g !== key) : [...prev, key]
+    );
+  }, []);
+
+  const saveGoals = useCallback(async () => {
+    setSavingGoals(true);
+    try {
+      const session = await getSession();
+      if (!session) return;
+
+      const res = await fetch(`${API_URL}/api/auth/profile`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ goals }),
+      });
+
+      if (res.ok) {
+        setProfile(prev => ({ ...prev, goals }));
+        setShowGoalsPicker(false);
+        Alert.alert('Saved', 'Your rivals have been updated.');
+      } else {
+        const data = await res.json().catch(() => ({}));
+        Alert.alert('Error', data.error || 'Failed to save rivals.');
+      }
+    } catch (e) {
+      Alert.alert('Error', 'Something went wrong.');
+      console.warn('[Settings] Save goals error:', e);
+    } finally {
+      setSavingGoals(false);
+    }
+  }, [goals]);
 
   if (loading) {
     return (
@@ -381,21 +452,24 @@ export default function SettingsScreen() {
         </View>
 
         {/* Goals / Rivals */}
-        <Text style={styles.sectionTitle}>Goals / Focus Areas</Text>
+        <Text style={styles.sectionTitle}>Rivals / Focus Areas</Text>
         <View style={styles.card}>
-          {profile.goals && profile.goals.length > 0 ? (
+          {goals.length > 0 ? (
             <View style={styles.goalsRow}>
-              {profile.goals.map((goal: string) => (
-                <View key={goal} style={styles.goalChip}>
-                  <Text style={styles.goalText}>{goal}</Text>
-                </View>
-              ))}
+              {goals.map((key) => {
+                const opt = GOAL_OPTIONS.find(o => o.key === key);
+                return (
+                  <View key={key} style={styles.goalChip}>
+                    <Text style={styles.goalText}>{opt ? `${opt.emoji} ${opt.label}` : key}</Text>
+                  </View>
+                );
+              })}
             </View>
           ) : (
-            <Text style={styles.emptyField}>No focus areas selected</Text>
+            <Text style={styles.emptyField}>No rivals selected — tap below to choose</Text>
           )}
-          <Pressable style={styles.editLink}>
-            <Text style={styles.editLinkText}>Edit Focus Areas</Text>
+          <Pressable style={styles.editLink} onPress={() => { setGoals(profile.goals ?? []); setShowGoalsPicker(true); }}>
+            <Text style={styles.editLinkText}>Edit Rivals</Text>
             <Ionicons name="chevron-forward" size={16} color={C.primary} />
           </Pressable>
         </View>
@@ -549,6 +623,57 @@ export default function SettingsScreen() {
 
         <View style={{ height: 40 }} />
       </ScrollView>
+
+      {/* Goals / Rivals Picker Modal */}
+      <Modal
+        visible={showGoalsPicker}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowGoalsPicker(false)}
+      >
+        <SafeAreaView style={styles.modalSafe} edges={['top', 'bottom']}>
+          {/* Header */}
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setShowGoalsPicker(false)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+              <Text style={styles.modalCancel}>Cancel</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Choose Your Rivals</Text>
+            <TouchableOpacity onPress={saveGoals} disabled={savingGoals} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+              <Text style={[styles.modalSave, savingGoals && { opacity: 0.5 }]}>
+                {savingGoals ? 'Saving…' : 'Save'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.modalSubtitle}>
+            Select the areas you want to build freedom from. {goals.length} selected.
+          </Text>
+
+          <FlatList
+            data={GOAL_OPTIONS}
+            keyExtractor={item => item.key}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
+            renderItem={({ item }) => {
+              const selected = goals.includes(item.key);
+              return (
+                <TouchableOpacity
+                  style={[styles.goalRow, selected && styles.goalRowSelected]}
+                  onPress={() => toggleGoal(item.key)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.goalRowEmoji}>{item.emoji}</Text>
+                  <Text style={[styles.goalRowLabel, selected && styles.goalRowLabelSelected]}>
+                    {item.label}
+                  </Text>
+                  <View style={[styles.goalCheckbox, selected && styles.goalCheckboxSelected]}>
+                    {selected && <Ionicons name="checkmark" size={14} color="#fff" />}
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -813,5 +938,83 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: C.error,
+  },
+  // Goals picker modal
+  modalSafe: {
+    flex: 1,
+    backgroundColor: C.background,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: C.border,
+  },
+  modalTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: C.onSurface,
+  },
+  modalCancel: {
+    fontSize: 16,
+    color: C.onSurfaceVariant,
+  },
+  modalSave: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: C.primary,
+  },
+  modalSubtitle: {
+    fontSize: 13,
+    color: C.onSurfaceVariant,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  goalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 14,
+    marginBottom: 6,
+    backgroundColor: C.surface,
+    borderWidth: 1.5,
+    borderColor: C.border,
+    gap: 12,
+  },
+  goalRowSelected: {
+    borderColor: C.primary,
+    backgroundColor: '#e8f4f7',
+  },
+  goalRowEmoji: {
+    fontSize: 22,
+    width: 30,
+    textAlign: 'center',
+  },
+  goalRowLabel: {
+    flex: 1,
+    fontSize: 15,
+    color: C.onSurface,
+    fontWeight: '500',
+  },
+  goalRowLabelSelected: {
+    color: C.primary,
+    fontWeight: '600',
+  },
+  goalCheckbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: C.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  goalCheckboxSelected: {
+    backgroundColor: C.primary,
+    borderColor: C.primary,
   },
 });
