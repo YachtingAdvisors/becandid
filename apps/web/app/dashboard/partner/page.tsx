@@ -130,6 +130,7 @@ export default function PartnerPage() {
   const [maxPartners, setMaxPartners] = useState(1);
   const [loading, setLoading] = useState(true);
   const [reinvitingId, setReinvitingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [relationshipData, setRelationshipData] = useState<RelationshipData | null>(null);
 
   // Inline invite form state
@@ -209,12 +210,29 @@ export default function PartnerPage() {
 
   async function handleReinvite(partnerId: string) {
     setReinvitingId(partnerId);
-    await fetch('/api/partners/reinvite', {
+    const res = await fetch('/api/partners/reinvite', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ partner_id: partnerId }),
     });
     setReinvitingId(null);
+    if (res.ok) {
+      setError('');
+      fetchPartners();
+    }
+  }
+
+  async function handleDeletePartner(partnerId: string, partnerName: string) {
+    if (!confirm(`Remove ${partnerName} as your accountability partner? This cannot be undone.`)) return;
+    setDeletingId(partnerId);
+    const res = await fetch(`/api/partners/${partnerId}`, { method: 'DELETE' });
+    setDeletingId(null);
+    if (res.ok) {
+      setPartners(prev => prev.filter(p => p.id !== partnerId));
+    } else {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error || 'Failed to remove partner');
+    }
   }
 
   async function handleInvite() {
@@ -372,18 +390,38 @@ export default function PartnerPage() {
                   </div>
                 </div>
 
-                {/* Pending: inline resend */}
+                {/* Pending: inline resend + delete */}
                 {p.status === 'pending' && (
-                  <div className="mt-3 pt-3 border-t border-outline-variant/15 flex items-center justify-between">
-                    <p className="text-xs text-on-surface-variant font-body">
+                  <div className="mt-3 pt-3 border-t border-outline-variant/15 flex items-center justify-between gap-2">
+                    <p className="text-xs text-on-surface-variant font-body flex-1">
                       {p.partner_name} hasn&apos;t accepted yet.
                     </p>
+                    <button
+                      onClick={() => handleDeletePartner(p.id, p.partner_name)}
+                      disabled={deletingId === p.id}
+                      className="px-3 py-2 min-h-[36px] text-error text-xs font-label font-medium rounded-xl cursor-pointer hover:bg-error/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    >
+                      {deletingId === p.id ? 'Removing…' : 'Remove'}
+                    </button>
                     <button
                       onClick={() => handleReinvite(p.id)}
                       disabled={reinvitingId === p.id}
                       className="px-4 py-2 min-h-[36px] bg-tertiary text-on-primary text-xs font-label font-medium rounded-xl cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                     >
-                      {reinvitingId === p.id ? 'Sending\u2026' : 'Resend Invite'}
+                      {reinvitingId === p.id ? 'Sending…' : 'Resend Invite'}
+                    </button>
+                  </div>
+                )}
+
+                {/* Active/declined: delete */}
+                {(p.status === 'active' || p.status === 'declined') && (
+                  <div className="mt-3 pt-3 border-t border-outline-variant/15 flex justify-end">
+                    <button
+                      onClick={() => handleDeletePartner(p.id, p.partner_name)}
+                      disabled={deletingId === p.id}
+                      className="px-3 py-1.5 min-h-[32px] text-error/70 text-xs font-label rounded-xl cursor-pointer hover:bg-error/10 hover:text-error disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    >
+                      {deletingId === p.id ? 'Removing…' : 'Remove Partner'}
                     </button>
                   </div>
                 )}

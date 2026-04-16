@@ -106,6 +106,7 @@ export type AuditAction =
   | 'profile.update'
   | 'partner.invite'
   | 'partner.accept'
+  | 'partner.remove'
   | 'event.created'
   | 'alert.sent'
   | 'conversation.completed'
