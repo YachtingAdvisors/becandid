@@ -68,6 +68,14 @@ const IMAGE_POOLS: Record<string, BlogImage[]> = {
     { url: 'https://images.unsplash.com/photo-1445445290350-18a3b86e0b5a?w=800&q=80', alt: 'Cross silhouetted against sunrise', credit: 'Unsplash' },
     { url: 'https://images.unsplash.com/photo-1519491050282-cf00c82a28a4?w=800&q=80', alt: 'Small group Bible study', credit: 'Unsplash' },
   ],
+  // Privacy / security / comparison
+  'privacy': [
+    { url: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80', alt: 'Lock icon on digital screen representing privacy', credit: 'Unsplash' },
+    { url: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80', alt: 'Laptop with privacy shield concept', credit: 'Unsplash' },
+    { url: 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=800&q=80', alt: 'Person using laptop with secure connection', credit: 'Unsplash' },
+    { url: 'https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=800&q=80', alt: 'Closed padlock symbolizing data protection', credit: 'Unsplash' },
+    { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80', alt: 'Server room with secure infrastructure', credit: 'Unsplash' },
+  ],
   // Statistics / data / research
   'statistics': [
     { url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80', alt: 'Data charts and analytics dashboard', credit: 'Unsplash' },
@@ -154,6 +162,11 @@ const SLUG_IMAGE_MAP: Record<string, { hero: string; pool: string }> = {
   'gaming-addiction-statistics-2026': { hero: 'statistics', pool: 'technology' },
   'eating-disorder-statistics-2026': { hero: 'statistics', pool: 'mental-health' },
   'ai-chatbot-addiction-statistics-2026': { hero: 'statistics', pool: 'technology' },
+
+  // Comparison / alternative articles
+  'best-covenant-eyes-alternative-privacy': { hero: 'privacy', pool: 'accountability' },
+  'accountability-app-without-vpn-no-screenshots': { hero: 'technology', pool: 'privacy' },
+  'covenant-eyes-vs-be-candid-comparison': { hero: 'accountability', pool: 'privacy' },
 };
 
 export function getArticleImages(slug: string): { hero: BlogImage; inline: BlogImage[] } {
