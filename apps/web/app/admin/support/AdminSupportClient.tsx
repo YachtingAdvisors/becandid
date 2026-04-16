@@ -193,7 +193,7 @@ export default function AdminSupportClient() {
                   statusColor(p.subscription_status as string)
                 }`}
               >
-                {(p.subscription_status as string) || 'free'}
+                {(p.subscription_status as string) || 'active'}
               </span>
             </div>
 

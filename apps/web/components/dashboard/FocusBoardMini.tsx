@@ -74,7 +74,7 @@ export default function FocusBoardMini() {
           : 'warning';
 
   return (
-    <Link href="/dashboard/focus" className="group bg-surface-container-low rounded-[2rem] p-8 hover:bg-surface-container transition-colors duration-300 block">
+    <Link href="/dashboard/focus" className="group bg-surface-container-low rounded-[2rem] p-8 hover:bg-surface-container transition-colors duration-300 block overflow-hidden">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-headline text-sm font-semibold text-on-surface tracking-tight">
           Focus Board
@@ -83,18 +83,18 @@ export default function FocusBoardMini() {
       </div>
 
       {/* Top stats row */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className="bg-surface-container-lowest p-6 rounded-xl text-center flex-1">
-          <div className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Trust Pts</div>
-          <div className="text-3xl font-extrabold text-primary font-headline tabular-nums">{stats.balance.toLocaleString()}</div>
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="bg-surface-container-lowest p-4 rounded-xl text-center min-w-0 overflow-hidden">
+          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Rep Pts</div>
+          <div className="text-2xl font-extrabold text-primary font-headline tabular-nums">{stats.balance.toLocaleString()}</div>
         </div>
-        <div className="bg-surface-container-lowest p-6 rounded-xl text-center flex-1">
-          <div className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Day Streak</div>
-          <div className="text-3xl font-extrabold text-tertiary font-headline tabular-nums">{stats.streak.streakDays}</div>
+        <div className="bg-surface-container-lowest p-4 rounded-xl text-center min-w-0 overflow-hidden">
+          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Day Streak</div>
+          <div className="text-2xl font-extrabold text-tertiary font-headline tabular-nums">{stats.streak.streakDays}</div>
         </div>
-        <div className="bg-surface-container-lowest p-6 rounded-xl text-center flex-1">
-          <span className="material-symbols-outlined text-xl text-on-surface-variant">{todayIcon}</span>
-          <div className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mt-1">{todayLabel}</div>
+        <div className="bg-surface-container-lowest p-4 rounded-xl text-center min-w-0 overflow-hidden">
+          <span className="material-symbols-outlined text-lg text-on-surface-variant">{todayIcon}</span>
+          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mt-1 truncate">{todayLabel}</div>
         </div>
       </div>
 

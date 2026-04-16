@@ -31,7 +31,7 @@ interface Connection {
 const CONSENT_ITEMS = [
   { key: 'can_see_journal', label: 'Journal entries', desc: 'Your reflections, tributaries, longings, and roadmap entries' },
   { key: 'can_see_moods', label: 'Mood timeline', desc: 'Mood ratings from journal entries and check-ins' },
-  { key: 'can_see_streaks', label: 'Focus streaks', desc: 'Your streak history, milestones, and trust points' },
+  { key: 'can_see_streaks', label: 'Focus streaks', desc: 'Your streak history, milestones, and reputation points' },
   { key: 'can_see_outcomes', label: 'Conversation outcomes', desc: 'How you rated your accountability conversations' },
   { key: 'can_see_patterns', label: 'Pattern analysis', desc: 'Time clustering, frequency data, and vulnerability windows' },
 ];

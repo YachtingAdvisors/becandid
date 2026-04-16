@@ -4,6 +4,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import TherapistReferralSection from './TherapistReferralSection';
+import TherapistBadgeSection from './TherapistBadgeSection';
 
 export const metadata: Metadata = {
   title: 'Therapist Dashboard',
@@ -155,6 +156,7 @@ export default async function TherapistDashboardPage() {
       )}
       {/* Referral Program */}
       <TherapistReferralSection />
+      <TherapistBadgeSection />
     </div>
   );
 }

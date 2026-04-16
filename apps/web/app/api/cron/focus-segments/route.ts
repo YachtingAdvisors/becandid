@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 // POST /api/cron/focus-segments
 // Nightly cron: backfill yesterday's focus segments for all users,
-// award trust points, and check streak milestones.
+// award reputation points, and check streak milestones.
 //
 // Should be called via Vercel Cron or external scheduler at ~5:30 AM UTC
 

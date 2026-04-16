@@ -392,7 +392,7 @@ export default function DashboardScreen() {
             <View style={styles.statCard}>
               <Ionicons name="trophy-outline" size={20} color={C.primary} />
               <Text style={styles.statValue}>{stats.trustPoints ?? 0}</Text>
-              <Text style={styles.statLabel}>Trust Points</Text>
+              <Text style={styles.statLabel}>Reputation Points</Text>
             </View>
             <View style={styles.statCard}>
               <Ionicons name="flame-outline" size={20} color="#f59e0b" />

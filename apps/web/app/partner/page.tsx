@@ -177,7 +177,7 @@ export default function PartnerIndexPage() {
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
           <div className="text-2xl font-headline font-bold text-primary">{data.balance.toLocaleString()}</div>
-          <div className="text-xs text-on-surface-variant mt-0.5">Trust Points</div>
+          <div className="text-xs text-on-surface-variant mt-0.5">Reputation Points</div>
         </div>
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
           <div className="text-2xl font-headline font-bold text-emerald-600">{data.streak.streakDays}</div>

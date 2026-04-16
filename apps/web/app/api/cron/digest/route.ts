@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 // POST /api/cron/digest
 // Weekly cron (Monday 9 AM UTC): sends a summary email to both
 // the monitored user and their partner covering the past week's
-// focus segments, check-in completion rate, trust points earned,
+// focus segments, check-in completion rate, reputation points earned,
 // and milestones unlocked.
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -152,7 +152,7 @@ async function handleCron(req: NextRequest) {
       <tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Focus rate</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#0f0e1a;font-size:14px;">${focusRate}%</td></tr>
       <tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Full focus days</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#0f0e1a;font-size:14px;">${fullFocusDays} of 7</td></tr>
       <tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Check-in completion</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#0f0e1a;font-size:14px;">${completedCheckIns}/${totalCheckIns} (${checkInRate}%)</td></tr>
-      <tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Trust points earned</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#7c3aed;font-size:14px;">+${totalPoints}</td></tr>
+      <tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Reputation points earned</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#7c3aed;font-size:14px;">+${totalPoints}</td></tr>
       ${milestones.length > 0 ? `<tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Milestones unlocked</td><td style="padding:8px 0;text-align:right;font-weight:600;color:#d97706;font-size:14px;">🏅 ${milestones.length}</td></tr>` : ''}
     </table>
     ${reflection ? `

@@ -94,7 +94,7 @@ export default function DailyChallenge() {
             </div>
             <div>
               <span className="text-sm font-label font-bold text-emerald-700">Done!</span>
-              <span className="text-[10px] text-on-surface-variant ml-1.5 font-label">+5 trust points</span>
+              <span className="text-[10px] text-on-surface-variant ml-1.5 font-label">+5 reputation points</span>
             </div>
           </div>
         ) : (

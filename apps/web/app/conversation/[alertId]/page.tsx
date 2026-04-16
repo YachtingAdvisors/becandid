@@ -1,5 +1,5 @@
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { GOAL_LABELS, type GoalCategory, type Severity } from '@be-candid/shared';
+import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import RegenerateGuide from '@/components/dashboard/RegenerateGuide';
@@ -31,34 +31,45 @@ export default async function ConversationPage({ params }: Props) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const db = createServiceClient();
-
-  const { data: alert } = await db
+  const { data: alert } = await supabase
     .from('alerts')
-    .select('*, events(id, category, severity, platform, timestamp)')
+    .select('id, user_id, event_id, category, severity, ai_guide_user, ai_guide_partner, sent_at')
     .eq('id', alertId)
-    .single();
+    .maybeSingle();
 
   if (!alert) return notFound();
 
-  // Verify access
   const isOwner = alert.user_id === user.id;
-  if (!isOwner) {
-    const { data: partnerRecord } = await db
-      .from('partners')
-      .select('id')
-      .eq('user_id', alert.user_id)
-      .eq('partner_user_id', user.id)
-      .eq('status', 'active')
-      .maybeSingle();
-    if (!partnerRecord) return notFound();
+  let event = null;
+
+  if (alert.event_id) {
+    if (isOwner) {
+      const { data } = await supabase
+        .from('events')
+        .select('id, category, severity, platform, timestamp')
+        .eq('id', alert.event_id)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      event = data;
+    } else {
+      const db = createServiceClient();
+      const { data } = await db
+        .from('events')
+        .select('id, category, severity, platform, timestamp')
+        .eq('id', alert.event_id)
+        .eq('user_id', alert.user_id)
+        .maybeSingle();
+      event = data;
+    }
   }
 
-  const event = (alert as any).events;
   const role = isOwner ? 'user' : 'partner';
   const guideRaw = role === 'user' ? alert.ai_guide_user : alert.ai_guide_partner;
   const guide = guideRaw ? JSON.parse(guideRaw) : null;
-  const categoryLabel = GOAL_LABELS[event?.category as GoalCategory] ?? event?.category;
+  const eventCategory = event?.category ?? alert.category;
+  const eventSeverity = event?.severity ?? alert.severity;
+  const eventTimestamp = event?.timestamp ?? alert.sent_at;
+  const categoryLabel = GOAL_LABELS[eventCategory as GoalCategory] ?? eventCategory;
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,12 +85,12 @@ export default async function ConversationPage({ params }: Props) {
 
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <span className="material-symbols-outlined text-primary text-2xl">{getCategoryIcon(event?.category)}</span>
+            <span className="material-symbols-outlined text-primary text-2xl">{getCategoryIcon(eventCategory)}</span>
           </div>
           <div>
             <h1 className="font-headline text-2xl font-bold text-on-surface">{categoryLabel} -- Conversation Guide</h1>
             <p className="text-sm text-on-surface-variant font-body">
-              {event?.severity} severity · {event?.platform} · {new Date(event?.timestamp).toLocaleString()}
+              {eventSeverity} severity · {event?.platform ?? 'Be Candid'} · {new Date(eventTimestamp).toLocaleString()}
             </p>
           </div>
         </div>

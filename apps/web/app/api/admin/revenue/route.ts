@@ -3,12 +3,12 @@ export const dynamic = 'force-dynamic';
 // app/api/admin/revenue/route.ts
 //
 // GET -> Revenue analytics for the admin dashboard.
-// Auth: must be authenticated AND an admin (ADMIN_EMAILS).
+// Auth: must be authenticated and hold users.platform_role='admin'.
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
 import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const PRO_PRICE = 9.99;
@@ -19,11 +19,12 @@ export async function GET(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
-  const blocked = checkUserRate(adminLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   const db = createServiceClient();

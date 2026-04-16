@@ -4,12 +4,12 @@ export const dynamic = 'force-dynamic';
 //
 // GET  → Full user lookup by email for support workflows.
 // POST → Quick admin actions (extend trial, upgrade, reset pw).
-// Auth: must be authenticated AND an admin (ADMIN_EMAILS).
+// Auth: must be authenticated and hold users.platform_role='admin'.
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
 import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 async function requireAdmin() {
@@ -17,10 +17,11 @@ async function requireAdmin() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: 'Unauthorized', status: 401, user: null };
-  if (!isAdmin(user.email || ''))
-    return { error: 'Forbidden', status: 403, user: null };
-  return { error: null, status: 0, user };
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return { error: adminAccess.error, status: adminAccess.status, user: null };
+  }
+  return { error: null, status: 0, user: adminAccess.user };
 }
 
 export async function GET(req: NextRequest) {
@@ -224,7 +225,8 @@ export async function POST(req: NextRequest) {
         .from('users')
         .update({
           subscription_plan: 'pro',
-          subscription_status: 'pro',
+          subscription_status: 'active',
+          trial_ends_at: null,
         })
         .eq('id', user_id);
 
@@ -235,7 +237,11 @@ export async function POST(req: NextRequest) {
       await db.from('audit_log').insert({
         user_id,
         action: 'admin_upgrade_pro',
-        metadata: { admin_email: auth.user!.email },
+        metadata: {
+          admin_email: auth.user!.email,
+          subscription_plan: 'pro',
+          subscription_status: 'active',
+        },
       });
 
       return NextResponse.json({ success: true });

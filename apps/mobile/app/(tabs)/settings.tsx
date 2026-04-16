@@ -17,6 +17,8 @@ import {
   Alert,
   ActivityIndicator,
   RefreshControl,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -36,6 +38,33 @@ const C = {
   emerald: '#10b981',
   border: '#e5e7eb',
 } as const;
+
+const RIVAL_LIST: { id: string; label: string; icon: string }[] = [
+  { id: 'pornography', label: 'Pornography', icon: 'eye-off-outline' },
+  { id: 'sexting', label: 'Sexting', icon: 'chatbubble-outline' },
+  { id: 'social_media', label: 'Social Media', icon: 'phone-portrait-outline' },
+  { id: 'binge_watching', label: 'Binge Watching', icon: 'tv-outline' },
+  { id: 'impulse_shopping', label: 'Impulse Shopping', icon: 'cart-outline' },
+  { id: 'doomscrolling', label: 'Doomscrolling', icon: 'trending-down-outline' },
+  { id: 'alcohol_drugs', label: 'Alcohol & Drugs', icon: 'wine-outline' },
+  { id: 'vaping_tobacco', label: 'Vaping & Tobacco', icon: 'cloud-outline' },
+  { id: 'gambling', label: 'Gambling', icon: 'dice-outline' },
+  { id: 'sports_betting', label: 'Sports Betting', icon: 'football-outline' },
+  { id: 'day_trading', label: 'Day Trading', icon: 'stats-chart-outline' },
+  { id: 'dating_apps', label: 'Dating Apps', icon: 'heart-outline' },
+  { id: 'emotional_affairs', label: 'Emotional Affairs', icon: 'heart-dislike-outline' },
+  { id: 'gaming', label: 'Excessive Gaming', icon: 'game-controller-outline' },
+  { id: 'rage_content', label: 'Rage & Outrage Content', icon: 'flame-outline' },
+  { id: 'gossip_drama', label: 'Gossip & Drama', icon: 'megaphone-outline' },
+  { id: 'isolation', label: 'Isolation & Withdrawal', icon: 'person-remove-outline' },
+  { id: 'ai_relationships', label: 'AI Relationships', icon: 'hardware-chip-outline' },
+  { id: 'overworking', label: 'Overworking', icon: 'briefcase-outline' },
+  { id: 'sleep_avoidance', label: 'Sleep Avoidance', icon: 'moon-outline' },
+  { id: 'self_harm', label: 'Self-Harm Risk', icon: 'alert-circle-outline' },
+  { id: 'procrastination', label: 'Procrastination', icon: 'hourglass-outline' },
+  { id: 'eating_disorder', label: 'Eating Disorder', icon: 'restaurant-outline' },
+  { id: 'body_checking', label: 'Body Checking', icon: 'body-outline' },
+];
 
 const STREAK_MODES = [
   {
@@ -87,6 +116,11 @@ export default function SettingsScreen() {
   const [notifyPartnerAlerts, setNotifyPartnerAlerts] = useState(true);
   const [notifyCheckIns, setNotifyCheckIns] = useState(true);
 
+  // Rivals / Focus Areas modal
+  const [rivalsModalVisible, setRivalsModalVisible] = useState(false);
+  const [selectedRivals, setSelectedRivals] = useState<Set<string>>(new Set());
+  const [savingRivals, setSavingRivals] = useState(false);
+
   const fetchProfile = useCallback(async () => {
     try {
       const session = await getSession();
@@ -124,6 +158,47 @@ export default function SettingsScreen() {
     await fetchProfile();
     setRefreshing(false);
   }, [fetchProfile]);
+
+  const openRivalsModal = useCallback(() => {
+    setSelectedRivals(new Set(profile.goals ?? []));
+    setRivalsModalVisible(true);
+  }, [profile.goals]);
+
+  const toggleRival = useCallback((id: string) => {
+    setSelectedRivals(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const saveRivals = useCallback(async () => {
+    setSavingRivals(true);
+    try {
+      const session = await getSession();
+      if (!session) return;
+      const goals = Array.from(selectedRivals);
+      const res = await fetch(`${API_URL}/api/auth/profile`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ goals }),
+      });
+      if (res.ok) {
+        setProfile(prev => ({ ...prev, goals }));
+        setRivalsModalVisible(false);
+      } else {
+        Alert.alert('Error', 'Failed to save focus areas. Please try again.');
+      }
+    } catch {
+      Alert.alert('Error', 'Failed to save focus areas. Please try again.');
+    } finally {
+      setSavingRivals(false);
+    }
+  }, [selectedRivals]);
 
   const handleSave = useCallback(async () => {
     setSaving(true);
@@ -394,7 +469,7 @@ export default function SettingsScreen() {
           ) : (
             <Text style={styles.emptyField}>No focus areas selected</Text>
           )}
-          <Pressable style={styles.editLink}>
+          <Pressable style={styles.editLink} onPress={openRivalsModal}>
             <Text style={styles.editLinkText}>Edit Focus Areas</Text>
             <Ionicons name="chevron-forward" size={16} color={C.primary} />
           </Pressable>
@@ -549,6 +624,77 @@ export default function SettingsScreen() {
 
         <View style={{ height: 40 }} />
       </ScrollView>
+
+      {/* ── Rivals / Focus Areas Modal ──────────────────── */}
+      <Modal
+        visible={rivalsModalVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setRivalsModalVisible(false)}
+      >
+        <SafeAreaView style={{ flex: 1, backgroundColor: C.background }}>
+          <View style={rivalsStyles.header}>
+            <Pressable onPress={() => setRivalsModalVisible(false)}>
+              <Text style={rivalsStyles.cancelBtn}>Cancel</Text>
+            </Pressable>
+            <Text style={rivalsStyles.headerTitle}>Focus Areas</Text>
+            <Pressable onPress={saveRivals} disabled={savingRivals}>
+              {savingRivals ? (
+                <ActivityIndicator size="small" color={C.primary} />
+              ) : (
+                <Text style={[rivalsStyles.saveBtn, selectedRivals.size === 0 && { opacity: 0.4 }]}>
+                  Save
+                </Text>
+              )}
+            </Pressable>
+          </View>
+          <Text style={rivalsStyles.subtitle}>
+            Select the areas you want to focus on. Your partner will be notified of changes.
+          </Text>
+          {selectedRivals.size > 0 && selectedRivals.size <= 2 && (
+            <View style={rivalsStyles.hint}>
+              <Ionicons name="checkmark-circle" size={14} color={C.emerald} />
+              <Text style={[rivalsStyles.hintText, { color: C.emerald }]}>Great focus</Text>
+            </View>
+          )}
+          {selectedRivals.size >= 6 && (
+            <View style={rivalsStyles.hint}>
+              <Ionicons name="alert-circle-outline" size={14} color="#f59e0b" />
+              <Text style={[rivalsStyles.hintText, { color: '#f59e0b' }]}>Consider narrowing your focus</Text>
+            </View>
+          )}
+          <FlatList
+            data={RIVAL_LIST}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+            renderItem={({ item }) => {
+              const selected = selectedRivals.has(item.id);
+              return (
+                <Pressable
+                  onPress={() => toggleRival(item.id)}
+                  style={[rivalsStyles.rivalRow, selected && rivalsStyles.rivalRowSelected]}
+                >
+                  <View style={rivalsStyles.rivalLeft}>
+                    <Ionicons
+                      name={item.icon as any}
+                      size={20}
+                      color={selected ? C.primary : C.onSurfaceVariant}
+                    />
+                    <Text style={[rivalsStyles.rivalLabel, selected && { color: C.primary, fontWeight: '700' }]}>
+                      {item.label}
+                    </Text>
+                  </View>
+                  <Ionicons
+                    name={selected ? 'checkmark-circle' : 'ellipse-outline'}
+                    size={22}
+                    color={selected ? C.primary : C.border}
+                  />
+                </Pressable>
+              );
+            }}
+          />
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -813,5 +959,71 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: C.error,
+  },
+});
+
+const rivalsStyles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: C.border,
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: C.onSurface,
+  },
+  cancelBtn: {
+    fontSize: 15,
+    color: C.onSurfaceVariant,
+  },
+  saveBtn: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: C.primary,
+  },
+  subtitle: {
+    fontSize: 13,
+    color: C.onSurfaceVariant,
+    textAlign: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    lineHeight: 18,
+  },
+  hint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingBottom: 8,
+  },
+  hintText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  rivalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 4,
+  },
+  rivalRowSelected: {
+    backgroundColor: 'rgba(34, 103, 121, 0.06)',
+  },
+  rivalLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  rivalLabel: {
+    fontSize: 15,
+    color: C.onSurface,
   },
 });

@@ -162,7 +162,7 @@ export default function AdminUsersClient() {
           csvEscape(u.name),
           csvEscape(u.email),
           csvEscape(u.subscription_plan || 'free'),
-          csvEscape(u.subscription_status || 'free'),
+          csvEscape(u.subscription_status || 'active'),
 
           csvEscape((u.goals || []).join('; ')),
           u.last_active_at || '',
@@ -363,8 +363,8 @@ function UserTableRow({
   onToggle: () => void;
   onAction: (update: Record<string, unknown>) => void;
 }) {
-  const status = user.subscription_status || 'free';
-  const planColor = planBadgeColor(status);
+  const plan = user.subscription_plan || 'free';
+  const planColor = planBadgeColor(plan);
 
   return (
     <>
@@ -385,7 +385,7 @@ function UserTableRow({
         <td className="px-4 py-3 text-sm font-body text-on-surface-variant">{user.email}</td>
         <td className="px-4 py-3">
           <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-label font-semibold ${planColor}`}>
-            {status}
+            {plan}
           </span>
         </td>
         <td className="px-4 py-3 text-xs font-label text-on-surface-variant">
@@ -454,7 +454,7 @@ function UserDetailPanel({
           sub={`${detail.event_count_7d} this week`}
           icon="flag"
         />
-        <MiniStat label="Trust Points" value={detail.trust_points} icon="verified" />
+        <MiniStat label="Reputation Points" value={detail.trust_points} icon="verified" />
         <MiniStat label="Milestones" value={detail.milestones.length} icon="emoji_events" />
         <MiniStat label="Monitoring" value={user.monitoring_enabled ? 'On' : 'Off'} icon="visibility" />
         <MiniStat
@@ -533,13 +533,13 @@ function UserDetailPanel({
           label="Set Pro"
           icon="star"
           disabled={actionLoading}
-          onClick={() => onAction({ subscription_plan: 'pro', subscription_status: 'pro' })}
+          onClick={() => onAction({ subscription_plan: 'pro', subscription_status: 'active', trial_ends_at: null })}
         />
         <ActionButton
           label="Set Free"
           icon="money_off"
           disabled={actionLoading}
-          onClick={() => onAction({ subscription_plan: 'free', subscription_status: 'free' })}
+          onClick={() => onAction({ subscription_plan: 'free', subscription_status: 'active', trial_ends_at: null })}
         />
         <ActionButton
           label={user.monitoring_enabled ? 'Disable Monitoring' : 'Enable Monitoring'}

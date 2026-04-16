@@ -4,7 +4,10 @@
 
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { isAdmin } from '@/lib/isAdmin';
+import {
+  getPlatformRoleForUser,
+  isPlatformAdminRole,
+} from '@/lib/adminAccess';
 
 // Paths that never require authentication
 const PUBLIC_PATHS = [
@@ -79,6 +82,19 @@ function jsonError(msg: string, status: number) {
     JSON.stringify({ error: msg }),
     { status, headers: { 'Content-Type': 'application/json' } }
   );
+}
+
+function privilegedFailure(request: NextRequest, message: string, status = 503) {
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    return jsonError(message, status);
+  }
+
+  const response = new NextResponse(message, {
+    status,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
+  applyHeaders(response);
+  return response;
 }
 
 function isTrustedMutationOrigin(request: NextRequest): boolean {
@@ -254,14 +270,27 @@ export async function middleware(request: NextRequest) {
 
     // ── 5b. MFA enforcement — stronger on admin surfaces ──
     if (user && !pathname.startsWith('/auth/')) {
-      try {
-        const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/api/admin/');
-        const isProtectedAppRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/partner');
+      const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/api/admin/');
+      const isProtectedAppRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/partner');
 
-        if (isAdminRoute || isProtectedAppRoute) {
+      let userIsAdmin = false;
+      if (isAdminRoute) {
+        const roleResult = await getPlatformRoleForUser(supabase, user.id);
+        if (!roleResult.ok) {
+          return privilegedFailure(request, 'Unable to verify admin access');
+        }
+
+        userIsAdmin = isPlatformAdminRole(roleResult.role);
+        if (!userIsAdmin && pathname.startsWith('/api/')) {
+          return jsonError('Forbidden', 403);
+        }
+      }
+
+      if (isAdminRoute && userIsAdmin) {
+        try {
           const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
 
-          if (isAdminRoute && isAdmin(user.email || '') && aal.data?.nextLevel === 'aal2' && aal.data?.currentLevel !== 'aal2') {
+          if (aal.data?.currentLevel !== 'aal2') {
             if (pathname.startsWith('/api/')) {
               return jsonError('Admin access requires MFA', 403);
             }
@@ -272,8 +301,16 @@ export async function middleware(request: NextRequest) {
             applyHeaders(redir);
             return redir;
           }
+        } catch {
+          return privilegedFailure(request, 'Unable to verify admin MFA');
+        }
+      }
 
-          if (isProtectedAppRoute && aal.data?.currentLevel === 'aal1' && aal.data?.nextLevel === 'aal2') {
+      if (isProtectedAppRoute) {
+        try {
+          const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+          if (aal.data?.currentLevel === 'aal1' && aal.data?.nextLevel === 'aal2') {
             const url = request.nextUrl.clone();
             url.pathname = '/auth/mfa-verify';
             url.searchParams.set('redirect', pathname);
@@ -281,9 +318,9 @@ export async function middleware(request: NextRequest) {
             applyHeaders(redir);
             return redir;
           }
+        } catch {
+          // Keep non-admin app routes available if MFA status lookup fails.
         }
-      } catch {
-        // Fail open — don't block if MFA check fails
       }
     }
 
@@ -296,7 +333,11 @@ export async function middleware(request: NextRequest) {
     return response;
 
   } catch (error) {
-    // Never crash — let the request through if middleware fails
+    const { pathname } = request.nextUrl;
+    if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin/')) {
+      return privilegedFailure(request, 'Admin middleware verification failed');
+    }
+
     console.error('Middleware error:', error);
     const response = NextResponse.next();
     applyHeaders(response);

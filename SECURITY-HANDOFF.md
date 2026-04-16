@@ -132,6 +132,67 @@ This file documents security fixes already applied in this repo so future work d
 - `apps/web/app/api/privacy/route.ts` now handles only export, retention, and purge behavior; the dead `/sessions` sub-route logic was removed.
 - Do not recreate duplicate session-management APIs or make `PrivacySettings` depend on imaginary nested Next route paths.
 
+### 15. Admin subscription writes and audit logging are schema-aligned
+
+- `apps/web/lib/adminTools.ts` is now the shared source of truth for admin subscription validation, admin audience filters, and audit metadata parsing.
+- Admin user updates now accept only:
+  - `subscription_plan`: `free | pro | therapy`
+  - `subscription_status`: `active | past_due | canceled | trialing`
+  - `trial_ends_at`
+  - `monitoring_enabled`
+- Admin updates no longer accept the nonexistent `admin_notes` field.
+- Admin quick actions now set plan and status correctly:
+  - "Set Pro" means `subscription_plan='pro'` and `subscription_status='active'`
+  - "Set Free" means `subscription_plan='free'` and `subscription_status='active'`
+  - Support "upgrade to pro" also clears `trial_ends_at`
+- Admin broadcast and announcement routes now write to `audit_log.metadata`, not the nonexistent `details` column.
+- Admin history readers now parse `metadata` first and only fall back to legacy `details` for backward compatibility during cleanup.
+- Do not write `subscription_status='pro'` or `subscription_status='free'` anywhere. Those are invalid enum values.
+- Do not write new audit rows using `details`.
+
+### 16. Screen-capture advanced settings require a real admin session plus MFA
+
+- `apps/web/app/api/screen-capture/settings/route.ts` still allows normal users and desktop clients to toggle `screen_capture_enabled`.
+- Changing `interval_minutes` or `change_threshold` now requires:
+  - a cookie-backed authenticated session
+  - the same signed-in user as the request identity
+  - `users.platform_role === 'admin'`
+  - Supabase MFA assurance level `aal2`
+- Bearer-token clients can no longer mutate the admin-only screen-capture controls by presenting an admin email alone.
+- Do not reintroduce inline admin email lists or admin-only writes that bypass MFA.
+
+### 17. More server-rendered surfaces now run under user-scoped RLS
+
+- `apps/web/app/dashboard/page.tsx` now uses the cookie-scoped Supabase client for self-owned dashboard queries instead of the service-role client.
+- `apps/web/app/partner/layout.tsx` now uses the cookie-scoped client for partnership lookup and keeps service-role access only for the monitored user's display name.
+- `apps/web/app/conversation/[alertId]/page.tsx` now loads the alert itself through RLS and uses service-role access only for the minimal partner-side event lookup needed to render platform/timestamp details.
+- Do not move these pages back to blanket `createServiceClient()` reads when the request can be satisfied under user-scoped RLS.
+
+### 18. Therapist session-prep email rendering now has a dedicated helper and regression coverage
+
+- `apps/web/lib/therapistSessionPrepEmail.ts` is now the shared HTML builder for therapist session-prep emails.
+- The route uses that helper instead of duplicating inline HTML construction.
+- Regression tests now cover escaping of model-generated and user-derived email content so raw markup is not reintroduced accidentally.
+
+### 19. Admin authorization is now role-backed, not email-backed
+
+- Added:
+  - `apps/web/lib/adminAccess.ts`
+  - `supabase/migrations/070_admin_roles.sql`
+- Admin access now comes from `users.platform_role`, currently `user | admin`.
+- Admin routes, admin layout, middleware, and privileged admin-only settings no longer trust `ADMIN_EMAILS`, founder email lists, or other email-based allowlists at runtime.
+- The migration backfills the two founder accounts to `platform_role='admin'`.
+- Any additional admins must now be granted explicitly in the database by setting `users.platform_role='admin'`.
+- Do not add new email-based admin bypasses. Use role assignment instead.
+
+### 20. Admin middleware now fails closed on role and MFA verification failures
+
+- `apps/web/middleware.ts` now checks `users.platform_role` on `/admin` and `/api/admin/*` before treating a request as privileged.
+- Admin API routes now return `403` for authenticated non-admins and `503` when admin verification itself cannot be completed.
+- Admin page routes now fail closed with a `503` response if role lookup or admin MFA verification fails, rather than silently allowing the request through.
+- Non-admin dashboard and partner routes still keep the softer availability behavior for non-admin MFA lookup problems.
+- Do not restore the old fail-open behavior for admin surfaces.
+
 ## Files Changed
 
 - `.gitignore`
@@ -158,16 +219,42 @@ This file documents security fixes already applied in this repo so future work d
 - `apps/web/app/api/billing/org-plan/route.ts`
 - `apps/web/app/api/releases/check/route.ts`
 - `apps/web/app/api/therapist/session-prep/route.ts`
+- `apps/web/app/api/admin/activity/route.ts`
+- `apps/web/app/api/admin/announcement/route.ts`
+- `apps/web/app/api/admin/email/route.ts`
+- `apps/web/app/api/admin/support/route.ts`
+- `apps/web/app/api/admin/users/[userId]/route.ts`
+- `apps/web/app/api/admin/audit/route.ts`
+- `apps/web/app/api/admin/contest/route.ts`
+- `apps/web/app/api/admin/engagement/route.ts`
+- `apps/web/app/api/admin/export/route.ts`
+- `apps/web/app/api/admin/feature-flags/route.ts`
+- `apps/web/app/api/admin/health/route.ts`
+- `apps/web/app/api/admin/moderation/route.ts`
+- `apps/web/app/api/admin/revenue/route.ts`
+- `apps/web/app/api/admin/seo/route.ts`
+- `apps/web/app/api/admin/stats/route.ts`
+- `apps/web/app/api/admin/users/route.ts`
+- `apps/web/app/admin/layout.tsx`
 - `apps/web/app/dashboard/report/page.tsx`
+- `apps/web/app/dashboard/page.tsx`
 - `apps/web/app/dashboard/settings/page.tsx`
 - `apps/web/app/dashboard/security/page.tsx`
+- `apps/web/app/conversation/[alertId]/page.tsx`
+- `apps/web/app/partner/layout.tsx`
 - `apps/web/app/privacy/page.tsx`
+- `apps/web/app/admin/support/AdminSupportClient.tsx`
+- `apps/web/app/admin/users/AdminUsersClient.tsx`
+- `apps/web/app/api/screen-capture/settings/route.ts`
 - `apps/web/components/dashboard/PrivacySettings.tsx`
 - `apps/web/lib/distributedRateLimit.ts`
+- `apps/web/lib/adminAccess.ts`
+- `apps/web/lib/adminTools.ts`
 - `apps/web/lib/guardianControls.ts`
 - `apps/web/lib/inviteTokens.ts`
 - `apps/web/lib/idempotency.ts`
 - `apps/web/lib/sessionSecurity.ts`
+- `apps/web/lib/therapistSessionPrepEmail.ts`
 - `apps/desktop/src/main/store.js`
 - `apps/desktop/src/main/tray.js`
 - `apps/extension/src/background/auth.js`
@@ -176,12 +263,16 @@ This file documents security fixes already applied in this repo so future work d
 - `packages/shared/types/index.ts`
 - `supabase/migrations/066_request_controls.sql`
 - `supabase/migrations/067_invite_token_hardening.sql`
+- `supabase/migrations/070_admin_roles.sql`
 
 ## Tests Added
 
 - `apps/web/app/api/auth/__tests__/record-attempt.test.ts`
 - `apps/web/app/api/auth/__tests__/token-login.test.ts`
 - `apps/web/app/api/partners/__tests__/accept.test.ts`
+- `apps/web/lib/__tests__/adminAccess.test.ts`
+- `apps/web/lib/__tests__/adminTools.test.ts`
+- `apps/web/lib/__tests__/therapistSessionPrepEmail.test.ts`
 
 ## Tests Updated
 
@@ -190,26 +281,25 @@ This file documents security fixes already applied in this repo so future work d
 
 ## Verification
 
-- `npx tsc --noEmit -p apps/web/tsconfig.json` passed.
-- `node --check` passed for:
-  - `apps/desktop/src/main/store.js`
-  - `apps/desktop/src/main/tray.js`
-  - `apps/extension/src/shared/storage.js`
-  - `apps/extension/src/shared/api.js`
-  - `apps/extension/src/background/auth.js`
-- `npm run --workspace=@be-candid/web test -- app/api/auth/__tests__/token-login.test.ts app/api/auth/__tests__/record-attempt.test.ts app/api/partners/__tests__/accept.test.ts app/api/events/__tests__/route.test.ts` passed.
-- `npm run --workspace=@be-candid/web test -- app/api/partners/__tests__/accept.test.ts app/api/partners/__tests__/route.test.ts app/api/therapist/__tests__/route.test.ts` passed.
+- Earlier security passes in this repo completed successfully, including:
+  - `node --check` for the edited desktop and extension JavaScript files
+  - focused Vitest runs for the auth, partners, therapist, and events regressions listed above
+- For this pass:
+  - `git diff --check` passed
+  - a TypeScript transpile-only syntax check passed for all newly edited TS/TSX files in this pass
+- Current repo caveats in this checkout as of April 16, 2026:
+  - `npx tsc --noEmit -p apps/web/tsconfig.json` currently fails on pre-existing workspace issues unrelated to this pass, including missing `vitest` type resolution in older tests and existing React/styled-jsx typing drift elsewhere in the app
+  - focused Vitest execution is currently blocked because the local `node_modules/vitest` install is broken in this checkout (`node_modules/.bin/vitest` points to a missing package target)
 
 ## Remaining Manual Action
 
 - The previously exposed Supabase service-role key and Stripe secret key still need to be rotated out-of-band. Scrubbing the file fixed the repo/workspace exposure, but the old credentials should be treated as compromised.
-- Apply both Supabase migrations before relying on the new shared controls and invite-token behavior in production:
-  - `supabase/migrations/066_request_controls.sql`
-  - `supabase/migrations/067_invite_token_hardening.sql`
+- The hosted Supabase migrations `066_request_controls.sql` and `067_invite_token_hardening.sql` were applied on April 15, 2026. Do not roll them back without revisiting the request-control and invite-token code paths first.
+- Apply `supabase/migrations/070_admin_roles.sql` before relying on the new role-backed admin authorization in production.
+- If you need any non-founder admins, grant them explicitly with `UPDATE public.users SET platform_role = 'admin' WHERE email = '...';` after migration `070` is applied.
 
 ## Remaining Larger Follow-Ups
 
 - Broader service-role reduction is still worth doing, but it needs a deliberate route-by-route RLS audit before moving more handlers off `createServiceClient()`.
 - The app still does expensive AI and notification work inline in request-response paths. Moving those flows into explicit jobs/workers is still recommended, but that is a larger architecture change than this pass.
-- Admin authorization is still email-list based. MFA is now required, but a real role model is still the right long-term direction.
 - Older guardian invites created before `guardian_email` existed can only be email-bound after reinvite. Reissuing those invites after the migration is the cleanest path.

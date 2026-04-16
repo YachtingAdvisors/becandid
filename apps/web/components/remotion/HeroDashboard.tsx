@@ -381,7 +381,7 @@ export const HeroDashboardComposition: React.FC = () => {
                 delay={T.stats}
               />
               <StatCard
-                label="Trust Points"
+                label="Reputation Points"
                 value={trust.toLocaleString()}
                 icon="workspace_premium"
                 color="#22d3ee"

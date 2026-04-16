@@ -3,22 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: file:;">
   <title>Be Candid — Sign In</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <div class="logo-section">
-      <div class="logo-circle">
-        <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="#226779" stroke-width="3" fill="none"/>
-          <path d="M14 12 C8 14, 6 22, 10 28 C14 34, 24 34, 28 28" stroke="#226779" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M22 10 C22 10, 26 6, 30 8 C30 8, 26 12, 22 10Z" fill="#226779"/>
-        </svg>
-      </div>
+      <img src="../../assets/logo.png" alt="Be Candid" class="logo-img" />
       <h1>Be Candid</h1>
-      <p class="subtitle">Screen Monitor</p>
+      <p class="subtitle">Accountability Sanctuary</p>
     </div>
 
     <div id="error" class="error" style="display: none;"></div>
@@ -36,7 +30,7 @@
     </div>
 
     <p class="footer-text">
-      Runs silently in your menu bar. Screenshots are analyzed by AI and never stored.
+      Runs silently in your system tray. Screenshots are analyzed securely and never stored.
     </p>
   </div>
   <script src="renderer.js"></script>

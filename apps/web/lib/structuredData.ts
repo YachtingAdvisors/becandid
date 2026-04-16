@@ -193,6 +193,30 @@ interface ArticleProps {
   image?: string;
 }
 
+interface ToolProps {
+  name: string;
+  description: string;
+  url: string;
+}
+
+export function toolApplicationSchema(props: ToolProps) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: props.name,
+    description: props.description,
+    url: props.url,
+    applicationCategory: 'HealthApplication',
+    operatingSystem: 'Any',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    provider: {
+      '@type': 'Organization',
+      name: 'Be Candid',
+      url: BASE_URL,
+    },
+  };
+}
+
 export function articleSchema(props: ArticleProps) {
   return {
     '@context': 'https://schema.org',

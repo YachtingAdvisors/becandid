@@ -19,10 +19,10 @@ const MILESTONE_DISPLAY: Record<string, { label: string; icon: string }> = {
   full_days_30:         { label: '30 Full Focused Days',   icon: 'auto_awesome' },
   full_days_60:         { label: '60 Full Focused Days',   icon: 'local_fire_department' },
   full_days_90:         { label: '90 Full Focused Days',   icon: 'crown' },
-  points_100:           { label: '100 Trust Points',       icon: 'center_focus_strong' },
-  points_500:           { label: '500 Trust Points',       icon: 'diamond' },
-  points_1000:          { label: '1,000 Trust Points',     icon: 'emoji_events' },
-  points_5000:          { label: '5,000 Trust Points',     icon: 'pets' },
+  points_100:           { label: '100 Reputation Points',       icon: 'center_focus_strong' },
+  points_500:           { label: '500 Reputation Points',       icon: 'diamond' },
+  points_1000:          { label: '1,000 Reputation Points',     icon: 'emoji_events' },
+  points_5000:          { label: '5,000 Reputation Points',     icon: 'pets' },
   conversations_5:      { label: '5 Conversations',        icon: 'forum' },
   conversations_10:     { label: '10 Conversations',       icon: 'handshake' },
   conversations_25:     { label: '25 Conversations',       icon: 'favorite' },
@@ -97,7 +97,7 @@ export function useMilestoneToasts() {
                 {toast.label}
               </div>
               <div className="text-xs text-emerald-600 font-medium mt-0.5">
-                +50 Trust Points
+                +50 Reputation Points
               </div>
             </div>
           </div>

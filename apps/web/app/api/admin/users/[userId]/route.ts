@@ -8,7 +8,8 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
+import { normalizeAdminUserUpdate } from '@/lib/adminTools';
 import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function GET(
@@ -20,11 +21,12 @@ export async function GET(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
-  const blocked = checkUserRate(adminLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   const db = createServiceClient();
@@ -125,30 +127,22 @@ export async function PATCH(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
-  const blocked = checkUserRate(adminLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   const db = createServiceClient();
   const body = await req.json();
 
-  const allowedFields: Record<string, boolean> = {
-    subscription_plan: true,
-    subscription_status: true,
-    trial_ends_at: true,
-    monitoring_enabled: true,
-    admin_notes: true,
-  };
-
-  const update: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(body)) {
-    if (allowedFields[key]) {
-      update[key] = value;
-    }
+  const parsed = normalizeAdminUserUpdate(body);
+  if ('error' in parsed) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
+  const update = parsed.update;
 
   if (Object.keys(update).length === 0) {
     return NextResponse.json(
@@ -167,10 +161,11 @@ export async function PATCH(
   await db.from('audit_log').insert({
     user_id: userId,
     action: 'admin_update',
-    details: JSON.stringify({
-      admin_email: user.email,
+    metadata: {
+      admin_email: adminAccess.user.email,
       fields_updated: Object.keys(update),
-    }),
+      ...update,
+    },
   });
 
   return NextResponse.json({ success: true });

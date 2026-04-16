@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
 
 const CRON_JOBS = [
   'checkin',
@@ -27,9 +27,10 @@ export async function GET() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
   const db = createServiceClient();
 

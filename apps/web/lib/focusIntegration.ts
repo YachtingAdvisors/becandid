@@ -37,7 +37,7 @@ export async function onEventFlagged(
 
 /**
  * Call this when a conversation is marked complete.
- * Awards trust points for completing and for positive outcome.
+ * Awards reputation points for completing and for positive outcome.
  *
  * Usage in conversation completion handler:
  *   import { onConversationCompleted } from '../lib/focusIntegration';

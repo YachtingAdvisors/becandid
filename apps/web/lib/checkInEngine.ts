@@ -152,7 +152,7 @@ export async function confirmUserCheckIn(
     })
     .eq('id', checkInId);
 
-  // If now completed, award trust points
+  // If now completed, award reputation points
   let milestonesUnlocked: string[] = [];
   if (newStatus === 'completed') {
     milestonesUnlocked = await onCheckInCompleted(db, userId);
@@ -229,13 +229,13 @@ export async function expireOverdueCheckIns(
   return data?.length ?? 0;
 }
 
-// ─── Trust Points Integration ─────────────────────────────────
+// ─── Reputation Points Integration ─────────────────────────────────
 
 async function onCheckInCompleted(
   db: SupabaseClient,
   userId: string
 ): Promise<string[]> {
-  // Award trust points for completed check-in
+  // Award reputation points for completed check-in
   await db.from('trust_points').insert({
     user_id: userId,
     points: 5,

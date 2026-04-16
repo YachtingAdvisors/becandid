@@ -10,11 +10,10 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
-import { createServiceClient } from '@/lib/supabase';
+import { requireAdminAccess } from '@/lib/adminAccess';
+import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { escapeHtml } from '@/lib/security';
-
-const ADMIN_EMAILS = ['slaser90@gmail.com', 'shawn@becandid.io'];
 
 export async function GET(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -50,18 +49,41 @@ export async function PATCH(req: NextRequest) {
 
   const body = await req.json();
   const update: Record<string, unknown> = {};
-  const isAdmin = ADMIN_EMAILS.includes(user.email ?? '');
+  const requestedAdvancedSettings =
+    typeof body.interval_minutes === 'number' ||
+    typeof body.change_threshold === 'number';
+
+  let canManageAdvancedSettings = false;
+  if (requestedAdvancedSettings) {
+    const supabase = await createServerSupabaseClient();
+    const {
+      data: { user: sessionUser },
+    } = await supabase.auth.getUser();
+
+    const adminAccess = await requireAdminAccess(supabase, sessionUser);
+    if (adminAccess.ok && adminAccess.user.id === user.id) {
+      const { data: assurance, error } =
+        await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      canManageAdvancedSettings = !error && assurance?.currentLevel === 'aal2';
+    }
+
+    if (!canManageAdvancedSettings) {
+      return NextResponse.json(
+        { error: 'Advanced screen capture settings require an admin session with MFA.' },
+        { status: 403 }
+      );
+    }
+  }
 
   if (typeof body.enabled === 'boolean') {
     update.screen_capture_enabled = body.enabled;
   }
 
-  // Only admin can change interval and threshold
-  if (typeof body.interval_minutes === 'number' && isAdmin) {
+  if (typeof body.interval_minutes === 'number' && canManageAdvancedSettings) {
     const interval = Math.max(2, Math.min(30, Math.round(body.interval_minutes)));
     update.screen_capture_interval = interval;
   }
-  if (typeof body.change_threshold === 'number' && isAdmin) {
+  if (typeof body.change_threshold === 'number' && canManageAdvancedSettings) {
     const threshold = Math.max(0.01, Math.min(0.50, body.change_threshold));
     update.screen_capture_change_threshold = threshold;
   }

@@ -4,12 +4,12 @@ export const dynamic = 'force-dynamic';
 //
 // GET  -> List community posts needing review (flagged or recent).
 // PATCH -> Approve, hide, or delete a post.
-// Auth: must be authenticated AND an admin (ADMIN_EMAILS).
+// Auth: must be authenticated and hold users.platform_role='admin'.
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
 import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 // Simple keyword flag list for content that may need review.
@@ -43,14 +43,17 @@ async function verifyAdmin(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
-  if (!isAdmin(user.email || ''))
-    return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) };
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return {
+      error: NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status }),
+    };
+  }
 
-  const blocked = checkUserRate(adminLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, adminAccess.user.id);
   if (blocked) return { error: blocked };
 
-  return { user };
+  return { user: adminAccess.user };
 }
 
 // ── GET: List posts for moderation ──────────────────────────

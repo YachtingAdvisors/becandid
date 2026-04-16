@@ -8,7 +8,7 @@
 // Called by:
 //   1. Alert pipeline — immediately marks the current segment distracted
 //   2. Nightly cron — backfills any segments that had no events (= focused)
-//      and awards trust points for the completed day
+//      and awards reputation points for the completed day
 // ============================================================
 
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -133,7 +133,7 @@ export async function markSegmentDistracted(
 /**
  * For a given user and date, ensure both morning and evening segments exist.
  * Any segment without a row is "focused" (no flags were triggered).
- * Awards trust points for focused segments and full-day bonuses.
+ * Awards reputation points for focused segments and full-day bonuses.
  */
 export async function backfillAndScoreDay(
   db: SupabaseClient,
@@ -448,7 +448,7 @@ export async function get21DayHeatmap(
   return days;
 }
 
-// ─── Trust Points Helpers ────────────────────────────────────
+// ─── Reputation Points Helpers ────────────────────────────────────
 
 async function awardPoints(
   db: SupabaseClient,

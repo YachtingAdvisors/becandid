@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
 import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
 
 function escapeCsvField(value: unknown): string {
@@ -45,11 +45,12 @@ export async function GET(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = checkUserRate(accountLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   const type = req.nextUrl.searchParams.get('type');

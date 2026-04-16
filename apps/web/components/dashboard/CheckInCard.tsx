@@ -245,7 +245,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
       {checkIn.status === 'completed' && (
         <div className="px-4 pb-3 pt-2 border-t border-emerald-200/50">
           <p className="text-xs text-emerald-700 text-center font-medium">
-            <span className="material-symbols-outlined text-sm align-middle">check</span> Both confirmed — check-in complete! +5 trust points each
+            <span className="material-symbols-outlined text-sm align-middle">check</span> Both confirmed — check-in complete! +5 reputation points each
           </p>
         </div>
       )}

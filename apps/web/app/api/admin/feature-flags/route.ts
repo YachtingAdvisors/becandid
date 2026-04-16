@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
 import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
 
 // ─── GET: List all flags ─────────────────────────────────────
@@ -18,9 +18,10 @@ export async function GET() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
   const db = createServiceClient();
   const { data: flags, error } = await db
@@ -42,11 +43,12 @@ export async function PATCH(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = checkUserRate(accountLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   let body: { key?: string; enabled?: boolean };
@@ -71,7 +73,7 @@ export async function PATCH(req: NextRequest) {
     .from('feature_flags')
     .update({
       enabled,
-      updated_by: user.email,
+      updated_by: adminAccess.user.email,
       updated_at: new Date().toISOString(),
     })
     .eq('key', key)

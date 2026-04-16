@@ -27,7 +27,7 @@ export const WIDGET_REGISTRY: WidgetDef[] = [
   {
     id: 'dashboard_hero',
     name: 'Dashboard Overview',
-    description: 'Your streak, mood trend, journal count, and trust points at a glance.',
+    description: 'Your streak, mood trend, journal count, and reputation points at a glance.',
     icon: 'dashboard',
     category: 'info',
     alwaysOn: true,

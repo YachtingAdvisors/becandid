@@ -94,6 +94,33 @@ async function submitUrl(url: string, token: string): Promise<{ url: string; ok:
   return { url, ok: res.ok, status: res.status };
 }
 
+// Submit URLs to Bing URL Submission API (batch of up to 500)
+async function submitUrlsToBing(urls: string[]): Promise<{ ok: boolean; submitted: number; error?: string }> {
+  const apiKey = process.env.BING_API_KEY;
+  if (!apiKey) return { ok: false, submitted: 0, error: 'BING_API_KEY not configured' };
+
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io';
+
+  try {
+    const res = await fetch(
+      `https://ssl.bing.com/webmaster/api.svc/json/SubmitUrlbatch?apikey=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ siteUrl, urlList: urls }),
+      }
+    );
+
+    if (res.ok) {
+      return { ok: true, submitted: urls.length };
+    }
+    const text = await res.text();
+    return { ok: false, submitted: 0, error: `Bing HTTP ${res.status}: ${text}` };
+  } catch (err: any) {
+    return { ok: false, submitted: 0, error: err.message };
+  }
+}
+
 // SEO value scores — higher = submit sooner
 // Scoring rationale:
 //   100-90  Conversion + core marketing pages (direct revenue impact)
@@ -295,10 +322,18 @@ async function handleCron(req: NextRequest) {
 
     results.skipped = sitemapUrls.length - toSubmit.length - results.failed;
 
+    // 6. Also submit to Bing (uses same URL list)
+    const successfulUrls = results.urls.filter(u => u.ok).map(u => u.url);
+    let bingResult: { ok: boolean; submitted: number; error?: string } = { ok: false, submitted: 0, error: 'No URLs to submit' };
+    if (successfulUrls.length > 0) {
+      bingResult = await submitUrlsToBing(successfulUrls);
+    }
+
     return NextResponse.json({
       ok: true,
       total: sitemapUrls.length,
       ...results,
+      bing: bingResult,
     });
   } catch (err: any) {
     return NextResponse.json({ ok: false, error: err.message, ...results }, { status: 500 });

@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 //
 // After both user and partner submit their ratings, Claude
 // generates a brief reflection on the conversation quality
-// and awards trust points.
+// and awards reputation points.
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
       console.error('AI reflection failed:', e);
     }
 
-    // Award trust points for completing conversation
+    // Award reputation points for completing conversation
     try {
       await db.rpc('award_trust_points', {
         p_user_id: alertUserId, p_points: 25,

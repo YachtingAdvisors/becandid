@@ -440,6 +440,29 @@ export default function PricingPage() {
           </div>
         </div>
 
+        {/* Promo Code Section */}
+        <div className="max-w-md mx-auto mt-14">
+          <div className="relative rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 p-6 text-center">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-[11px] font-label font-bold uppercase tracking-wider">
+              Product Hunt Special
+            </div>
+            <h3 className="text-lg font-display font-bold text-stone-100 mt-2">
+              3 Months Free Pro
+            </h3>
+            <p className="text-sm text-stone-400 font-body mt-1.5">
+              Use promo code at signup to unlock all Pro features free for 90 days.
+            </p>
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <code className="px-4 py-2 rounded-lg bg-stone-800/80 border border-stone-700 text-cyan-300 font-mono text-lg font-bold tracking-wide select-all">
+                CandidlyFree
+              </code>
+            </div>
+            <p className="text-[11px] text-stone-500 mt-3 font-body">
+              Apply in Settings → Subscription after creating your account
+            </p>
+          </div>
+        </div>
+
         {/* Community + Support CTAs */}
         <div className="max-w-5xl mx-auto mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a

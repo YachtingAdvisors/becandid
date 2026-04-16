@@ -195,7 +195,7 @@ function StreaksSection({ data }: { data: any }) {
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-5 flex items-center gap-3">
           <span className="material-symbols-outlined text-primary text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
           <div>
-            <p className="font-headline font-bold text-on-surface">{data.total_trust_points.toLocaleString()} Trust Points</p>
+            <p className="font-headline font-bold text-on-surface">{data.total_trust_points.toLocaleString()} Reputation Points</p>
             <p className="text-xs text-on-surface-variant font-label">Lifetime earned</p>
           </div>
         </div>

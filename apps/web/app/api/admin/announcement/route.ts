@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
 import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 import { Resend } from 'resend';
 
@@ -21,11 +21,12 @@ export async function POST(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
-  const blocked = checkUserRate(adminLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   const body = await req.json();
@@ -100,14 +101,14 @@ export async function POST(req: NextRequest) {
 
   // Log the announcement
   await db.from('audit_log').insert({
-    user_id: user.id,
+    user_id: adminAccess.user.id,
     action: 'admin_announcement',
-    details: JSON.stringify({
+    metadata: {
       subject,
       recipients: emails.length,
       sent,
       failed,
-    }),
+    },
   });
 
   return NextResponse.json({ sent, failed, total: emails.length });

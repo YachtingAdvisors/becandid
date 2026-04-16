@@ -90,7 +90,7 @@ export default function DeleteAccountPage() {
               'All journal entries (freewrite, tributaries, longing, roadmap)',
               'Check-in history and mood records',
               'Focus segments and streak data',
-              'Milestones, badges, and trust points',
+              'Milestones, badges, and reputation points',
               'Browsing activity events and alerts',
               'Partner connections and conversation history',
               'Therapist connections and consent records',

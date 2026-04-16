@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { createServerSupabaseClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
 import AdminNav from './AdminNav';
 
 export const metadata: Metadata = {
@@ -18,7 +18,9 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user || !isAdmin(user.email || '')) {
+  const adminAccess = await requireAdminAccess(supabase, user);
+
+  if (!adminAccess.ok) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="bg-surface-container-lowest rounded-3xl border border-outline-variant p-10 text-center max-w-md">
@@ -29,8 +31,9 @@ export default async function AdminLayout({
             Access Denied
           </h1>
           <p className="text-sm text-on-surface-variant font-body">
-            You do not have permission to view this page. If you believe this is
-            an error, contact the platform administrator.
+            {adminAccess.status === 503
+              ? 'We could not verify your admin access right now. Please try again shortly.'
+              : 'You do not have permission to view this page. If you believe this is an error, contact the platform administrator.'}
           </p>
         </div>
       </div>

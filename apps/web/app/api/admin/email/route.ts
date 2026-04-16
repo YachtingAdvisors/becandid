@@ -8,7 +8,13 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
+import {
+  getAudienceQueryConfig,
+  isAdminAudience,
+  readAuditMetadata,
+  type AdminAudience,
+} from '@/lib/adminTools';
 import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
 import { emailWrapper } from '@/lib/email/template';
 import { Resend } from 'resend';
@@ -18,10 +24,6 @@ function getResend() {
 }
 const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
 const MAX_BATCH = 500;
-
-type Audience = 'all' | 'pro' | 'therapy' | 'free' | 'trialing';
-
-const AUDIENCE_VALUES: Audience[] = ['all', 'pro', 'therapy', 'free', 'trialing'];
 
 function escapeHtml(str: string): string {
   return str
@@ -38,11 +40,12 @@ export async function POST(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = checkUserRate(accountLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   let body: { subject?: string; body?: string; audience?: string };
@@ -54,7 +57,7 @@ export async function POST(req: NextRequest) {
 
   const subject = (body.subject || '').trim();
   const htmlBody = (body.body || '').trim();
-  const audience = (body.audience || '') as Audience;
+  const audienceValue = typeof body.audience === 'string' ? body.audience : 'all';
 
   if (!subject || !htmlBody) {
     return NextResponse.json(
@@ -70,28 +73,29 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (!AUDIENCE_VALUES.includes(audience)) {
+  if (!isAdminAudience(audienceValue)) {
     return NextResponse.json(
-      { error: `Invalid audience. Must be one of: ${AUDIENCE_VALUES.join(', ')}` },
+      { error: 'Invalid audience. Must be one of: all, pro, therapy, free, trialing' },
       { status: 400 },
     );
   }
 
+  const audience: AdminAudience = audienceValue;
   const db = createServiceClient();
 
   // Build query for the target audience
   let query = db.from('users').select('email').not('email', 'is', null);
+  const audienceFilter = getAudienceQueryConfig(audience);
 
-  if (audience === 'pro') {
-    query = query.eq('subscription_status', 'pro');
-  } else if (audience === 'therapy') {
-    query = query.eq('subscription_status', 'therapy');
-  } else if (audience === 'free') {
-    query = query.eq('subscription_status', 'free');
-  } else if (audience === 'trialing') {
-    query = query.eq('subscription_status', 'trialing');
+  if ('plan' in audienceFilter) {
+    query = query.eq('subscription_plan', audienceFilter.plan);
   }
-  // 'all' → no additional filter
+  if ('status' in audienceFilter) {
+    query = query.eq('subscription_status', audienceFilter.status);
+  }
+  if ('includeNullPlan' in audienceFilter) {
+    query = query.or('subscription_plan.eq.free,subscription_plan.is.null');
+  }
 
   const { data: users, error: fetchError } = await query;
 
@@ -150,15 +154,15 @@ export async function POST(req: NextRequest) {
 
   // Log to audit_log
   await db.from('audit_log').insert({
-    user_id: user.id,
+    user_id: adminAccess.user.id,
     action: 'admin_broadcast',
-    details: JSON.stringify({
+    metadata: {
       subject,
       audience,
       total_matched: emails.length,
       sent,
       failed,
-    }),
+    },
   });
 
   return NextResponse.json({
@@ -176,9 +180,10 @@ export async function GET() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
   const db = createServiceClient();
 
@@ -194,8 +199,7 @@ export async function GET() {
   }
 
   const history = (logs || []).map((log: Record<string, unknown>) => {
-    const details =
-      typeof log.details === 'string' ? JSON.parse(log.details) : log.details;
+    const details = readAuditMetadata(log);
     return {
       id: log.id,
       subject: details?.subject ?? '',

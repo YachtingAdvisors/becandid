@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 // POST /api/trust-points/earn
-// Generic endpoint to award trust points for specific actions
+// Generic endpoint to award reputation points for specific actions
 // Used by check-in completion, partner encouragement, etc.
 
 import { NextRequest, NextResponse } from 'next/server';

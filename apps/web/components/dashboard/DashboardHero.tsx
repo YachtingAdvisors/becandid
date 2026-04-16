@@ -97,17 +97,32 @@ export default function DashboardHero({
 
         {/* Stats bento grid — 2 columns */}
         <div className="grid grid-cols-2 gap-4">
-          {/* Trust Points */}
-          <div className="bg-surface rounded-[2rem] p-6 flex flex-col gap-1">
+          {/* Reputation Points */}
+          <div className="bg-surface rounded-[2rem] p-6 flex flex-col gap-1 group relative cursor-pointer">
             <div className="flex items-center gap-2 mb-2">
               <span className="material-symbols-outlined text-lg text-primary">stars</span>
               <span className="font-label text-xs text-on-surface-variant uppercase tracking-wider">
-                Trust Points
+                Reputation Points
               </span>
+              <span className="material-symbols-outlined text-sm text-on-surface-variant/50 group-hover:text-primary transition-colors">info</span>
             </div>
             <span className="font-headline text-4xl font-extrabold text-primary tabular-nums">
               {trustPoints}
             </span>
+            {/* Tooltip */}
+            <div className="absolute left-0 right-0 top-full mt-2 z-50 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
+              <div className="bg-on-surface text-white rounded-2xl p-4 shadow-xl text-xs leading-relaxed mx-2">
+                <p className="font-label font-bold text-sm mb-2">How you earn Reputation Points</p>
+                <ul className="space-y-1.5">
+                  <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Daily check-ins (+5 pts)</li>
+                  <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Journal entries (+10 pts)</li>
+                  <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Setting daily intentions (+5 pts)</li>
+                  <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Partner check-ins (+5 pts each)</li>
+                  <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Focus streak milestones (+50 pts)</li>
+                  <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Completing challenges (+5 pts)</li>
+                </ul>
+              </div>
+            </div>
             <span className="font-body text-xs text-on-surface-variant mt-1">
               Earned through consistency
             </span>

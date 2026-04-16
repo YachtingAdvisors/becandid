@@ -81,12 +81,12 @@ export async function POST(req: NextRequest) {
 
     if (convError) return safeError('POST /api/conversations', convError);
 
-    // Award trust points
+    // Award reputation points
     let milestonesUnlocked: string[] = [];
     try {
       milestonesUnlocked = await onConversationCompleted(db, alert.user_id, alertId, outcome);
     } catch (e) {
-      console.error('Trust points award failed (non-fatal):', e);
+      console.error('Reputation points award failed (non-fatal):', e);
     }
 
     auditLog({

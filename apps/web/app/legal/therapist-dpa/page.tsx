@@ -50,7 +50,7 @@ export default function TherapistDPA() {
           <ul>
             <li><strong>Journal Entries:</strong> Client&rsquo;s written reflections, including freewrite text, guided prompt responses, mood ratings, and tags. Entries are decrypted by the platform and served to the Therapist portal in real time.</li>
             <li><strong>Mood Timeline:</strong> Aggregated mood data from journal entries and check-ins.</li>
-            <li><strong>Focus Streaks:</strong> Streak history, milestone achievements, and trust point totals.</li>
+            <li><strong>Focus Streaks:</strong> Streak history, milestone achievements, and reputation point totals.</li>
             <li><strong>Conversation Outcomes:</strong> Client&rsquo;s self-ratings and feeling words from accountability conversations.</li>
             <li><strong>Pattern Analysis:</strong> Time clustering, frequency data, and vulnerability window information.</li>
           </ul>

@@ -358,7 +358,7 @@ export default function ProgressPage() {
                 { value: timelineStats.daysSinceSignup, label: 'Days on Journey', icon: 'calendar_today' },
                 { value: timelineStats.totalJournals, label: 'Journal Entries', icon: 'edit_note' },
                 { value: timelineStats.currentStreak, label: 'Current Streak', icon: 'local_fire_department' },
-                { value: timelineStats.trustPoints.toLocaleString(), label: 'Trust Points', icon: 'stars' },
+                { value: timelineStats.trustPoints.toLocaleString(), label: 'Reputation Points', icon: 'stars' },
               ].map(stat => (
                 <div key={stat.label} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center">
                   <MaterialIcon name={stat.icon} filled className="text-primary text-lg mb-1" />

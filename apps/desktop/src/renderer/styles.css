@@ -25,15 +25,13 @@ body {
   margin-bottom: 32px;
 }
 
-.logo-circle {
-  width: 64px;
-  height: 64px;
+.logo-img {
+  width: 80px;
+  height: 80px;
   border-radius: 16px;
-  background: rgba(34, 103, 121, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 0 auto 12px;
+  display: block;
+  object-fit: contain;
 }
 
 h1 {

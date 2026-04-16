@@ -9,7 +9,8 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
-import { isAdmin } from '@/lib/isAdmin';
+import { requireAdminAccess } from '@/lib/adminAccess';
+import { readAuditMetadata } from '@/lib/adminTools';
 import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 
 interface ActivityItem {
@@ -25,11 +26,12 @@ export async function GET(req: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (!isAdmin(user.email || ''))
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminAccess = await requireAdminAccess(supabase, user);
+  if (!adminAccess.ok) {
+    return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
+  }
 
-  const blocked = checkUserRate(adminLimiter, user.id);
+  const blocked = checkUserRate(adminLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   const url = req.nextUrl;
@@ -53,7 +55,7 @@ export async function GET(req: NextRequest) {
     shouldInclude('plan_change')
       ? db
           .from('audit_log')
-          .select('id, user_id, action, details, created_at')
+          .select('id, user_id, action, metadata, created_at')
           .in('action', ['subscription_change', 'admin_update', 'plan_change'])
           .order('created_at', { ascending: false })
           .limit(limitParam)
@@ -86,11 +88,35 @@ export async function GET(req: NextRequest) {
   }
 
   // Map audit log entries (plan changes)
-  for (const row of (auditRes as { data: Array<{ id: string; user_id: string; action: string; details: string; created_at: string }> }).data || []) {
+  for (const row of (auditRes as { data: Array<{ id: string; user_id: string; action: string; metadata?: unknown; created_at: string }> }).data || []) {
+    const metadata = readAuditMetadata(row);
+    const changedFields = Array.isArray(metadata.fields_updated)
+      ? metadata.fields_updated.join(', ')
+      : null;
+    const plan = typeof metadata.subscription_plan === 'string'
+      ? metadata.subscription_plan
+      : typeof metadata.new_plan === 'string'
+        ? metadata.new_plan
+        : null;
+    const status = typeof metadata.subscription_status === 'string'
+      ? metadata.subscription_status
+      : typeof metadata.new_status === 'string'
+        ? metadata.new_status
+        : null;
+
+    let description = row.action;
+    if (row.action === 'admin_update' && changedFields) {
+      description = `Admin updated ${changedFields}`;
+    } else if (plan && status) {
+      description = `${row.action}: ${plan} (${status})`;
+    } else if (plan) {
+      description = `${row.action}: ${plan}`;
+    }
+
     items.push({
       id: `audit-${row.id}`,
       type: 'plan_change',
-      description: `${row.action}: ${typeof row.details === 'string' ? row.details : JSON.stringify(row.details)}`,
+      description,
       created_at: row.created_at,
       user_id: row.user_id,
     });

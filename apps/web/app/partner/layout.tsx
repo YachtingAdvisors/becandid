@@ -11,11 +11,9 @@ export default async function PartnerLayout({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const db = createServiceClient();
-
   // If user is a partner for multiple people, pick the first active one.
   // TODO: add a partnership switcher when multi-monitoring is fully supported.
-  const { data: partnership } = await db
+  const { data: partnership } = await supabase
     .from('partners')
     .select('user_id')
     .eq('partner_user_id', user.id)
@@ -26,6 +24,7 @@ export default async function PartnerLayout({
 
   let monitoredName = 'Partner';
   if (partnership) {
+    const db = createServiceClient();
     const { data: monitored } = await db
       .from('users')
       .select('name')

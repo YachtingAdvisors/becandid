@@ -10,7 +10,7 @@
 //   6. Send Stringer self-notification to user
 //   7. Trigger delayed journal prompt
 //   8. Track partner response for fatigue detection
-//   9. Award/deduct trust points
+//   9. Award/deduct reputation points
 //
 // This replaces the existing alertPipeline.ts entirely.
 // ============================================================

@@ -67,6 +67,7 @@ export default function PublicNav() {
     { href: '/', label: 'Sanctuary' },
     { href: '/methodology', label: 'Methodology' },
     { href: '/assessment', label: 'Assessment' },
+    { href: '/tools', label: 'Tools' },
     { href: '/pricing', label: 'Pricing' },
     { href: '/org', label: 'Organization', children: [
       { href: '/org#mission', label: 'Mission' },

@@ -154,7 +154,7 @@ export async function PATCH() {
     return NextResponse.json({ error: 'Challenge not found or already completed' }, { status: 400 });
   }
 
-  // Award 5 trust points
+  // Award 5 reputation points
   await db.from('trust_points').insert({
     user_id: user.id,
     points: 5,

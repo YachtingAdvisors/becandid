@@ -41,10 +41,10 @@ const MILESTONE_LABELS: Record<string, { label: string; icon: string }> = {
   full_days_30:         { label: '30 Full Focused Days',   icon: 'auto_awesome' },
   full_days_60:         { label: '60 Full Focused Days',   icon: 'local_fire_department' },
   full_days_90:         { label: '90 Full Focused Days',   icon: 'crown' },
-  points_100:           { label: '100 Trust Points',       icon: 'center_focus_strong' },
-  points_500:           { label: '500 Trust Points',       icon: 'diamond' },
-  points_1000:          { label: '1,000 Trust Points',     icon: 'emoji_events' },
-  points_5000:          { label: '5,000 Trust Points',     icon: 'pets' },
+  points_100:           { label: '100 Reputation Points',       icon: 'center_focus_strong' },
+  points_500:           { label: '500 Reputation Points',       icon: 'diamond' },
+  points_1000:          { label: '1,000 Reputation Points',     icon: 'emoji_events' },
+  points_5000:          { label: '5,000 Reputation Points',     icon: 'pets' },
   conversations_5:      { label: '5 Conversations',        icon: 'forum' },
   conversations_10:     { label: '10 Conversations',       icon: 'handshake' },
   conversations_25:     { label: '25 Conversations',       icon: 'favorite' },
@@ -222,12 +222,29 @@ export default function FocusBoard() {
     <div className="space-y-6">
       {/* ─── Stats Row (3 bento cards) ─────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Card 1: Trust Points */}
-        <div className="bg-surface-container-lowest rounded-xl ring-1 ring-outline-variant/10 p-6">
+        {/* Card 1: Reputation Points */}
+        <div className="bg-surface-container-lowest rounded-xl ring-1 ring-outline-variant/10 p-6 group relative cursor-pointer">
           <p className="text-5xl font-headline font-extrabold text-on-surface tracking-tight">
             {balance.toLocaleString()}
           </p>
-          <p className="text-sm text-on-surface-variant font-label mt-2">Trust Points</p>
+          <p className="text-sm text-on-surface-variant font-label mt-2 flex items-center gap-1.5">
+            Reputation Points
+            <span className="material-symbols-outlined text-sm text-on-surface-variant/50 group-hover:text-primary transition-colors">info</span>
+          </p>
+          {/* Tooltip */}
+          <div className="absolute left-0 right-0 top-full mt-2 z-50 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
+            <div className="bg-on-surface text-white rounded-2xl p-4 shadow-xl text-xs leading-relaxed">
+              <p className="font-label font-bold text-sm mb-2">How you earn Reputation Points</p>
+              <ul className="space-y-1.5">
+                <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Daily check-ins (+5 pts)</li>
+                <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Journal entries (+10 pts)</li>
+                <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Setting daily intentions (+5 pts)</li>
+                <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Partner check-ins (+5 pts each)</li>
+                <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Focus streak milestones (+50 pts)</li>
+                <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Completing challenges (+5 pts)</li>
+              </ul>
+            </div>
+          </div>
           {recentPointsChange !== 0 && (
             <p className={`text-xs font-label mt-1 ${recentPointsChange > 0 ? 'text-tertiary' : 'text-error'}`}>
               {recentPointsChange > 0 ? '+' : ''}{recentPointsChange} since yesterday

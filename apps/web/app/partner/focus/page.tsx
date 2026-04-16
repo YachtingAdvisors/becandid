@@ -31,10 +31,10 @@ const MILESTONE_LABELS: Record<string, { label: string; icon: string }> = {
   full_days_30:         { label: '30 Full Focused Days',   icon: 'auto_awesome' },
   full_days_60:         { label: '60 Full Focused Days',   icon: 'local_fire_department' },
   full_days_90:         { label: '90 Full Focused Days',   icon: 'crown' },
-  points_100:           { label: '100 Trust Points',       icon: 'target' },
-  points_500:           { label: '500 Trust Points',       icon: 'diamond' },
-  points_1000:          { label: '1,000 Trust Points',     icon: 'emoji_events' },
-  points_5000:          { label: '5,000 Trust Points',     icon: 'pets' },
+  points_100:           { label: '100 Reputation Points',       icon: 'target' },
+  points_500:           { label: '500 Reputation Points',       icon: 'diamond' },
+  points_1000:          { label: '1,000 Reputation Points',     icon: 'emoji_events' },
+  points_5000:          { label: '5,000 Reputation Points',     icon: 'pets' },
   conversations_5:      { label: '5 Conversations',        icon: 'chat' },
   conversations_10:     { label: '10 Conversations',       icon: 'handshake' },
   conversations_25:     { label: '25 Conversations',       icon: 'favorite' },
@@ -128,7 +128,7 @@ export default function PartnerFocusPage() {
           <div className="text-2xl font-headline font-bold text-primary">
             {balance.toLocaleString()}
           </div>
-          <div className="text-xs text-on-surface-variant mt-0.5">Trust Points</div>
+          <div className="text-xs text-on-surface-variant mt-0.5">Reputation Points</div>
         </div>
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 px-4 py-3 text-center">
           <div className="text-2xl font-headline font-bold text-emerald-600">
@@ -231,7 +231,7 @@ export default function PartnerFocusPage() {
               Send Encouragement
             </h3>
             <p className="text-xs text-on-surface-variant">
-              A quick message of support can make a real difference. They'll earn 5 trust points too.
+              A quick message of support can make a real difference. They'll earn 5 reputation points too.
             </p>
           </div>
           <a

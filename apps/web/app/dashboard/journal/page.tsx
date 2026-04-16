@@ -134,7 +134,7 @@ export default function GrowthJournalPage() {
         </div>
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
           <div className="text-2xl font-headline font-bold text-primary">{journal.balance.toLocaleString()}</div>
-          <div className="text-xs text-on-surface-variant font-label mt-0.5">Trust Points</div>
+          <div className="text-xs text-on-surface-variant font-label mt-0.5">Reputation Points</div>
         </div>
         <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-4 text-center hover:ring-primary/20 hover:shadow-lg hover:shadow-on-surface/[0.04] transition-all duration-200">
           <div className="text-2xl font-headline font-bold text-amber-600 flex items-center justify-center gap-1">

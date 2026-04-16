@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 //
 // GET    → list entries (?limit, ?offset, ?tag, ?trigger_type)
 // GET    → export (?export=word | ?export=notes)
-// POST   → create entry (awards +10 trust points)
+// POST   → create entry (awards +10 reputation points)
 // PATCH  → update entry
 // DELETE → delete entry (?id=...)
 // ============================================================
@@ -305,7 +305,7 @@ export async function POST(req: NextRequest) {
 
   if (error) return safeError('POST /api/journal', error);
 
-  // Award trust points
+  // Award reputation points
   await db.rpc('award_trust_points', {
     p_user_id: user.id, p_points: 10,
     p_reason: 'stringer_journal', p_reference_id: entry.id,

@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -56,8 +56,6 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const db = createServiceClient();
-
   // Parallel data fetching (including walkthrough detection)
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
@@ -65,28 +63,28 @@ export default async function DashboardPage() {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   const [profileRes, eventsRes, alertsRes, partnerRes, focusCountRes, journalCountRes, checkinCountRes, todayEventsRes, weekEventsRes, streakRes, journalWeekRes, moodCheckInsRes, focusStreakRes, trustPointsRes] = await Promise.all([
-    db.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator, login_count, dashboard_widgets').eq('id', user.id).single(),
-    db.from('events').select('id, category, severity, platform, app_name, timestamp').eq('user_id', user.id).order('timestamp', { ascending: false }).limit(5),
-    db.from('alerts').select('id, sent_at, conversations(id, completed_at, outcome)').eq('user_id', user.id).order('sent_at', { ascending: false }).limit(5),
-    db.from('partners').select('partner_name, status, relationship').eq('user_id', user.id).in('status', ['active', 'accepted']).maybeSingle(),
-    db.from('focus_segments').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
-    db.from('stringer_journal').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
-    db.from('check_ins').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'completed').limit(1),
-    db.from('events').select('id, severity', { count: 'exact', head: false }).eq('user_id', user.id).gte('timestamp', todayStart.toISOString()),
-    db.from('events').select('id, severity, category').eq('user_id', user.id).gte('timestamp', sevenDaysAgo),
-    db.from('milestones').select('milestone').eq('user_id', user.id).order('unlocked_at', { ascending: false }).limit(1),
+    supabase.from('users').select('name, goals, monitoring_enabled, streak_mode, created_at, walkthrough_dismissed_at, check_in_hour, check_in_frequency, foundational_motivator, login_count, dashboard_widgets').eq('id', user.id).single(),
+    supabase.from('events').select('id, category, severity, platform, app_name, timestamp').eq('user_id', user.id).order('timestamp', { ascending: false }).limit(5),
+    supabase.from('alerts').select('id, sent_at, conversations(id, completed_at, outcome)').eq('user_id', user.id).order('sent_at', { ascending: false }).limit(5),
+    supabase.from('partners').select('partner_name, status, relationship').eq('user_id', user.id).in('status', ['active', 'accepted']).maybeSingle(),
+    supabase.from('focus_segments').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
+    supabase.from('stringer_journal').select('id', { count: 'exact', head: true }).eq('user_id', user.id).limit(1),
+    supabase.from('check_ins').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'completed').limit(1),
+    supabase.from('events').select('id, severity', { count: 'exact', head: false }).eq('user_id', user.id).gte('timestamp', todayStart.toISOString()),
+    supabase.from('events').select('id, severity, category').eq('user_id', user.id).gte('timestamp', sevenDaysAgo),
+    supabase.from('milestones').select('milestone').eq('user_id', user.id).order('unlocked_at', { ascending: false }).limit(1),
     // Hero: 7-day journal count
-    db.from('stringer_journal').select('id', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', sevenDaysAgo),
+    supabase.from('stringer_journal').select('id', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', sevenDaysAgo),
     // Hero: mood trend from recent check-ins
-    db.from('check_ins').select('user_mood, sent_at').eq('user_id', user.id).eq('status', 'completed').gte('sent_at', sevenDaysAgo).order('sent_at', { ascending: true }),
+    supabase.from('check_ins').select('user_mood, sent_at').eq('user_id', user.id).eq('status', 'completed').gte('sent_at', sevenDaysAgo).order('sent_at', { ascending: true }),
     // Hero: streak from focus_segments (recent consecutive focused days)
-    db.from('focus_segments').select('date, status').eq('user_id', user.id).order('date', { ascending: false }).limit(90),
-    // Hero: trust points from milestones count as proxy
-    db.from('milestones').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+    supabase.from('focus_segments').select('date, status').eq('user_id', user.id).order('date', { ascending: false }).limit(90),
+    // Hero: reputation points from milestones count as proxy
+    supabase.from('milestones').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
   ]);
 
   // Fetch recent milestones for Focus Chips display
-  const recentChipsRes = await db
+  const recentChipsRes = await supabase
     .from('milestones')
     .select('milestone, unlocked_at')
     .eq('user_id', user.id)
@@ -594,7 +592,7 @@ export default async function DashboardPage() {
                 {pendingConversations} conversation{pendingConversations !== 1 ? 's' : ''} waiting
               </h3>
               <p className="text-xs text-on-tertiary-container/70 font-body">
-                Complete conversations to earn trust points and keep your streak alive.
+                Complete conversations to earn reputation points and keep your streak alive.
               </p>
             </div>
             <Link

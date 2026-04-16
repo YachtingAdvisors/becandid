@@ -10,6 +10,7 @@ import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 // Keys are stored uppercase; lookup is case-insensitive via .toUpperCase().
 const PROMO_CODES: Record<string, { plan: string; days: number }> = {
   'HONEST': { plan: 'pro', days: 365 },
+  'CANDIDLYFREE': { plan: 'pro', days: 90 },
 };
 
 export async function POST(req: NextRequest) {

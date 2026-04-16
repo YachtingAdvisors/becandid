@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 // GET /api/trust-points/stats
-// Returns the full trust points dashboard payload:
+// Returns the full reputation points dashboard payload:
 // balance, streak, 21-day heatmap, recent actions, milestones
 
 import { NextRequest, NextResponse } from 'next/server';
