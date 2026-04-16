@@ -154,7 +154,7 @@ export default async function BlogPostPage({ params }: Props) {
       )}
 
       {/* Back link - floating */}
-      <div className="max-w-4xl mx-auto px-6 pt-8">
+      <div className="max-w-4xl mx-auto px-6 pt-24 md:pt-28">
         <Link href="/blog" className="inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white font-label transition-colors group">
           <span className="material-symbols-outlined text-base group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
           All articles
