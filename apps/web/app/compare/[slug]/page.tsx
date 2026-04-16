@@ -131,8 +131,9 @@ export function generateStaticParams() {
   return SLUGS.map((slug) => ({ slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const data = COMPARISONS[params.slug];
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const data = COMPARISONS[slug];
   if (!data) return {};
 
   const title = `Be Candid vs ${data.name} — Honest Comparison (2026)`;
@@ -153,11 +154,12 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function ComparisonPage({ params }: { params: { slug: string } }) {
-  const data = COMPARISONS[params.slug];
+export default async function ComparisonPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const data = COMPARISONS[slug];
   if (!data) notFound();
 
-  const otherComparisons = SLUGS.filter((s) => s !== params.slug);
+  const otherComparisons = SLUGS.filter((s) => s !== slug);
 
   return (
     <div className="min-h-screen bg-dark-sanctuary">
