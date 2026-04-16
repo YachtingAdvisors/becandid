@@ -53,6 +53,7 @@ export const metadata: Metadata = {
     images: ['/api/og'],
   },
   manifest: '/manifest.json',
+  keywords: ['digital accountability app', 'screen time accountability', 'digital wellness', 'phone addiction help', 'accountability partner app', 'Stringer framework', 'Be Candid'],
   alternates: {
     canonical: 'https://becandid.io',
   },
