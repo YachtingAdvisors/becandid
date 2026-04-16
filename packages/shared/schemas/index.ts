@@ -7,13 +7,19 @@ import { z } from 'zod';
 
 export const GoalCategorySchema = z.enum([
   'pornography', 'sexting',
-  'social_media', 'binge_watching', 'impulse_shopping',
+  'social_media', 'binge_watching', 'impulse_shopping', 'doomscrolling',
   'alcohol_drugs', 'vaping_tobacco',
   'eating_disorder', 'body_checking',
   'gambling', 'sports_betting', 'day_trading',
-  'dating_apps',
+  'dating_apps', 'emotional_affairs',
   'gaming',
-  'rage_content',
+  'rage_content', 'gossip_drama',
+  'isolation',
+  'ai_relationships',
+  'overworking',
+  'sleep_avoidance',
+  'self_harm',
+  'procrastination',
   'custom',
 ]);
 

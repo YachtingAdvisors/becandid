@@ -16,8 +16,9 @@ export default function InvitePage() {
   const [accepting, setAccepting] = useState(false);
   const [error, setError] = useState('');
   const [showSignup, setShowSignup] = useState(false);
+  const [signupStep, setSignupStep] = useState<'form' | 'otp'>('form');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
   const [name, setName] = useState('');
 
   useEffect(() => {
@@ -64,49 +65,61 @@ export default function InvitePage() {
     setAccepting(true);
     setError('');
 
-    const { data: signUpData, error: authError } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { name: name.trim() } },
+    const { error: otpError } = await supabase.auth.signInWithOtp({
+      email: email.trim().toLowerCase(),
+      options: {
+        shouldCreateUser: true,
+        data: { name: name.trim() },
+      },
     });
 
-    if (authError) {
-      setError(authError.message);
+    if (otpError) {
+      setError(otpError.message || 'Failed to send code. Please try again.');
       setAccepting(false);
       return;
     }
 
-    const newUserId = signUpData?.user?.id;
-    if (!newUserId) {
-      setError('Signup succeeded but no user was returned. Please check your email and try signing in.');
+    setSignupStep('otp');
+    setAccepting(false);
+  }
+
+  async function handleVerifyOTPAndAccept(e: React.FormEvent) {
+    e.preventDefault();
+    setAccepting(true);
+    setError('');
+
+    const { data, error: verifyError } = await supabase.auth.verifyOtp({
+      email: email.trim().toLowerCase(),
+      token: otp.trim(),
+      type: 'email',
+    });
+
+    if (verifyError || !data.user) {
+      setError('Invalid or expired code. Please try again.');
       setAccepting(false);
       return;
     }
 
-    const hasSession = !!signUpData?.session;
+    await fetch('/api/auth/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name.trim(), invited_as_partner: true }),
+    }).catch(() => {});
 
-    if (hasSession) {
-      await fetch('/api/auth/profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), invited_as_partner: true }),
-      }).catch(() => {});
-      const res = await fetch('/api/partners/accept', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }),
-      });
+    const res = await fetch('/api/partners/accept', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    });
 
-      if (!res.ok) {
-        const d = await res.json();
-        setError(d.error ?? 'Failed to accept');
-        setAccepting(false);
-        return;
-      }
-
-      router.push('/partner/onboarding');
-    } else {
-      router.push(`/auth/signin?redirect=/invite/${token}&message=verify_email_then_accept`);
+    if (!res.ok) {
+      const d = await res.json();
+      setError(d.error ?? 'Failed to accept');
+      setAccepting(false);
+      return;
     }
+
+    router.push('/partner/onboarding');
   }
 
   if (loading) {
@@ -200,47 +213,72 @@ export default function InvitePage() {
               {accepting ? 'Accepting...' : 'Accept & Support ' + (invite?.inviter_name?.split(' ')[0] ?? 'Them')}
             </button>
           </div>
-        ) : (
-          <form onSubmit={handleSignUpAndAccept} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
-            <p className="text-sm font-body text-on-surface-variant">
-              Create a free account to be {invite?.inviter_name?.split(' ')[0]}&apos;s partner. No rivals or setup required &mdash; just your presence.
-            </p>
-            <div>
-              <label className="block text-sm font-medium text-on-surface mb-1 font-label">Your name</label>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                className="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-on-surface mb-1 font-label">Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                className="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-on-surface mb-1 font-label">Password</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8}
-                placeholder="At least 8 characters"
-                className="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-
-            <div className="px-4 py-3 rounded-2xl bg-amber-50 ring-1 ring-amber-200/50">
-              <p className="text-xs text-amber-800 font-body">
-                <strong>30 free days</strong> if you add a partner of your own during onboarding (instead of the standard 15).
+        ) : signupStep === 'form' ? (
+            <form onSubmit={handleSignUpAndAccept} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
+              <p className="text-sm font-body text-on-surface-variant">
+                Create a free account to be {invite?.inviter_name?.split(' ')[0]}&apos;s partner. No rivals or setup required &mdash; just your presence.
               </p>
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-1 font-label">Your name</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} required
+                  className="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-1 font-label">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                  className="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
 
-            <button type="submit" disabled={accepting}
-              className="w-full py-3.5 bg-primary text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-lg">person_add</span>
-              {accepting ? 'Creating account...' : 'Create Account & Accept'}
-            </button>
+              <div className="px-4 py-3 rounded-2xl bg-amber-50 ring-1 ring-amber-200/50">
+                <p className="text-xs text-amber-800 font-body">
+                  <strong>30 free days</strong> if you add a partner of your own during onboarding (instead of the standard 15).
+                </p>
+              </div>
 
-            <p className="text-center text-sm text-on-surface-variant font-label">
-              Already have an account?{' '}
-              <Link href={`/auth/signin?redirect=/invite/${token}`} className="text-primary font-semibold hover:underline">
-                Sign in
-              </Link>
-            </p>
-          </form>
+              <button type="submit" disabled={accepting}
+                className="w-full py-3.5 bg-primary text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer flex items-center justify-center gap-2">
+                <span className="material-symbols-outlined text-lg">send</span>
+                {accepting ? 'Sending code…' : 'Send Code & Accept'}
+              </button>
+
+              <p className="text-center text-sm text-on-surface-variant font-label">
+                Already have an account?{' '}
+                <Link href={`/auth/signin?redirect=/invite/${token}`} className="text-primary font-semibold hover:underline">
+                  Sign in
+                </Link>
+              </p>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOTPAndAccept} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
+              <p className="text-sm font-body text-on-surface-variant text-center">
+                We sent a 6-digit code to <strong>{email}</strong>
+              </p>
+              <div>
+                <label className="block text-sm font-medium text-on-surface mb-1 font-label">6-digit code</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  value={otp}
+                  onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  required
+                  placeholder="000000"
+                  autoFocus
+                  autoComplete="one-time-code"
+                  className="w-full bg-surface-container-low border-none rounded-xl py-3 px-4 text-center text-2xl tracking-[0.4em] focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <button type="submit" disabled={accepting || otp.length < 6}
+                className="w-full py-3.5 bg-primary text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer flex items-center justify-center gap-2">
+                <span className="material-symbols-outlined text-lg">check_circle</span>
+                {accepting ? 'Verifying…' : 'Verify & Accept'}
+              </button>
+              <button type="button" onClick={() => { setSignupStep('form'); setOtp(''); setError(''); }}
+                className="w-full text-sm text-on-surface-variant hover:text-on-surface font-label cursor-pointer transition-colors">
+                ← Use a different email
+              </button>
+            </form>
         )}
       </div>
     </div>
