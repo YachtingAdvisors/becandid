@@ -19,21 +19,21 @@ export const metadata: Metadata = {
 const COMPARISONS = [
   {
     competitor: 'Covenant Eyes',
-    slug: '/why-becandid',
+    slug: '/compare/covenant-eyes',
     tagline: 'No VPN. No screenshots. No surveillance.',
     problems: ['Requires always-on VPN that drains battery', 'Screenshots capture sensitive content', 'Filter-based approach treats symptoms, not causes'],
     icon: 'shield',
   },
   {
     competitor: 'Ever Accountable',
-    slug: '/why-becandid',
+    slug: '/compare/ever-accountable',
     tagline: 'Accountability without the surveillance model.',
     problems: ['Screenshot monitoring creates shame', 'Limited to web filtering', 'No therapist integration'],
     icon: 'visibility',
   },
   {
     competitor: 'Bark',
-    slug: '/why-becandid',
+    slug: '/compare/bark',
     tagline: 'Built for adults, not just parental controls.',
     problems: ['Designed for child monitoring', 'No accountability partner system', 'No conversation guides for growth'],
     icon: 'family_restroom',

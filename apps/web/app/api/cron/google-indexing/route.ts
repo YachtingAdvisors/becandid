@@ -13,7 +13,7 @@ import { verifyCronAuth } from '@/lib/cronAuth';
 import { createServiceClient } from '@/lib/supabase';
 
 const DAILY_LIMIT = 10;
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
+const BASE_URL = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io').trim();
 
 // Google OAuth2 token via service account JWT
 async function getAccessToken(): Promise<string> {
@@ -190,6 +190,18 @@ const SEO_SCORES: Record<string, number> = {
   '/blog/self-harm-recovery-tools':                       50,
   // About / support
   '/about':                                               40,
+  // Tools & research — high link-building value
+  '/tools':                                               88,
+  '/tools/screen-time-calculator':                        90,
+  '/tools/accountability-quiz':                           85,
+  '/tools/relationship-health':                           85,
+  '/research/screen-time-statistics':                     92,
+  // Competitor comparisons — high-intent search traffic
+  '/compare/covenant-eyes':                               90,
+  '/compare/ever-accountable':                            88,
+  '/compare/bark':                                        85,
+  // Press kit
+  '/press':                                               60,
   '/donate':                                              38,
   '/download':                                            35,
   // Legal (must stay indexed, but low SEO priority)
@@ -220,6 +232,15 @@ async function getSitemapUrls(): Promise<string[]> {
     '/pricing/groups',
     '/families',
     '/compare',
+    '/compare/covenant-eyes',
+    '/compare/ever-accountable',
+    '/compare/bark',
+    '/tools',
+    '/tools/screen-time-calculator',
+    '/tools/accountability-quiz',
+    '/tools/relationship-health',
+    '/research/screen-time-statistics',
+    '/press',
     '/about',
     '/donate',
     '/legal/privacy',
@@ -239,7 +260,7 @@ async function getSitemapUrls(): Promise<string[]> {
       const matches = xml.matchAll(/<loc>(.*?)<\/loc>/g);
       const sitemapUrls = new Set(urls);
       for (const match of matches) {
-        if (match[1]) sitemapUrls.add(match[1]);
+        if (match[1]) sitemapUrls.add(match[1].trim());
       }
       return Array.from(sitemapUrls);
     }
