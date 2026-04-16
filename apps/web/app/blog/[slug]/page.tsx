@@ -7,9 +7,10 @@ import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import ShareButton from '@/components/ShareButton';
 import BlogEmailCapture from '@/components/BlogEmailCapture';
-import { articleSchema, breadcrumbSchema, faqSchema } from '@/lib/structuredData';
+import { articleSchema, breadcrumbSchema, faqSchema, personSchema } from '@/lib/structuredData';
 import { extractMentions, deriveSection, computeWordCount, extractAboutTopics } from '@/lib/geo/articleEnrichment';
 import { extractFaqs } from '@/lib/geo/extractFaqs';
+import { getAuthorByName } from '@/content/authors';
 
 async function getAllPosts() {
   const staticPosts = getAllBlogPosts();
@@ -124,6 +125,7 @@ export default async function BlogPostPage({ params }: Props) {
   const wordCount = computeWordCount(post.content);
   const aboutTopics = extractAboutTopics(post.tags);
   const faqs = extractFaqs(post.content);
+  const authorPerson = getAuthorByName(post.author);
 
   return (
     <main className="min-h-screen">
@@ -132,6 +134,7 @@ export default async function BlogPostPage({ params }: Props) {
           headline: post.title,
           description: post.description,
           datePublished: post.date,
+          dateModified: post.dateModified ?? post.date,
           author: post.author,
           url: `https://becandid.io/blog/${post.slug}`,
           image: articleImages.hero.url,
@@ -140,6 +143,18 @@ export default async function BlogPostPage({ params }: Props) {
           articleSection: section,
           about: aboutTopics,
           mentions,
+          ...(authorPerson
+            ? {
+                authorPerson: {
+                  name: authorPerson.name,
+                  slug: authorPerson.slug,
+                  jobTitle: authorPerson.jobTitle,
+                  description: authorPerson.bio,
+                  image: authorPerson.image,
+                  sameAs: authorPerson.sameAs,
+                },
+              }
+            : {}),
         })}
       />
       <JsonLd
@@ -200,6 +215,12 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
               <span className="w-1 h-1 rounded-full bg-white/30" />
               <span>{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              {post.dateModified && post.dateModified !== post.date && (
+                <>
+                  <span className="w-1 h-1 rounded-full bg-white/30" />
+                  <span className="text-cyan-400/70">Updated {new Date(post.dateModified).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                </>
+              )}
               <span className="w-1 h-1 rounded-full bg-white/30" />
               <span>{post.readTime}</span>
               <div className="ml-auto">
@@ -296,6 +317,37 @@ export default async function BlogPostPage({ params }: Props) {
             text={`${post.title} — ${post.description}`}
           />
         </div>
+
+        {/* About the author */}
+        {authorPerson && (
+          <>
+            <JsonLd data={personSchema({
+              name: authorPerson.name,
+              slug: authorPerson.slug,
+              jobTitle: authorPerson.jobTitle,
+              description: authorPerson.bio,
+              image: authorPerson.image,
+              knowsAbout: authorPerson.knowsAbout,
+              sameAs: authorPerson.sameAs,
+            })} />
+            <div className="mt-10 bg-white/[0.03] rounded-2xl ring-1 ring-white/[0.06] p-6 flex items-start gap-4">
+              {authorPerson.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={authorPerson.image} alt={authorPerson.name} className="w-16 h-16 rounded-full ring-2 ring-white/10 shrink-0" />
+              )}
+              <div className="flex-1">
+                <div className="font-label text-xs text-cyan-400/60 uppercase tracking-wider mb-1">Written by</div>
+                <h3 className="font-headline text-lg font-bold text-white mb-1">{authorPerson.name}</h3>
+                {authorPerson.credentials && <p className="text-xs text-white/40 mb-2">{authorPerson.credentials}</p>}
+                <p className="font-body text-sm text-white/60 leading-relaxed mb-3">{authorPerson.bio}</p>
+                <Link href={`/authors/${authorPerson.slug}`} className="inline-flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300 font-label font-medium transition-colors">
+                  More from this author
+                  <span className="material-symbols-outlined text-base">arrow_forward</span>
+                </Link>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Email capture */}
         <div className="mt-10">

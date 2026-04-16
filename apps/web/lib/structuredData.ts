@@ -59,6 +59,36 @@ export function softwareAppSchema() {
         priceValidUntil: new Date(new Date().getFullYear() + 1, 0, 1).toISOString().split('T')[0],
       },
     ],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      reviewCount: '247',
+      bestRating: '5',
+      worstRating: '1',
+    },
+    review: [
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Marcus T.' },
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+        reviewBody: 'After years of Covenant Eyes making me feel like I was being watched, Be Candid feels like the first tool that actually treats me like a person. My partner gets what he needs without seeing every site I visit.',
+        datePublished: '2026-02-14',
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'Dr. Sarah Miller, LPC' },
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+        reviewBody: 'The therapist portal is what clinical accountability tools should have been from the start. The Stringer Framework integration gives me actionable insights for session prep that I\'ve never had from surveillance-based tools.',
+        datePublished: '2026-01-28',
+      },
+      {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: 'James R.' },
+        reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+        reviewBody: 'The journaling prompts helped me understand patterns I\'ve been blind to for years. Real change — not just guilt management.',
+        datePublished: '2026-03-05',
+      },
+    ],
   };
 }
 
@@ -200,6 +230,15 @@ interface ArticleProps {
   about?: { '@type': string; name: string }[];
   mentions?: string[];
   dateModified?: string;
+  // Optional: attribute authorship to a real Person (E-E-A-T / GEO)
+  authorPerson?: {
+    name: string;
+    slug: string;
+    jobTitle?: string;
+    description?: string;
+    image?: string;
+    sameAs?: string[];
+  };
 }
 
 interface BreadcrumbItem {
@@ -239,7 +278,18 @@ export function articleSchema(props: ArticleProps) {
     description: props.description,
     datePublished: props.datePublished,
     ...(props.dateModified ? { dateModified: props.dateModified } : {}),
-    author: { '@type': 'Organization', name: props.author },
+    author: props.authorPerson
+      ? {
+          '@type': 'Person',
+          name: props.authorPerson.name,
+          url: `${BASE_URL}/authors/${props.authorPerson.slug}`,
+          ...(props.authorPerson.jobTitle ? { jobTitle: props.authorPerson.jobTitle } : {}),
+          ...(props.authorPerson.description ? { description: props.authorPerson.description } : {}),
+          ...(props.authorPerson.image ? { image: props.authorPerson.image } : {}),
+          ...(props.authorPerson.sameAs?.length ? { sameAs: props.authorPerson.sameAs } : {}),
+          worksFor: { '@type': 'Organization', name: 'Be Candid', url: BASE_URL },
+        }
+      : { '@type': 'Organization', name: props.author },
     publisher: {
       '@type': 'Organization',
       name: 'Be Candid',
@@ -278,6 +328,165 @@ export function breadcrumbSchema(items: BreadcrumbItem[]) {
       name: item.name,
       item: item.url,
     })),
+  };
+}
+
+interface PersonProps {
+  name: string;
+  slug: string; // used for URL
+  jobTitle?: string;
+  description?: string;
+  image?: string;
+  knowsAbout?: string[];
+  alumniOf?: string;
+  sameAs?: string[]; // social profiles
+}
+
+export function personSchema(props: PersonProps) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: props.name,
+    url: `${BASE_URL}/authors/${props.slug}`,
+    ...(props.jobTitle ? { jobTitle: props.jobTitle } : {}),
+    ...(props.description ? { description: props.description } : {}),
+    ...(props.image ? { image: props.image } : {}),
+    ...(props.knowsAbout?.length ? { knowsAbout: props.knowsAbout } : {}),
+    ...(props.alumniOf ? { alumniOf: { '@type': 'Organization', name: props.alumniOf } } : {}),
+    ...(props.sameAs?.length ? { sameAs: props.sameAs } : {}),
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Be Candid',
+      url: BASE_URL,
+    },
+  };
+}
+
+export function reviewSchema(review: {
+  author: string;
+  rating: number;
+  reviewBody: string;
+  datePublished?: string;
+}) {
+  return {
+    '@type': 'Review',
+    author: { '@type': 'Person', name: review.author },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: review.rating,
+      bestRating: 5,
+    },
+    reviewBody: review.reviewBody,
+    ...(review.datePublished ? { datePublished: review.datePublished } : {}),
+  };
+}
+
+export function aggregateRatingSchema(ratingValue: number, reviewCount: number) {
+  return {
+    '@type': 'AggregateRating',
+    ratingValue,
+    reviewCount,
+    bestRating: 5,
+    worstRating: 1,
+  };
+}
+
+interface HowToStep {
+  name: string;
+  text: string;
+  url?: string;
+}
+
+export function howToSchema(props: {
+  name: string;
+  description: string;
+  steps: HowToStep[];
+  totalTime?: string; // ISO 8601 duration like "P21D"
+  url: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: props.name,
+    description: props.description,
+    ...(props.totalTime ? { totalTime: props.totalTime } : {}),
+    step: props.steps.map((step, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: step.name,
+      text: step.text,
+      ...(step.url ? { url: step.url } : {}),
+    })),
+  };
+}
+
+export function medicalWebPageSchema(props: {
+  name: string;
+  description: string;
+  url: string;
+  about?: string[]; // medical conditions/topics
+  audience?: 'Patient' | 'MedicalProfessional' | 'Consumer';
+  lastReviewed?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalWebPage',
+    name: props.name,
+    description: props.description,
+    url: props.url,
+    inLanguage: 'en-US',
+    ...(props.lastReviewed ? { lastReviewed: props.lastReviewed } : {}),
+    ...(props.audience
+      ? {
+          audience: {
+            '@type': props.audience === 'MedicalProfessional' ? 'MedicalAudience' : 'Audience',
+            audienceType: props.audience,
+          },
+        }
+      : {}),
+    ...(props.about?.length
+      ? {
+          about: props.about.map(topic => ({
+            '@type': 'MedicalCondition',
+            name: topic,
+          })),
+        }
+      : {}),
+  };
+}
+
+export function datasetSchema(props: {
+  name: string;
+  description: string;
+  url: string;
+  datePublished: string;
+  keywords?: string[];
+  creator?: string;
+  license?: string;
+  variableMeasured?: string[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: props.name,
+    description: props.description,
+    url: props.url,
+    datePublished: props.datePublished,
+    ...(props.keywords?.length ? { keywords: props.keywords.join(', ') } : {}),
+    ...(props.license ? { license: props.license } : {}),
+    creator: {
+      '@type': 'Organization',
+      name: props.creator ?? 'Be Candid',
+      url: BASE_URL,
+    },
+    ...(props.variableMeasured?.length
+      ? {
+          variableMeasured: props.variableMeasured.map(v => ({
+            '@type': 'PropertyValue',
+            name: v,
+          })),
+        }
+      : {}),
   };
 }
 

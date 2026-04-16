@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
-import { breadcrumbSchema } from '@/lib/structuredData';
+import { breadcrumbSchema, howToSchema, medicalWebPageSchema } from '@/lib/structuredData';
 import TransformationJourney from './TransformationJourney';
 
 export const metadata: Metadata = {
@@ -30,6 +30,53 @@ export default function MethodologyPage() {
   return (
     <div className="bg-dark-sanctuary min-h-screen text-slate-100 overflow-x-hidden">
       <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'Methodology', url: 'https://becandid.io/methodology' }])} />
+      <JsonLd data={medicalWebPageSchema({
+        name: 'The Be Candid Methodology',
+        description: 'Clinical framework for digital accountability based on Jay Stringer\'s research. Combines behavioral pattern detection, guided journaling, and supportive partner conversations.',
+        url: 'https://becandid.io/methodology',
+        audience: 'Consumer',
+        lastReviewed: '2026-04-16',
+        about: [
+          'Compulsive digital behavior',
+          'Phone addiction',
+          'Behavioral addiction',
+          'Digital wellness',
+          'Screen time management',
+        ],
+      })} />
+      <JsonLd data={howToSchema({
+        name: 'How to Practice Digital Accountability Using the Stringer Framework',
+        description: 'A clinically-informed approach to building digital accountability through self-awareness, journaling, and supportive partnership — based on Jay Stringer\'s research with 3,800+ individuals.',
+        url: 'https://becandid.io/methodology',
+        totalTime: 'P21D',
+        steps: [
+          {
+            name: 'Identify your Tributaries',
+            text: 'Begin by noticing the upstream life experiences, emotions, and environmental factors that flow into unwanted digital behaviors. Journaling prompts guide you to trace patterns back to their source — family dynamics, relational wounds, and situational triggers.',
+            url: 'https://becandid.io/glossary#tributaries',
+          },
+          {
+            name: 'Name your Unmet Longings',
+            text: 'Identify the core human needs (connection, significance, safety, autonomy) that your digital behaviors are attempting to fulfill. Understanding what you actually need redirects energy toward healthy fulfillment instead of willpower alone.',
+            url: 'https://becandid.io/glossary#unmet-longings',
+          },
+          {
+            name: 'Build your Roadmap',
+            text: 'Turn awareness into direction by reflecting on what your patterns reveal about the person you want to become. The roadmap transforms shame into self-understanding and actionable next steps.',
+            url: 'https://becandid.io/glossary#the-roadmap',
+          },
+          {
+            name: 'Invite a trusted accountability partner',
+            text: 'Share behavioral patterns (not URLs or content) with a trusted partner — spouse, friend, mentor, or therapist. Partners receive category-level summaries and conversation starters, never surveillance reports.',
+            url: 'https://becandid.io/glossary#accountability-partner',
+          },
+          {
+            name: 'Practice daily focus segments',
+            text: 'Commit to morning and evening focus segments to build consistent accountability rhythms. Daily commitment tracking reinforces behavior change through small, repeated acts of integrity.',
+            url: 'https://becandid.io/glossary#focus-segments',
+          },
+        ],
+      })} />
 
       <PublicNav />
 

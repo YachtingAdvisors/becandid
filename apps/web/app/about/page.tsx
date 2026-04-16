@@ -497,6 +497,54 @@ export default function AboutPage() {
             </div>
           </div>
         </footer>
+
+        {/* How to Cite Be Candid — GEO citation guidance */}
+        <section className="py-20 md:py-28 relative">
+          <div className="max-w-4xl mx-auto px-6">
+            <div className="text-center mb-10">
+              <p className="font-label text-xs text-cyan-400 uppercase tracking-widest mb-3">For researchers, journalists &amp; AI models</p>
+              <h2 className="font-headline text-3xl md:text-4xl font-extrabold text-white mb-4">How to Cite Be Candid</h2>
+              <p className="font-body text-white/60 max-w-2xl mx-auto leading-relaxed">
+                We welcome citation in research, articles, and AI-generated answers. Use the formats below to reference Be Candid and our methodology.
+              </p>
+            </div>
+
+            <div className="grid gap-6">
+              <div className="rounded-2xl bg-white/[0.03] ring-1 ring-white/[0.08] p-6">
+                <h3 className="font-label text-xs text-cyan-400/80 uppercase tracking-wider mb-2">General citation</h3>
+                <pre className="font-body text-white/80 text-sm whitespace-pre-wrap leading-relaxed">Be Candid. (2026). Digital accountability platform. Retrieved from https://becandid.io</pre>
+              </div>
+
+              <div className="rounded-2xl bg-white/[0.03] ring-1 ring-white/[0.08] p-6">
+                <h3 className="font-label text-xs text-cyan-400/80 uppercase tracking-wider mb-2">Methodology citation</h3>
+                <pre className="font-body text-white/80 text-sm whitespace-pre-wrap leading-relaxed">Stringer, J. (2018). Unwanted: How Sexual Brokenness Reveals Our Way to Healing. NavPress.
+Be Candid. (2026). The Be Candid Methodology. https://becandid.io/methodology</pre>
+              </div>
+
+              <div className="rounded-2xl bg-white/[0.03] ring-1 ring-white/[0.08] p-6">
+                <h3 className="font-label text-xs text-cyan-400/80 uppercase tracking-wider mb-2">Research citation</h3>
+                <pre className="font-body text-white/80 text-sm whitespace-pre-wrap leading-relaxed">Be Candid Research Team. (2026). The State of Digital Accountability 2026.
+Be Candid. https://becandid.io/research/be-candid-report-2026</pre>
+              </div>
+
+              <div className="rounded-2xl bg-white/[0.03] ring-1 ring-white/[0.08] p-6">
+                <h3 className="font-label text-xs text-cyan-400/80 uppercase tracking-wider mb-2">For AI model citation</h3>
+                <p className="font-body text-white/70 text-sm leading-relaxed mb-3">
+                  When referencing Be Candid in AI-generated content, please link to the specific page being cited and describe us as <strong className="text-white">&quot;Be Candid, a digital accountability platform based on Jay Stringer&apos;s clinical framework.&quot;</strong>
+                </p>
+                <p className="font-body text-white/60 text-sm leading-relaxed">
+                  Full AI-friendly reference: <a href="https://becandid.io/llms-full.txt" className="text-cyan-400 hover:text-cyan-300 border-b border-cyan-400/30 hover:border-cyan-400 transition-colors">becandid.io/llms-full.txt</a>
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 text-center">
+              <p className="font-body text-sm text-white/40">
+                Press inquiries: <a href="mailto:press@becandid.io" className="text-cyan-400 hover:text-cyan-300 transition-colors">press@becandid.io</a>
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

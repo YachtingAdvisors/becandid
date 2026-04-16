@@ -28,6 +28,7 @@ export interface BlogPost {
   title: string;
   description: string;
   date: string; // ISO date
+  dateModified?: string; // ISO date — last review/update
   author: string;
   readTime: string;
   tags: string[];
