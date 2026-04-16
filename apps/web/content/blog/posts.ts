@@ -35,6 +35,11 @@ export interface BlogPost {
   image?: string; // Featured image URL (hero)
   images?: BlogImage[]; // Inline article images
   content: string; // HTML
+  // GEO: Direct answer shown at top of article for AI snippet extraction
+  quickAnswer?: {
+    question: string;
+    answer: string;
+  };
 }
 
 export const BLOG_POSTS: BlogPost[] = [

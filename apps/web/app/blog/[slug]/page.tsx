@@ -7,6 +7,7 @@ import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import ShareButton from '@/components/ShareButton';
 import BlogEmailCapture from '@/components/BlogEmailCapture';
+import AnswerBlock from '@/components/geo/AnswerBlock';
 import { articleSchema, breadcrumbSchema, faqSchema, personSchema } from '@/lib/structuredData';
 import { extractMentions, deriveSection, computeWordCount, extractAboutTopics } from '@/lib/geo/articleEnrichment';
 import { extractFaqs } from '@/lib/geo/extractFaqs';
@@ -238,6 +239,12 @@ export default async function BlogPostPage({ params }: Props) {
 
       {/* Article content */}
       <div className="max-w-3xl mx-auto px-6 pb-20">
+        {post.quickAnswer && (
+          <AnswerBlock
+            question={post.quickAnswer.question}
+            answer={post.quickAnswer.answer}
+          />
+        )}
         <article
           className="
             prose prose-lg prose-invert max-w-none

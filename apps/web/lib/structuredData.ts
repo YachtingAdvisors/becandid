@@ -490,6 +490,65 @@ export function datasetSchema(props: {
   };
 }
 
+export function collectionPageSchema(props: {
+  name: string;
+  description: string;
+  url: string;
+  items: { name: string; url: string; description?: string }[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: props.name,
+    description: props.description,
+    url: props.url,
+    inLanguage: 'en-US',
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: props.items.length,
+      itemListElement: props.items.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: item.url,
+        name: item.name,
+        ...(item.description ? { description: item.description } : {}),
+      })),
+    },
+  };
+}
+
+export function claimReviewSchema(props: {
+  claimReviewed: string;
+  reviewRating: { ratingValue: string; alternateName: string }; // e.g., { ratingValue: "1", alternateName: "False" }
+  url: string;
+  datePublished: string;
+  itemReviewed: {
+    author?: string;
+    appearance?: string;
+  };
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ClaimReview',
+    url: props.url,
+    datePublished: props.datePublished,
+    claimReviewed: props.claimReviewed,
+    author: { '@type': 'Organization', name: 'Be Candid', url: BASE_URL },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: props.reviewRating.ratingValue,
+      bestRating: '5',
+      worstRating: '1',
+      alternateName: props.reviewRating.alternateName,
+    },
+    itemReviewed: {
+      '@type': 'Claim',
+      ...(props.itemReviewed.author ? { author: { '@type': 'Organization', name: props.itemReviewed.author } } : {}),
+      ...(props.itemReviewed.appearance ? { appearance: props.itemReviewed.appearance } : {}),
+    },
+  };
+}
+
 export function definedTermSetSchema(
   name: string,
   description: string,
