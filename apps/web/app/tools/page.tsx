@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
-import { faqSchema } from '@/lib/structuredData';
+import { faqSchema, breadcrumbSchema } from '@/lib/structuredData';
 
 export const metadata: Metadata = {
   title: 'Free Digital Wellness Tools — Be Candid',
   description: 'Free tools to understand your screen habits, test your accountability readiness, and check how digital life affects your relationships.',
+  keywords: ['free digital wellness tools', 'screen time calculator', 'accountability quiz', 'relationship health check', 'embeddable wellness tools'],
   alternates: { canonical: 'https://becandid.io/tools' },
   openGraph: {
     title: 'Free Digital Wellness Tools — Be Candid',
@@ -50,6 +51,7 @@ const faqItems = [
 export default function ToolsIndexPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'Tools', url: 'https://becandid.io/tools' }])} />
       <JsonLd data={faqSchema(faqItems)} />
       <main className="pt-28 pb-20 px-6">
         <div className="max-w-4xl mx-auto">

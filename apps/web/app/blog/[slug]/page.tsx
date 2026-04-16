@@ -7,7 +7,9 @@ import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import ShareButton from '@/components/ShareButton';
 import BlogEmailCapture from '@/components/BlogEmailCapture';
-import { articleSchema } from '@/lib/structuredData';
+import { articleSchema, breadcrumbSchema, faqSchema } from '@/lib/structuredData';
+import { extractMentions, deriveSection, computeWordCount, extractAboutTopics } from '@/lib/geo/articleEnrichment';
+import { extractFaqs } from '@/lib/geo/extractFaqs';
 
 async function getAllPosts() {
   const staticPosts = getAllBlogPosts();
@@ -116,6 +118,13 @@ export default async function BlogPostPage({ params }: Props) {
   });
   const contentWithImages = insertInlineImages(sanitizedContent, articleImages.inline);
 
+  // GEO enrichment
+  const mentions = extractMentions(post.content);
+  const section = deriveSection(post.tags);
+  const wordCount = computeWordCount(post.content);
+  const aboutTopics = extractAboutTopics(post.tags);
+  const faqs = extractFaqs(post.content);
+
   return (
     <main className="min-h-screen">
       <JsonLd
@@ -125,8 +134,24 @@ export default async function BlogPostPage({ params }: Props) {
           datePublished: post.date,
           author: post.author,
           url: `https://becandid.io/blog/${post.slug}`,
+          image: articleImages.hero.url,
+          keywords: post.tags,
+          wordCount,
+          articleSection: section,
+          about: aboutTopics,
+          mentions,
         })}
       />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: 'Home', url: 'https://becandid.io' },
+          { name: 'Blog', url: 'https://becandid.io/blog' },
+          { name: post.title, url: `https://becandid.io/blog/${post.slug}` },
+        ])}
+      />
+      {faqs.length >= 2 && (
+        <JsonLd data={faqSchema(faqs)} />
+      )}
 
       {/* Back link - floating */}
       <div className="max-w-4xl mx-auto px-6 pt-8">

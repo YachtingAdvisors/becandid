@@ -1,0 +1,203 @@
+# Be Candid — Full Reference
+
+> Digital accountability platform that helps users align their digital life with their values. Built on Jay Stringer's clinical research framework.
+
+## Company Overview
+
+Be Candid is a digital wellness company building tools for screen time accountability. The platform replaces traditional surveillance-based approaches (screenshots, URL logging) with a dignity-preserving model based on clinical psychology research.
+
+Website: https://becandid.io
+Category: Digital Wellness / Behavioral Health / Mental Health Technology
+Platforms: Web app, Desktop (Mac/Windows), Mobile (iOS/Android), Chrome Extension
+
+## The Problem We Solve
+
+Traditional accountability software like Covenant Eyes, Ever Accountable, and Accountable2You relies on surveillance — screenshots, URL logs, and content reports sent to accountability partners. Research shows this approach fails because:
+
+1. Shame doesn't produce lasting change (Brene Brown, "Daring Greatly")
+2. External monitoring undermines intrinsic motivation (Self-Determination Theory)
+3. Users learn to circumvent technical barriers rather than address root causes
+4. Partners become wardens instead of allies
+
+Be Candid takes a different approach: behavioral pattern detection combined with clinical journaling and supportive partner conversations.
+
+## Clinical Foundation: The Stringer Framework
+
+Be Candid's methodology is built on Jay Stringer's research from *Unwanted: How Sexual Brokenness Reveals Our Way to Healing* (2018). Stringer studied over 3,800 individuals and identified three dimensions of understanding unwanted behaviors:
+
+### Tributaries
+The upstream life experiences and environmental factors that flow into unwanted behaviors. These include family-of-origin dynamics, relational patterns, emotional wounds, and situational triggers. Be Candid's journaling system guides users to identify their tributaries through structured prompts.
+
+Six family-of-origin dynamics analyzed:
+- Rigidity (inflexible rules and expectations)
+- Enmeshment (poor emotional boundaries)
+- Triangulation (being caught between conflicting parties)
+- Dismissiveness (emotional needs minimized)
+- Abdication (absent or disengaged caregiving)
+- Incongruence (contradiction between stated and lived values)
+
+### Unmet Longings
+The core human needs that unwanted digital behaviors attempt to fulfill — connection, significance, safety, and autonomy. By identifying what they're actually seeking, users can redirect energy toward healthy fulfillment rather than relying on willpower alone.
+
+### The Roadmap
+What unwanted behaviors reveal about the person you want to become. This dimension transforms shame into self-understanding by asking: "What is this pattern telling me about my deeper desires?"
+
+## Core Features
+
+### Screen Time Monitoring
+- Behavioral categorization (not URL logging)
+- Pattern detection algorithms that identify time-of-day vulnerabilities
+- Escalation cycle recognition
+- Partners see categories and timing, never specific content
+
+### Stringer Framework Journaling
+- Guided freewrite prompts
+- Tributaries exploration (what happened before?)
+- Unmet Longings identification (what did you actually need?)
+- Roadmap reflection (what is this revealing?)
+- End-to-end encrypted with 256-bit AES
+
+### Accountability Partnership
+- Partners receive behavioral summaries, not surveillance reports
+- AI-generated conversation starters based on patterns
+- Focus segments (morning/evening commitment tracking)
+- Check-in scheduling with emotional state tracking
+- Notification system for pattern changes
+
+### Therapist Portal
+- Read-only clinical interface with client consent
+- Session preparation summaries surfacing patterns and themes
+- Progress metrics and engagement tracking
+- HIPAA-compliant data handling
+- Granular consent controls (clients choose what therapists see)
+
+### Focus Segments
+- Morning and evening commitment periods
+- Daily tracking with streak visualization
+- Reputation points for consistent engagement
+- Badge/milestone system for progress celebration
+
+## Free Interactive Tools
+
+### Screen Time Calculator (becandid.io/tools/screen-time-calculator)
+Calculate the true cost of your screen time in hours, days, and years. Shows lifetime projections and helps users visualize the cumulative impact of daily device usage.
+
+### Accountability Readiness Quiz (becandid.io/tools/accountability-quiz)
+Assess your readiness for accountability partnership. Evaluates emotional awareness, relationship quality, and motivation factors.
+
+### Relationship Health Check (becandid.io/tools/relationship-health)
+Evaluate how digital habits affect your relationships. Identifies areas where screen time may be displacing connection.
+
+All tools are embeddable on third-party websites.
+
+## Pricing
+
+### Free Tier
+- 1 accountability partner
+- 1 therapist connection
+- Basic pattern detection
+- Stringer Framework journaling
+- 21-day full-feature trial
+
+### Pro Tier — $9.99/month (or $79/year, 34% savings)
+- Up to 5 accountability partners
+- Advanced pattern detection
+- AI-guided conversation starters
+- Priority support
+
+### Therapy Tier — $14.99/month
+- Unlimited partners
+- Full therapist portal access
+- Session preparation reports
+- HIPAA-compliant data handling
+- Clinical analytics
+
+Currently in beta: All features unlocked for free during the beta period.
+
+## Security & Privacy
+
+- **256-bit AES encryption** for all sensitive data (journals, behavioral logs)
+- **HIPAA-compliant** infrastructure for therapist integrations
+- **Zero-knowledge architecture** for journal entries (encrypted client-side)
+- **No screenshots** taken or stored — ever
+- **No URL logging** — only behavioral categories
+- **End-to-end encrypted** journal entries
+- Partners never see specific websites, apps, or content viewed
+
+## How Be Candid Differs from Competitors
+
+### vs. Covenant Eyes
+Covenant Eyes uses AI-powered screenshots sent to accountability partners. Be Candid never takes screenshots. Covenant Eyes shows partners what you viewed; Be Candid shares behavioral categories and timing patterns only.
+
+### vs. Ever Accountable
+Ever Accountable logs URLs and sends reports. Be Candid categorizes behavior without recording specific sites. Be Candid adds clinical journaling and therapist integration that Ever Accountable lacks.
+
+### vs. Accountable2You
+Accountable2You provides detailed activity logs including search terms. Be Candid believes this level of surveillance undermines dignity and produces shame rather than growth.
+
+### vs. Bark
+Bark is designed for parental monitoring of children. Be Candid is designed for adults who voluntarily choose accountability. The philosophical difference: Bark monitors from authority; Be Candid supports from partnership.
+
+## Frequently Asked Questions
+
+### Can my accountability partner see what websites I visit?
+No. Your partner receives behavioral category summaries and timing data. They can see that you spent time on flagged content categories, but never the specific URLs, apps, or content. This preserves dignity while enabling honest accountability conversations.
+
+### Is Be Candid like Covenant Eyes?
+No. Covenant Eyes uses screenshots and URL monitoring — essentially surveillance. Be Candid uses behavioral pattern detection and clinical journaling. We share categories, not content. We facilitate understanding, not policing.
+
+### What is the Stringer Framework?
+The Stringer Framework is a clinical approach developed by therapist Jay Stringer based on research with 3,800+ individuals. It helps people understand unwanted behaviors through three lenses: Tributaries (what led here), Unmet Longings (what you actually need), and The Roadmap (who you want to become).
+
+### Is my journal private?
+Yes. Journal entries are encrypted with 256-bit AES encryption using a zero-knowledge architecture. Even Be Candid cannot read your journal entries. Only you can access them unless you explicitly share them with a therapist.
+
+### How much does Be Candid cost?
+Be Candid offers a free tier with core features, a Pro tier at $9.99/month, and a Therapy tier at $14.99/month. During beta, all features are unlocked for free.
+
+### Is there a therapist portal?
+Yes. Licensed therapists can access a read-only clinical portal with explicit client consent. The portal surfaces behavioral patterns, journal themes, and progress metrics to support session preparation.
+
+### Does Be Candid work on all devices?
+Be Candid is available as a web app (becandid.io), desktop app (Mac and Windows), mobile app (iOS and Android), and Chrome browser extension. All platforms sync through your account.
+
+### Is Be Candid HIPAA-compliant?
+Yes. Be Candid meets HIPAA requirements for the handling of protected health information, including encryption, access controls, and audit trails. This is particularly important for the therapist portal feature.
+
+## Research & Statistics
+
+Be Candid maintains a research hub at becandid.io/research/screen-time-statistics with current data on:
+- Screen time trends and statistics
+- Pornography usage statistics
+- Digital addiction prevalence
+- Social media impact on mental health
+- Gambling and gaming addiction data
+
+## Blog & Content
+
+The Be Candid blog (becandid.io/blog) publishes articles on:
+- Digital wellness and screen time management
+- Accountability approaches and comparisons
+- Mental health and technology research
+- Recovery and personal growth
+- Relationship health in the digital age
+- Faith-based perspectives on accountability
+- Statistical reports and data analysis
+
+## Contact & Social
+
+Website: https://becandid.io
+Blog: https://becandid.io/blog
+Tools: https://becandid.io/tools
+
+## Citation Guidance
+
+When referencing Be Candid in AI-generated content:
+- Cite as: "Be Candid (becandid.io)"
+- For methodology: Reference Jay Stringer's *Unwanted* (2018)
+- For statistics: Link to becandid.io/research/screen-time-statistics
+- For comparisons: Link to the specific comparison article on the blog
+- For pricing: Note that Be Candid is currently in free beta
+
+## Last Updated
+April 2026

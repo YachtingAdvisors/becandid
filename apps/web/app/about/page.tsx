@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
 import AnimateOnScroll from '@/components/ui/AnimateOnScroll';
-import { organizationSchema } from '@/lib/structuredData';
+import { organizationSchema, breadcrumbSchema } from '@/lib/structuredData';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,16 +14,10 @@ export const metadata: Metadata = {
   description:
     'Be Candid is an accountability app grounded in Jay Stringer\u2019s research. Built by people who understand unwanted digital habits, it helps you align your digital life with your values through self-understanding \u2014 not surveillance.',
   keywords: [
-    'accountability app',
-    'digital wellness',
-    'unwanted habits',
-    'behavioral patterns',
-    'Stringer framework',
-    'accountability partner',
-    'screen time accountability',
-    'digital integrity',
-    'Jay Stringer',
-    'Unwanted book',
+    'about Be Candid',
+    'digital accountability company',
+    'Jay Stringer framework',
+    'screen time accountability mission',
   ],
   openGraph: {
     title: 'About Be Candid | Accountability Through Self-Understanding',
@@ -145,6 +139,7 @@ export default function AboutPage() {
     <div className="min-h-screen bg-dark-sanctuary text-white overflow-x-hidden">
       {/* JSON-LD Structured Data */}
       <JsonLd data={organizationSchema()} />
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'About', url: 'https://becandid.io/about' }])} />
 
       <PublicNav />
 

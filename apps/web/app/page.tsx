@@ -4,7 +4,7 @@ import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
 import { HeroPlayer } from './HeroPlayerClient';
 import { SocialProofCounter, TestimonialCarousel, ComparisonTable, FAQAccordion } from '@/components/LandingSections';
-import { softwareAppSchema, organizationSchema, faqSchema } from '@/lib/structuredData';
+import { softwareAppSchema, organizationSchema, faqSchema, breadcrumbSchema } from '@/lib/structuredData';
 import { FAQ_ITEMS } from '@/lib/faqData';
 import AnimateOnScroll from '@/components/ui/AnimateOnScroll';
 
@@ -115,6 +115,7 @@ export default function LandingPage() {
       <JsonLd data={softwareAppSchema()} />
       <JsonLd data={organizationSchema()} />
       <JsonLd data={faqSchema(FAQ_ITEMS)} />
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }])} />
 
       <PublicNav />
 

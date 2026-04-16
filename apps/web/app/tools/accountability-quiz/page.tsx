@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import JsonLd from '@/components/JsonLd';
-import { toolApplicationSchema } from '@/lib/structuredData';
+import { toolApplicationSchema, breadcrumbSchema } from '@/lib/structuredData';
 import QuizClient from './QuizClient';
 
 export const metadata: Metadata = {
@@ -16,11 +16,13 @@ export const metadata: Metadata = {
     images: [{ url: 'https://becandid.io/api/og?title=Accountability%20Readiness%20Quiz&subtitle=Are%20you%20ready%20for%20real%20change%3F', width: 1200, height: 630 }],
   },
   twitter: { card: 'summary_large_image' },
+  keywords: ['accountability readiness quiz', 'accountability partner assessment', 'digital accountability test'],
 };
 
 export default function AccountabilityQuizPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'Tools', url: 'https://becandid.io/tools' }, { name: 'Accountability Readiness Quiz', url: 'https://becandid.io/tools/accountability-quiz' }])} />
       <JsonLd
         data={toolApplicationSchema({
           name: 'Accountability Readiness Quiz',

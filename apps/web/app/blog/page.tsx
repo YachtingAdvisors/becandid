@@ -4,12 +4,14 @@ import { getAllBlogPosts, getSeoPublishedPosts } from '@/content/blog/loader';
 import { getArticleImages } from '@/content/blog/images';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
+import { breadcrumbSchema } from '@/lib/structuredData';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Blog — Digital Wellness Insights',
   description:
     'Science-backed articles on breaking phone addiction, building accountability, screen time management, and aligning your digital life with your values.',
+  keywords: ['digital wellness blog', 'accountability articles', 'screen time research', 'phone addiction recovery'],
   alternates: {
     canonical: 'https://becandid.io/blog',
   },
@@ -32,6 +34,7 @@ export default async function BlogIndexPage() {
   const BLOG_POSTS = allPosts;
   return (
     <main className="max-w-4xl mx-auto px-6 py-16">
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'Blog', url: 'https://becandid.io/blog' }])} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',

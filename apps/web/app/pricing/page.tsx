@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
-import { productSchema } from '@/lib/structuredData';
+import { productSchema, breadcrumbSchema } from '@/lib/structuredData';
 
 interface Tier {
   id: string;
@@ -120,6 +120,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-dark-sanctuary">
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'Pricing', url: 'https://becandid.io/pricing' }])} />
       {/* JSON-LD Product structured data for each tier */}
       {TIERS.map((tier) => (
         <JsonLd

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import JsonLd from '@/components/JsonLd';
-import { toolApplicationSchema } from '@/lib/structuredData';
+import { toolApplicationSchema, breadcrumbSchema } from '@/lib/structuredData';
 import HealthCheckClient from './HealthCheckClient';
 
 export const metadata: Metadata = {
@@ -16,11 +16,13 @@ export const metadata: Metadata = {
     images: [{ url: 'https://becandid.io/api/og?title=Relationship%20Health%20Check&subtitle=How%20digital%20habits%20affect%20your%20relationship', width: 1200, height: 630 }],
   },
   twitter: { card: 'summary_large_image' },
+  keywords: ['relationship health check', 'digital habits relationship', 'phone addiction relationship impact'],
 };
 
 export default function RelationshipHealthPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'Tools', url: 'https://becandid.io/tools' }, { name: 'Relationship Health Check', url: 'https://becandid.io/tools/relationship-health' }])} />
       <JsonLd
         data={toolApplicationSchema({
           name: 'Relationship Health Check',

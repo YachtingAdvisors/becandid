@@ -2,12 +2,15 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
+import JsonLd from '@/components/JsonLd';
+import { breadcrumbSchema } from '@/lib/structuredData';
 import TransformationJourney from './TransformationJourney';
 
 export const metadata: Metadata = {
   title: 'Methodology — Unwanted Behavior Is Never Random',
   description:
     'Grounded in Jay Stringer\'s research with nearly 4,000 people: every unwanted behavior has a story. Be Candid helps you read it.',
+  keywords: ['Stringer framework', 'Jay Stringer Unwanted', 'accountability methodology', 'tributaries unmet longings roadmap', 'behavioral psychology framework'],
 };
 
 /* ─── Icon helper ──────────────────────────────────────────────── */
@@ -26,6 +29,7 @@ function Icon({ name, className = '' }: { name: string; className?: string }) {
 export default function MethodologyPage() {
   return (
     <div className="bg-dark-sanctuary min-h-screen text-slate-100 overflow-x-hidden">
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'Methodology', url: 'https://becandid.io/methodology' }])} />
 
       <PublicNav />
 

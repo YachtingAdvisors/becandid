@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import JsonLd from '@/components/JsonLd';
-import { toolApplicationSchema } from '@/lib/structuredData';
+import { toolApplicationSchema, breadcrumbSchema } from '@/lib/structuredData';
 import ScreenTimeClient from './ScreenTimeClient';
 
 export const metadata: Metadata = {
@@ -16,11 +16,13 @@ export const metadata: Metadata = {
     images: [{ url: 'https://becandid.io/api/og/screen-time', width: 1200, height: 630 }],
   },
   twitter: { card: 'summary_large_image' },
+  keywords: ['screen time calculator', 'phone usage calculator', 'daily screen time', 'screen time statistics'],
 };
 
 export default function ScreenTimeCalculatorPage() {
   return (
     <>
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: 'https://becandid.io' }, { name: 'Tools', url: 'https://becandid.io/tools' }, { name: 'Screen Time Calculator', url: 'https://becandid.io/tools/screen-time-calculator' }])} />
       <JsonLd
         data={toolApplicationSchema({
           name: 'Screen Time Calculator',

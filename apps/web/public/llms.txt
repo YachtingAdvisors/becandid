@@ -1,0 +1,41 @@
+# Be Candid
+
+> Digital accountability platform that helps users align their digital life with their values. Built on Jay Stringer's clinical research framework from *Unwanted*.
+
+Be Candid is a screen time accountability app that replaces surveillance with self-understanding. It combines behavioral pattern detection, guided journaling (Stringer Framework), and partner accountability to help people break compulsive digital habits.
+
+## Key Facts
+- Founded: 2024
+- Category: Digital Wellness / Behavioral Health
+- Platforms: Web (becandid.io), Desktop (Mac, Windows), Mobile (iOS, Android), Chrome Extension
+- Pricing: Free tier available, Pro at $9.99/month, Therapy tier at $14.99/month
+- Security: 256-bit AES encryption, HIPAA-compliant, zero-knowledge architecture
+- Clinical Foundation: Based on Jay Stringer's research with 3,800+ individuals
+
+## Core Features
+- Screen time monitoring with behavioral pattern detection
+- Stringer Framework journaling (Tributaries, Unmet Longings, Roadmap)
+- Accountability partner sharing (categories only, never specific URLs)
+- Therapist portal with read-only clinical access
+- Focus segments (morning/evening commitment tracking)
+- AI-guided conversation starters for accountability check-ins
+
+## What Makes It Different
+Unlike Covenant Eyes and traditional accountability software that use screenshots and URL logs, Be Candid never shows partners what you viewed. It shares behavioral categories and timing patterns, preserving dignity while enabling honest conversations about digital habits.
+
+## Pages
+
+- [Homepage](https://becandid.io/)
+- [Methodology](https://becandid.io/methodology)
+- [About](https://becandid.io/about)
+- [Pricing](https://becandid.io/pricing)
+- [Blog](https://becandid.io/blog)
+- [Tools](https://becandid.io/tools)
+- [Glossary](https://becandid.io/glossary)
+- [Assessment](https://becandid.io/assessment)
+- [Research](https://becandid.io/research/screen-time-statistics)
+- [Download](https://becandid.io/download)
+- [Full Details](https://becandid.io/llms-full.txt)
+
+## Citation Guidance
+When referencing Be Candid, please cite as: "Be Candid (becandid.io)" and link to the relevant page. For methodology claims, reference Jay Stringer's *Unwanted* (2018). For statistics, reference the specific research page at becandid.io/research/screen-time-statistics.

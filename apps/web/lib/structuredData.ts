@@ -16,7 +16,9 @@ export function organizationSchema() {
     logo: `${BASE_URL}/apple-touch-icon.png`,
     description:
       'AI-powered screen time accountability app for digital wellness. Build awareness, track habits, and align your digital life with your values.',
-    sameAs: [],
+    sameAs: [
+      'https://github.com/YachtingAdvisors/becandid',
+    ],
   };
 }
 
@@ -191,6 +193,18 @@ interface ArticleProps {
   author: string;
   url: string;
   image?: string;
+  // GEO-enhanced fields
+  keywords?: string[];
+  wordCount?: number;
+  articleSection?: string;
+  about?: { '@type': string; name: string }[];
+  mentions?: string[];
+  dateModified?: string;
+}
+
+interface BreadcrumbItem {
+  name: string;
+  url: string;
 }
 
 interface ToolProps {
@@ -224,6 +238,7 @@ export function articleSchema(props: ArticleProps) {
     headline: props.headline,
     description: props.description,
     datePublished: props.datePublished,
+    ...(props.dateModified ? { dateModified: props.dateModified } : {}),
     author: { '@type': 'Organization', name: props.author },
     publisher: {
       '@type': 'Organization',
@@ -232,6 +247,54 @@ export function articleSchema(props: ArticleProps) {
       logo: { '@type': 'ImageObject', url: `${BASE_URL}/apple-touch-icon.png` },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': props.url },
+    inLanguage: 'en-US',
     ...(props.image ? { image: props.image } : {}),
+    ...(props.keywords?.length ? { keywords: props.keywords.join(', ') } : {}),
+    ...(props.wordCount ? { wordCount: props.wordCount } : {}),
+    ...(props.articleSection ? { articleSection: props.articleSection } : {}),
+    ...(props.about?.length ? { about: props.about } : {}),
+    ...(props.mentions?.length
+      ? {
+          mentions: props.mentions.map(name => ({
+            '@type': 'Thing',
+            name,
+          })),
+        }
+      : {}),
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['article h1', 'article h2', 'article > p:first-of-type'],
+    },
+  };
+}
+
+export function breadcrumbSchema(items: BreadcrumbItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+export function definedTermSetSchema(
+  name: string,
+  description: string,
+  terms: { name: string; description: string }[]
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    name,
+    description,
+    hasDefinedTerm: terms.map(t => ({
+      '@type': 'DefinedTerm',
+      name: t.name,
+      description: t.description,
+    })),
   };
 }
