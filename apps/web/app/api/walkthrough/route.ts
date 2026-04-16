@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
 
@@ -19,14 +19,12 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const body = await req.json().catch(() => ({}));
-    const db = createServiceClient();
-
     if (body.dismiss) {
-      const { error } = await db
+      const { error } = await supabase
         .from('users')
         .update({ walkthrough_dismissed_at: new Date().toISOString() })
         .eq('id', user.id);

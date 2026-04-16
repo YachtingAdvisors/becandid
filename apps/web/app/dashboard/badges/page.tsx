@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import ShareButton from '@/components/ShareButton';
 
 interface Milestone {
   milestone: string;
@@ -85,6 +86,23 @@ export default function BadgesPage() {
         </div>
       </div>
 
+      {/* Share progress CTA */}
+      {earnedCount > 0 && (
+        <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl ring-1 ring-primary/20 p-5 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-headline font-bold text-on-surface">Share your progress</p>
+            <p className="text-xs text-on-surface-variant font-body mt-0.5">
+              Inspire others with your {earnedCount} badge{earnedCount !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <ShareButton
+            url="/dashboard/badges"
+            title={`I've earned ${earnedCount} badges on Be Candid!`}
+            text={`I've earned ${earnedCount} of ${ALL_BADGES.length} badges on Be Candid - building digital accountability and aligning my life with my values.`}
+          />
+        </div>
+      )}
+
       {/* Badge grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {ALL_BADGES.map(badge => {
@@ -109,8 +127,16 @@ export default function BadgesPage() {
                 {badge.label}
               </div>
               {isEarned && milestone && (
-                <div className="text-[10px] text-on-surface-variant mt-1">
-                  {new Date(milestone.unlocked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                <div className="flex items-center justify-center gap-1 mt-1">
+                  <span className="text-[10px] text-on-surface-variant">
+                    {new Date(milestone.unlocked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
+                  <ShareButton
+                    url="/dashboard/badges"
+                    title={`I earned the "${badge.label}" badge on Be Candid!`}
+                    text={`Just unlocked the ${badge.label} badge (${badge.tier} tier) on Be Candid - building digital accountability one day at a time.`}
+                    size="sm"
+                  />
                 </div>
               )}
               {!isEarned && (

@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { encrypt, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { sanitizeText, safeError } from '@/lib/security';
@@ -43,8 +43,7 @@ export async function GET(_req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const db = createServiceClient();
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from('amends')
     .select('*')
     .eq('user_id', user.id)
@@ -63,7 +62,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -90,8 +89,7 @@ export async function POST(req: NextRequest) {
   };
 
   const encrypted = encryptAmend(raw, user.id);
-  const db = createServiceClient();
-  const { data, error } = await db.from('amends').insert(encrypted).select().single();
+  const { data, error } = await supabase.from('amends').insert(encrypted).select().single();
   if (error) return safeError('POST /api/amends', error);
 
   return NextResponse.json({ amend: decryptAmend(data, user.id) }, { status: 201 });
@@ -104,7 +102,7 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -136,8 +134,7 @@ export async function PATCH(req: NextRequest) {
   if (notes !== undefined) update.notes = notes ? sanitizeText(notes.trim(), 2000) : null;
 
   const encrypted = encryptAmend(update, user.id);
-  const db = createServiceClient();
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from('amends')
     .update(encrypted)
     .eq('id', id)
@@ -156,14 +153,13 @@ export async function DELETE(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const id = new URL(req.url).searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-  const db = createServiceClient();
-  const { error } = await db.from('amends').delete().eq('id', id).eq('user_id', user.id);
+  const { error } = await supabase.from('amends').delete().eq('id', id).eq('user_id', user.id);
   if (error) return safeError('DELETE /api/amends', error);
 
   return NextResponse.json({ deleted: true });

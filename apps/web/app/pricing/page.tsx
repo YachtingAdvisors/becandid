@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
 import JsonLd from '@/components/JsonLd';
@@ -226,8 +227,7 @@ export default function PricingPage() {
                 <div className="text-center mb-8 pt-2">
                   {tier.logo ? (
                     <div className="w-24 h-24 rounded-2xl overflow-hidden mx-auto shadow-lg">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={tier.logo} alt={`${tier.name} logo`} className="w-full h-full object-cover" />
+                      <Image src={tier.logo} alt={`${tier.name} logo`} width={96} height={96} className="w-full h-full object-cover" />
                     </div>
                   ) : (
                     <span

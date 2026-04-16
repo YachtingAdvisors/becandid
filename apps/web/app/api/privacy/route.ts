@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   // Data export is expensive — use strict rate limit
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = await checkUserRate(accountLimiter, user.id);
   if (blocked) return blocked;
 
   const db = createServiceClient();
@@ -209,7 +209,7 @@ export async function PUT(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -243,7 +243,7 @@ export async function DELETE(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = await checkUserRate(accountLimiter, user.id);
   if (blocked) return blocked;
 
   // Data purge

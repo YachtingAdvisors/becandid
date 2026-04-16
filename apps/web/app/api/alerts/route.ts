@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 // GET /api/alerts — list alerts for current user with events and conversations
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 export async function GET(req: NextRequest) {
@@ -9,14 +9,13 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
-  const db = createServiceClient();
   const { searchParams } = new URL(req.url);
   const limit = Math.min(parseInt(searchParams.get('limit') ?? '30'), 100);
 
-  const { data: alerts } = await db
+  const { data: alerts } = await supabase
     .from('alerts')
     .select(`
       id, sent_at, email_sent, sms_sent, ai_guide_user, ai_guide_partner,

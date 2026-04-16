@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import sanitizeHtml from 'sanitize-html';
 
 // ─── Types ───────────────────────────────────────────────────
 
@@ -280,7 +281,16 @@ export default function AdminEmailClient() {
               <h2 className="text-xl font-bold text-gray-900 mb-4">{subject}</h2>
               <div
                 className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap"
-                dangerouslySetInnerHTML={{ __html: body }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(body, {
+                  allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
+                  allowedAttributes: {
+                    ...sanitizeHtml.defaults.allowedAttributes,
+                    img: ['src', 'alt', 'width', 'height', 'style'],
+                    a: ['href', 'target', 'rel', 'style'],
+                    '*': ['style', 'class'],
+                  },
+                  allowedSchemes: ['http', 'https', 'mailto'],
+                }) }}
               />
             </div>
             <p className="text-center text-xs text-gray-400 mt-4">

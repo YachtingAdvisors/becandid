@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 // DELETE /api/quotes/favorites — remove a favorite
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
@@ -14,11 +14,10 @@ export async function GET() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/quotes/favorites', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
-    const db = createServiceClient();
-    const { data: favorites } = await db
+    const { data: favorites } = await supabase
       .from('quote_favorites')
       .select('id, quote_text, quote_author, created_at')
       .eq('user_id', user.id)
@@ -36,7 +35,7 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/quotes/favorites', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const { quote_text, quote_author } = await req.json();
@@ -44,8 +43,7 @@ export async function POST(req: NextRequest) {
       return safeError('POST /api/quotes/favorites', 'quote_text and quote_author required', 400);
     }
 
-    const db = createServiceClient();
-    const { error } = await db
+    const { error } = await supabase
       .from('quote_favorites')
       .upsert(
         { user_id: user.id, quote_text, quote_author },
@@ -65,7 +63,7 @@ export async function DELETE(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('DELETE /api/quotes/favorites', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const { quote_text } = await req.json();
@@ -73,8 +71,7 @@ export async function DELETE(req: NextRequest) {
       return safeError('DELETE /api/quotes/favorites', 'quote_text required', 400);
     }
 
-    const db = createServiceClient();
-    await db
+    await supabase
       .from('quote_favorites')
       .delete()
       .eq('user_id', user.id)

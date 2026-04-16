@@ -164,6 +164,11 @@ async function handleCron(req: NextRequest) {
       ${reflection.looking_ahead ? `<p style="margin:0;color:#6b7280;font-size:13px;font-style:italic;">${escapeHtml(reflection.looking_ahead)}</p>` : ''}
     </div>` : ''}
     <a href="${APP_URL_BASE}/dashboard/journal" style="display:block;text-align:center;background:#7c3aed;color:white;padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;">View Growth Journal →</a>
+    <div style="margin:20px 0 0;padding:16px;background:linear-gradient(135deg,#f0fafb,#e8f4f8);border-radius:12px;border:1px solid #d1e9ef;text-align:center;">
+      <p style="margin:0 0 8px;color:#226779;font-size:14px;font-weight:700;">Know someone who could use Be Candid?</p>
+      <p style="margin:0 0 10px;color:#6b7280;font-size:12px;">Share the gift of digital accountability.</p>
+      <a href="${APP_URL_BASE}/dashboard/referrals" style="display:inline-block;background:#226779;color:white;padding:10px 24px;border-radius:100px;text-decoration:none;font-weight:600;font-size:13px;">Invite a Friend →</a>
+    </div>
   </div>
 </div>
 </body></html>`;

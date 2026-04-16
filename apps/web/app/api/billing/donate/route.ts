@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = await checkUserRate(accountLimiter, user.id);
   if (blocked) return blocked;
 
   const { amount } = await req.json();

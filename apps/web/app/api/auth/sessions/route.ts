@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/auth/sessions', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
@@ -135,7 +135,7 @@ export async function DELETE(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('DELETE /api/auth/sessions', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const url = new URL(req.url);

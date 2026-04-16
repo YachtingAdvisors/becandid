@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { checkFeatureGate } from '@/lib/stripe/featureGate';
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const db = createServiceClient();
+  const db = supabase;
   const { data } = await db.from('journal_preferences')
     .select('*').eq('user_id', user.id).single();
 
@@ -44,7 +44,7 @@ export async function PUT(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   // Feature gate: journal reminders require Pro+
@@ -73,7 +73,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Delay must be 5-1440 minutes' }, { status: 400 });
   }
 
-  const db = createServiceClient();
+  const db = supabase;
   const { data, error } = await db.from('journal_preferences').upsert({
     user_id: user.id,
     reminder_enabled: reminder_enabled ?? true,

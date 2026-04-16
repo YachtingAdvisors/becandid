@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/auth/avatar', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const formData = await req.formData();
@@ -67,7 +67,7 @@ export async function DELETE(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('DELETE /api/auth/avatar', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const db = createServiceClient();

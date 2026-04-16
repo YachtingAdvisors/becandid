@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => ({}));

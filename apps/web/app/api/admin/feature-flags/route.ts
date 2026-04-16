@@ -48,7 +48,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
   }
 
-  const blocked = checkUserRate(accountLimiter, adminAccess.user.id);
+  const blocked = await checkUserRate(accountLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   let body: { key?: string; enabled?: boolean };

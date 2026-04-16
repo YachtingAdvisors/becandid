@@ -35,8 +35,7 @@ export async function GET() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const db = createServiceClient();
-    const { data: sites, error } = await db
+    const { data: sites, error } = await supabase
       .from('site_lists')
       .select('id, domain, list_type, added_at')
       .eq('user_id', user.id)
@@ -58,7 +57,7 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const body = await req.json();
@@ -71,10 +70,9 @@ export async function POST(req: NextRequest) {
     }
 
     const { domain, list_type } = parsed.data;
-    const db = createServiceClient();
 
     // Upsert: if domain exists, update list_type
-    const { data: site, error } = await db
+    const { data: site, error } = await supabase
       .from('site_lists')
       .upsert(
         { user_id: user.id, domain, list_type, added_at: new Date().toISOString() },
@@ -99,7 +97,7 @@ export async function DELETE(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const { searchParams } = new URL(req.url);
@@ -108,11 +106,10 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
     }
 
-    const db = createServiceClient();
     const { id } = parsed.data;
 
     // Fetch the entry first to check list_type and ownership
-    const { data: entry } = await db
+    const { data: entry } = await supabase
       .from('site_lists')
       .select('id, domain, list_type, user_id')
       .eq('id', id)
@@ -124,7 +121,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     // Delete the entry
-    const { error: delError } = await db
+    const { error: delError } = await supabase
       .from('site_lists')
       .delete()
       .eq('id', id)
@@ -132,9 +129,10 @@ export async function DELETE(req: NextRequest) {
 
     if (delError) throw delError;
 
-    // If removing a BLACKLISTED site, notify the partner
+    // If removing a BLACKLISTED site, notify the partner (needs service client for cross-user access)
     if (entry.list_type === 'blacklist') {
-      await notifyPartnerOfBlacklistRemoval(db, user.id, entry.domain);
+      const serviceDb = createServiceClient();
+      await notifyPartnerOfBlacklistRemoval(serviceDb, user.id, entry.domain);
     }
 
     return NextResponse.json({ ok: true });

@@ -12,6 +12,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import useSWR from 'swr';
 
 const PLAN_DISPLAY: Record<string, { name: string; emoji: string; color: string }> = {
@@ -211,8 +212,7 @@ export default function SubscriptionCard() {
       ) : (
         <div className="space-y-3">
           <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/pro-logo.png" alt="Be Candid Pro" className="w-12 h-12 rounded-xl shadow-md" />
+            <Image src="/pro-logo.png" alt="Be Candid Pro" width={48} height={48} className="w-12 h-12 rounded-xl shadow-md" />
             <div className="flex-1">
               <p className="text-sm font-headline font-bold text-on-surface">Be Candid Pro</p>
               <p className="text-[10px] text-on-surface-variant">5 partners, unlimited AI guides, pattern detection</p>
@@ -349,8 +349,7 @@ export default function SubscriptionCard() {
       {data.plan === 'pro' && (
         <div className="mt-3 p-3 rounded-xl bg-violet-50 ring-1 ring-violet-200/30">
           <div className="flex items-center gap-3 mb-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/therapy-logo.png" alt="Be Candid Therapy" className="w-10 h-10 rounded-xl shadow-md" />
+            <Image src="/therapy-logo.png" alt="Be Candid Therapy" width={40} height={40} className="w-10 h-10 rounded-xl shadow-md" />
             <div className="flex-1">
               <p className="text-sm font-headline font-bold text-on-surface">Therapist Portal</p>
               <p className="text-[10px] text-on-surface-variant">Inpatient-level insights for your therapist</p>

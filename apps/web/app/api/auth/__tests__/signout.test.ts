@@ -16,7 +16,7 @@ vi.mock('@/lib/supabase', () => ({
 
 vi.mock('@/lib/rateLimit', () => ({
   actionLimiter: {},
-  checkUserRate: vi.fn(() => null),
+  checkUserRate: vi.fn(async () => null),
 }));
 
 // ── Helpers ──────────────────────────────────────────────────

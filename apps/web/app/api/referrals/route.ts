@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 // GET /api/referrals — fetch referral stats for the logged-in user
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { getReferralStats } from '@/lib/referral';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
@@ -13,11 +13,10 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/referrals', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
-    const db = createServiceClient();
-    const stats = await getReferralStats(db, user.id);
+    const stats = await getReferralStats(supabase, user.id);
 
     return NextResponse.json(stats);
   } catch (err) {

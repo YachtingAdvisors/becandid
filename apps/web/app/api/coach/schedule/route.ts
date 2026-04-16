@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 
 // ─── Validation helpers ─────────────────────────────────────
 
@@ -53,8 +53,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const db = createServiceClient();
-    const { data, error } = await db
+    const { data, error } = await supabase
       .from('users')
       .select('coach_schedule')
       .eq('id', user.id)
@@ -89,8 +88,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const db = createServiceClient();
-
     // Build the JSONB value — null clears the schedule
     const scheduleValue = body.hour === null
       ? null
@@ -101,7 +98,7 @@ export async function POST(req: NextRequest) {
           day: body.frequency === 'weekly' ? (body.day ?? 'sunday') : null,
         };
 
-    const { error } = await db
+    const { error } = await supabase
       .from('users')
       .update({ coach_schedule: scheduleValue })
       .eq('id', user.id);

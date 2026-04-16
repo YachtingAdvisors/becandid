@@ -1,3 +1,4 @@
+import sanitizeHtml from 'sanitize-html';
 import { getAllBlogPosts, getSeoPublishedPosts } from '@/content/blog/loader';
 import { getArticleImages } from '@/content/blog/images';
 import { notFound } from 'next/navigation';
@@ -98,9 +99,21 @@ export default async function BlogPostPage({ params }: Props) {
   const relatedPosts = getRelatedPosts(slug, post.tags, allPosts);
   const articleImages = getArticleImages(slug);
 
-  const sanitizedContent = post.content
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/on\w+="[^"]*"/gi, '');
+  const sanitizedContent = sanitizeHtml(post.content, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+      'img', 'figure', 'figcaption', 'picture', 'source', 'video', 'audio',
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'details', 'summary', 'mark',
+    ]),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      img: ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'class'],
+      figure: ['class'],
+      figcaption: ['class'],
+      a: ['href', 'target', 'rel', 'class'],
+      '*': ['class', 'id'],
+    },
+    allowedSchemes: ['http', 'https', 'mailto'],
+  });
   const contentWithImages = insertInlineImages(sanitizedContent, articleImages.inline);
 
   return (

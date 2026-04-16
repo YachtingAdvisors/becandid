@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function GuardianLayout({
   children,
@@ -18,7 +19,7 @@ export default function GuardianLayout({
               Dashboard
             </Link>
             <span className="text-outline-variant/40">|</span>
-            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
+            <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto" />
             <span className="text-sm text-on-surface-variant font-label">
               Guardian Dashboard
             </span>

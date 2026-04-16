@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { encrypt, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
@@ -42,10 +42,8 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const db = createServiceClient();
-
     // Get user timezone
-    const { data: profile } = await db
+    const { data: profile } = await supabase
       .from('users')
       .select('timezone')
       .eq('id', user.id)
@@ -55,7 +53,7 @@ export async function GET() {
     const today = todayDateStr(tz);
     const weekAgo = sevenDaysAgoStr(tz);
 
-    const { data: commitments, error } = await db
+    const { data: commitments, error } = await supabase
       .from('daily_commitments')
       .select('*')
       .eq('user_id', user.id)
@@ -98,7 +96,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -110,9 +108,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const db = createServiceClient();
-
-    const { data: profile } = await db
+    const { data: profile } = await supabase
       .from('users')
       .select('timezone')
       .eq('id', user.id)
@@ -121,7 +117,7 @@ export async function POST(req: NextRequest) {
     const tz = profile?.timezone || 'America/New_York';
     const today = todayDateStr(tz);
 
-    const { error } = await db
+    const { error } = await supabase
       .from('daily_commitments')
       .upsert({
         user_id: user.id,
@@ -145,7 +141,7 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -164,9 +160,7 @@ export async function PATCH(req: NextRequest) {
   }
 
   try {
-    const db = createServiceClient();
-
-    const { data: profile } = await db
+    const { data: profile } = await supabase
       .from('users')
       .select('timezone')
       .eq('id', user.id)
@@ -176,7 +170,7 @@ export async function PATCH(req: NextRequest) {
     const today = todayDateStr(tz);
 
     // Must have a morning intention first
-    const { data: existing } = await db
+    const { data: existing } = await supabase
       .from('daily_commitments')
       .select('id')
       .eq('user_id', user.id)
@@ -190,7 +184,7 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const { error } = await db
+    const { error } = await supabase
       .from('daily_commitments')
       .update({
         evening_reflection: reflection ? encrypt(reflection.trim(), user.id) : null,

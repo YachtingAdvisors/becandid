@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   if (auth.error)
     return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  const blocked = checkUserRate(adminLimiter, auth.user!.id);
+  const blocked = await checkUserRate(adminLimiter, auth.user!.id);
   if (blocked) return blocked;
 
   const email = req.nextUrl.searchParams.get('email')?.trim().toLowerCase();
@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
   if (auth.error)
     return NextResponse.json({ error: auth.error }, { status: auth.status });
 
-  const blocked = checkUserRate(adminLimiter, auth.user!.id);
+  const blocked = await checkUserRate(adminLimiter, auth.user!.id);
   if (blocked) return blocked;
 
   const body = await req.json();

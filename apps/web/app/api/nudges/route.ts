@@ -3,15 +3,14 @@ export const dynamic = 'force-dynamic';
 // PATCH /api/nudges — acknowledge a nudge by id
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const db = createServiceClient();
-  const { data: nudges } = await db
+  const { data: nudges } = await supabase
     .from('nudges')
     .select('*')
     .eq('user_id', user.id)
@@ -30,8 +29,7 @@ export async function PATCH(req: NextRequest) {
   const { id } = await req.json();
   if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
 
-  const db = createServiceClient();
-  await db
+  await supabase
     .from('nudges')
     .update({ acknowledged: true, acknowledged_at: new Date().toISOString() })
     .eq('id', id)

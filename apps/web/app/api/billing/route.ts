@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { createCheckoutSession, createPortalSession } from '@/lib/stripe/server';
 import { STRIPE_CONFIG, getPlanLimits } from '@/lib/stripe/config';
 import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = await checkUserRate(accountLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json();
@@ -64,8 +64,7 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const db = createServiceClient();
-  const { data: profile } = await db.from('users')
+  const { data: profile } = await supabase.from('users')
     .select('subscription_plan, subscription_status, trial_ends_at, stripe_customer_id, grandfathered, is_supporter, supporter_until, total_donated')
     .eq('id', user.id)
     .single();
@@ -78,7 +77,7 @@ export async function GET(req: NextRequest) {
   monthStart.setDate(1);
   monthStart.setHours(0, 0, 0, 0);
 
-  const { count: guidesUsed } = await db.from('alerts')
+  const { count: guidesUsed } = await supabase.from('alerts')
     .select('id', { count: 'exact', head: true })
     .eq('user_id', user.id)
     .gte('created_at', monthStart.toISOString())
@@ -121,7 +120,7 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(accountLimiter, user.id);
+  const blocked = await checkUserRate(accountLimiter, user.id);
   if (blocked) return blocked;
 
   try {

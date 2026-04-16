@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 // POST /api/category-limits — create or update a limit
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { z } from 'zod';
 
@@ -21,8 +21,7 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/category-limits', 'Unauthorized', 401);
 
-    const db = createServiceClient();
-    const { data: limits } = await db
+    const { data: limits } = await supabase
       .from('category_time_limits')
       .select('*')
       .eq('user_id', user.id)
@@ -46,10 +45,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid data', details: parsed.error.flatten() }, { status: 400 });
     }
 
-    const db = createServiceClient();
-
     // Upsert: update if exists, insert if not
-    const { data: existing } = await db
+    const { data: existing } = await supabase
       .from('category_time_limits')
       .select('id')
       .eq('user_id', user.id)
@@ -57,7 +54,7 @@ export async function POST(req: NextRequest) {
       .maybeSingle();
 
     if (existing) {
-      const { error } = await db
+      const { error } = await supabase
         .from('category_time_limits')
         .update({
           daily_limit_minutes: parsed.data.daily_limit_minutes,
@@ -70,7 +67,7 @@ export async function POST(req: NextRequest) {
 
       if (error) return safeError('POST /api/category-limits', error);
     } else {
-      const { error } = await db
+      const { error } = await supabase
         .from('category_time_limits')
         .insert({
           user_id: user.id,
@@ -100,8 +97,7 @@ export async function DELETE(req: NextRequest) {
     const category = url.searchParams.get('category');
     if (!category) return NextResponse.json({ error: 'Category required' }, { status: 400 });
 
-    const db = createServiceClient();
-    await db
+    await supabase
       .from('category_time_limits')
       .delete()
       .eq('user_id', user.id)

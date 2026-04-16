@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const token = normalizeInviteToken(searchParams.get('token'));
   if (!token) return NextResponse.json({ error: 'Token required' }, { status: 400 });
 
-  const limited = checkUserRate(actionLimiter, `invite:${hashInviteToken(token)}`);
+  const limited = await checkUserRate(actionLimiter, `invite:${hashInviteToken(token)}`);
   if (limited) return limited;
 
   const db = createServiceClient();

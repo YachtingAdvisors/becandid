@@ -1,9 +1,11 @@
+import Image from 'next/image';
+
 export default function Loading() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
       {/* Logo pulse */}
       <div className="mb-10 motion-safe:animate-pulse">
-        <img src="/logo.png" alt="Be Candid" className="h-10 w-auto opacity-60" />
+        <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto opacity-60" />
       </div>
 
       {/* Skeleton layout */}

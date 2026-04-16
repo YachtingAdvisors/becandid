@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { calculateMomentumScore } from '@/lib/momentumScore';
 
@@ -20,10 +20,8 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const db = createServiceClient();
-
   try {
-    const result = await calculateMomentumScore(db, user.id);
+    const result = await calculateMomentumScore(supabase, user.id);
     return NextResponse.json(result);
   } catch (err: unknown) {
     return safeError('GET /api/momentum', err);

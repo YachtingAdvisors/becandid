@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 // DELETE /api/fasts/:id — remove a fast
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { z } from 'zod';
 import { safeError } from '@/lib/security';
 
@@ -33,10 +33,8 @@ export async function PATCH(
       );
     }
 
-    const db = createServiceClient();
-
     // Verify ownership
-    const { data: existing } = await db
+    const { data: existing } = await supabase
       .from('fasts')
       .select('id, user_id')
       .eq('id', id)
@@ -57,7 +55,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'No updates provided' }, { status: 400 });
     }
 
-    const { data: fast, error } = await db
+    const { data: fast, error } = await supabase
       .from('fasts')
       .update(updates)
       .eq('id', id)
@@ -82,10 +80,8 @@ export async function DELETE(
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('DELETE /api/fasts/:id', 'Unauthorized', 401);
 
-    const db = createServiceClient();
-
     // Verify ownership
-    const { data: existing } = await db
+    const { data: existing } = await supabase
       .from('fasts')
       .select('id, user_id')
       .eq('id', id)
@@ -98,7 +94,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { error } = await db
+    const { error } = await supabase
       .from('fasts')
       .delete()
       .eq('id', id);

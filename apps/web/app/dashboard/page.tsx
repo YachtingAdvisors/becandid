@@ -13,6 +13,7 @@ import FocusBoardMini from '@/components/dashboard/FocusBoardMini';
 import CheckInMini from '@/components/dashboard/CheckInMini';
 import NudgeBanner from '@/components/dashboard/NudgeBanner';
 import RelationshipMini from '@/components/dashboard/RelationshipMini';
+import Image from 'next/image';
 import Link from 'next/link';
 import DashboardHero from '@/components/dashboard/DashboardHero';
 import QuoteOfTheDay from '@/components/dashboard/QuoteOfTheDay';
@@ -31,6 +32,44 @@ import {
   ProcrastinationCheck, WorkLifeCheck, SleepCheck, FirstVisitCoach,
   TherapistBadge,
 } from './DynamicWidgets';
+
+/* ── Inline types for Supabase query results ───────────── */
+interface AlertWithConversation {
+  id: string;
+  sent_at: string;
+  conversations: { id: string; completed_at: string | null; outcome: string | null }[];
+}
+
+interface EventRow {
+  id: string;
+  category: string;
+  severity: string;
+  platform: string;
+  app_name: string | null;
+  timestamp: string;
+}
+
+interface TodayEvent {
+  id: string;
+  severity: string;
+}
+
+interface WeekEvent {
+  id: string;
+  severity: string;
+  category: string;
+  timestamp?: string;
+}
+
+interface MilestoneRow {
+  milestone: string;
+  unlocked_at: string;
+}
+
+interface ChipEntry {
+  days: number;
+  achievedDate: string;
+}
 
 const SEVERITY_STYLES: Record<Severity, string> = {
   low: 'bg-tertiary-container text-on-tertiary-container',
@@ -100,15 +139,15 @@ export default async function DashboardPage() {
   const activeWidgets: string[] = serverWidgets ?? getDefaultWidgets(profile?.goals ?? [], profile?.foundational_motivator ?? 'general');
   const partner = partnerRes?.data ?? null;
 
-  const pendingConversations = alerts.filter((a: any) => !a.conversations?.[0]?.completed_at).length;
+  const pendingConversations = alerts.filter((a: AlertWithConversation) => !a.conversations?.[0]?.completed_at).length;
 
   // Dashboard card data
   const todayEvents = todayEventsRes?.data ?? [];
   const todayFlags = todayEvents.length;
-  const todayHighFlags = todayEvents.filter((e: any) => e.severity === 'high').length;
+  const todayHighFlags = todayEvents.filter((e: TodayEvent) => e.severity === 'high').length;
   const weekEvents = weekEventsRes?.data ?? [];
   const weekFlags = weekEvents.length;
-  const weekCategories = [...new Set(weekEvents.map((e: any) => e.category))];
+  const weekCategories = [...new Set(weekEvents.map((e: WeekEvent) => e.category))];
   const journalCount = journalCountRes?.count ?? 0;
   const latestMilestone = streakRes?.data?.[0]?.milestone ?? null;
 
@@ -145,25 +184,25 @@ export default async function DashboardPage() {
     full_days_60: 60, full_days_90: 90,
     streak_7: 7, streak_30: 30, streak_90: 90,
   };
-  const recentChipMilestones = (recentChipsRes?.data ?? [])
-    .map((m: any) => ({
-      days: chipMilestoneMap[m.milestone] ?? null,
+  const recentChipMilestones: ChipEntry[] = (recentChipsRes?.data ?? [])
+    .map((m: MilestoneRow) => ({
+      days: chipMilestoneMap[m.milestone] as number | undefined,
       achievedDate: m.unlocked_at,
     }))
-    .filter((c: any) => c.days !== null);
+    .filter((c): c is ChipEntry => c.days != null);
   // Also add day-1 if they have any focused segment
-  if (currentStreak >= 1 && !recentChipMilestones.some((c: any) => c.days === 1)) {
+  if (currentStreak >= 1 && !recentChipMilestones.some((c) => c.days === 1)) {
     recentChipMilestones.push({ days: 1, achievedDate: new Date().toISOString() });
   }
   // Mark from streak
   for (const ms of [1, 7, 14, 30, 60, 90, 180, 365]) {
-    if (currentStreak >= ms && !recentChipMilestones.some((c: any) => c.days === ms)) {
+    if (currentStreak >= ms && !recentChipMilestones.some((c) => c.days === ms)) {
       recentChipMilestones.push({ days: ms, achievedDate: new Date().toISOString() });
     }
   }
   // Sort by days descending and take top 3
   const displayChips = recentChipMilestones
-    .sort((a: any, b: any) => b.days - a.days)
+    .sort((a, b) => b.days - a.days)
     .slice(0, 3);
 
   // Walkthrough: detect which setup steps are complete
@@ -348,10 +387,10 @@ export default async function DashboardPage() {
               {Array.from({ length: 7 }).map((_, i) => {
                 const day = new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000);
                 const dayStr = day.toISOString().split('T')[0];
-                const dayCount = weekEvents.filter((e: any) => e.timestamp?.startsWith(dayStr)).length;
+                const dayCount = weekEvents.filter((e: WeekEvent) => e.timestamp?.startsWith(dayStr)).length;
                 const maxDay = Math.max(...Array.from({ length: 7 }).map((_, j) => {
                   const d = new Date(Date.now() - (6 - j) * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-                  return weekEvents.filter((e: any) => e.timestamp?.startsWith(d)).length;
+                  return weekEvents.filter((e: WeekEvent) => e.timestamp?.startsWith(d)).length;
                 }), 1);
                 const height = Math.max(4, (dayCount / maxDay) * 32);
                 return (
@@ -530,10 +569,9 @@ export default async function DashboardPage() {
           { href: '/dashboard/checkins', icon: 'check_circle', title: 'Quick Check-in', desc: "Log how you're doing right now." },
         ].map(svc => (
           <Link key={svc.href} href={svc.href} className="flex items-center gap-4 p-3 bg-surface-container-lowest ring-1 ring-outline-variant/10 rounded-xl cursor-pointer hover:ring-primary/20 hover:bg-surface-container-low hover:translate-x-0.5 transition-all duration-300">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-primary-container flex items-center justify-center relative">
               {svc.img ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={svc.img} alt={svc.title} className="w-full h-full object-cover" />
+                <Image src={svc.img} alt={svc.title} fill className="object-cover" />
               ) : (
                 <MaterialIcon name={svc.icon ?? ''} filled className="text-primary" />
               )}
@@ -557,7 +595,7 @@ export default async function DashboardPage() {
           <Link href="/dashboard/activity" className="text-xs text-primary font-label font-medium hover:underline cursor-pointer">View all</Link>
         </div>
         <div className="divide-y divide-outline-variant/20">
-          {events.map((event: any) => (
+          {events.map((event: EventRow) => (
             <div key={event.id} className="flex items-center gap-3 px-5 py-3.5">
               <span className="material-symbols-outlined text-primary text-xl flex-shrink-0">monitoring</span>
               <div className="flex-1 min-w-0">
@@ -583,9 +621,8 @@ export default async function DashboardPage() {
       {pendingConversations > 0 && (
         <div className="bg-tertiary-container rounded-2xl p-5 mt-8">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMAGES.conversation} alt="Conversations" className="w-full h-full object-cover" />
+            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 relative">
+              <Image src={IMAGES.conversation} alt="Conversations" fill className="object-cover" />
             </div>
             <div className="flex-1">
               <h3 className="font-headline text-sm font-bold text-on-tertiary-container mb-0.5">

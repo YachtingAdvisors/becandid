@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
 import TransformationJourney from './TransformationJourney';
@@ -473,7 +473,7 @@ export default function MethodologyPage() {
       <footer className="bg-stone-950 border-t border-stone-800/30 px-6 py-16">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2 md:col-span-1">
-            <img src="/logo.png" alt="Be Candid" className="h-8 w-auto brightness-[10] mb-4" />
+            <Image src="/logo.png" alt="Be Candid" width={96} height={32} className="h-8 w-auto brightness-[10] mb-4" />
             <p className="text-slate-500 text-sm leading-relaxed">
               Digital awareness for the self-aware.
             </p>

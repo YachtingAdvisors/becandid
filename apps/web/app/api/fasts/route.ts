@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 // POST /api/fasts — create a new fast
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { z } from 'zod';
 import { safeError } from '@/lib/security';
 
@@ -22,10 +22,8 @@ export async function GET() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/fasts', 'Unauthorized', 401);
 
-    const db = createServiceClient();
-
     // Active fasts first (no completed_at, no broken_at), then past fasts
-    const { data: fasts, error } = await db
+    const { data: fasts, error } = await supabase
       .from('fasts')
       .select('*')
       .eq('user_id', user.id)
@@ -84,8 +82,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const db = createServiceClient();
-    const { data: fast, error } = await db
+    const { data: fast, error } = await supabase
       .from('fasts')
       .insert({
         user_id: user.id,

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -69,8 +70,7 @@ export default function MacSetupGuide() {
             <span className="material-symbols-outlined text-sm">arrow_back</span>
             Back to Be Candid
           </Link>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Be Candid" className="h-8 w-auto mb-6" />
+          <Image src="/logo.png" alt="Be Candid" width={96} height={32} className="h-8 w-auto mb-6" />
           <h1 className="font-headline text-3xl font-extrabold tracking-tight text-on-surface mb-3">
             Mac App Setup Guide
           </h1>

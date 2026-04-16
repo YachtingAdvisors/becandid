@@ -19,7 +19,7 @@ export async function POST(
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('POST /api/check-ins/confirm', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const checkInId = id;

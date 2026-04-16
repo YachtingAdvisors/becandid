@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const blocked = checkUserRate(aiGuideLimiter, user.id);
+    const blocked = await checkUserRate(aiGuideLimiter, user.id);
     if (blocked) return blocked;
 
     const body = await req.json().catch(() => null);

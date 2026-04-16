@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 
 export async function GET() {
@@ -10,8 +10,7 @@ export async function GET() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const db = createServiceClient();
-    const { data } = await db
+    const { data } = await supabase
       .from('users')
       .select('dashboard_layout')
       .eq('id', user.id)
@@ -35,8 +34,7 @@ export async function POST(req: NextRequest) {
       hidden: Array.isArray(body.hidden) ? body.hidden.slice(0, 50) : [],
     };
 
-    const db = createServiceClient();
-    await db
+    await supabase
       .from('users')
       .update({ dashboard_layout: layout })
       .eq('id', user.id);

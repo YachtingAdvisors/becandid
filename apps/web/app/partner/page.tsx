@@ -6,6 +6,20 @@ import ConversationStarters from '@/components/dashboard/ConversationStarters';
 import PartnerOnboardingBanner from '@/components/partner/OnboardingBanner';
 import MaterialIcon from '@/components/ui/MaterialIcon';
 
+interface CheckInRow {
+  status: string;
+  partner_confirmed_at: string | null;
+}
+
+interface AlertRow {
+  conversations?: { completed_at: string | null }[];
+}
+
+interface ConversationRow {
+  rating?: number;
+  partner_rating?: number;
+}
+
 interface PartnerOverview {
   monitoredUserId: string;
   monitoredUserName: string;
@@ -68,23 +82,23 @@ export default function PartnerIndexPage() {
       fetch('/api/conversations?role=partner&limit=100').then(r => r.json()).catch(() => ({ conversations: [] })),
     ])
       .then(([focus, checkIns, alerts, convos]) => {
-        const allCheckIns = checkIns.checkIns ?? [];
+        const allCheckIns: CheckInRow[] = checkIns.checkIns ?? [];
         const pendingCheckIns = allCheckIns
-          .filter((ci: any) => (ci.status === 'pending' || ci.status === 'partial') && !ci.partner_confirmed_at)
+          .filter((ci: CheckInRow) => (ci.status === 'pending' || ci.status === 'partial') && !ci.partner_confirmed_at)
           .length;
-        const completedCheckIns = allCheckIns.filter((ci: any) => ci.status === 'completed').length;
+        const completedCheckIns = allCheckIns.filter((ci: CheckInRow) => ci.status === 'completed').length;
         const checkInCompletionRate = allCheckIns.length > 0
           ? Math.round((completedCheckIns / allCheckIns.length) * 100)
           : 0;
 
-        const allConvos = convos.conversations ?? [];
-        const pendingConversations = (alerts.alerts ?? [])
-          .filter((a: any) => !a.conversations?.[0]?.completed_at)
+        const allConvos: ConversationRow[] = convos.conversations ?? [];
+        const pendingConversations = (alerts.alerts ?? [] as AlertRow[])
+          .filter((a: AlertRow) => !a.conversations?.[0]?.completed_at)
           .length;
 
         const ratings = allConvos
-          .map((c: any) => c.rating ?? c.partner_rating)
-          .filter((r: any) => typeof r === 'number');
+          .map((c: ConversationRow) => c.rating ?? c.partner_rating)
+          .filter((r: number | undefined): r is number => typeof r === 'number');
         const avgConversationRating = ratings.length > 0
           ? Math.round((ratings.reduce((a: number, b: number) => a + b, 0) / ratings.length) * 10) / 10
           : 0;

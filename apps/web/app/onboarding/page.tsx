@@ -14,6 +14,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import GoalSelector from '@/components/onboarding/GoalSelector';
 import PartnerPreview from '@/components/onboarding/PartnerPreview';
 import type { GoalCategory, TrackedSubstance } from '@be-candid/shared';
@@ -296,7 +297,7 @@ function OnboardingContent() {
 
       {/* Logo */}
       <div className="mb-6">
-        <img src="/logo.png" alt="Be Candid" className={`h-10 w-auto mx-auto ${isDoneStep ? '' : 'brightness-[10]'}`} style={isDoneStep ? undefined : { filter: 'brightness(10)' }} />
+        <Image src="/logo.png" alt="Be Candid" width={120} height={40} className={`h-10 w-auto mx-auto ${isDoneStep ? '' : 'brightness-[10]'}`} style={isDoneStep ? undefined : { filter: 'brightness(10)' }} />
       </div>
 
       {/* Progress bar */}

@@ -313,6 +313,77 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── Free Tools ────────────────────────────────────── */}
+        <section id="free-tools" className="py-24 lg:py-32 px-6 border-t border-white/5">
+          <div className="max-w-screen-xl mx-auto">
+            <AnimateOnScroll className="text-center max-w-2xl mx-auto mb-16" animation="fade-in-up">
+              <span className="font-label text-xs font-semibold uppercase tracking-[0.25em] text-emerald-400">No Sign-Up Required</span>
+              <h2 className="font-headline font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-white mt-4 tracking-tight">
+                Free Tools
+              </h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-emerald-400 via-cyan-400 to-primary rounded-full mx-auto mt-4" />
+              <p className="text-stone-400 mt-6 text-lg leading-relaxed">
+                Start understanding your digital habits today. These interactive assessments are completely free and private.
+              </p>
+            </AnimateOnScroll>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  icon: 'phone_android',
+                  title: 'Screen Time Calculator',
+                  desc: 'Find out how many years of your life you\'ll spend on screens — and what you could accomplish with that time instead.',
+                  href: '/tools/screen-time-calculator',
+                  color: 'bg-cyan-500/20 text-cyan-400',
+                },
+                {
+                  icon: 'quiz',
+                  title: 'Accountability Readiness Quiz',
+                  desc: 'Are you ready for real change? 8 questions that reveal whether you\'re prepared for lasting accountability.',
+                  href: '/tools/accountability-quiz',
+                  color: 'bg-amber-500/20 text-amber-400',
+                },
+                {
+                  icon: 'favorite',
+                  title: 'Relationship Health Check',
+                  desc: 'A quick assessment that reveals how your digital habits affect trust, communication, and quality time.',
+                  href: '/tools/relationship-health',
+                  color: 'bg-emerald-500/20 text-emerald-400',
+                },
+              ].map((tool, i) => (
+                <AnimateOnScroll key={tool.title} animation="fade-in-scale" delay={i * 150} threshold={0.1}>
+                  <Link href={tool.href} className="group block h-full">
+                    <article className="glass-card glass-card-hover rounded-2xl p-6 h-full flex flex-col hover:translate-y-[-8px] transition-all duration-300">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${tool.color}`}>
+                          <MaterialIcon name={tool.icon} className="text-xl" filled />
+                        </div>
+                        <h3 className="font-headline font-bold text-lg text-white leading-snug">{tool.title}</h3>
+                      </div>
+                      <p className="font-body text-stone-400 leading-relaxed text-sm flex-1">{tool.desc}</p>
+                      <div className="mt-5 inline-flex items-center gap-1.5 font-label text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors duration-200">
+                        Try it free
+                        <MaterialIcon name="arrow_forward" className="text-base group-hover:translate-x-0.5 transition-transform duration-200" />
+                      </div>
+                    </article>
+                  </Link>
+                </AnimateOnScroll>
+              ))}
+            </div>
+
+            <AnimateOnScroll className="text-center mt-10" animation="fade-in-up" delay={450}>
+              <Link
+                href="/tools"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-label font-bold text-sm text-stone-300 hover:text-white glass-card hover:bg-white/[0.06] transition-all duration-200"
+              >
+                <MaterialIcon name="build" className="text-lg text-emerald-400" />
+                View all free tools
+                <MaterialIcon name="arrow_forward" className="text-base" />
+              </Link>
+            </AnimateOnScroll>
+          </div>
+        </section>
+
         {/* ── The Journey to Integrity ─────────────────────── */}
         <section id="journey" className="py-24 lg:py-32 px-6 border-t border-white/5">
           <div className="max-w-screen-xl mx-auto">
@@ -587,8 +658,7 @@ export default function LandingPage() {
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
               {/* Brand */}
               <div className="col-span-2 lg:col-span-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mb-4 brightness-[10]" />
+                <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto mb-4 brightness-[10]" />
                 <p className="font-body text-sm text-stone-500 leading-relaxed max-w-xs">
                   A digital sanctuary for integrity, growth, and honest living.
                 </p>

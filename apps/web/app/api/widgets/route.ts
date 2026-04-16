@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { getDefaultWidgets, WIDGET_REGISTRY } from '@/lib/widgets/registry';
 
 const VALID_IDS = new Set(WIDGET_REGISTRY.map(w => w.id));
@@ -21,7 +21,7 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const db = createServiceClient();
+  const db = supabase;
   const { data: profile } = await db.from('users')
     .select('dashboard_widgets, goals, foundational_motivator')
     .eq('id', user.id)
@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest) {
   const alwaysOn = WIDGET_REGISTRY.filter(w => w.alwaysOn).map(w => w.id);
   const finalWidgets = [...new Set([...alwaysOn, ...widgets])];
 
-  const db = createServiceClient();
+  const db = supabase;
   await db.from('users').update({ dashboard_widgets: finalWidgets }).eq('id', user.id);
 
   return NextResponse.json({ widgets: finalWidgets });
@@ -92,7 +92,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: `Cannot remove ${widgetDef.name}` }, { status: 400 });
   }
 
-  const db = createServiceClient();
+  const db = supabase;
   const { data: profile } = await db.from('users')
     .select('dashboard_widgets, goals, foundational_motivator')
     .eq('id', user.id)

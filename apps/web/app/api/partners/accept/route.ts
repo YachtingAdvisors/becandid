@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   await ensureUserRow(db, user);
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const { data: partner } = await db

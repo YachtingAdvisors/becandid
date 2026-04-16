@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { encrypt, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
@@ -24,8 +24,7 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const db = createServiceClient();
-    const { data: values, error } = await db
+    const { data: values, error } = await supabase
       .from('user_values')
       .select('*')
       .eq('user_id', user.id)
@@ -58,7 +57,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -80,10 +79,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const db = createServiceClient();
-
     // Delete existing values and replace with new set
-    await db.from('user_values').delete().eq('user_id', user.id);
+    await supabase.from('user_values').delete().eq('user_id', user.id);
 
     const rows = values.map((v) => ({
       user_id: user.id,
@@ -92,7 +89,7 @@ export async function POST(req: NextRequest) {
       rival_conflict: v.rival_conflict ? encrypt(v.rival_conflict.trim(), user.id) : null,
     }));
 
-    const { error } = await db.from('user_values').insert(rows);
+    const { error } = await supabase.from('user_values').insert(rows);
     if (error) return safeError('POST /api/values', error);
 
     return NextResponse.json({ ok: true, count: rows.length });

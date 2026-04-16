@@ -648,21 +648,29 @@ export interface PatternAnalysis {
 export async function analyzePatterns(userId: string): Promise<PatternAnalysis> {
   const db = createServiceClient();
 
-  // Fetch data in parallel
+  // Bound queries to the last 90 days to prevent unbounded growth
+  const ninetyDaysAgo = new Date();
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+  const cutoff = ninetyDaysAgo.toISOString();
+
+  // Fetch data in parallel — limited to last 90 days + hard row caps
   const [eventsRes, journalRes, focusRes] = await Promise.all([
     db.from('events')
       .select('category, severity, app_name, timestamp, platform')
       .eq('user_id', userId)
+      .gte('timestamp', cutoff)
       .order('timestamp', { ascending: false })
-      .limit(5000),
+      .limit(1000),
     db.from('stringer_journal')
       .select('tags, mood, tributaries, longing, created_at')
       .eq('user_id', userId)
+      .gte('created_at', cutoff)
       .order('created_at', { ascending: false })
-      .limit(500),
+      .limit(200),
     db.from('focus_segments')
       .select('date, status, segment')
       .eq('user_id', userId)
+      .gte('date', cutoff)
       .order('date', { ascending: false })
       .limit(180),
   ]);

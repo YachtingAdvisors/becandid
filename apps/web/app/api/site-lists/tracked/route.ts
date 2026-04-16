@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 
 // Category severity ordering (most questionable first)
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const db = createServiceClient();
+    const db = supabase;
 
     // Get unique domains from events with category and count
     const { data: events } = await db

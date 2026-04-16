@@ -1,6 +1,7 @@
 import { createServiceClient } from '@/lib/supabase';
 import { getBadgeByKey, TIER_STYLES, TIER_LABELS } from '@/lib/badges';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface Props {
@@ -86,8 +87,7 @@ export default async function ShareMilestonePage({ params }: Props) {
     <main className="min-h-screen flex flex-col items-center justify-center bg-background p-6">
       {/* Header */}
       <Link href="/" className="mb-8">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
+        <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto" />
       </Link>
 
       {/* Achievement card */}

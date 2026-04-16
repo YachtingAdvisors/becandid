@@ -10,6 +10,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import DarkModeToggle from '@/components/DarkModeToggle';
 import NotificationCenter, { NotificationBadge } from '@/components/dashboard/NotificationCenter';
@@ -205,7 +206,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
       {/* ---- Logo area ---- */}
       <div className="px-5 pt-6 pb-4">
         <div className="flex items-center gap-2.5">
-          <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
+          <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto" />
           <span className="font-headline font-bold text-lg text-[#276772] dark:text-cyan-300">Be Candid</span>
         </div>
         <p className="mt-1 pl-[3.25rem] text-[10px] uppercase tracking-widest text-[#2b3435]/40 dark:text-stone-500 font-headline font-medium">
@@ -417,8 +418,7 @@ export default function Sidebar({ userName, userEmail, avatarUrl, monitoringEnab
         >
           <div className="relative">
             {avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={avatarUrl} alt={`${userName}'s avatar`} className="w-9 h-9 rounded-full object-cover shrink-0" />
+              <Image src={avatarUrl} alt={`${userName}'s avatar`} width={36} height={36} className="w-9 h-9 rounded-full object-cover shrink-0" />
             ) : (
               <div className="w-9 h-9 rounded-full bg-[#276772]/10 flex items-center justify-center shrink-0">
                 <span className="text-sm font-headline font-bold text-[#276772]">{userName.charAt(0).toUpperCase()}</span>

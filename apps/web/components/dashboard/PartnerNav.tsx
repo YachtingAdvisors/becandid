@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 interface PartnerNavProps {
@@ -24,8 +25,7 @@ export default function PartnerNav({ monitoredName }: PartnerNavProps) {
         <div className="flex items-center justify-between py-3">
           <div className="flex items-center gap-3">
             <Link href="/dashboard" className="flex items-center gap-2 cursor-pointer">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="Be Candid" className="h-10 w-auto" />
+              <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto" />
             </Link>
             <span className="text-on-surface-variant text-xs">·</span>
             <span className="text-xs font-medium text-primary">{monitoredName}</span>

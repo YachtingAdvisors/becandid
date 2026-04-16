@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,7 +15,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-dark-auth/70 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-lg">
-            <img src="/logo.png" alt="Be Candid" className="h-10 w-auto brightness-[10]" />
+            <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto brightness-[10]" />
           </Link>
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="text-[13px] font-label text-stone-500 hover:text-stone-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Privacy</Link>

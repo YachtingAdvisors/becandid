@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -12,8 +13,7 @@ export default function DeleteAccountPage() {
       <div className="max-w-2xl mx-auto px-6 py-16">
         {/* Header */}
         <div className="flex items-center gap-3 mb-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Be Candid" className="h-8 w-auto" />
+          <Image src="/logo.png" alt="Be Candid" width={96} height={32} className="h-8 w-auto" />
           <span className="text-on-surface-variant font-label text-sm">/</span>
           <span className="font-label text-sm text-on-surface-variant">Account Deletion</span>
         </div>

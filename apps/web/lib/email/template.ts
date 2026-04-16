@@ -159,6 +159,17 @@ export function emailWrapper(params: {
           </table>
         </td></tr>
 
+        <!-- Referral CTA -->
+        <tr><td style="padding:16px 0 8px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#f0fafb 0%,#e8f4f8 100%);border:1px solid #d1e9ef;border-radius:12px;">
+            <tr><td style="padding:16px 20px;text-align:center;">
+              <p style="margin:0 0 8px;color:#226779;font-size:14px;font-weight:700;line-height:1.4;">Know someone who could use Be Candid?</p>
+              <p style="margin:0 0 12px;color:#6b7280;font-size:12px;line-height:1.5;">Share the gift of digital accountability with a friend or partner.</p>
+              <a href="${APP_URL}/dashboard/referrals" target="_blank" style="display:inline-block;background:#226779;color:#ffffff;padding:10px 24px;border-radius:100px;text-decoration:none;font-weight:600;font-size:13px;">Invite a Friend</a>
+            </td></tr>
+          </table>
+        </td></tr>
+
         <!-- Footer links -->
         <tr><td style="text-align:center;">
           <p class="text-footer" style="margin:0 0 6px;color:#9ca3af;font-size:11px;line-height:1.6;">

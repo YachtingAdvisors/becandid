@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import Link from 'next/link';
@@ -69,8 +70,7 @@ export default function TherapistAcceptPage() {
       <div className="w-full max-w-sm relative z-10">
         {/* Logo */}
         <div className="text-center mb-6">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto mb-4" />
+          <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto mx-auto mb-4" />
         </div>
 
         {/* Loading state */}

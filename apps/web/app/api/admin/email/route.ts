@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
   }
 
-  const blocked = checkUserRate(accountLimiter, adminAccess.user.id);
+  const blocked = await checkUserRate(accountLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   let body: { subject?: string; body?: string; audience?: string };

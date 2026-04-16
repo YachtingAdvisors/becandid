@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { onJournalEntry } from '@/lib/relationshipHooks';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
@@ -201,7 +201,7 @@ export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const exportType = url.searchParams.get('export');
 
-  const db = createServiceClient();
+  const db = supabase;
   let query = db.from('stringer_journal').select('*')
     .eq('user_id', user.id).order('created_at', { ascending: false });
 
@@ -276,7 +276,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -287,7 +287,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'At least one field required' }, { status: 400 });
   }
 
-  const db = createServiceClient();
+  const db = supabase;
   const rawEntry = {
     user_id: user.id,
     freewrite: freewrite?.trim() || null,
@@ -325,7 +325,7 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -333,7 +333,7 @@ export async function PATCH(req: NextRequest) {
   const { id, freewrite, tributaries, longing, roadmap, mood, tags } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-  const db = createServiceClient();
+  const db = supabase;
   const rawUpdate = {
     freewrite: freewrite?.trim() || null,
     tributaries: tributaries?.trim() || null,
@@ -357,13 +357,13 @@ export async function DELETE(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const id = new URL(req.url).searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
-  const db = createServiceClient();
+  const db = supabase;
   const { error } = await db.from('stringer_journal').delete().eq('id', id).eq('user_id', user.id);
   if (error) return safeError('DELETE /api/journal', error);
   return NextResponse.json({ deleted: true });

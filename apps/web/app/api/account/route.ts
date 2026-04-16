@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/account', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(accountLimiter, user.id);
+    const blocked = await checkUserRate(accountLimiter, user.id);
     if (blocked) return blocked;
 
     const db = createServiceClient();
@@ -99,7 +99,7 @@ export async function DELETE(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('DELETE /api/account', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(accountLimiter, user.id);
+    const blocked = await checkUserRate(accountLimiter, user.id);
     if (blocked) return blocked;
 
     const body = await req.json().catch(() => ({}));
@@ -136,36 +136,21 @@ export async function DELETE(req: NextRequest) {
     const db = createServiceClient();
     const userId = user.id;
 
-    // Audit log BEFORE deletion (since user_id will be gone after)
+    // Audit log BEFORE deletion (audit_log.user_id is SET NULL on delete,
+    // so the row survives for compliance even after the user is gone)
     await auditLogDb(db, {
       action: 'account.deleted',
       userId,
       metadata: { email: user.email },
     });
 
-    // Delete in dependency order
-    await Promise.all([
-      db.from('trust_points').delete().eq('user_id', userId),
-      db.from('milestones').delete().eq('user_id', userId),
-      db.from('focus_segments').delete().eq('user_id', userId),
-      db.from('nudges').delete().eq('user_id', userId),
-      db.from('vulnerability_windows').delete().eq('user_id', userId),
-      db.from('encouragements').delete().or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`),
-      db.from('user_sessions').delete().eq('user_id', userId),
-    ]);
-
-    await db.from('check_ins').delete().eq('user_id', userId);
-    // Also clean check-ins where user was the partner
-    await db.from('check_ins').update({ partner_user_id: null }).eq('partner_user_id', userId);
-    await db.from('conversations').delete().eq('user_id', userId);
-
-    const { data: eventIds } = await db.from('events').select('id').eq('user_id', userId);
-    if (eventIds?.length) {
-      await db.from('alerts').delete().in('event_id', eventIds.map(e => e.id));
-    }
-    await db.from('events').delete().eq('user_id', userId);
-    await db.from('partners').delete().or(`user_id.eq.${userId},partner_user_id.eq.${userId}`);
+    // Delete user row — all related data is removed via ON DELETE CASCADE
+    // at the database level (events, alerts, conversations, check_ins,
+    // partners, trust_points, milestones, focus_segments, nudges,
+    // vulnerability_windows, encouragements, user_sessions, etc.)
     await db.from('users').delete().eq('id', userId);
+
+    // Remove the auth.users entry last
     await db.auth.admin.deleteUser(userId);
 
     return NextResponse.json({ success: true, message: 'Account and all data permanently deleted.' });

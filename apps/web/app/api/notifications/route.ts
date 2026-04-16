@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 // GET /api/notifications — fetch in-app notifications from multiple tables
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
@@ -20,10 +20,10 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/notifications', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
-    const db = createServiceClient();
+    const db = supabase;
     const markRead = req.nextUrl.searchParams.get('mark_read') === 'true';
 
     // If marking all read, update nudges and milestones

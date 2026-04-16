@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 // Update the user's timezone setting
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
 const VALID_TIMEZONES = [
@@ -20,7 +20,7 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const { timezone } = await req.json();
@@ -29,8 +29,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid timezone' }, { status: 400 });
   }
 
-  const db = createServiceClient();
-  const { error } = await db
+  const { error } = await supabase
     .from('users')
     .update({ timezone, updated_at: new Date().toISOString() })
     .eq('id', user.id);

@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
 import { encrypt, decrypt } from '@/lib/encryption';
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
   const undelivered = url.searchParams.get('undelivered') === 'true';
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
 
-  const db = createServiceClient();
+  const db = supabase;
   let query = db.from('future_letters').select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Mood must be between 1 and 5' }, { status: 400 });
   }
 
-  const db = createServiceClient();
+  const db = supabase;
   const { data: letterRow, error } = await db.from('future_letters').insert({
     user_id: user.id,
     letter: encrypt(letter.trim(), user.id),
@@ -101,7 +101,7 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -115,7 +115,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid delivery_trigger' }, { status: 400 });
   }
 
-  const db = createServiceClient();
+  const db = supabase;
 
   // Verify ownership and that it hasn't been delivered yet
   const { data: existing } = await db.from('future_letters').select('id, delivered_at')

@@ -50,7 +50,7 @@ async function verifyAdmin(req: NextRequest) {
     };
   }
 
-  const blocked = checkUserRate(adminLimiter, adminAccess.user.id);
+  const blocked = await checkUserRate(adminLimiter, adminAccess.user.id);
   if (blocked) return { error: blocked };
 
   return { user: adminAccess.user };

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { GoalCategory } from '@be-candid/shared';
 import { GOAL_LABELS, getCategoryEmoji } from '@be-candid/shared';
@@ -404,8 +405,7 @@ export default function PartnerPage() {
               They&apos;ll see your focus status, never your browsing.
             </p>
             <div className="flex items-center justify-center gap-3 mb-3 px-4 py-3 rounded-2xl bg-primary-container/20">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Simeon_Solomon_-_King_Solomon.jpg/200px-Simeon_Solomon_-_King_Solomon.jpg" alt="King Solomon" className="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20 shrink-0" />
+              <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Simeon_Solomon_-_King_Solomon.jpg/200px-Simeon_Solomon_-_King_Solomon.jpg" alt="King Solomon" width={32} height={32} className="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20 shrink-0" />
               <p className="text-xs text-on-surface font-body italic text-left">&ldquo;A cord of three strands is not easily broken.&rdquo; <span className="not-italic font-label font-medium text-on-surface-variant">&mdash; King Solomon</span></p>
             </div>
             <p className="text-[10px] text-primary font-label font-medium mb-6">

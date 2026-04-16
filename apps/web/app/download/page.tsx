@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { createServerSupabaseClient } from '@/lib/supabase';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
@@ -423,8 +424,7 @@ export default async function DownloadPage() {
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
               {/* Brand */}
               <div className="col-span-2 lg:col-span-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mb-4 brightness-[10]" />
+                <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto mb-4 brightness-[10]" />
                 <p className="font-body text-sm text-stone-500 leading-relaxed max-w-xs">
                   A digital sanctuary for integrity, growth, and honest living.
                 </p>

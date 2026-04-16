@@ -223,7 +223,7 @@ export async function middleware(request: NextRequest) {
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
       cookies: {
         getAll() { return request.cookies.getAll(); },
-        setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
           cookiesToSet.forEach(({ name, value, options }) => {
             request.cookies.set(name, value);
             response.cookies.set(name, value, {
@@ -286,40 +286,42 @@ export async function middleware(request: NextRequest) {
         }
       }
 
-      if (isAdminRoute && userIsAdmin) {
+      // Single MFA check — cache result for both admin and app route logic
+      let aalData: { currentLevel?: string | null; nextLevel?: string | null } | null = null;
+      if (isAdminRoute && userIsAdmin || isProtectedAppRoute) {
         try {
           const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-
-          if (aal.data?.currentLevel !== 'aal2') {
-            if (pathname.startsWith('/api/')) {
-              return jsonError('Admin access requires MFA', 403);
-            }
-            const url = request.nextUrl.clone();
-            url.pathname = '/auth/mfa-verify';
-            url.searchParams.set('redirect', pathname);
-            const redir = NextResponse.redirect(url);
-            applyHeaders(redir);
-            return redir;
-          }
+          aalData = aal.data ?? null;
         } catch {
-          return privilegedFailure(request, 'Unable to verify admin MFA');
+          if (isAdminRoute && userIsAdmin) {
+            return privilegedFailure(request, 'Unable to verify admin MFA');
+          }
+          // Keep non-admin app routes available if MFA status lookup fails.
         }
       }
 
-      if (isProtectedAppRoute) {
-        try {
-          const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-
-          if (aal.data?.currentLevel === 'aal1' && aal.data?.nextLevel === 'aal2') {
-            const url = request.nextUrl.clone();
-            url.pathname = '/auth/mfa-verify';
-            url.searchParams.set('redirect', pathname);
-            const redir = NextResponse.redirect(url);
-            applyHeaders(redir);
-            return redir;
+      if (isAdminRoute && userIsAdmin && aalData) {
+        if (aalData.currentLevel !== 'aal2') {
+          if (pathname.startsWith('/api/')) {
+            return jsonError('Admin access requires MFA', 403);
           }
-        } catch {
-          // Keep non-admin app routes available if MFA status lookup fails.
+          const url = request.nextUrl.clone();
+          url.pathname = '/auth/mfa-verify';
+          url.searchParams.set('redirect', pathname);
+          const redir = NextResponse.redirect(url);
+          applyHeaders(redir);
+          return redir;
+        }
+      }
+
+      if (isProtectedAppRoute && aalData) {
+        if (aalData.currentLevel === 'aal1' && aalData.nextLevel === 'aal2') {
+          const url = request.nextUrl.clone();
+          url.pathname = '/auth/mfa-verify';
+          url.searchParams.set('redirect', pathname);
+          const redir = NextResponse.redirect(url);
+          applyHeaders(redir);
+          return redir;
         }
       }
     }

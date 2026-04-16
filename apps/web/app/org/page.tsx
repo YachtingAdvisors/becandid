@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import PublicNav from '@/components/PublicNav';
 
@@ -426,8 +427,7 @@ export default function OrgPage() {
           <div className="max-w-5xl mx-auto px-6 py-12">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Be Candid" className="h-8 w-auto brightness-[10]" />
+                <Image src="/logo.png" alt="Be Candid" width={96} height={32} className="h-8 w-auto brightness-[10]" />
                 <span className="font-label text-xs font-bold text-emerald-400 uppercase tracking-widest">.org</span>
               </div>
               <div className="flex gap-6 text-xs font-label text-stone-500">

@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 // POST /api/milestones/share — generate a share token for a milestone
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { z } from 'zod';
 import crypto from 'crypto';
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
     }
 
-    const db = createServiceClient();
+    const db = supabase;
 
     // Find the user's milestone
     const { data: milestone } = await db

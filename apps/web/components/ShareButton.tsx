@@ -55,6 +55,23 @@ export default function ShareButton({ url, title, text, className = '', size = '
     setShowMenu(false);
   }, [fullUrl]);
 
+  const shareToLinkedIn = useCallback(() => {
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fullUrl)}`,
+      '_blank',
+      'width=550,height=420',
+    );
+    setShowMenu(false);
+  }, [fullUrl]);
+
+  const shareToWhatsApp = useCallback(() => {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(`${text} ${fullUrl}`)}`,
+      '_blank',
+    );
+    setShowMenu(false);
+  }, [text, fullUrl]);
+
   const iconSize = size === 'sm' ? 'text-base' : 'text-xl';
   const padSize = size === 'sm' ? 'p-1.5' : 'p-2';
 
@@ -94,6 +111,20 @@ export default function ShareButton({ url, title, text, className = '', size = '
             >
               <span className="material-symbols-outlined text-base">open_in_new</span>
               Share on Facebook
+            </button>
+            <button
+              onClick={shareToLinkedIn}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-label text-on-surface hover:bg-surface-container-low transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-base">open_in_new</span>
+              Share on LinkedIn
+            </button>
+            <button
+              onClick={shareToWhatsApp}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-label text-on-surface hover:bg-surface-container-low transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-base">open_in_new</span>
+              Share on WhatsApp
             </button>
           </div>
         </>

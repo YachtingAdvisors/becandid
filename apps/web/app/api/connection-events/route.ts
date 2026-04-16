@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError } from '@/lib/security';
 
@@ -18,7 +18,6 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const db = createServiceClient();
   const now = new Date();
 
   // Build last 7 days array (newest first)
@@ -31,7 +30,7 @@ export async function GET() {
 
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  const { data: events } = await db
+  const { data: events } = await supabase
     .from('connection_events')
     .select('created_at, connection_type')
     .eq('user_id', user.id)
@@ -59,7 +58,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json();
@@ -70,9 +69,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid connection type' }, { status: 400 });
   }
 
-  const db = createServiceClient();
-
-  const { error } = await db.from('connection_events').insert({
+  const { error } = await supabase.from('connection_events').insert({
     user_id: user.id,
     connection_type: type,
     created_at: new Date().toISOString(),

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import Link from 'next/link';
@@ -16,6 +17,7 @@ export default function InvitePage() {
   const [accepting, setAccepting] = useState(false);
   const [error, setError] = useState('');
   const [showSignup, setShowSignup] = useState(false);
+  const [quickAccept, setQuickAccept] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -30,6 +32,9 @@ export default function InvitePage() {
       .catch(() => setError('Failed to load invite'))
       .finally(() => setLoading(false));
   }, [token]);
+
+  // Destination after accept: quick accept skips onboarding
+  const postAcceptPath = quickAccept ? '/partner' : '/partner/onboarding';
 
   async function handleAccept() {
     setAccepting(true);
@@ -56,7 +61,10 @@ export default function InvitePage() {
       return;
     }
 
-    router.push('/partner/onboarding');
+    if (quickAccept && typeof window !== 'undefined') {
+      localStorage.setItem('partner_onboarding_complete', 'true');
+    }
+    router.push(postAcceptPath);
   }
 
   async function handleSignUpAndAccept(e: React.FormEvent) {
@@ -103,7 +111,10 @@ export default function InvitePage() {
         return;
       }
 
-      router.push('/partner/onboarding');
+      if (quickAccept && typeof window !== 'undefined') {
+        localStorage.setItem('partner_onboarding_complete', 'true');
+      }
+      router.push(postAcceptPath);
     } else {
       router.push(`/auth/signin?redirect=/invite/${token}&message=verify_email_then_accept`);
     }
@@ -147,8 +158,7 @@ export default function InvitePage() {
 
       <div className="w-full max-w-sm relative z-10">
         <div className="text-center mb-6">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Be Candid" className="h-10 w-auto mx-auto mb-4" />
+          <Image src="/logo.png" alt="Be Candid" width={120} height={40} className="h-10 w-auto mx-auto mb-4" />
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
             <span className="material-symbols-outlined text-primary text-4xl">favorite</span>
           </div>
@@ -169,36 +179,98 @@ export default function InvitePage() {
         )}
 
         {!showSignup ? (
-          <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
-            {/* What being a partner means */}
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                <p className="text-sm font-body text-on-surface-variant">You&apos;ll receive alerts with data-driven conversation guides &mdash; no judgment, just support</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                <p className="text-sm font-body text-on-surface-variant">No setup required &mdash; just accept and you&apos;re connected</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                <p className="text-sm font-body text-on-surface-variant">Optionally start your own journey and enjoy the full Be Candid experience</p>
-              </div>
+          <div className="space-y-4">
+            {/* Quick Accept / Full Tour toggle */}
+            <div className="flex rounded-full p-1 bg-surface-container-low ring-1 ring-outline-variant/10">
+              <button
+                onClick={() => setQuickAccept(false)}
+                className={`flex-1 py-2 text-xs font-label font-medium rounded-full transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  !quickAccept ? 'bg-surface-container-lowest shadow-sm text-on-surface' : 'text-on-surface-variant'
+                }`}
+              >
+                <span className="material-symbols-outlined text-sm">school</span>
+                Full Overview
+              </button>
+              <button
+                onClick={() => setQuickAccept(true)}
+                className={`flex-1 py-2 text-xs font-label font-medium rounded-full transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  quickAccept ? 'bg-surface-container-lowest shadow-sm text-on-surface' : 'text-on-surface-variant'
+                }`}
+              >
+                <span className="material-symbols-outlined text-sm">bolt</span>
+                Quick Accept
+              </button>
             </div>
 
-            {/* Bonus callout */}
-            <div className="px-4 py-3 rounded-2xl bg-amber-50 ring-1 ring-amber-200/50">
-              <p className="text-xs text-amber-800 font-body leading-relaxed">
-                <span className="material-symbols-outlined text-amber-600 text-sm align-text-bottom mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>card_giftcard</span>
-                <strong>Bonus:</strong> If you also add a partner of your own during signup, you get <strong>30 free days</strong> instead of the standard 15.
-              </p>
-            </div>
+            {quickAccept ? (
+              /* ── Quick Accept path ─────────────────────────── */
+              <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
+                <div className="rounded-2xl bg-primary/5 ring-1 ring-primary/10 p-4">
+                  <p className="text-sm font-body text-on-surface-variant leading-relaxed">
+                    As a <strong className="text-on-surface">Be Candid partner</strong>, you&apos;ll see
+                    streak counts and flag summaries that show <em>when</em> something happened and how
+                    serious it was &mdash; but <strong className="text-on-surface">never URLs, screenshots,
+                    browsing history, or journal content</strong>. When a flag appears you&apos;ll get a
+                    conversation guide with empathetic talking points so you can show up with care, not
+                    judgment. Your role is presence, not surveillance.
+                  </p>
+                </div>
 
-            <button onClick={handleAccept} disabled={accepting}
-              className="w-full py-3.5 bg-primary text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-lg">check_circle</span>
-              {accepting ? 'Accepting...' : 'Accept & Support ' + (invite?.inviter_name?.split(' ')[0] ?? 'Them')}
-            </button>
+                <div className="flex items-start gap-2.5 px-1">
+                  <span className="material-symbols-outlined text-primary text-base mt-0.5 shrink-0">info</span>
+                  <p className="text-xs font-body text-on-surface-variant leading-relaxed">
+                    You can review the full partner guide anytime from your dashboard after accepting.
+                  </p>
+                </div>
+
+                {/* Bonus callout */}
+                <div className="px-4 py-3 rounded-2xl bg-amber-50 ring-1 ring-amber-200/50">
+                  <p className="text-xs text-amber-800 font-body leading-relaxed">
+                    <span className="material-symbols-outlined text-amber-600 text-sm align-text-bottom mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>card_giftcard</span>
+                    <strong>Bonus:</strong> If you also add a partner of your own during signup, you get <strong>30 free days</strong> instead of the standard 15.
+                  </p>
+                </div>
+
+                <button onClick={handleAccept} disabled={accepting}
+                  className="w-full py-3.5 bg-primary text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer flex items-center justify-center gap-2">
+                  <span className="material-symbols-outlined text-lg">bolt</span>
+                  {accepting ? 'Accepting...' : 'Accept & Get Started'}
+                </button>
+              </div>
+            ) : (
+              /* ── Full overview path (original) ─────────────── */
+              <div className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">
+                {/* What being a partner means */}
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    <p className="text-sm font-body text-on-surface-variant">You&apos;ll receive alerts with data-driven conversation guides &mdash; no judgment, just support</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    <p className="text-sm font-body text-on-surface-variant">No setup required &mdash; just accept and you&apos;re connected</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-emerald-500 text-lg mt-0.5 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                    <p className="text-sm font-body text-on-surface-variant">Optionally start your own journey and enjoy the full Be Candid experience</p>
+                  </div>
+                </div>
+
+                {/* Bonus callout */}
+                <div className="px-4 py-3 rounded-2xl bg-amber-50 ring-1 ring-amber-200/50">
+                  <p className="text-xs text-amber-800 font-body leading-relaxed">
+                    <span className="material-symbols-outlined text-amber-600 text-sm align-text-bottom mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>card_giftcard</span>
+                    <strong>Bonus:</strong> If you also add a partner of your own during signup, you get <strong>30 free days</strong> instead of the standard 15.
+                  </p>
+                </div>
+
+                <button onClick={handleAccept} disabled={accepting}
+                  className="w-full py-3.5 bg-primary text-on-primary text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer flex items-center justify-center gap-2">
+                  <span className="material-symbols-outlined text-lg">check_circle</span>
+                  {accepting ? 'Accepting...' : 'Accept & Support ' + (invite?.inviter_name?.split(' ')[0] ?? 'Them')}
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <form onSubmit={handleSignUpAndAccept} className="bg-surface-container-lowest rounded-2xl ring-1 ring-outline-variant/10 p-6 space-y-4">

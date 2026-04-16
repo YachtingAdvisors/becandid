@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { encrypt, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { sanitizeText, safeError } from '@/lib/security';
@@ -45,8 +45,7 @@ export async function GET(req: NextRequest) {
   const date = url.searchParams.get('date');
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '30'), 100);
 
-  const db = createServiceClient();
-  let query = db
+  let query = supabase
     .from('daily_inventory')
     .select('*')
     .eq('user_id', user.id)
@@ -72,7 +71,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const blocked = checkUserRate(actionLimiter, user.id);
+  const blocked = await checkUserRate(actionLimiter, user.id);
   if (blocked) return blocked;
 
   const body = await req.json().catch(() => null);
@@ -105,10 +104,9 @@ export async function POST(req: NextRequest) {
   };
 
   const encrypted = encryptInventory(raw, user.id);
-  const db = createServiceClient();
 
   // Upsert: if entry for this date exists, update it
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from('daily_inventory')
     .upsert(encrypted, { onConflict: 'user_id,date' })
     .select()

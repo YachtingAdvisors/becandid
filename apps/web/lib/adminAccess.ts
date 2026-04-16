@@ -1,20 +1,9 @@
-import type { User } from '@supabase/supabase-js';
+import type { SupabaseClient, User } from '@supabase/supabase-js';
 
 export const PLATFORM_ROLE_VALUES = ['user', 'admin'] as const;
 export type PlatformRole = typeof PLATFORM_ROLE_VALUES[number];
 
-type RoleLookupClient = {
-  from: (table: 'users') => {
-    select: (columns: string) => {
-      eq: (column: string, value: string) => {
-        maybeSingle: () => Promise<{
-          data: { platform_role?: string | null } | null;
-          error: { code?: string; message?: string } | null;
-        }>;
-      };
-    };
-  };
-};
+type RoleLookupClient = SupabaseClient;
 
 type AdminAccessSuccess = {
   ok: true;

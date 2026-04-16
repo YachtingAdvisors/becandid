@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 // PATCH /api/auth/notifications — update notification preferences
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError, auditLog } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { z } from 'zod';
@@ -25,11 +25,10 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/auth/notifications', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
-    const db = createServiceClient();
-    const { data: profile } = await db
+    const { data: profile } = await supabase
       .from('users')
       .select('notification_prefs')
       .eq('id', user.id)
@@ -47,7 +46,7 @@ export async function PATCH(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('PATCH /api/auth/notifications', 'Unauthorized', 401);
 
-    const blocked = checkUserRate(actionLimiter, user.id);
+    const blocked = await checkUserRate(actionLimiter, user.id);
     if (blocked) return blocked;
 
     const body = await req.json().catch(() => null);
@@ -58,10 +57,8 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid preferences' }, { status: 400 });
     }
 
-    const db = createServiceClient();
-
     // Merge with existing prefs
-    const { data: current } = await db
+    const { data: current } = await supabase
       .from('users')
       .select('notification_prefs')
       .eq('id', user.id)
@@ -69,7 +66,7 @@ export async function PATCH(req: NextRequest) {
 
     const merged = { ...(current?.notification_prefs ?? {}), ...parsed.data };
 
-    await db.from('users')
+    await supabase.from('users')
       .update({ notification_prefs: merged })
       .eq('id', user.id);
 

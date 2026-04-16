@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: adminAccess.error }, { status: adminAccess.status });
   }
 
-  const blocked = checkUserRate(adminLimiter, adminAccess.user.id);
+  const blocked = await checkUserRate(adminLimiter, adminAccess.user.id);
   if (blocked) return blocked;
 
   const db = createServiceClient();
