@@ -17,6 +17,12 @@ import { BLOG_POSTS_STATS3 } from './posts-stats3';
 import { BLOG_POSTS_STATS4 } from './posts-stats4';
 import { BLOG_POSTS_STATS5 } from './posts-stats5';
 
+export interface BlogImage {
+  url: string;
+  alt: string;
+  credit?: string; // photographer name
+}
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -25,7 +31,8 @@ export interface BlogPost {
   author: string;
   readTime: string;
   tags: string[];
-  image?: string; // Featured image URL
+  image?: string; // Featured image URL (hero)
+  images?: BlogImage[]; // Inline article images
   content: string; // HTML
 }
 
