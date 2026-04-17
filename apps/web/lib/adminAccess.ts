@@ -49,26 +49,23 @@ export async function getPlatformRoleForUser(
   };
 }
 
+export const ADMIN_EMAIL = 'slaser90@gmail.com';
+
 export async function requireAdminAccess(
-  supabase: RoleLookupClient,
+  _supabase: RoleLookupClient,
   user: User | null,
 ): Promise<AdminAccessSuccess | AdminAccessFailure> {
   if (!user) {
     return { ok: false, error: 'Unauthorized', status: 401 };
   }
 
-  const roleResult = await getPlatformRoleForUser(supabase, user.id);
-  if (!roleResult.ok) {
-    return { ok: false, error: 'Unable to verify admin access', status: 503 };
-  }
-
-  if (!isPlatformAdminRole(roleResult.role)) {
+  if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
     return { ok: false, error: 'Forbidden', status: 403 };
   }
 
   return {
     ok: true,
     user,
-    role: roleResult.role,
+    role: 'admin',
   };
 }

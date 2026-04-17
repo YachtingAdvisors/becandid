@@ -232,7 +232,7 @@ export default function FocusBoard() {
             <span className="material-symbols-outlined text-sm text-on-surface-variant/50 group-hover:text-primary transition-colors">info</span>
           </p>
           {/* Tooltip */}
-          <div className="absolute left-0 right-0 top-full mt-2 z-50 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
+          <div className="absolute left-0 top-full mt-2 z-50 w-[min(280px,calc(100vw-2rem))] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
             <div className="bg-on-surface text-white rounded-2xl p-4 shadow-xl text-xs leading-relaxed">
               <p className="font-label font-bold text-sm mb-2">How you earn Reputation Points</p>
               <ul className="space-y-1.5">

@@ -39,6 +39,27 @@ const tools = [
     icon: '💛',
     tag: 'For Couples',
   },
+  {
+    title: 'Phone Addiction Severity Assessment',
+    description: 'A 10-question validated-style assessment measuring compulsive phone use. Get your severity score and a personalized next step.',
+    href: '/tools/phone-addiction-severity',
+    icon: '📊',
+    tag: 'Assessment',
+  },
+  {
+    title: 'Couple\'s Digital Trust Calculator',
+    description: '12 questions for couples to measure digital trust. Score, percentile, and the areas most worth focusing on first.',
+    href: '/tools/digital-trust-calculator',
+    icon: '🤝',
+    tag: 'For Couples',
+  },
+  {
+    title: 'Digital Shadow Self Discovery',
+    description: 'Which shadow pattern runs your scroll? Find your archetype — Numb-er, Performer, Escaper, or Controller — in 8 questions.',
+    href: '/tools/digital-shadow-self',
+    icon: '🪞',
+    tag: 'Stringer Framework',
+  },
 ];
 
 const faqItems = [

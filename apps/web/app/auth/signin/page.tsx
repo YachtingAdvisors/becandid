@@ -4,7 +4,6 @@ import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
-import MFAChallenge from '@/components/auth/MFAChallenge';
 import AuthCard from '@/components/auth/AuthCard';
 
 function SignInForm() {
@@ -17,7 +16,6 @@ function SignInForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showMFA, setShowMFA] = useState(false);
   const reason = searchParams.get('reason');
   const callbackError = searchParams.get('error');
   const message = searchParams.get('message');
@@ -60,14 +58,6 @@ function SignInForm() {
       return;
     }
 
-    // Check if MFA is required before redirecting
-    const { data: factors } = await supabase.auth.mfa.listFactors();
-    if (factors?.totp && factors.totp.some(f => f.status === 'verified')) {
-      setShowMFA(true);
-      setLoading(false);
-      return;
-    }
-
     // Record login session
     fetch('/api/auth/sessions', { method: 'POST' }).catch(() => {});
 
@@ -78,34 +68,24 @@ function SignInForm() {
   return (
     <>
       <AuthCard>
-        {showMFA ? (
-          <MFAChallenge
-            redirectTo={redirect}
-            onBack={() => {
-              setShowMFA(false);
-              supabase.auth.signOut();
-            }}
-          />
-        ) : (
-          <>
-            {/* Icon badge */}
-            <div className="flex justify-center mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.05] flex items-center justify-center">
-                <span className="material-symbols-outlined text-cyan-400 text-[28px]">login</span>
-              </div>
-            </div>
+        {/* Icon badge */}
+        <div className="flex justify-center mb-6">
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.05] flex items-center justify-center">
+            <span className="material-symbols-outlined text-cyan-400 text-[28px]">login</span>
+          </div>
+        </div>
 
-            {/* Heading */}
-            <div className="text-center mb-8">
-              <h1 className="text-2xl sm:text-3xl font-headline font-bold text-slate-100">
-                Welcome <em className="text-primary not-italic font-bold italic">back.</em>
-              </h1>
-              <p className="text-sm text-slate-400 mt-2 font-label">
-                Sign in to continue your journey
-              </p>
-            </div>
+        {/* Heading */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl sm:text-3xl font-headline font-bold text-slate-100">
+            Welcome <em className="text-primary not-italic font-bold italic">back.</em>
+          </h1>
+          <p className="text-sm text-slate-400 mt-2 font-label">
+            Sign in to continue your journey
+          </p>
+        </div>
 
-            <form onSubmit={handleSignIn} className="space-y-5">
+        <form onSubmit={handleSignIn} className="space-y-5">
               {callbackError && !error && (
                 <div className="px-4 py-3 rounded-2xl bg-red-900/20 ring-1 ring-red-500/20 text-red-400 text-sm font-body flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-red-900/30 flex items-center justify-center shrink-0">
@@ -180,22 +160,18 @@ function SignInForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-5 bg-gradient-to-r from-primary to-primary-container hover:brightness-110 text-white text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl cursor-pointer transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none"
+                className="pulse-sheen w-full py-5 bg-gradient-to-r from-primary to-primary-container hover:brightness-110 text-white text-sm font-headline font-bold rounded-full shadow-lg shadow-primary/20 hover:shadow-xl cursor-pointer transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none"
               >
                 {loading ? 'Signing in...' : 'Sign In'}
                 {!loading && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}
               </button>
             </form>
-          </>
-        )}
       </AuthCard>
 
-      {!showMFA && (
-        <p className="text-center text-sm text-stone-500 mt-8 font-label">
-          Don&apos;t have an account?{' '}
-          <Link href="/auth/signup" className="text-cyan-400 font-semibold hover:text-cyan-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-1 py-0.5">Sign up</Link>
-        </p>
-      )}
+      <p className="text-center text-sm text-stone-500 mt-8 font-label">
+        Don&apos;t have an account?{' '}
+        <Link href="/auth/signup" className="text-cyan-400 font-semibold hover:text-cyan-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-1 py-0.5">Sign up</Link>
+      </p>
     </>
   );
 }

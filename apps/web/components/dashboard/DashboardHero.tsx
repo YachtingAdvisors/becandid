@@ -110,8 +110,8 @@ export default function DashboardHero({
               {trustPoints}
             </span>
             {/* Tooltip */}
-            <div className="absolute left-0 right-0 top-full mt-2 z-50 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
-              <div className="bg-on-surface text-white rounded-2xl p-4 shadow-xl text-xs leading-relaxed mx-2">
+            <div className="absolute left-0 top-full mt-2 z-50 w-[min(280px,calc(100vw-2rem))] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
+              <div className="bg-on-surface text-white rounded-2xl p-4 shadow-xl text-xs leading-relaxed">
                 <p className="font-label font-bold text-sm mb-2">How you earn Reputation Points</p>
                 <ul className="space-y-1.5">
                   <li className="flex items-center gap-2"><span className="material-symbols-outlined text-sm text-teal-400">check_circle</span> Daily check-ins (+5 pts)</li>
@@ -185,7 +185,7 @@ export default function DashboardHero({
         <div className="flex flex-wrap gap-3 mt-8">
           <Link
             href="/dashboard/stringer-journal"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-on-primary text-sm font-label font-semibold hover:opacity-90 transition-all duration-200 shadow-sm"
+            className="pulse-sheen inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-on-primary text-sm font-label font-semibold hover:opacity-90 transition-all duration-200 shadow-sm"
           >
             <span className="material-symbols-outlined text-base">edit_note</span>
             Journal

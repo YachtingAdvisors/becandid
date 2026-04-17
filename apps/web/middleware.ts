@@ -4,10 +4,7 @@
 
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import {
-  getPlatformRoleForUser,
-  isPlatformAdminRole,
-} from '@/lib/adminAccess';
+import { ADMIN_EMAIL } from '@/lib/adminAccess';
 
 // Paths that never require authentication
 const PUBLIC_PATHS = [
@@ -268,60 +265,17 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    // ── 5b. MFA enforcement — stronger on admin surfaces ──
+    // ── 5b. Admin email gate on app routes ──
     if (user && !pathname.startsWith('/auth/')) {
       const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/api/admin/');
-      const isProtectedAppRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/partner');
 
-      let userIsAdmin = false;
       if (isAdminRoute) {
-        const roleResult = await getPlatformRoleForUser(supabase, user.id);
-        if (!roleResult.ok) {
-          return privilegedFailure(request, 'Unable to verify admin access');
-        }
-
-        userIsAdmin = isPlatformAdminRole(roleResult.role);
-        if (!userIsAdmin && pathname.startsWith('/api/')) {
-          return jsonError('Forbidden', 403);
-        }
-      }
-
-      // Single MFA check — cache result for both admin and app route logic
-      let aalData: { currentLevel?: string | null; nextLevel?: string | null } | null = null;
-      if (isAdminRoute && userIsAdmin || isProtectedAppRoute) {
-        try {
-          const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-          aalData = aal.data ?? null;
-        } catch {
-          if (isAdminRoute && userIsAdmin) {
-            return privilegedFailure(request, 'Unable to verify admin MFA');
-          }
-          // Keep non-admin app routes available if MFA status lookup fails.
-        }
-      }
-
-      if (isAdminRoute && userIsAdmin && aalData) {
-        if (aalData.currentLevel !== 'aal2') {
+        const userIsAdmin = user.email?.toLowerCase() === ADMIN_EMAIL;
+        if (!userIsAdmin) {
           if (pathname.startsWith('/api/')) {
-            return jsonError('Admin access requires MFA', 403);
+            return jsonError('Forbidden', 403);
           }
-          const url = request.nextUrl.clone();
-          url.pathname = '/auth/mfa-verify';
-          url.searchParams.set('redirect', pathname);
-          const redir = NextResponse.redirect(url);
-          applyHeaders(redir);
-          return redir;
-        }
-      }
-
-      if (isProtectedAppRoute && aalData) {
-        if (aalData.currentLevel === 'aal1' && aalData.nextLevel === 'aal2') {
-          const url = request.nextUrl.clone();
-          url.pathname = '/auth/mfa-verify';
-          url.searchParams.set('redirect', pathname);
-          const redir = NextResponse.redirect(url);
-          applyHeaders(redir);
-          return redir;
+          // Non-admin: fall through to render the layout's Access Denied UI
         }
       }
     }

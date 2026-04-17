@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { getAllBlogPosts, getSeoPublishedPosts } from '@/content/blog/loader';
 import { AUTHORS } from '@/content/authors';
 import { HUBS } from '@/content/hubs';
+import { PERSONAS } from '@/content/personas';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io').trim();
@@ -69,5 +70,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...blogPages, ...authorPages];
+  // Persona / use-case pages (programmatic SEO)
+  const personaPages: MetadataRoute.Sitemap = PERSONAS.map(persona => ({
+    url: `${baseUrl}/accountability-for/${persona.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...blogPages, ...authorPages, ...personaPages];
 }

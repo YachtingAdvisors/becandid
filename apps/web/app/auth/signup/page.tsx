@@ -138,7 +138,7 @@ function SignUpForm() {
         <SignupConsent checked={consented} onChange={setConsented} />
 
         <button type="submit" disabled={!consented || loading}
-          className="w-full bg-gradient-to-r from-primary to-primary-container hover:brightness-110 text-on-primary font-headline font-bold py-5 px-8 rounded-full transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-xl active:scale-95 cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none">
+          className="pulse-sheen w-full bg-gradient-to-r from-primary to-primary-container hover:brightness-110 text-on-primary font-headline font-bold py-5 px-8 rounded-full transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-xl active:scale-95 cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 focus:ring-2 focus:ring-primary/30 motion-reduce:transition-none">
           {loading ? 'Creating account...' : 'Create Account'}
           <span className="material-symbols-outlined text-xl">arrow_forward</span>
         </button>

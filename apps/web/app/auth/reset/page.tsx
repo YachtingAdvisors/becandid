@@ -19,8 +19,15 @@ export default function ResetPasswordPage() {
 
     const supabase = createClient();
     try {
+      // Route the password-reset link through /auth/callback so the PKCE
+      // code is exchanged server-side (reading the verifier cookie), and
+      // the session cookie is set BEFORE the browser hits /auth/update-password.
+      // Without this, /auth/update-password loads with a raw ?code=... that
+      // the browser client does not auto-exchange — the listener never fires
+      // PASSWORD_RECOVERY/SIGNED_IN/INITIAL_SESSION with a session, so the
+      // form stays disabled and the spinner spins until the 15s timeout.
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/update-password`,
+        redirectTo: `${window.location.origin}/auth/callback?next=/auth/update-password`,
       });
 
       if (resetError) {

@@ -129,7 +129,7 @@ export default function AdminSupportClient() {
         <button
           type="submit"
           disabled={loading || !email.trim()}
-          className="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-label font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="pulse-sheen px-5 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-label font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors motion-reduce:transition-none"
         >
           {loading ? 'Searching...' : 'Look Up'}
         </button>

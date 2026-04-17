@@ -15,6 +15,23 @@ export default function UpdatePasswordPage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Backward-compat: if an older reset email dropped the user here with a
+    // raw ?code=... (pre-fix behavior), forward them through /auth/callback
+    // so the PKCE exchange happens server-side with the verifier cookie.
+    // Without this forward, the browser client does NOT auto-exchange ?code
+    // (only #access_token hashes), so the listener never fires and the form
+    // stays locked until the 15s timeout.
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      if (code) {
+        window.location.replace(
+          `/auth/callback?code=${encodeURIComponent(code)}&next=/auth/update-password`
+        );
+        return;
+      }
+    }
+
     let resolved = false;
     const supabase = createClient();
 

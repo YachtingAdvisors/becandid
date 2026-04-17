@@ -147,17 +147,22 @@ export async function POST(req: NextRequest) {
     }
 
     // Send invite email to partner
+    let emailDelivered = false;
+    let emailError: string | null = null;
     try {
+      if (!process.env.RESEND_API_KEY) {
+        throw new Error('RESEND_API_KEY is not configured');
+      }
       const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY!);
-      const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const FROM = process.env.RESEND_FROM_EMAIL ?? process.env.EMAIL_FROM ?? 'Be Candid <noreply@becandid.io>';
       const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
       const { data: profile } = await db.from('users').select('name').eq('id', user.id).single();
       const inviterName = profile?.name ?? 'Someone';
 
       const { emailWrapper } = await import('@/lib/email/template');
-      await resend.emails.send({
+      const { data: sendData, error: sendError } = await resend.emails.send({
         from: FROM,
         to: cleanEmail,
         subject: `${escapeHtml(inviterName)} invited you to Be Candid`,
@@ -179,7 +184,15 @@ export async function POST(req: NextRequest) {
           footerNote: '&ldquo;A cord of three strands is not easily broken.&rdquo; &mdash; King Solomon',
         }),
       });
+      if (sendError) {
+        throw new Error(sendError.message ?? 'Resend returned an error');
+      }
+      if (!sendData?.id) {
+        throw new Error('Resend did not return a message id');
+      }
+      emailDelivered = true;
     } catch (emailErr) {
+      emailError = emailErr instanceof Error ? emailErr.message : String(emailErr);
       console.error('Partner invite email failed:', emailErr);
       // Non-fatal — invite was created, email just failed to send
     }
@@ -202,10 +215,10 @@ export async function POST(req: NextRequest) {
     auditLog({
       action: 'partner.invite',
       userId: user.id,
-      metadata: { partnerEmail: cleanEmail },
+      metadata: { partnerEmail: cleanEmail, emailDelivered },
     });
 
-    return NextResponse.json({ partner }, { status: 201 });
+    return NextResponse.json({ partner, emailDelivered, emailError }, { status: 201 });
   } catch (err) {
     return safeError('POST /api/partners', err);
   }
