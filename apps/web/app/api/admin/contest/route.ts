@@ -16,7 +16,7 @@ import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 import { emailWrapper } from '@/lib/email/template';
 import { Resend } from 'resend';
 
-const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@becandid.io>';
+const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@updates.becandid.io>';
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY!);

@@ -164,7 +164,7 @@ async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createService
     const resend = new Resend(process.env.RESEND_API_KEY);
     if (partnership.partner_email && process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>',
+        from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>',
         to: partnership.partner_email,
         subject: `${escapeHtml(userName)} paused their monitoring`,
         html: `

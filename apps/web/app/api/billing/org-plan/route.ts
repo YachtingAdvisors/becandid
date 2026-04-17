@@ -8,7 +8,7 @@ import { checkDistributedRateLimit } from '@/lib/distributedRateLimit';
 import { Resend } from 'resend';
 import { emailWrapper } from '@/lib/email/template';
 
-const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
 const ADMIN_EMAIL = 'shawn@becandid.io';
 
 function generatePromoCode(orgName: string): string {

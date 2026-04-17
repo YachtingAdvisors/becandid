@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY!);
 
     await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>',
+      from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>',
       to: 'shawn@becandid.io',
       subject: `Therapist request from ${profile?.name || 'a user'}`,
       html: `

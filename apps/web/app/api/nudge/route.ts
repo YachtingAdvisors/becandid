@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     }
 
     const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
-    const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+    const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
 
     let nudgedCount = 0;
 

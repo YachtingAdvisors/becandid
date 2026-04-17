@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY!);
 
     const emailOptions: any = {
-      from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>',
+      from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>',
       to: 'shawn@becandid.io',
       replyTo: profile?.email || user.email || undefined,
       subject: `[${type.toUpperCase()}] Issue report from ${profile?.name || 'a user'}`,

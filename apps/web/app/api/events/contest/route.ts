@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
 
     // Send review email to admin
     const resend = new Resend(process.env.RESEND_API_KEY!);
-    const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@becandid.io>';
+    const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@updates.becandid.io>';
 
     await resend.emails.send({
       from: FROM,

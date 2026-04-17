@@ -85,7 +85,7 @@ export async function PATCH(req: NextRequest) {
           if (partner?.partner_email) {
             const { Resend } = await import('resend');
             const resend = new Resend(process.env.RESEND_API_KEY!);
-            const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+            const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
             const userName = profile?.name ?? 'Your partner';
 
             const addedList = added.length > 0 ? `<p style="margin:0 0 8px;"><strong>New focus areas:</strong> ${added.join(', ')}</p>` : '';
@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
     try {
       const { Resend } = await import('resend');
       const resend = new Resend(process.env.RESEND_API_KEY!);
-      const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+      const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
       await resend.emails.send({
         from,
         to: 'slaser90@gmail.com',

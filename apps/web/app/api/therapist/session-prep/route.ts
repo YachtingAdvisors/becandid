@@ -294,7 +294,7 @@ If data is insufficient for a section, provide an honest note like "Insufficient
     const subjectClientName = String(report.client_name || 'Unknown').replace(/[\r\n]+/g, ' ').trim();
 
     await getResend().emails.send({
-      from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>',
+      from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>',
       to: therapistProfile.email,
       subject: `Session Prep: ${subjectClientName} — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`,
       html,

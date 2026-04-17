@@ -14,7 +14,7 @@ import { Resend } from 'resend';
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY!);
 }
-const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();

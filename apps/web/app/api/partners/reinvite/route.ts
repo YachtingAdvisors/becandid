@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     try {
       const { Resend } = await import('resend');
       const resend = new Resend(process.env.RESEND_API_KEY!);
-      const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@becandid.io>';
+      const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
       const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
       const { data: profile } = await db.from('users').select('name').eq('id', user.id).single();
