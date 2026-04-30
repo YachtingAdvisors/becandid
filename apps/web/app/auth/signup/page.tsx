@@ -21,6 +21,7 @@ function SignUpForm() {
   const [error, setError] = useState('');
   const [consented, setConsented] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
+  const [resendState, setResendState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
@@ -81,6 +82,27 @@ function SignUpForm() {
     router.refresh();
   }
 
+  async function handleResend() {
+    setResendState('sending');
+    const appOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+    const nextParam = encodeURIComponent('/onboarding');
+    const refParam = referralCode ? `&ref=${encodeURIComponent(referralCode)}` : '';
+    const emailRedirectTo = `${appOrigin}/auth/callback?next=${nextParam}${refParam}`;
+
+    const { error: resendError } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo },
+    });
+
+    if (resendError) {
+      console.error('[signup] Resend failed:', resendError);
+      setResendState('error');
+    } else {
+      setResendState('sent');
+    }
+  }
+
   if (verificationSent) {
     return (
       <AuthCard>
@@ -99,15 +121,40 @@ function SignUpForm() {
           <p className="font-body text-stone-400 text-base leading-relaxed mb-2">
             We sent a verification link to <span className="font-semibold text-slate-200">{email}</span>.
           </p>
-          <p className="font-body text-stone-500 text-sm leading-relaxed mb-8">
-            Click the link to finish setting up your account. The link expires in 24 hours.
+          <p className="font-body text-stone-500 text-sm leading-relaxed mb-6">
+            Click the link to finish setting up your account. The link expires in 24 hours. Check your spam or Promotions folder if you don&apos;t see it.
           </p>
-          <Link
-            href="/auth/signin"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-stone-800 hover:bg-stone-700 text-slate-200 font-label text-sm transition-colors"
-          >
-            Back to sign in
-          </Link>
+
+          <div className="space-y-3 max-w-xs mx-auto">
+            <button
+              onClick={handleResend}
+              disabled={resendState === 'sending' || resendState === 'sent'}
+              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary text-on-primary font-label font-bold text-sm hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {resendState === 'sending' && 'Sending...'}
+              {resendState === 'idle' && 'Resend verification email'}
+              {resendState === 'sent' && (
+                <>
+                  <span className="material-symbols-outlined text-base">check</span>
+                  Sent — check your inbox
+                </>
+              )}
+              {resendState === 'error' && 'Resend failed — try again'}
+            </button>
+
+            <Link
+              href="/auth/signin"
+              className="block w-full text-center px-6 py-3 rounded-full bg-stone-800 hover:bg-stone-700 text-slate-200 font-label text-sm transition-colors"
+            >
+              Back to sign in
+            </Link>
+          </div>
+
+          {resendState === 'error' && (
+            <p className="text-xs text-red-400 font-body mt-4">
+              We couldn&apos;t resend right now. Wait a minute and try again, or contact support.
+            </p>
+          )}
         </div>
       </AuthCard>
     );
