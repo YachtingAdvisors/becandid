@@ -242,7 +242,7 @@ export default function TherapistsPage() {
             <span className="text-white/40 mx-3">|</span>
             $159<span className="text-base font-normal text-white/60">/year</span>
           </p>
-          <Link href="/auth/signup?plan=therapy" className="pulse-sheen inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-primary text-lg font-headline font-bold shadow-lg hover:shadow-xl transition-all">
+          <Link href="/auth/signup?plan=therapy" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-primary text-lg font-headline font-bold shadow-lg hover:shadow-xl transition-all">
             Start Free Trial
             <span className="material-symbols-outlined">arrow_forward</span>
           </Link>

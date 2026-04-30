@@ -185,7 +185,7 @@ export default function DashboardHero({
         <div className="flex flex-wrap gap-3 mt-8">
           <Link
             href="/dashboard/stringer-journal"
-            className="pulse-sheen inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-on-primary text-sm font-label font-semibold hover:opacity-90 transition-all duration-200 shadow-sm"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-on-primary text-sm font-label font-semibold hover:opacity-90 transition-all duration-200 shadow-sm"
           >
             <span className="material-symbols-outlined text-base">edit_note</span>
             Journal

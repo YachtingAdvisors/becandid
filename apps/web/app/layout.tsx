@@ -4,6 +4,7 @@ import Script from 'next/script';
 import './globals.css';
 import LegalFooter from '@/components/LegalFooter';
 import PWAInstallBanner from '@/components/PWAInstallBanner';
+import ExitIntentModal from '@/components/ExitIntentModal';
 
 const GA_ID = 'G-CK9VDX3HKT';
 
@@ -106,6 +107,7 @@ export default function RootLayout({
       </head>
       <body className="font-body bg-background text-on-surface">
         {children}
+        <ExitIntentModal />
         <LegalFooter />
         <PWAInstallBanner />
       </body>

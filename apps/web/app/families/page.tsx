@@ -78,7 +78,7 @@ export default function FamiliesPage() {
           </p>
           <Link
             href="/auth/signup"
-            className="pulse-sheen inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary text-base font-headline font-bold rounded-full hover:brightness-110 hover:shadow-xl transition-all duration-200 shadow-lg shadow-primary/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary text-base font-headline font-bold rounded-full hover:brightness-110 hover:shadow-xl transition-all duration-200 shadow-lg shadow-primary/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
           >
             <span className="material-symbols-outlined text-[20px]">
               family_restroom
@@ -272,7 +272,7 @@ export default function FamiliesPage() {
           </p>
           <Link
             href="/auth/signup"
-            className="pulse-sheen inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary text-base font-headline font-bold rounded-full hover:brightness-110 hover:shadow-xl transition-all duration-200 shadow-lg shadow-primary/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary text-base font-headline font-bold rounded-full hover:brightness-110 hover:shadow-xl transition-all duration-200 shadow-lg shadow-primary/20 cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
           >
             <span className="material-symbols-outlined text-[20px]">
               arrow_forward

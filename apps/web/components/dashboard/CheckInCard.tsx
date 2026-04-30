@@ -225,7 +225,7 @@ export default function CheckInCard({ checkIn, role, partnerName, onConfirmed }:
           <button
             onClick={handleConfirm}
             disabled={loading || !selectedMood}
-            className="pulse-sheen w-full py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary transition-colors motion-reduce:transition-none disabled:opacity-50"
+            className="w-full py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary transition-colors motion-reduce:transition-none disabled:opacity-50"
           >
             {loading ? 'Confirming…' : 'Confirm Check-in'}
           </button>

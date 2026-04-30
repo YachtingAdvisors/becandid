@@ -362,7 +362,7 @@ export default function PricingPage() {
                   href={tier.ctaHref}
                   className={`block w-full py-3.5 text-sm font-headline font-bold rounded-full text-center transition-all duration-300 cursor-pointer active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-cyan-400/30 ${
                     tier.highlight
-                      ? 'pulse-sheen bg-gradient-to-r from-white to-slate-100 text-primary shadow-lg hover:shadow-xl hover:shadow-white/20 hover:brightness-110'
+                      ? 'bg-gradient-to-r from-white to-slate-100 text-primary shadow-lg hover:shadow-xl hover:shadow-white/20 hover:brightness-110'
                       : 'bg-gradient-to-r from-primary to-cyan-600 text-white shadow-md hover:shadow-lg hover:shadow-primary/30 hover:brightness-110'
                   }`}
                 >

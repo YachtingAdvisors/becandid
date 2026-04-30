@@ -155,7 +155,7 @@ export default function LandingPage() {
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link
                   href="/auth/signup"
-                  className="pulse-sheen group px-8 py-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+                  className="group px-8 py-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-label font-bold text-base shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:brightness-110 active:scale-[0.97] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
                 >
                   Begin Your Journey
                   <MaterialIcon name="arrow_forward" className="text-lg group-hover:translate-x-0.5 transition-transform duration-200" />
@@ -639,7 +639,7 @@ export default function LandingPage() {
                 <div className="flex flex-wrap items-center justify-center gap-4">
                   <Link
                     href="/auth/signup"
-                    className="pulse-sheen group px-10 py-4 bg-white text-primary rounded-full font-label font-bold text-base shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+                    className="group px-10 py-4 bg-white text-primary rounded-full font-label font-bold text-base shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
                   >
                     Begin Your Journey
                     <MaterialIcon name="arrow_forward" className="text-lg group-hover:translate-x-0.5 transition-transform duration-200" />

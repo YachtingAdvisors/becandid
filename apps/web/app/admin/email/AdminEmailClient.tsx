@@ -233,7 +233,7 @@ export default function AdminEmailClient() {
           <button
             onClick={() => setShowConfirm(true)}
             disabled={!canSend || sending}
-            className="pulse-sheen inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-label font-semibold
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-label font-semibold
                        bg-primary text-on-primary hover:bg-primary/90 shadow-sm
                        disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >

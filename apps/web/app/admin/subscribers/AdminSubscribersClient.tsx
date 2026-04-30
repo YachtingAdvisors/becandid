@@ -58,7 +58,7 @@ export default function AdminSubscribersClient() {
         {subscribers.length > 0 && (
           <button
             onClick={handleExport}
-            className="pulse-sheen inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary/10 text-primary text-sm font-label font-bold hover:bg-primary/20 transition-colors motion-reduce:transition-none cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary/10 text-primary text-sm font-label font-bold hover:bg-primary/20 transition-colors motion-reduce:transition-none cursor-pointer"
           >
             <span className="material-symbols-outlined text-base">download</span>
             Export CSV
