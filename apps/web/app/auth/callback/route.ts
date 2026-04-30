@@ -8,19 +8,55 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase';
+import { createServerSupabaseClient, createServiceClient, ensureUserRow } from '@/lib/supabase';
+import { applyReferralReward } from '@/lib/referral';
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
   const rawNext = url.searchParams.get('next') || '/dashboard';
   const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard';
+  const referralCode = url.searchParams.get('ref') || '';
 
   if (code) {
     const supabase = await createServerSupabaseClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
+      // Self-heal: signup-time profile creation can race with cookie
+      // propagation or be skipped entirely when email confirmation is
+      // required. Create the profile row here once the session exists.
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const db = createServiceClient();
+          const { data: existing } = await db
+            .from('users')
+            .select('id')
+            .eq('id', user.id)
+            .maybeSingle();
+
+          await ensureUserRow(db, user);
+
+          // Apply referral reward only if this is a fresh row AND a
+          // referral code was carried through the verification link.
+          if (!existing && referralCode) {
+            const { data: referrer } = await db
+              .from('users')
+              .select('id')
+              .eq('referral_code', referralCode)
+              .maybeSingle();
+            if (referrer && referrer.id !== user.id) {
+              await db.from('users').update({ referred_by: referrer.id }).eq('id', user.id);
+              await applyReferralReward(db, referrer.id, user.id, referralCode);
+            }
+          }
+        }
+      } catch (err) {
+        // Don't block the redirect — dashboard pages also self-heal.
+        console.error('[auth/callback] Profile self-heal failed:', err);
+      }
+
       return NextResponse.redirect(new URL(next, req.url));
     }
   }

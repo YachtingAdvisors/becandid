@@ -8,6 +8,7 @@
 
 import { createBrowserClient, createServerClient } from '@supabase/ssr';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { generateReferralCode } from './referral';
 
 // ─── Browser Client ──────────────────────────────────────────
 export function createClient() {
@@ -54,14 +55,15 @@ export function createServiceClient() {
 }
 
 // ─── Ensure public.users row exists ─────────────────────────
-// Signup profile creation is fire-and-forget and may not have
-// completed when the user first reaches the dashboard.
-// Call this before any query that depends on the users table.
+// Single source of truth for profile creation. Signup may fail to
+// create the profile (cookie race or email-confirmation pending),
+// so this runs again on the auth callback and on every dashboard
+// page load as a self-heal.
 export async function ensureUserRow(
   db: ReturnType<typeof createServiceClient>,
   user: { id: string; email?: string; user_metadata?: Record<string, any> },
 ) {
-  const { data } = await db.from('users').select('*').eq('id', user.id).single();
+  const { data } = await db.from('users').select('*').eq('id', user.id).maybeSingle();
   if (data) return data;
 
   const trialEnds = new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString();
@@ -69,6 +71,7 @@ export async function ensureUserRow(
     id: user.id,
     email: user.email!,
     name: user.user_metadata?.name ?? 'User',
+    referral_code: generateReferralCode(),
     subscription_status: 'trialing',
     trial_ends_at: trialEnds,
   });

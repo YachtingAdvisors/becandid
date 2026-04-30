@@ -20,6 +20,7 @@ function SignUpForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [consented, setConsented] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
@@ -27,10 +28,17 @@ function SignUpForm() {
     setLoading(true);
     setError('');
 
+    // Build the verification redirect so the email link lands on
+    // /auth/callback, where the profile row is created post-verification.
+    const appOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+    const nextParam = encodeURIComponent('/onboarding');
+    const refParam = referralCode ? `&ref=${encodeURIComponent(referralCode)}` : '';
+    const emailRedirectTo = `${appOrigin}/auth/callback?next=${nextParam}${refParam}`;
+
     const { data, error: authError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name: name.trim() } },
+      options: { data: { name: name.trim() }, emailRedirectTo },
     });
 
     if (authError) {
@@ -39,9 +47,20 @@ function SignUpForm() {
       return;
     }
 
-    if (data.user) {
-      // Create the DB profile — retry once on failure since this is critical
-      let profileCreated = false;
+    // When email confirmation is required, Supabase returns the user
+    // but no session. We can't authenticate the profile API call yet —
+    // /auth/callback will create the profile after the user clicks
+    // the verification link.
+    if (data.user && !data.session) {
+      setVerificationSent(true);
+      setLoading(false);
+      return;
+    }
+
+    if (data.user && data.session) {
+      // Email confirmation is off — try to create the profile now,
+      // but don't block on failure: dashboard pages and /auth/callback
+      // both self-heal via ensureUserRow.
       for (let attempt = 0; attempt < 2; attempt++) {
         try {
           const res = await fetch('/api/auth/profile', {
@@ -49,28 +68,49 @@ function SignUpForm() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: name.trim(), referral_code: referralCode || undefined }),
           });
-          if (res.ok || res.status === 200 || res.status === 201) {
-            profileCreated = true;
-            break;
-          }
-          // Non-OK response — log and retry
+          if (res.ok) break;
           console.error(`[signup] Profile creation attempt ${attempt + 1} returned ${res.status}`);
         } catch (err) {
           console.error(`[signup] Profile creation attempt ${attempt + 1} failed:`, err);
         }
-        // Brief pause before retry
         if (attempt === 0) await new Promise(r => setTimeout(r, 1000));
-      }
-
-      if (!profileCreated) {
-        setError('Account created but profile setup failed. Please sign out and sign back in, or contact support.');
-        setLoading(false);
-        return;
       }
     }
 
     router.push('/onboarding');
     router.refresh();
+  }
+
+  if (verificationSent) {
+    return (
+      <AuthCard>
+        <div className="text-center py-4">
+          <div className="inline-flex items-center justify-center p-4 mb-6 rounded-2xl bg-emerald-500/10">
+            <span
+              className="material-symbols-outlined text-emerald-400 text-4xl"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              mark_email_read
+            </span>
+          </div>
+          <h1 className="font-headline text-3xl font-extrabold tracking-tight text-slate-100 mb-4">
+            Check your email
+          </h1>
+          <p className="font-body text-stone-400 text-base leading-relaxed mb-2">
+            We sent a verification link to <span className="font-semibold text-slate-200">{email}</span>.
+          </p>
+          <p className="font-body text-stone-500 text-sm leading-relaxed mb-8">
+            Click the link to finish setting up your account. The link expires in 24 hours.
+          </p>
+          <Link
+            href="/auth/signin"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-stone-800 hover:bg-stone-700 text-slate-200 font-label text-sm transition-colors"
+          >
+            Back to sign in
+          </Link>
+        </div>
+      </AuthCard>
+    );
   }
 
   return (
