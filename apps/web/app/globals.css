@@ -707,13 +707,15 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
-/* Blog article prose styles (typography plugin not installed, so define manually) */
-.prose {
+/* Blog article prose styles (typography plugin not installed, so define manually).
+   Scoped to .bg-dark-sanctuary (the blog layout wrapper) so legal/terms and other
+   light-mode pages that also use `prose` aren't broken by these hardcoded-white colors. */
+.bg-dark-sanctuary .prose {
   color: rgba(255, 255, 255, 0.82);
   font-family: var(--font-body);
   line-height: 1.85;
 }
-.prose p {
+.bg-dark-sanctuary .prose p {
   color: rgba(255, 255, 255, 0.82);
   font-size: 1.0625rem;
   line-height: 1.85;
@@ -721,9 +723,9 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   letter-spacing: 0.01em;
 }
 @media (min-width: 768px) {
-  .prose p { font-size: 1.125rem; }
+  .bg-dark-sanctuary .prose p { font-size: 1.125rem; }
 }
-.prose h2 {
+.bg-dark-sanctuary .prose h2 {
   color: #ffffff;
   font-family: var(--font-headline);
   font-size: 1.75rem;
@@ -736,9 +738,9 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   letter-spacing: -0.02em;
 }
 @media (min-width: 768px) {
-  .prose h2 { font-size: 1.875rem; }
+  .bg-dark-sanctuary .prose h2 { font-size: 1.875rem; }
 }
-.prose h3 {
+.bg-dark-sanctuary .prose h3 {
   color: rgba(255, 255, 255, 0.92);
   font-family: var(--font-headline);
   font-size: 1.25rem;
@@ -749,47 +751,47 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   letter-spacing: -0.01em;
 }
 @media (min-width: 768px) {
-  .prose h3 { font-size: 1.5rem; }
+  .bg-dark-sanctuary .prose h3 { font-size: 1.5rem; }
 }
-.prose ul, .prose ol {
+.bg-dark-sanctuary .prose ul, .bg-dark-sanctuary .prose ol {
   margin: 1.5rem 0;
   padding-left: 1.5rem;
 }
-.prose li {
+.bg-dark-sanctuary .prose li {
   color: rgba(255, 255, 255, 0.82);
   font-size: 1.0625rem;
   line-height: 1.85;
   margin-bottom: 0.5rem;
 }
 @media (min-width: 768px) {
-  .prose li { font-size: 1.125rem; }
+  .bg-dark-sanctuary .prose li { font-size: 1.125rem; }
 }
-.prose ul > li { list-style: disc; }
-.prose ol > li { list-style: decimal; }
-.prose li::marker {
+.bg-dark-sanctuary .prose ul > li { list-style: disc; }
+.bg-dark-sanctuary .prose ol > li { list-style: decimal; }
+.bg-dark-sanctuary .prose li::marker {
   color: rgba(34, 211, 238, 0.5);
 }
-.prose strong {
+.bg-dark-sanctuary .prose strong {
   color: #ffffff;
   font-weight: 700;
 }
-.prose em {
+.bg-dark-sanctuary .prose em {
   color: #67e8f9;
   font-style: normal;
   font-weight: 500;
 }
-.prose a {
+.bg-dark-sanctuary .prose a {
   color: #22d3ee;
   text-decoration: none;
   font-weight: 500;
   border-bottom: 1px solid rgba(34, 211, 238, 0.3);
   transition: color 0.2s ease, border-color 0.2s ease;
 }
-.prose a:hover {
+.bg-dark-sanctuary .prose a:hover {
   color: #67e8f9;
   border-bottom-color: #22d3ee;
 }
-.prose blockquote {
+.bg-dark-sanctuary .prose blockquote {
   color: rgba(255, 255, 255, 0.7);
   border-left: 3px solid rgba(34, 211, 238, 0.3);
   background: rgba(255, 255, 255, 0.03);
@@ -799,7 +801,7 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   font-style: italic;
   font-size: 1.125rem;
 }
-.prose code {
+.bg-dark-sanctuary .prose code {
   color: #67e8f9;
   background: rgba(255, 255, 255, 0.06);
   padding: 0.125rem 0.375rem;
@@ -807,7 +809,7 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   font-size: 0.875em;
   font-weight: 400;
 }
-.prose pre {
+.bg-dark-sanctuary .prose pre {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.75rem;
@@ -815,42 +817,42 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
   margin: 1.5rem 0;
   overflow-x: auto;
 }
-.prose pre code {
+.bg-dark-sanctuary .prose pre code {
   background: transparent;
   padding: 0;
   color: rgba(255, 255, 255, 0.9);
 }
-.prose hr {
+.bg-dark-sanctuary .prose hr {
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 3rem 0;
 }
-.prose img {
+.bg-dark-sanctuary .prose img {
   border-radius: 1rem;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
   margin: 2rem 0;
 }
-.prose table {
+.bg-dark-sanctuary .prose table {
   width: 100%;
   border-collapse: collapse;
   margin: 1.5rem 0;
   color: rgba(255, 255, 255, 0.82);
 }
-.prose th {
+.bg-dark-sanctuary .prose th {
   color: #ffffff;
   font-weight: 700;
   text-align: left;
   padding: 0.75rem 1rem;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
-.prose td {
+.bg-dark-sanctuary .prose td {
   color: rgba(255, 255, 255, 0.82);
   padding: 0.75rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Blog article drop cap for first paragraph */
-.prose > p:first-of-type::first-letter {
+.bg-dark-sanctuary .prose > p:first-of-type::first-letter {
   float: left;
   font-size: 3.5em;
   line-height: 0.8;
