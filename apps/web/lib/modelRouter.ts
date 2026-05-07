@@ -23,9 +23,9 @@ export function getModel(complexity: TaskComplexity): string {
     case 'moderate':
       return 'claude-haiku-4-5-20251001';
     case 'complex':
-      return process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+      return process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
     case 'critical':
-      return process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+      return process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
   }
 }
 

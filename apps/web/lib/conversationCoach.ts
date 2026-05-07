@@ -341,7 +341,7 @@ export async function* streamCoachResponse(
   const isCrisis = detectCrisisKeywords(message);
 
   if (isCrisis) {
-    const sonnetModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+    const sonnetModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
     const stream = getAnthropic().messages.stream({
       model: sonnetModel,
       max_tokens: 800,
@@ -430,7 +430,7 @@ export async function* streamCoachResponse(
 
   // Tier 3: No match — full Sonnet generation
   const systemPrompt = buildSystemPrompt(ctx);
-  const sonnetModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
+  const sonnetModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
 
   const messages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
 
