@@ -17,11 +17,11 @@ interface CostLogParams {
 
 const RATES: Record<string, { input: number; output: number }> = {
   'claude-haiku-4-5-20251001': { input: 0.25, output: 1.25 },
-  'claude-sonnet-4-20250514': { input: 3, output: 15 },
+  'claude-sonnet-4-6': { input: 3, output: 15 },
 };
 
 function calculateCost(model: string, inputTokens: number, outputTokens: number): number {
-  const rate = RATES[model] || RATES['claude-sonnet-4-20250514'];
+  const rate = RATES[model] || RATES['claude-sonnet-4-6'];
   return (inputTokens * rate.input + outputTokens * rate.output) / 1_000_000;
 }
 

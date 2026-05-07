@@ -243,7 +243,7 @@ Respond as JSON with this exact structure:
 If data is insufficient for a section, provide an honest note like "Insufficient data" rather than fabricating content. Output ONLY valid JSON — no markdown fences, no preamble.`;
 
   const response = await getAnthropic().messages.create({
-    model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514',
+    model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
     max_tokens: 2000,
     system: systemPrompt,
     messages: [{ role: 'user', content: `Generate a session prep report for the client "${client?.name || 'Unknown'}". Here is their data from the last 14 days:\n\n${clientContext}` }],
