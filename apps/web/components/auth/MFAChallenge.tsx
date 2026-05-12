@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
 
 interface MFAChallengeProps {
   /** Where to redirect after successful verification */
@@ -13,7 +12,6 @@ interface MFAChallengeProps {
 
 export default function MFAChallenge({ redirectTo = '/dashboard', onBack }: MFAChallengeProps) {
   const supabase = createClient();
-  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [code, setCode] = useState('');
@@ -73,11 +71,12 @@ export default function MFAChallenge({ redirectTo = '/dashboard', onBack }: MFAC
       return;
     }
 
-    // Record login session
+    // Record login session (fire-and-forget; may 401 if cookies not yet
+    // synced — the dashboard self-heals on next request).
     fetch('/api/auth/sessions', { method: 'POST' }).catch(() => {});
 
-    router.push(redirectTo);
-    router.refresh();
+    // Hard navigation, not router.push — see signin/page.tsx for why.
+    window.location.href = redirectTo;
   }
 
   return (

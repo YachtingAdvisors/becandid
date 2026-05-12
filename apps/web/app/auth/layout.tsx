@@ -19,7 +19,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </Link>
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="text-[13px] font-label text-stone-500 hover:text-stone-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Privacy</Link>
-            <Link href="/security" className="text-[13px] font-label text-stone-500 hover:text-stone-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Security</Link>
+            <Link href="/legal/terms" className="text-[13px] font-label text-stone-500 hover:text-stone-300 cursor-pointer transition-all duration-200 focus:ring-2 focus:ring-primary/30 rounded-md px-2 py-1">Terms</Link>
           </div>
         </div>
       </nav>
