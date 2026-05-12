@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase';
 import AuthCard from '@/components/auth/AuthCard';
 
 function SignInForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') ?? '/dashboard';
   const supabase = createClient();
@@ -58,11 +57,15 @@ function SignInForm() {
       return;
     }
 
-    // Record login session
+    // Record login session (fire-and-forget; may 401 if cookies not yet
+    // synced — the dashboard self-heals on next request).
     fetch('/api/auth/sessions', { method: 'POST' }).catch(() => {});
 
-    router.push(redirect);
-    router.refresh();
+    // Hard navigation, not router.push. RSC soft navigation can fire
+    // before document.cookie writes from signInWithPassword commit,
+    // causing middleware to redirect /dashboard → /auth/signin and the
+    // "Signing in…" state to stick (looks like a freeze).
+    window.location.href = redirect;
   }
 
   return (
