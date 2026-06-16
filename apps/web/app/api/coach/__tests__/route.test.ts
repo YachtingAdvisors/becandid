@@ -7,9 +7,14 @@ const mockGetUser = vi.fn();
 
 vi.mock('@/lib/supabase', () => ({
   createServerSupabaseClient: vi.fn(() => ({
-    auth: { getUser: mockGetUser },
+    auth: { getUser: mockGetUser }
+  })),
+  createServiceClient: vi.fn(() => ({
+    from: vi.fn()
   })),
 }));
+
+vi.mock('@/lib/coachLimits', () => ({ checkCoachLimit: vi.fn(async () => ({ allowed: true })) }));
 
 vi.mock('@/lib/rateLimit', () => ({
   rateLimitResponse: vi.fn((retryAfter: number) =>
