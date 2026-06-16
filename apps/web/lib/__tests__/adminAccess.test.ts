@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { getPlatformRoleForUser, requireAdminAccess } from '../adminAccess';
 
-function makeSupabase(result: { data: { platform_role?: string | null } | null; error: { code?: string; message?: string } | null }) {
+function makeSupabase(result: { data: { platform_role?: string | null } | null; error: { code?: string; message?: string } | null }): any {
   return {
     from: () => ({
       select: () => ({
@@ -19,6 +19,7 @@ describe('adminAccess', () => {
 
     const result = await requireAdminAccess(supabase, {
       id: 'user-1',
+      email: 'slaser90@gmail.com',
       app_metadata: {},
       user_metadata: {},
       aud: 'authenticated',
