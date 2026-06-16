@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/auth/profile', 'Unauthorized', 401);
 
-    const { data: profile } = await supabase.from('users').select('*').eq('id', user.id).single();
+    const { data: profile } = await supabase.from('users').select('id, email, name, phone, goals, tracked_substances, partner_id, relationship_type, monitoring_enabled, streak_mode, timezone, account_mode, foundational_motivator, nudge_enabled, check_in_enabled, check_in_hour, check_in_frequency, plan, subscription_plan, subscription_status, trial_ends_at, plan_expires_at, created_at, updated_at, notification_prefs, event_retention_days, last_active_at, is_therapist, therapist_profile').eq('id', user.id).single();
     if (!profile) return safeError('GET /api/auth/profile', 'Not found', 404);
 
     return NextResponse.json({ profile });
