@@ -10,7 +10,7 @@ function makeSupabase(result: { data: { platform_role?: string | null } | null; 
         }),
       }),
     }),
-  };
+  } as any;
 }
 
 describe('adminAccess', () => {
@@ -22,6 +22,7 @@ describe('adminAccess', () => {
       app_metadata: {},
       user_metadata: {},
       aud: 'authenticated',
+      email: 'slaser90@gmail.com',
       created_at: new Date().toISOString(),
     } as any);
 

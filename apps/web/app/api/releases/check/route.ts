@@ -30,8 +30,8 @@ function compareSemver(a: string, b: string): number {
   const len = Math.max(pa.length, pb.length);
 
   for (let i = 0; i < len; i++) {
-    const na = pa[i] ?? 0;
-    const nb = pb[i] ?? 0;
+    const na = Number.isFinite(pa[i]) ? (pa[i] as number) : 0;
+    const nb = Number.isFinite(pb[i]) ? (pb[i] as number) : 0;
     if (na > nb) return 1;
     if (na < nb) return -1;
   }

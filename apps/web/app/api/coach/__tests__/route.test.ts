@@ -9,6 +9,9 @@ vi.mock('@/lib/supabase', () => ({
   createServerSupabaseClient: vi.fn(() => ({
     auth: { getUser: mockGetUser },
   })),
+  createServiceClient: vi.fn(() => ({
+    from: vi.fn(() => ({ insert: vi.fn() })),
+  })),
 }));
 
 vi.mock('@/lib/rateLimit', () => ({
@@ -34,6 +37,15 @@ vi.mock('@/lib/security', () => ({
       headers: { 'Content-Type': 'application/json' },
     }),
   ),
+}));
+
+vi.mock('@/lib/coachLimits', () => ({
+  checkCoachLimit: vi.fn(async () => ({
+    allowed: true,
+    remaining: 10,
+    limit: 10,
+    plan: 'pro',
+  })),
 }));
 
 // ── Helpers ──────────────────────────────────────────────────
