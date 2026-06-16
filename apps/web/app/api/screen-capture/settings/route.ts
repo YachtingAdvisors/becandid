@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { requireAdminAccess } from '@/lib/adminAccess';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
@@ -98,7 +99,10 @@ export async function PATCH(req: NextRequest) {
   // Notify partner when monitoring is paused
   if (body.enabled === false || body.notify_partner === true) {
     const reason = typeof body.reason === 'string' ? body.reason.slice(0, 200) : undefined;
-    notifyPartnerMonitoringPaused(db, user.id, reason).catch(console.error);
+    notifyPartnerMonitoringPaused(db, user.id, reason).catch((err) => {
+      console.error('[monitoring] Failed to notify partner of pause:', err);
+      Sentry.captureException(err);
+    });
   }
 
   return NextResponse.json({ success: true, ...update });
@@ -181,5 +185,6 @@ async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createService
     }
   } catch (err) {
     console.error('[monitoring] Failed to send partner email:', err);
+    Sentry.captureException(err);
   }
 }
