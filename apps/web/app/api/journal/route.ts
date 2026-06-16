@@ -38,9 +38,9 @@ function buildWordHTML(entries: StringerJournalEntry[]) {
     STRINGER_PROMPTS.forEach((p) => {
       const val = e[p.id as keyof StringerJournalEntry] as string | null;
       if (val) {
-        ph += `<h3 style="color:#8B6914;font-family:Georgia,serif;font-size:13pt;margin-top:16pt;">${p.label}</h3>
-<p style="color:#555;font-family:Georgia,serif;font-size:10pt;font-style:italic;margin-bottom:4pt;">${p.question}</p>
-<p style="font-family:Georgia,serif;font-size:11pt;line-height:1.6;color:#333;">${val.replace(/\n/g, '<br/>')}</p>`;
+        ph += `<h3 style="color:#8B6914;font-family:Georgia,serif;font-size:13pt;margin-top:16pt;">${escXml(p.label)}</h3>
+<p style="color:#555;font-family:Georgia,serif;font-size:10pt;font-style:italic;margin-bottom:4pt;">${escXml(p.question)}</p>
+<p style="font-family:Georgia,serif;font-size:11pt;line-height:1.6;color:#333;">${escXml(val).replace(/\n/g, '<br/>')}</p>`;
       }
     });
     const moodDots = e.mood
@@ -52,7 +52,7 @@ function buildWordHTML(entries: StringerJournalEntry[]) {
     return `<div style="page-break-inside:avoid;margin-bottom:28pt;padding-bottom:20pt;border-bottom:1px solid #ddd;">
 <h2 style="font-family:Georgia,serif;font-size:15pt;color:#2C1810;margin-bottom:2pt;">${fmtDate(e.created_at)}</h2>
 <p style="font-family:Georgia,serif;font-size:9pt;color:#999;margin-bottom:12pt;">${fmtTime(e.created_at)}</p>
-${e.freewrite ? `<p style="font-family:Georgia,serif;font-size:11pt;line-height:1.6;color:#333;">${e.freewrite.replace(/\n/g, '<br/>')}</p>` : ''}
+${e.freewrite ? `<p style="font-family:Georgia,serif;font-size:11pt;line-height:1.6;color:#333;">${escXml(e.freewrite).replace(/\n/g, '<br/>')}</p>` : ''}
 ${ph}${moodDots}${tagLine}${triggerBadge}</div>`;
   }).join('\n');
 
@@ -167,9 +167,9 @@ function buildOneNoteHTML(entries: StringerJournalEntry[]) {
     STRINGER_PROMPTS.forEach((p) => {
       const val = e[p.id as keyof StringerJournalEntry] as string | null;
       if (val) {
-        ph += `<h3 style="color:#226779;margin-top:12px;">${p.label}</h3>
-<p style="color:#888;font-style:italic;font-size:12px;">${p.question}</p>
-<p>${val.replace(/\n/g, '<br/>')}</p>`;
+        ph += `<h3 style="color:#226779;margin-top:12px;">${escXml(p.label)}</h3>
+<p style="color:#888;font-style:italic;font-size:12px;">${escXml(p.question)}</p>
+<p>${escXml(val).replace(/\n/g, '<br/>')}</p>`;
       }
     });
     const moodLine = e.mood
@@ -178,7 +178,7 @@ function buildOneNoteHTML(entries: StringerJournalEntry[]) {
       ? `<p style="font-size:12px;color:#999;">Tags: ${e.tags.join(', ')}</p>` : '';
     return `<div style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #eee;">
 <h2 style="color:#333;font-size:16px;">${fmtDate(e.created_at)} · ${fmtTime(e.created_at)}</h2>
-${e.freewrite ? `<p>${e.freewrite.replace(/\n/g, '<br/>')}</p>` : ''}
+${e.freewrite ? `<p>${escXml(e.freewrite).replace(/\n/g, '<br/>')}</p>` : ''}
 ${ph}${moodLine}${tagLine}</div>`;
   }).join('\n');
 
