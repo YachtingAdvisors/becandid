@@ -10,13 +10,27 @@ import { safeError, sanitizeName, sanitizePhone, auditLog } from '@/lib/security
 import { generateReferralCode, applyReferralReward } from '@/lib/referral';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 
+const SAFE_PROFILE_COLUMNS = [
+  'id', 'email', 'name', 'phone', 'goals', 'partner_id', 'relationship_type',
+  'monitoring_enabled', 'streak_mode', 'timezone', 'solo_mode', 'nudge_enabled',
+  'check_in_enabled', 'check_in_hour', 'check_in_frequency', 'plan',
+  'subscription_plan', 'subscription_status', 'trial_ends_at', 'plan_expires_at',
+  'notification_prefs', 'event_retention_days', 'last_active_at', 'created_at',
+  'updated_at', 'account_mode', 'content_filter_level', 'referral_code', 'referred_by',
+  'coach_schedule', 'foundational_motivator', 'tracked_substances', 'dashboard_widgets',
+  'dashboard_layout', 'grandfathered', 'is_therapist', 'therapist_profile', 'last_heartbeat',
+  'last_heartbeat_email_hash', 'screen_capture_enabled', 'screen_capture_interval',
+  'screen_capture_change_threshold', 'login_count', 'is_supporter', 'supporter_until',
+  'total_donated', 'platform_role'
+].join(',');
+
 export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return safeError('GET /api/auth/profile', 'Unauthorized', 401);
 
-    const { data: profile } = await supabase.from('users').select('*').eq('id', user.id).single();
+    const { data: profile } = await supabase.from('users').select(SAFE_PROFILE_COLUMNS).eq('id', user.id).single();
     if (!profile) return safeError('GET /api/auth/profile', 'Not found', 404);
 
     return NextResponse.json({ profile });

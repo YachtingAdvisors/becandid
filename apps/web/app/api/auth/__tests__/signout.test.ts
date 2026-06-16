@@ -3,10 +3,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // ── Mocks ────────────────────────────────────────────────────
 
 const mockGetUser = vi.fn();
+const mockFrom = vi.fn();
 const mockSignOut = vi.fn();
 
 vi.mock('@/lib/supabase', () => ({
-  createServerSupabaseClient: vi.fn(() => ({
+  createServerSupabaseClient: vi.fn(() => ({ from: mockFrom,
     auth: {
       getUser: mockGetUser,
       signOut: mockSignOut,
