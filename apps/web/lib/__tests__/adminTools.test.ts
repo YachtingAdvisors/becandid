@@ -14,6 +14,7 @@ describe('adminTools', () => {
       expect(result.update).toEqual({
         subscription_plan: 'pro',
         subscription_status: 'active',
+        trial_ends_at: null,
       });
     }
   });
