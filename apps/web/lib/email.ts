@@ -7,6 +7,7 @@ import { formatGuideForEmail, type AIConversationGuide } from './claude';
 import type { User, Partner, Event, Alert } from '@be-candid/shared';
 import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 import { emailWrapper } from './email/template';
+import { createServiceClient } from './supabase';
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
 
@@ -56,6 +57,41 @@ export async function sendPartnerAlertEmail(params: {
       `,
       ctaUrl: conversationUrl,
       ctaLabel: 'Start the Conversation',
+    }),
+  });
+}
+
+// ─── Guardian Invite Email ──────────────────────────────────────
+export async function sendGuardianInviteEmail(
+  email: string,
+  token: string,
+  inviterUserId: string
+) {
+  const db = createServiceClient();
+  const { data: inviter } = await db
+    .from('users')
+    .select('name')
+    .eq('id', inviterUserId)
+    .single();
+
+  const inviterName = inviter?.name ?? 'Someone';
+  const ctaUrl = `${APP_URL}/guardian/invite/${token}`;
+
+  return getResend().emails.send({
+    from: FROM,
+    to: email,
+    subject: `${inviterName} invited you to be their guardian on Be Candid`,
+    html: emailWrapper({
+      preheader: `You have been invited to supervise a teen on Be Candid.`,
+      body: `
+        <h2 class="text-heading" style="margin:0 0 8px;color:#1a1a2e;font-size:20px;font-weight:700;">Guardian Invitation</h2>
+        <p class="text-body" style="margin:0 0 20px;color:#4b5563;font-size:14px;line-height:1.7;">
+          <strong>${inviterName}</strong> has invited you to be their guardian on Be Candid.
+          By accepting this invitation, you will be able to supervise their digital safety.
+        </p>
+      `,
+      ctaUrl,
+      ctaLabel: 'Accept Guardian Access',
     }),
   });
 }
