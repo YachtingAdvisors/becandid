@@ -9,6 +9,11 @@ vi.mock('@/lib/supabase', () => ({
   createServerSupabaseClient: vi.fn(() => ({
     auth: { getUser: mockGetUser },
   })),
+  createServiceClient: vi.fn(() => ({
+    from: vi.fn(() => ({
+      insert: vi.fn(),
+    })),
+  })),
 }));
 
 vi.mock('@/lib/rateLimit', () => ({
@@ -18,6 +23,15 @@ vi.mock('@/lib/rateLimit', () => ({
       headers: { 'Content-Type': 'application/json', 'Retry-After': String(retryAfter) },
     }),
   ),
+}));
+
+vi.mock('@/lib/coachLimits', () => ({
+  checkCoachLimit: vi.fn(() => Promise.resolve({
+    allowed: true,
+    limit: 5,
+    remaining: 4,
+    plan: 'free'
+  })),
 }));
 
 vi.mock('@/lib/conversationCoach', () => ({
