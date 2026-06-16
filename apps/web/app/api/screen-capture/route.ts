@@ -13,6 +13,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 import { checkFeatureGate } from '@/lib/stripe/featureGate';
 import { analyzeImage, analyzeScreenshot } from '@/lib/imageAnalysis';
 import { runAlertPipeline } from '@/lib/alertPipeline';
@@ -156,7 +157,7 @@ export async function POST(req: NextRequest) {
           app_name: screenshotMetadata.activeApp || 'Screen Capture',
         },
       }).catch((err) => {
-        console.error('[screen-capture] Pipeline error:', err);
+        logger.error('[screen-capture] Pipeline error:', err);
         return null;
       });
 
@@ -191,7 +192,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(responseBody);
   } catch (error) {
-    console.error('[screen-capture] Error:', error);
+    logger.error('[screen-capture] Error:', error);
     return NextResponse.json({ error: 'Analysis failed' }, { status: 500 });
   }
 }
