@@ -82,7 +82,7 @@ export default function ToastProvider({ children }: { children: React.ReactNode 
 
   const toast = useCallback(
     (message: string, type: Toast['type'] = 'success', duration = 3000) => {
-      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const id = crypto.randomUUID();
       const newToast: Toast = { id, message, type, duration, exiting: false };
 
       setToasts((prev) => {
