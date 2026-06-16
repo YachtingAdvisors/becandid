@@ -10,7 +10,7 @@ function makeSupabase(result: { data: { platform_role?: string | null } | null; 
         }),
       }),
     }),
-  };
+  } as any;
 }
 
 describe('adminAccess', () => {
@@ -19,6 +19,7 @@ describe('adminAccess', () => {
 
     const result = await requireAdminAccess(supabase, {
       id: 'user-1',
+      email: 'slaser90@gmail.com',
       app_metadata: {},
       user_metadata: {},
       aud: 'authenticated',
