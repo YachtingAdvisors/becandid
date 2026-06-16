@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { getPlatformRoleForUser, requireAdminAccess } from '../adminAccess';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 function makeSupabase(result: { data: { platform_role?: string | null } | null; error: { code?: string; message?: string } | null }) {
   return {
@@ -10,7 +11,7 @@ function makeSupabase(result: { data: { platform_role?: string | null } | null; 
         }),
       }),
     }),
-  };
+  } as unknown as SupabaseClient;
 }
 
 describe('adminAccess', () => {
@@ -19,6 +20,7 @@ describe('adminAccess', () => {
 
     const result = await requireAdminAccess(supabase, {
       id: 'user-1',
+      email: 'slaser90@gmail.com',
       app_metadata: {},
       user_metadata: {},
       aud: 'authenticated',
@@ -33,6 +35,7 @@ describe('adminAccess', () => {
 
     const result = await requireAdminAccess(supabase, {
       id: 'user-2',
+      email: 'not-admin@example.com',
       app_metadata: {},
       user_metadata: {},
       aud: 'authenticated',

@@ -5,9 +5,17 @@ import { NextRequest } from 'next/server';
 
 const mockGetUser = vi.fn();
 
+const mockSingle = vi.fn(() => ({ data: { subscription_plan: 'pro', grandfathered: false } }));
+const mockEq = vi.fn(() => ({ single: mockSingle }));
+const mockSelect = vi.fn(() => ({ eq: mockEq }));
+const mockFrom = vi.fn(() => ({ select: mockSelect }));
 vi.mock('@/lib/supabase', () => ({
   createServerSupabaseClient: vi.fn(() => ({
     auth: { getUser: mockGetUser },
+    from: mockFrom,
+  })),
+  createServiceClient: vi.fn(() => ({
+    from: mockFrom,
   })),
 }));
 
