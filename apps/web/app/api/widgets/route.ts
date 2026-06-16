@@ -16,7 +16,7 @@ const VALID_IDS = new Set(WIDGET_REGISTRY.map(w => w.id));
 
 // -- GET: Current widget config -----------------------------------
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

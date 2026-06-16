@@ -10,7 +10,7 @@ import { createServerSupabaseClient } from '@/lib/supabase';
 import { safeError } from '@/lib/security';
 import { calculateMomentumScore } from '@/lib/momentumScore';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },

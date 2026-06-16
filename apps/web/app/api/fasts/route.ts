@@ -16,7 +16,7 @@ const CreateFastSchema = z.object({
   notes: z.string().max(1000).optional(),
 });
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();

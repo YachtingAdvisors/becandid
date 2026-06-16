@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
 
 // ─── GET: Broadcast history ──────────────────────────────────
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },

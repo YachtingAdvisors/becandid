@@ -29,7 +29,7 @@ const deleteSchema = z.object({
 
 // ─── GET — fetch all site list entries for the current user ──
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();

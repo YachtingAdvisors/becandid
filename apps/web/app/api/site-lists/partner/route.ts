@@ -9,7 +9,7 @@ import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 // The caller is the partner; we look up who they are a partner FOR,
 // then return only whitelist entries for that user.
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();

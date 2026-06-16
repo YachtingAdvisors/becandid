@@ -26,7 +26,7 @@ function generateCode(name: string): string {
 
 // ── GET — referral stats ──────────────────────────────────────
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
