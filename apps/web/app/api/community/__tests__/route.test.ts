@@ -9,6 +9,7 @@ const mockFrom = vi.fn();
 vi.mock('@/lib/supabase', () => ({
   createServerSupabaseClient: vi.fn(() => ({
     auth: { getUser: mockGetUser },
+    from: mockFrom,
   })),
   createServiceClient: vi.fn(() => ({
     from: mockFrom,

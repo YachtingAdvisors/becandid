@@ -9,6 +9,7 @@ const mockFrom = vi.fn();
 vi.mock('@/lib/supabase', () => ({
   createServerSupabaseClient: vi.fn(() => ({
     auth: { getUser: mockGetUser },
+    from: mockFrom,
   })),
   createServiceClient: vi.fn(() => ({
     from: mockFrom,
@@ -22,6 +23,12 @@ vi.mock('@/lib/stripe/server', () => ({
   createPortalSession: vi.fn(() =>
     Promise.resolve({ url: 'https://billing.stripe.com/portal_123' }),
   ),
+}));
+
+vi.mock('@/lib/rateLimit', () => ({
+  actionLimiter: {},
+  accountLimiter: {},
+  checkUserRate: vi.fn(async () => null),
 }));
 
 vi.mock('@/lib/stripe/config', () => ({
