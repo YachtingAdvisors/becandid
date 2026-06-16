@@ -53,7 +53,7 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   // Return cache if fresh
   if (cache && Date.now() - cache.fetchedAt < CACHE_TTL_MS) {
     return NextResponse.json(cache.data);

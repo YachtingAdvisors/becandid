@@ -11,7 +11,7 @@ import { getAnonymousName } from '@/lib/anonymousNames';
 const VALID_TYPES = ['win', 'milestone', 'encouragement', 'gratitude'];
 const MAX_POSTS_PER_DAY = 5;
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();

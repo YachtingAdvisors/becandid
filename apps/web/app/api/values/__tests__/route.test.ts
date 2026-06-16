@@ -70,7 +70,8 @@ describe('GET /api/values', () => {
     mockAuthUser(null);
 
     const { GET } = await import('../route');
-    const res = await GET();
+    const req = makeRequest('GET', '/api/values');
+    const res = await GET(req);
 
     expect(res.status).toBe(401);
     const json = await res.json();
@@ -100,7 +101,8 @@ describe('GET /api/values', () => {
     setupChainedQuery({ data: fakeValues, error: null });
 
     const { GET } = await import('../route');
-    const res = await GET();
+    const req = makeRequest('GET', '/api/values');
+    const res = await GET(req);
 
     expect(res.status).toBe(200);
     const json = await res.json();
@@ -117,7 +119,8 @@ describe('GET /api/values', () => {
     setupChainedQuery({ data: [], error: null });
 
     const { GET } = await import('../route');
-    const res = await GET();
+    const req = makeRequest('GET', '/api/values');
+    const res = await GET(req);
 
     expect(res.status).toBe(200);
     const json = await res.json();

@@ -22,7 +22,7 @@ const CRON_JOBS = [
   'google-indexing',
 ];
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },

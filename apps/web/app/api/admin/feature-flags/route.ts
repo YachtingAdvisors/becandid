@@ -13,7 +13,7 @@ import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
 
 // ─── GET: List all flags ─────────────────────────────────────
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },

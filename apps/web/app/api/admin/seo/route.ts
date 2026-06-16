@@ -283,7 +283,7 @@ function getPersonalizationTag(
 
 // ─── Route handler ──────────────────────────────────────────
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   const adminAccess = await requireAdminAccess(supabase, user);
