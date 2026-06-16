@@ -138,7 +138,7 @@ function buildENEX(entries: StringerJournalEntry[]) {
       const moods = ['', 'Heavy', 'Low', 'Neutral', 'Lighter', 'Hopeful'];
       content += `<p><b>Mood:</b> ${moods[e.mood]}</p>`;
     }
-    if (e.tags?.length) content += `<p><b>Tags:</b> ${e.tags.map(t => escXml(t)).join(', ')}</p>`;
+    if (e.tags?.length) content += `<p><b>Tags:</b> ${e.tags.join(', ')}</p>`;
 
     const created = new Date(e.created_at).toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
     const tagXml = (e.tags || []).map(t => `<tag>${escXml(t)}</tag>`).join('');
@@ -167,9 +167,9 @@ function buildOneNoteHTML(entries: StringerJournalEntry[]) {
     STRINGER_PROMPTS.forEach((p) => {
       const val = e[p.id as keyof StringerJournalEntry] as string | null;
       if (val) {
-        ph += `<h3 style="color:#226779;margin-top:12px;">${escXml(p.label)}</h3>
-<p style="color:#888;font-style:italic;font-size:12px;">${escXml(p.question)}</p>
-<p>${escXml(val).replace(/\n/g, '<br/>')}</p>`;
+        ph += `<h3 style="color:#226779;margin-top:12px;">${p.label}</h3>
+<p style="color:#888;font-style:italic;font-size:12px;">${p.question}</p>
+<p>${val.replace(/\n/g, '<br/>')}</p>`;
       }
     });
     const moodLine = e.mood

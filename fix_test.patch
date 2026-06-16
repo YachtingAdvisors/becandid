@@ -1,0 +1,11 @@
+--- apps/web/app/api/journal/__tests__/route.test.ts
++++ apps/web/app/api/journal/__tests__/route.test.ts
+@@ -19,6 +19,8 @@
+ vi.mock('@/lib/supabase', () => ({
+   createServerSupabaseClient: vi.fn(() => ({
+     auth: { getUser: mockGetUser },
++    from: mockFrom,
++    rpc: mockRpc,
+   })),
+   createServiceClient: vi.fn(() => ({
+     from: mockFrom,
