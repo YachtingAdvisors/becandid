@@ -17,7 +17,7 @@ const mockRange = vi.fn();
 const mockContains = vi.fn();
 
 vi.mock('@/lib/supabase', () => ({
-  createServerSupabaseClient: vi.fn(() => ({
+  createServerSupabaseClient: vi.fn(() => ({ from: mockFrom,
     auth: { getUser: mockGetUser },
   })),
   createServiceClient: vi.fn(() => ({

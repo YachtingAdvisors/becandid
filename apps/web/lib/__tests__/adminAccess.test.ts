@@ -10,7 +10,7 @@ function makeSupabase(result: { data: { platform_role?: string | null } | null; 
         }),
       }),
     }),
-  };
+  } as any;
 }
 
 describe('adminAccess', () => {

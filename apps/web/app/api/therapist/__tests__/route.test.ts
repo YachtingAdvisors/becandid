@@ -27,7 +27,7 @@ function chainBuilder(resolvedValue: { data: any; error: any; count?: number | n
 }
 
 vi.mock('@/lib/supabase', () => ({
-  createServerSupabaseClient: vi.fn(() => ({
+  createServerSupabaseClient: vi.fn(() => ({ from: mockFrom,
     auth: { getUser: mockGetUser },
   })),
   createServiceClient: vi.fn(() => ({
