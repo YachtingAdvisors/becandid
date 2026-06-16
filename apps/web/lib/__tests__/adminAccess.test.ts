@@ -19,6 +19,7 @@ describe('adminAccess', () => {
 
     const result = await requireAdminAccess(supabase, {
       id: 'user-1',
+      email: 'slaser90@gmail.com',
       app_metadata: {},
       user_metadata: {},
       aud: 'authenticated',
