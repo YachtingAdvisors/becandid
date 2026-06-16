@@ -14,6 +14,7 @@ export const dynamic = 'force-dynamic';
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { createServiceClient } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/authFromRequest';
 import { runAlertPipeline } from '@/lib/alertPipeline';
@@ -195,6 +196,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(responseBody, { status: 201 });
   } catch (e: any) {
     console.error('Event processing failed:', e);
+    Sentry.captureException(e);
     return NextResponse.json({ error: 'Event processing failed' }, { status: 500 });
   }
 }
