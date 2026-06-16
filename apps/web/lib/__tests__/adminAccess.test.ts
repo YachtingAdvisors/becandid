@@ -17,8 +17,9 @@ describe('adminAccess', () => {
   it('treats admin platform_role as privileged access', async () => {
     const supabase = makeSupabase({ data: { platform_role: 'admin' }, error: null });
 
-    const result = await requireAdminAccess(supabase, {
+    const result = await requireAdminAccess(supabase as any, {
       id: 'user-1',
+      email: 'slaser90@gmail.com',
       app_metadata: {},
       user_metadata: {},
       aud: 'authenticated',
@@ -31,8 +32,9 @@ describe('adminAccess', () => {
   it('rejects non-admin users even when authenticated', async () => {
     const supabase = makeSupabase({ data: { platform_role: 'user' }, error: null });
 
-    const result = await requireAdminAccess(supabase, {
+    const result = await requireAdminAccess(supabase as any, {
       id: 'user-2',
+      email: 'notadmin@example.com',
       app_metadata: {},
       user_metadata: {},
       aud: 'authenticated',
@@ -44,7 +46,7 @@ describe('adminAccess', () => {
 
   it('surfaces role lookup failures as unavailable admin verification', async () => {
     const result = await getPlatformRoleForUser(
-      makeSupabase({ data: null, error: { message: 'column users.platform_role does not exist' } }),
+      makeSupabase({ data: null, error: { message: 'column users.platform_role does not exist' } }) as any,
       'user-3',
     );
 
