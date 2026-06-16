@@ -143,13 +143,22 @@ export async function generateWeeklyReflection(userId: string): Promise<any> {
 
     // Store encrypted
     const weekStart = weekAgo.toISOString().slice(0, 10);
+
+    let moodSum = 0;
+    let moodCount = 0;
+    for (const e of entries) {
+      if (e.mood) {
+        moodSum += e.mood;
+        moodCount++;
+      }
+    }
+    const moodAvg = moodCount > 0 ? moodSum / moodCount : null;
+
     await db.from('weekly_reflections').upsert({
       user_id: userId,
       week_start: weekStart,
       reflection: encrypt(JSON.stringify(reflection), userId),
-      mood_avg: entries.filter((e: any) => e.mood).length > 0
-        ? entries.filter((e: any) => e.mood).reduce((s: number, e: any) => s + e.mood, 0) / entries.filter((e: any) => e.mood).length
-        : null,
+      mood_avg: moodAvg,
       entry_count: entries.length,
     }, { onConflict: 'user_id,week_start' });
 
