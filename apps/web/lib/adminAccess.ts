@@ -30,7 +30,7 @@ function normalizePlatformRole(role: string | null | undefined): PlatformRole {
 }
 
 export async function getPlatformRoleForUser(
-  supabase: RoleLookupClient,
+  supabase: any,
   userId: string,
 ): Promise<PlatformRoleLookup> {
   const { data, error } = await supabase
@@ -52,7 +52,7 @@ export async function getPlatformRoleForUser(
 export const ADMIN_EMAIL = 'slaser90@gmail.com';
 
 export async function requireAdminAccess(
-  _supabase: RoleLookupClient,
+  _supabase: any,
   user: User | null,
 ): Promise<AdminAccessSuccess | AdminAccessFailure> {
   if (!user) {
