@@ -52,20 +52,30 @@ export async function getPlatformRoleForUser(
 export const ADMIN_EMAIL = 'slaser90@gmail.com';
 
 export async function requireAdminAccess(
-  _supabase: RoleLookupClient,
+  supabase: RoleLookupClient,
   user: User | null,
 ): Promise<AdminAccessSuccess | AdminAccessFailure> {
   if (!user) {
     return { ok: false, error: 'Unauthorized', status: 401 };
   }
 
-  if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
-    return { ok: false, error: 'Forbidden', status: 403 };
+  const roleResult = await getPlatformRoleForUser(supabase, user.id);
+
+  if (roleResult.ok && roleResult.role === 'admin') {
+    return {
+      ok: true,
+      user,
+      role: 'admin',
+    };
   }
 
-  return {
-    ok: true,
-    user,
-    role: 'admin',
-  };
+  if (user.email?.toLowerCase() === ADMIN_EMAIL) {
+    return {
+      ok: true,
+      user,
+      role: 'admin',
+    };
+  }
+
+  return { ok: false, error: 'Forbidden', status: 403 };
 }
