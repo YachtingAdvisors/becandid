@@ -9,6 +9,7 @@ import { UpdateProfileSchema } from '@be-candid/shared';
 import { safeError, sanitizeName, sanitizePhone, auditLog } from '@/lib/security';
 import { generateReferralCode, applyReferralReward } from '@/lib/referral';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { getResend } from '@/lib/resend';
 
 export async function GET(req: NextRequest) {
   try {
@@ -83,8 +84,7 @@ export async function PATCH(req: NextRequest) {
           const { data: profile } = await supabase.from('users').select('name').eq('id', user.id).single();
 
           if (partner?.partner_email) {
-            const { Resend } = await import('resend');
-            const resend = new Resend(process.env.RESEND_API_KEY!);
+            const resend = getResend();
             const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
             const userName = profile?.name ?? 'Your partner';
 
@@ -148,8 +148,7 @@ export async function POST(req: NextRequest) {
 
     // Notify admin of new signup
     try {
-      const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY!);
+      const resend = getResend();
       const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
       await resend.emails.send({
         from,

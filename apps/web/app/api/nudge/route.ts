@@ -6,8 +6,8 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { safeError, auditLog, sanitizeText, escapeHtml } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { sendNudgeSMS } from '@/lib/sms';
-import { Resend } from 'resend';
 import { z } from 'zod';
+import { getResend } from '@/lib/resend';
 
 const NudgeSchema = z.object({
   mood: z.enum(['low', 'crisis']),
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
       // Send email
       if (partner.partner_email) {
         try {
-          const resend = new Resend(process.env.RESEND_API_KEY!);
+          const resend = getResend();
           await resend.emails.send({
             from: FROM,
             to: partner.partner_email,

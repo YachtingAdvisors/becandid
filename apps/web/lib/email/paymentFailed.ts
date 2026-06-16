@@ -7,9 +7,9 @@
 //   3. 7 days: downgrade notification
 // ============================================================
 
-import { Resend } from 'resend';
 import { emailWrapper } from './template';
 import { escapeHtml } from '@/lib/security';
+import { getResend } from '@/lib/resend';
 
 const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
@@ -24,7 +24,7 @@ export async function sendPaymentFailedEmail(params: {
   nextAttempt: Date | null;
 }) {
   const { email, name, planName, attemptCount, nextAttempt } = params;
-  const resend = new Resend(process.env.RESEND_API_KEY!);
+  const resend = getResend();
 
   const retryNote = nextAttempt
     ? `We'll automatically retry on ${nextAttempt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}.`
@@ -71,7 +71,7 @@ export async function sendPaymentFollowUpEmail(params: {
   journalCount: number;
 }) {
   const { email, name, planName, streakDays, journalCount } = params;
-  const resend = new Resend(process.env.RESEND_API_KEY!);
+  const resend = getResend();
 
   const streakLine = streakDays > 0
     ? `You've built a <strong>${streakDays}-day streak</strong> and written <strong>${journalCount} journal entries</strong>.`
@@ -114,7 +114,7 @@ export async function sendDowngradeNotificationEmail(params: {
   planName: string;
 }) {
   const { email, name, planName } = params;
-  const resend = new Resend(process.env.RESEND_API_KEY!);
+  const resend = getResend();
 
   const html = emailWrapper({
     preheader: `Your ${planName} features have been paused`,

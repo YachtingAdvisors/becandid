@@ -7,8 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { safeError, auditLog, sanitizeName } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
-import { Resend } from 'resend';
 import { emailWrapper } from '@/lib/email/template';
+import { getResend } from '@/lib/resend';
 
 const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
 const ADMIN_EMAIL = 'shawn@becandid.io';
@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
 
     // Notify admin
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY!);
+      const resend = getResend();
       await resend.emails.send({
         from: FROM,
         to: ADMIN_EMAIL,

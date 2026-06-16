@@ -16,7 +16,6 @@
 // ============================================================
 
 import Anthropic from '@anthropic-ai/sdk';
-import { Resend } from 'resend';
 import type { GoalCategory } from '@be-candid/shared';
 import { GOAL_LABELS } from '@be-candid/shared';
 import { createServiceClient } from './supabase';
@@ -35,6 +34,7 @@ import { filterContent } from './contentFilter';
 import { sendPartnerAlertSMS, sendUserSelfNotificationSMS } from './sms';
 
 import { logApiCost } from './costTracker';
+import { getResend } from '@/lib/resend';
 
 // ── Guide cache (in-memory, 24h TTL) ──────────────────────────
 // Key: `${userId}:${category}`, Value: { guide, timestamp }
@@ -75,7 +75,7 @@ function setCachedGuide(userId: string, category: string, solo: boolean, userGui
 }
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
-function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
+
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@updates.becandid.io>';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io';
 

@@ -14,13 +14,10 @@ import { requireAdminAccess } from '@/lib/adminAccess';
 import { decrypt } from '@/lib/encryption';
 import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
 import { emailWrapper } from '@/lib/email/template';
-import { Resend } from 'resend';
-
+import { getResend } from '@/lib/resend';
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@updates.becandid.io>';
 
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY!);
-}
+
 
 async function verifyAdmin(req: NextRequest) {
   const supabase = await createServerSupabaseClient();

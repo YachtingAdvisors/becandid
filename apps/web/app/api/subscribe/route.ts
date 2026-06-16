@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
+import { getResend } from '@/lib/resend';
 
 export async function POST(req: Request) {
   try {
@@ -26,8 +27,7 @@ export async function POST(req: Request) {
 
     // Notify admin of new subscriber
     try {
-      const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY!);
+      const resend = getResend();
       const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
       await resend.emails.send({
         from,

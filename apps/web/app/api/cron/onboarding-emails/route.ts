@@ -23,6 +23,7 @@ import { verifyCronAuth } from '@/lib/cronAuth';
 import { logCronRun } from '@/lib/cronAudit';
 import { escapeHtml } from '@/lib/security';
 import { emailWrapper } from '@/lib/email/template';
+import { getResend } from '@/lib/resend';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 const FROM = process.env.EMAIL_FROM ?? 'Be Candid <noreply@updates.becandid.io>';
@@ -227,8 +228,7 @@ async function sendEmail(
   subject: string,
   html: string,
 ): Promise<void> {
-  const { Resend } = await import('resend');
-  const resend = new Resend(process.env.RESEND_API_KEY!);
+  const resend = getResend();
   const { error } = await resend.emails.send({ from: FROM, to, subject, html });
   if (error) {
     throw new Error(`Resend API error: ${error.message}`);

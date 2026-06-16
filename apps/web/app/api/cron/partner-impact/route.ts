@@ -14,6 +14,7 @@ import { createServiceClient } from '@/lib/supabase';
 import { verifyCronAuth } from '@/lib/cronAuth';
 import { emailWrapper } from '@/lib/email/template';
 import { escapeHtml } from '@/lib/security';
+import { getResend } from '@/lib/resend';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
@@ -199,8 +200,7 @@ async function handleCron(req: NextRequest) {
       });
 
       // Send the email
-      const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY!);
+      const resend = getResend();
       const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
 
       await resend.emails.send({

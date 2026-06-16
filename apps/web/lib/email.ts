@@ -2,13 +2,13 @@
 // Be Candid — Email Service (Resend)
 // ============================================================
 
-import { Resend } from 'resend';
 import { formatGuideForEmail, type AIConversationGuide } from './claude';
 import type { User, Partner, Event, Alert } from '@be-candid/shared';
 import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
 import { emailWrapper } from './email/template';
+import { getResend } from '@/lib/resend';
 
-function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
+
 
 /**
  * Canonical FROM address for all outbound emails.

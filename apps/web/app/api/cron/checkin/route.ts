@@ -15,6 +15,7 @@ import { generateContextualPrompt } from '@/lib/checkInPrompts';
 import { verifyCronAuth } from '@/lib/cronAuth';
 import { logCronRun } from '@/lib/cronAudit';
 import { pushNotifyUser } from '@/lib/pushNotify';
+import { getResend } from '@/lib/resend';
 
 // Vercel Crons send GET requests
 export async function GET(req: NextRequest) { return handleCron(req); }
@@ -94,8 +95,7 @@ async function handleCron(req: NextRequest) {
 
       // Send notifications to user and partner
       try {
-        const { Resend } = await import('resend');
-        const resend = new Resend(process.env.RESEND_API_KEY!);
+        const resend = getResend();
         const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
         const {
           buildUserCheckInEmail,

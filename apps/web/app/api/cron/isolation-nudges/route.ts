@@ -14,15 +14,13 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { sendPushToUser } from '@/lib/push/pushService';
-import { Resend } from 'resend';
 import { verifyCronAuth } from '@/lib/cronAuth';
 import { logCronRun } from '@/lib/cronAudit';
 import { emailWrapper } from '@/lib/email/template';
 import { escapeHtml } from '@/lib/security';
+import { getResend } from '@/lib/resend';
 
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY!);
-}
+
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@updates.becandid.io>';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io';
 

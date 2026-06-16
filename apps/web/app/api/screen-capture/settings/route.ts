@@ -14,6 +14,7 @@ import { requireAdminAccess } from '@/lib/adminAccess';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { escapeHtml } from '@/lib/security';
+import { getResend } from '@/lib/resend';
 
 export async function GET(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -160,8 +161,7 @@ async function notifyPartnerMonitoringPaused(db: ReturnType<typeof createService
 
   // Send email to partner
   try {
-    const { Resend } = await import('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = getResend();
     if (partnership.partner_email && process.env.RESEND_API_KEY) {
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>',
