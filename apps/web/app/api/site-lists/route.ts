@@ -5,8 +5,8 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { safeError, escapeHtml } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { z } from 'zod';
-import { Resend } from 'resend';
 import twilio from 'twilio';
+import { getResend } from '@/lib/resend';
 
 // ─── Validation ─────────────────────────────────────────────
 
@@ -173,7 +173,7 @@ async function notifyPartnerOfBlacklistRemoval(
     // Send email via Resend
     if (partner.partner_email) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY!);
+        const resend = getResend();
         await resend.emails.send({
           from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>',
           to: partner.partner_email,

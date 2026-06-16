@@ -8,6 +8,7 @@ import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError, sanitizeText, isValidUUID, auditLog } from '@/lib/security';
 import { buildConfirmationFollowUpEmail, buildFollowUpSMS } from '@/lib/checkInNotifications';
 import { pushNotifyUser } from '@/lib/pushNotify';
+import { getResend } from '@/lib/resend';
 
 export async function POST(
   req: NextRequest,
@@ -105,8 +106,7 @@ export async function POST(
             });
 
             const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
-            const { Resend } = await import('resend');
-            const resend = new Resend(process.env.RESEND_API_KEY!);
+            const resend = getResend();
 
             const sends: Promise<any>[] = [];
 

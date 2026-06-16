@@ -9,11 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { requireAdminAccess } from '@/lib/adminAccess';
 import { adminLimiter, checkUserRate } from '@/lib/rateLimit';
-import { Resend } from 'resend';
-
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY!);
-}
+import { getResend } from '@/lib/resend';
 const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
 
 export async function POST(req: NextRequest) {

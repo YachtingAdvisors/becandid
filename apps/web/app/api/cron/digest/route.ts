@@ -12,6 +12,7 @@ import { verifyCronAuth } from '@/lib/cronAuth';
 import { logCronRun } from '@/lib/cronAudit';
 import { escapeHtml } from '@/lib/security';
 import { decrypt } from '@/lib/encryption';
+import { getResend } from '@/lib/resend';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 
@@ -130,8 +131,7 @@ async function handleCron(req: NextRequest) {
 
       // Send digest emails
       try {
-        const { Resend } = await import('resend');
-        const resend = new Resend(process.env.RESEND_API_KEY!);
+        const resend = getResend();
         const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
         const APP_URL_BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://becandid.io';
 

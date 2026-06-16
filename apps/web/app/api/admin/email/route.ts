@@ -17,11 +17,7 @@ import {
 } from '@/lib/adminTools';
 import { accountLimiter, checkUserRate } from '@/lib/rateLimit';
 import { emailWrapper } from '@/lib/email/template';
-import { Resend } from 'resend';
-
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY!);
-}
+import { getResend } from '@/lib/resend';
 const FROM = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
 const MAX_BATCH = 500;
 

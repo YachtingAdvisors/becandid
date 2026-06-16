@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { sanitizeText } from '@/lib/security';
+import { getResend } from '@/lib/resend';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
@@ -70,8 +71,7 @@ export async function POST(req: NextRequest) {
 
   // Send email to support
   try {
-    const { Resend } = await import('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY!);
+    const resend = getResend();
 
     const emailOptions: any = {
       from: process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>',

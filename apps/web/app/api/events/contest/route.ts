@@ -6,8 +6,8 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { safeError, auditLog, escapeHtml } from '@/lib/security';
 import { GOAL_LABELS, type GoalCategory } from '@be-candid/shared';
-import { Resend } from 'resend';
 import { z } from 'zod';
+import { getResend } from '@/lib/resend';
 
 const ContestSchema = z.object({
   event_id: z.string().uuid(),
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       : '<p><em>No screenshots found near this event time.</em></p>';
 
     // Send review email to admin
-    const resend = new Resend(process.env.RESEND_API_KEY!);
+    const resend = getResend();
     const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@updates.becandid.io>';
 
     await resend.emails.send({

@@ -17,13 +17,13 @@
 // ============================================================
 
 import { sendPush } from './push/pushService';
-import { Resend } from 'resend';
+import { getResend } from '@/lib/resend';
 import {
   RELAPSE_NOTIFICATION_PROMPTS,
   STRINGER_QUOTES,
 } from '@be-candid/shared';
 
-function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
+
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@updates.becandid.io>';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io';
 

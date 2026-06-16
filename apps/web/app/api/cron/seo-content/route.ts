@@ -10,6 +10,7 @@ export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyCronAuth } from '@/lib/cronAuth';
 import { createServiceClient } from '@/lib/supabase';
+import { getResend } from '@/lib/resend';
 import {
   TRACK_A_TOPICS,
   TRACK_B_TOPICS,
@@ -161,8 +162,7 @@ Generate the full article now.`;
 
     // Notify admin
     try {
-      const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY!);
+      const resend = getResend();
       const from = process.env.RESEND_FROM_EMAIL ?? 'Be Candid <noreply@updates.becandid.io>';
       const wordCount = content.split(/\s+/).length;
 

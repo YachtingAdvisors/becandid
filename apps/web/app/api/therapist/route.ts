@@ -15,10 +15,10 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { decryptJournalEntries, decrypt } from '@/lib/encryption';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
 import { sanitizeEmail, sanitizeName, safeError, escapeHtml } from '@/lib/security';
-import { Resend } from 'resend';
 import { createInviteToken, getInviteTokenCandidates, isInviteExpired, normalizeInviteToken } from '@/lib/inviteTokens';
+import { getResend } from '@/lib/resend';
 
-function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
+
 const FROM = process.env.EMAIL_FROM || 'Be Candid <noreply@updates.becandid.io>';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://becandid.io';
 

@@ -13,13 +13,13 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { decryptJournalEntries, decrypt } from '@/lib/encryption';
 import { aiGuideLimiter, checkUserRate } from '@/lib/rateLimit';
 import Anthropic from '@anthropic-ai/sdk';
-import { Resend } from 'resend';
 import { emailWrapper } from '@/lib/email/template';
 import { escapeHtml } from '@/lib/security';
 import { buildTherapistSessionPrepEmail } from '@/lib/therapistSessionPrepEmail';
+import { getResend } from '@/lib/resend';
 
 function getAnthropic() { return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }); }
-function getResend() { return new Resend(process.env.RESEND_API_KEY!); }
+
 
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
