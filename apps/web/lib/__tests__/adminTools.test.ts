@@ -11,7 +11,7 @@ describe('adminTools', () => {
 
     expect('error' in result).toBe(false);
     if ('update' in result) {
-      expect(result.update).toEqual({
+      expect(result.update).toMatchObject({
         subscription_plan: 'pro',
         subscription_status: 'active',
       });

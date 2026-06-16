@@ -9,6 +9,12 @@ vi.mock('@/lib/supabase', () => ({
   createServerSupabaseClient: vi.fn(() => ({
     auth: { getUser: mockGetUser },
   })),
+  createServiceClient: vi.fn(() => ({
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({ eq: vi.fn(() => ({ single: vi.fn(() => Promise.resolve({ data: { subscription_plan: 'pro' }, error: null })) })) })),
+      insert: vi.fn(() => Promise.resolve({ error: null })),
+    })),
+  })),
 }));
 
 vi.mock('@/lib/rateLimit', () => ({
