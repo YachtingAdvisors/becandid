@@ -13,6 +13,7 @@ import { getUserFromRequest } from '@/lib/authFromRequest';
 import { createServiceClient } from '@/lib/supabase';
 import { sanitizeText, auditLog, escapeHtml } from '@/lib/security';
 import { actionLimiter, checkUserRate } from '@/lib/rateLimit';
+import { logger } from '@/lib/logger';
 
 export async function POST(req: NextRequest) {
   const user = await getUserFromRequest(req);
@@ -92,7 +93,7 @@ export async function POST(req: NextRequest) {
       });
     }
   } catch (err) {
-    console.error('[reach-out] Email failed:', err);
+    logger.error('[reach-out] Email failed:', err);
   }
 
   // Send SMS if partner has phone number
@@ -111,7 +112,7 @@ export async function POST(req: NextRequest) {
       });
     }
   } catch (err) {
-    console.error('[reach-out] SMS failed:', err);
+    logger.error('[reach-out] SMS failed:', err);
   }
 
   // Send push notification to partner
