@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { getPlatformRoleForUser, requireAdminAccess } from '../adminAccess';
 
 function makeSupabase(result: { data: { platform_role?: string | null } | null; error: { code?: string; message?: string } | null }) {
-  return {
+  return ({
     from: () => ({
       select: () => ({
         eq: () => ({
@@ -10,7 +10,7 @@ function makeSupabase(result: { data: { platform_role?: string | null } | null; 
         }),
       }),
     }),
-  };
+  }) as any;
 }
 
 describe('adminAccess', () => {
