@@ -33,21 +33,25 @@ async function handleCron(req: NextRequest) {
   // Step 2: Fetch users with check-ins enabled
   const { data: users } = await db
     .from('users')
-    .select('id, name, email, phone, goals, check_in_enabled, check_in_hour, check_in_frequency, timezone')
-    .eq('check_in_enabled', true);
+    .select(`
+      id, name, email, phone, goals, check_in_enabled, check_in_hour, check_in_frequency, timezone,
+      check_ins (
+        sent_at
+      ),
+      partners!partners_user_id_fkey (
+        partner_user_id, partner_name, partner_email, status
+      )
+    `)
+    .eq('check_in_enabled', true)
+    .order('sent_at', { foreignTable: 'check_ins', ascending: false })
+    .limit(1, { foreignTable: 'check_ins' }) as any;
 
   if (!users) return NextResponse.json({ ok: true, ...results });
 
   for (const user of users) {
     try {
-      // Get last sent check-in
-      const { data: lastCheckIn } = await db
-        .from('check_ins')
-        .select('sent_at')
-        .eq('user_id', user.id)
-        .order('sent_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      // Get last sent check-in from embedded query
+      const lastCheckIn = user.check_ins?.[0] || null;
 
       const frequency = (user.check_in_frequency ?? 'daily') as CheckInFrequency;
 
@@ -60,13 +64,8 @@ async function handleCron(req: NextRequest) {
 
       if (!should) { results.skipped++; continue; }
 
-      // Get active partner
-      const { data: partner } = await db
-        .from('partners')
-        .select('partner_user_id, partner_name, partner_email')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .maybeSingle();
+      // Get active partner from embedded query
+      const partner = user.partners?.find((p: any) => p.status === 'active') || null;
 
       const sentAt = new Date();
       const dueAt = calculateDueDate(sentAt, frequency);
