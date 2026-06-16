@@ -9,10 +9,16 @@ const mockFrom = vi.fn();
 vi.mock('@/lib/supabase', () => ({
   createServerSupabaseClient: vi.fn(() => ({
     auth: { getUser: mockGetUser },
+    from: mockFrom,
   })),
   createServiceClient: vi.fn(() => ({
     from: mockFrom,
   })),
+}));
+
+vi.mock('@/lib/rateLimit', () => ({
+  accountLimiter: {},
+  checkUserRate: vi.fn(async () => null),
 }));
 
 vi.mock('@/lib/stripe/server', () => ({
@@ -169,6 +175,10 @@ describe('GET /api/billing', () => {
             subscription_status: 'active',
             trial_ends_at: null,
             stripe_customer_id: null,
+            grandfathered: false,
+            is_supporter: false,
+            supporter_until: null,
+            total_donated: 0,
           },
           error: null,
         };

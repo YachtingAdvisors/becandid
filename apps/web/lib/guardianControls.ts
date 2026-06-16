@@ -7,6 +7,7 @@
 import { createServiceClient } from './supabase';
 import type { GuardianRelationship, GuardianPermissions } from '@be-candid/shared';
 import { createInviteToken, getInviteTokenCandidates, isInviteExpired } from './inviteTokens';
+import { sendGuardianInviteEmail } from './email';
 
 // ── Invite a guardian ──────────────────────────────────────
 // The inviter can be either a teen inviting a parent or a parent
@@ -44,8 +45,7 @@ export async function inviteGuardian(
     throw new Error('Failed to create guardian invite');
   }
 
-  // TODO: Send invite email to the guardian email address
-  // await sendGuardianInviteEmail(email, token, inviterUserId);
+  await sendGuardianInviteEmail(email, token, inviterUserId);
 
   return token;
 }
